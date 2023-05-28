@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "137132429712",
+    "project_id": "agrichikitsa-8be74",
+    "storage_bucket": "agrichikitsa-8be74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137132429712:android:0f81a104411dcbf64c6315",
+        "android_client_info": {
+          "package_name": "com.example.agriChikitsa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "137132429712-b6v2b04ghvfufuuq7snu3elvodo5lbk4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.agriChikitsa",
+            "certificate_hash": "6d5733ca96cadfa073c27dc71205cda281874284"
+          }
+        },
+        {
+          "client_id": "137132429712-dn2esn6f8dsptebtk8dbflsedpbaa06c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.agriChikitsa",
+            "certificate_hash": "76f2dd83f2c592bd2cd961f13345a2e68c223cbc"
+          }
+        },
+        {
+          "client_id": "137132429712-v5cjsadekelegh4m3k8es5lprom90fsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGfebkdT45UkYPIZZL4EA3rAQDMfpHaCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "137132429712-v5cjsadekelegh4m3k8es5lprom90fsm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
