@@ -117,40 +117,47 @@ class SignInViewModel with ChangeNotifier {
   }
 
   Future<void> verifyOTPCode(verificationId, otp, BuildContext context) async {
+    setloading(true);
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: otp,
       );
       final userCredential = await auth.signInWithCredential(credential);
-      print(userCredential);
+      login(phoneNumber, context);
     } catch (e) {
       Utils.flushBarErrorMessage("Alert", e.toString().split("]")[1], context);
+      setloading(false);
     }
   }
 
-  void login(dynamic payload, BuildContext context) {
+  void login(String phoneNumber, BuildContext context) {
     final localContext = context;
-    setloading(true);
-    void handleRegister(context) async {
+    void handleLogin(context) async {
       try {
-        final data = await _authRepository.login(payload);
-        final localStorage = await SharedPreferences.getInstance();
-        final profile = {
-          'user': data["user"],
-          'token': data["token"],
-        };
-        await localStorage.setString("profile", jsonEncode(profile));
-        setUserProfile(data);
-        setloading(false);
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+        final data = await _authRepository.login(phoneNumber);
+        Utils.toastMessage(data.toString());
+        if (data["newUser"]) {
+          setloading(false);
+          Navigator.of(context)
+              .pushNamed(RouteName.signUpRoute);
+        } else {
+          final localStorage = await SharedPreferences.getInstance();
+          final profile = {
+            'user': data["user"],
+            'token': data["token"],
+          };
+          await localStorage.setString("profile", jsonEncode(profile));
+          setUserProfile(data);
+          setloading(false);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+        }
       } catch (error) {
         Utils.flushBarErrorMessage("Alert!", error.toString(), context);
         setloading(false);
       }
     }
-
-    handleRegister(localContext);
+    handleLogin(localContext);
   }
 }

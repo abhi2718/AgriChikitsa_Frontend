@@ -4,10 +4,10 @@ import '../../res/app_url.dart';
 class AuthRepository {
   final _apiServices = NetworkApiService();
 
-  Future<dynamic> login(dynamic payload) async {
+  Future<dynamic> login(String phoneNumber) async {
     try {
-      final response = await _apiServices.getPostApiResponse(
-          AppUrl.loginEndPoint, payload);
+      final url = '${AppUrl.loginEndPoint}/$phoneNumber';
+      final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
       rethrow;

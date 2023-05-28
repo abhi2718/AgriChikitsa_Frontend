@@ -1,6 +1,6 @@
 class AppUrl {
-  static const String baseUrl = "https://job-check-list-backedn.vercel.app/api/v1";
-  static const String loginEndPoint = '$baseUrl/auth/login';
+  static const String baseUrl = "http://192.168.1.3:1010/api/v1";
+  static const String loginEndPoint = '$baseUrl/auth/checkuser';
   static const String verifyUserEndPoint = '$baseUrl/auth/me/';
   static const String registerEndPoint = '$baseUrl/auth/update/';
   static const String assignedTaskEndPoint = '$baseUrl/assignedtasks/';

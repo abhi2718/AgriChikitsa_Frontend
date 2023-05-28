@@ -12,7 +12,7 @@ class SignUpScreen extends HookWidget {
   Widget build(BuildContext context) {
     return Consumer<SignUpViewModel>(
       builder: (context, provider, child) =>
-          provider.isVerified ?const RegisterUser(): const VerifyUser() ,
+          const RegisterUser() ,
     );
   }
 }
