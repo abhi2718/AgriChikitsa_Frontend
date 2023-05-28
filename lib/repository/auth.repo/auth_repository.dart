@@ -26,9 +26,9 @@ class AuthRepository {
   }
 
   Future<dynamic> register(dynamic payload) async {
-    final url = '${AppUrl.registerEndPoint}${payload["companyId"]}';
+    const url = AppUrl.registerEndPoint;
     try {
-      final response = await _apiServices.getPatchApiResponse(url, payload);
+      final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (error) {
       rethrow;
