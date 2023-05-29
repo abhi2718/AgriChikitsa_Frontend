@@ -60,7 +60,7 @@ class SplashScreen extends HookWidget {
         AnimatedTextKit(
           animatedTexts: [
             TyperAnimatedText(
-              'फसलो की सुरझा',
+              'फसलो की सुरक्षा',
               textStyle:
                   const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
             ),

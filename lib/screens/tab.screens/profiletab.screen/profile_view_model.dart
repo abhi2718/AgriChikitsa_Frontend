@@ -12,9 +12,9 @@ class ProfileViewModel with ChangeNotifier {
   }
 
   void handleLogOut(BuildContext context, disposableProvider) {
-    disposableProvider.forEach((disposableProvider) {
-      disposableProvider.disposeValues();
-    });
+    // disposableProvider.forEach((disposableProvider) {
+    //   disposableProvider.disposeValues();
+    // });
     clearLocalStorage().then((_) {
       Navigator.of(context).pushNamedAndRemoveUntil(
           RouteName.authLandingRoute, (route) => false);

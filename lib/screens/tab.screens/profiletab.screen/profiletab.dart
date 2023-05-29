@@ -68,11 +68,7 @@ class ProfileTabScreen extends HookWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                ParagraphText(user.name!),
-                ParagraphText(user.email!),
-                const SizedBox(
-                  height: 10,
-                ),
+                ParagraphHeadingText(user.name!)
               ]),
             ),
             Padding(
@@ -126,8 +122,10 @@ class ProfileTabScreen extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
-                onPress: () => useViewModel.handleDelete(
-                    context, user.companyId!, disposableProvider),
+                onPress: () {
+                  // useViewModel.handleDelete(
+                  //     context, user.companyId!, disposableProvider);
+                },
                 leftIcon: "assets/images/delete.png",
                 title: 'Delete Account',
                 width: dimension["width"]! - 32,
@@ -140,6 +138,7 @@ class ProfileTabScreen extends HookWidget {
               onPress: () =>
                   useViewModel.handleLogOut(context, disposableProvider),
               title: "Logout",
+              width: dimension["width"]! - 32,
             )
           ],
         ),

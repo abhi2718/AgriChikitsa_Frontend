@@ -58,7 +58,7 @@ class SignUpViewModel with ChangeNotifier {
     }
     registerUserformKey.currentState?.save();
     final userInfo = {
-      "updateType": "register",
+      "roles": "User",
       "name": userName,
       "email": email,
       "phoneNumber": mobileNumber,
@@ -95,9 +95,6 @@ class SignUpViewModel with ChangeNotifier {
   }
 
   String? emailFieldValidator(value) {
-    if (value!.isEmpty) {
-      return "Email is required!";
-    }
     bool isValid = validateEmail(value);
     if (!isValid) {
       return "Please enter a valid email";
@@ -115,7 +112,6 @@ class SignUpViewModel with ChangeNotifier {
 
   void register(dynamic payload, BuildContext context) {
     Utils.toastMessage(payload.toString());
-    print(payload);
     final localContext = context;
     setloading(true);
     void handleRegister(context) async {
@@ -123,7 +119,7 @@ class SignUpViewModel with ChangeNotifier {
         final data = await _authRepository.register(payload);
         final localStorage = await SharedPreferences.getInstance();
         final profile = {
-          'user': data["user"],
+          'user': data["newUser"],
           'token': data["token"],
         };
         await localStorage.setString("profile", jsonEncode(profile));

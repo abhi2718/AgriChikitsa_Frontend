@@ -115,6 +115,7 @@ class RegisterUser extends HookWidget {
                             builder: (context, provider, child) =>
                                 CustomElevatedButton(
                               title: "Register",
+                              width: dimension["width"]!-32,
                               loading: provider.loading,
                               onPress: () =>
                                   provider.saveRegisterUserForm(context),

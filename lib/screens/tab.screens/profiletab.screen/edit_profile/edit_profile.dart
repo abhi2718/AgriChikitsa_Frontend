@@ -91,7 +91,7 @@ class EditProfileScreen extends HookWidget {
                           focusNode: useViewModel.emailFocusNode,
                           suffixIcon: useViewModel.suffixIconForEmail(),
                           keyboardType: TextInputType.emailAddress,
-                          initialValue: user.email!,
+                          initialValue: user.email ?? "",
                           textInputAction: TextInputAction.done,
                           validator: useViewModel.emailFieldValidator,
                           onSaved: useViewModel.onSavedEmailField,
@@ -107,6 +107,7 @@ class EditProfileScreen extends HookWidget {
                             CustomElevatedButton(
                           title: "Update",
                           loading: provider.loading,
+                          width: dimension["width"]!-32,
                           onPress: () =>
                               provider.saveForm(context, user, authService),
                         ),
