@@ -1,7 +1,10 @@
+import 'package:agriChikitsa/l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'routes/routes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import './screens/auth.screen/signin.auth/signin_view_model.dart';
 import './services/socket_io.dart';
 import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
@@ -63,6 +66,14 @@ class App extends StatelessWidget {
           primarySwatch: primaryswatch
         ),
         routes: Routes().routes,
+        locale: const Locale('hi', 'IN'),
+        supportedLocales: L10n.all,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
       ),
     );
   }
