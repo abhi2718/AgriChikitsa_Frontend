@@ -138,6 +138,7 @@ class OtpVerification extends HookWidget {
                   Consumer<SignInViewModel>(
                       builder: (context, provider, child) {
                     return CustomElevatedButton(
+                      loading: provider.loading,
                       title: "VERIFY & PROCEED",
                       width: dimension["width"]! - 32,
                       onPress: () => provider.verifyOTPCode(provider.verificationIdToken,provider.otp,context),

@@ -4,29 +4,28 @@ import '../../res/app_url.dart';
 class AuthRepository {
   final _apiServices = NetworkApiService();
 
-  Future<dynamic> login(dynamic payload) async {
+  Future<dynamic> login(String phoneNumber) async {
     try {
-      final response = await _apiServices.getPostApiResponse(
-          AppUrl.loginEndPoint, payload);
+      final url = '${AppUrl.loginEndPoint}/$phoneNumber';
+      final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<dynamic> verifyUser(String enployeeId) async {
-    const userRole = "Worker";
-    final url = '${AppUrl.verifyUserEndPoint}$enployeeId/roles/$userRole';
+  Future<dynamic> register(dynamic payload) async {
+    const url = AppUrl.registerEndPoint;
     try {
-      final response = await _apiServices.getGetApiResponse(url);
+      final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (error) {
       rethrow;
     }
   }
 
-  Future<dynamic> register(dynamic payload) async {
-    final url = '${AppUrl.registerEndPoint}${payload["companyId"]}';
+  Future<dynamic> updateProfile(String id, dynamic payload) async {
+    final url = '${AppUrl.updateProfileEndPoint}/$id';
     try {
       final response = await _apiServices.getPatchApiResponse(url, payload);
       return response;
