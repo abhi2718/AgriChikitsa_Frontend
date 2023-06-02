@@ -15,16 +15,16 @@ import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import './screens/tab.screens/historytab.screen/history_tab_view_model.dart';
 import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: const FirebaseOptions(
+    options: const FirebaseOptions(
       apiKey: "AIzaSyAGfebkdT45UkYPIZZL4EA3rAQDMfpHaCE",
       appId: "1:137132429712:android:0f81a104411dcbf64c6315",
       messagingSenderId: "137132429712",
       projectId: "agrichikitsa-8be74",
     ),
-    );
+  );
   runApp(const App());
 }
 
@@ -56,24 +56,26 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<HistoryTabViewModel>(
           create: (_) => HistoryTabViewModel(),
         ),
-         ChangeNotifierProvider<EditProfileViewModel>(
+        ChangeNotifierProvider<EditProfileViewModel>(
           create: (_) => EditProfileViewModel(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Aluma',
-        theme: ThemeData(
-          primarySwatch: primaryswatch
-        ),
-        routes: Routes().routes,
-        locale: const Locale('hi', 'IN'),
-        supportedLocales: L10n.all,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate
-        ],
+      child: Consumer<ProfileViewModel>(
+        builder: (context, provider, child) {
+          return MaterialApp(
+            title: 'Aluma',
+            theme: ThemeData(primarySwatch: primaryswatch),
+            routes: Routes().routes,
+            locale: Locale(provider.locale["language"]!, provider.locale["country"]!),
+            supportedLocales: L10n.all,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate
+            ],
+          );
+        },
       ),
     );
   }

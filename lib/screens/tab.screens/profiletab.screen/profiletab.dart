@@ -134,10 +134,20 @@ class ProfileTabScreen extends HookWidget {
             const SizedBox(
               height: 20,
             ),
+            
             CustomElevatedButton(
               onPress: () =>
                   useViewModel.handleLogOut(context, disposableProvider),
               title: "Logout",
+              width: dimension["width"]! - 32,
+            ),
+             const SizedBox(
+              height: 20,
+            ),
+            CustomElevatedButton(
+              onPress: () =>
+                  useViewModel.handleLocaleChange(),
+              title: "Change Local",
               width: dimension["width"]! - 32,
             )
           ],

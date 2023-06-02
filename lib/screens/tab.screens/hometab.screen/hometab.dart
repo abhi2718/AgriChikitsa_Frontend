@@ -49,6 +49,7 @@ class HomeTabScreen extends HookWidget {
     return Scaffold(
       body: Column(
         children: [
+          SizedBox(height: 200,),
           Container(
             height: 150,
             color: AppColor.lightColor,
