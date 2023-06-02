@@ -6,15 +6,24 @@ import '../../../routes/routes_name.dart';
 
 class ProfileViewModel with ChangeNotifier {
   final authRepository = AuthRepository();
+  var locale = {"language": 'en', "country": "US"};
   Future<void> clearLocalStorage() async {
     final localStorage = await SharedPreferences.getInstance();
     await localStorage.clear();
   }
 
+  void handleLocaleChange() {
+    locale = {
+      "language": locale["language"] == "en" ? "hi" : "en",
+      "country": locale["country"] == "US" ? "IN" : "US"
+    };
+    notifyListeners();
+  }
+
   void handleLogOut(BuildContext context, disposableProvider) {
-    disposableProvider.forEach((disposableProvider) {
-      disposableProvider.disposeValues();
-    });
+    // disposableProvider.forEach((disposableProvider) {
+    //   disposableProvider.disposeValues();
+    // });
     clearLocalStorage().then((_) {
       Navigator.of(context).pushNamedAndRemoveUntil(
           RouteName.authLandingRoute, (route) => false);

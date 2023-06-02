@@ -86,19 +86,15 @@ class EditProfileViewModel with ChangeNotifier {
       return;
     }
     editUserformKey.currentState?.save();
-
-    final userInfo = {
-      "name": userName,
-      "email": email,
-      "companyId": user.companyId
-    };
+    final userInfo = {"name": userName, "email": email, "_id": user.sId};
     updateProfile(userInfo, context, authService);
   }
 
   void updateProfile(userInfo, context, AuthService authService) async {
     try {
       setloading(true);
-      final data = await _authRepository.register(userInfo);
+      final data =
+          await _authRepository.updateProfile(userInfo["_id"], userInfo);
       final localStorage = await SharedPreferences.getInstance();
       final profile = {
         'user': data["user"],
@@ -120,10 +116,7 @@ class EditProfileViewModel with ChangeNotifier {
       if (data != null) {
         final response = await Utils.uploadImage(data);
         final user = User.fromJson(authService.userInfo["user"]);
-        final userInfo = {
-          "companyId": user.companyId,
-          "profileImage": response["url"]
-        };
+        final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
     } catch (error) {
@@ -137,10 +130,7 @@ class EditProfileViewModel with ChangeNotifier {
       if (data != null) {
         final response = await Utils.uploadImage(data);
         final user = User.fromJson(authService.userInfo["user"]);
-        final userInfo = {
-          "companyId": user.companyId,
-          "profileImage": response["url"]
-        };
+        final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
     } catch (error) {

@@ -124,14 +124,14 @@ class SignInViewModel with ChangeNotifier {
         smsCode: otp,
       );
       final userCredential = await auth.signInWithCredential(credential);
-      login(phoneNumber, context);
+      login(phoneNumber, context, userCredential.user!.uid);
     } catch (e) {
       Utils.flushBarErrorMessage("Alert", e.toString().split("]")[1], context);
       setloading(false);
     }
   }
 
-  void login(String phoneNumber, BuildContext context) {
+  void login(String phoneNumber, BuildContext context, String uid) {
     final localContext = context;
     void handleLogin(context) async {
       try {
@@ -139,8 +139,10 @@ class SignInViewModel with ChangeNotifier {
         Utils.toastMessage(data.toString());
         if (data["newUser"]) {
           setloading(false);
-          Navigator.of(context)
-              .pushNamed(RouteName.signUpRoute);
+          Navigator.of(context).pushNamed(RouteName.signUpRoute, arguments: {
+            "phoneNumber": phoneNumber,
+            "uid": uid,
+          });
         } else {
           final localStorage = await SharedPreferences.getInstance();
           final profile = {
@@ -158,6 +160,7 @@ class SignInViewModel with ChangeNotifier {
         setloading(false);
       }
     }
+
     handleLogin(localContext);
   }
 }

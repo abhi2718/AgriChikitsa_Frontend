@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -9,13 +10,16 @@ import '../../../../widgets/tools.widgets/tools.dart';
 import '../signup_view_model.dart';
 
 class RegisterUser extends HookWidget {
-  const RegisterUser({super.key});
-
+  final String phoneNumber;
+  final String uid;
+  const RegisterUser({super.key, required this.phoneNumber, required this.uid});
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<SignUpViewModel>(context, listen: false);
     useEffect(() {
+      useViewModel.setPhoneNumber(phoneNumber);
+      useViewModel.setFirebaseId(uid);
       return () => useViewModel.disposeRegisterUserformKey();
     }, []);
     return SafeArea(
@@ -24,27 +28,45 @@ class RegisterUser extends HookWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: dimension["width"]! - 32,
-                child: Row(
+              Container(
+                color: AppColor.lightColor,
+                width: double.infinity,
+                alignment: Alignment.topLeft,
+                height: 120,
+                child: Column(
                   children: [
-                    BackIconButton(onTap: () => useViewModel.goBack(context)),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 32),
+                      child: Row(
+                        children: [SubHeadingText("CREATE ACCOUNT")],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 32),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 12),
+                        child: const Row(
+                          children: [
+                            ParagraphText(
+                              'Enter your details to continue with AGRICHIKITSA',
+                            )
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
               const SizedBox(
-                height: 16,
-              ),
-              const SmallLogo(),
-              const SizedBox(
-                height: 20,
-              ),
-              const SubHeadingText(
-                "Register",
-                fontSize: 26,
+                height: 40,
               ),
               Padding(
                 padding:
@@ -74,7 +96,7 @@ class RegisterUser extends HookWidget {
                             ),
                           ),
                           const SizedBox(
-                            height: 16,
+                            height: 20,
                           ),
                           Input(
                             labelText: "Email",
@@ -84,74 +106,7 @@ class RegisterUser extends HookWidget {
                             textInputAction: TextInputAction.next,
                             validator: useViewModel.emailFieldValidator,
                             onSaved: useViewModel.onSavedEmailField,
-                            onFieldSubmitted: (_) {
-                              Utils.fieldFocusChange(
-                                  context,
-                                  useViewModel.emailFocusNode,
-                                  useViewModel.passwordFocusNode);
-                            },
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Consumer<SignUpViewModel>(
-                              builder: (context, provider, child) {
-                            return Input(
-                              labelText: "Password",
-                              focusNode: useViewModel.passwordFocusNode,
-                              suffixIcon: useViewModel.suffixIconForPassword(),
-                              keyboardType: TextInputType.visiblePassword,
-                              textInputAction: TextInputAction.next,
-                              validator: useViewModel.passwordFieldValidator,
-                              obscureText: provider.showPassword,
-                              onSaved: useViewModel.onSavedPasswordlField,
-                              onFieldSubmitted: (_) {
-                                Utils.fieldFocusChange(
-                                    context,
-                                    useViewModel.passwordFocusNode,
-                                    useViewModel.confirmPasswordFocusNode);
-                              },
-                            );
-                          }),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Consumer<SignUpViewModel>(
-                              builder: (context, provider, child) {
-                            return Input(
-                              labelText: "Confirm Password",
-                              obscureText: provider.showConfirmPassword,
-                              focusNode: useViewModel.confirmPasswordFocusNode,
-                              suffixIcon:
-                                  provider.suffixIconForConfirmPassword(),
-                              validator:
-                                  useViewModel.confirmPasswordFieldValidator,
-                              onSaved:
-                                  useViewModel.onSavedConfirmPasswordlField,
-                              keyboardType: TextInputType.visiblePassword,
-                              textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (_) {
-                                Utils.fieldFocusChange(
-                                    context,
-                                    useViewModel.confirmPasswordFocusNode,
-                                    useViewModel.mobileNumberFocusNode);
-                              },
-                            );
-                          }),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Input(
-                            labelText: "Mobile Number",
-                            focusNode: useViewModel.mobileNumberFocusNode,
-                            keyboardType: TextInputType.phone,
-                            textInputAction: TextInputAction.done,
-                            suffixIcon:
-                                useViewModel.suffixIconForMobileNumber(),
-                            validator: useViewModel.mobileNumerFieldValidator,
-                            onSaved: useViewModel.onSavedMobileNumerField,
-                            onFieldSubmitted: (_) =>
-                                useViewModel.saveRegisterUserForm(context),
+                            onFieldSubmitted: (_) {},
                           ),
                           const SizedBox(
                             height: 40,
@@ -160,6 +115,7 @@ class RegisterUser extends HookWidget {
                             builder: (context, provider, child) =>
                                 CustomElevatedButton(
                               title: "Register",
+                              width: dimension["width"]!-32,
                               loading: provider.loading,
                               onPress: () =>
                                   provider.saveRegisterUserForm(context),

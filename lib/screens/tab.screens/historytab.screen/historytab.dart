@@ -15,38 +15,16 @@ class HistortTabScreen extends HookWidget {
         () => Provider.of<HistoryTabViewModel>(context, listen: true));
     useEffect(() {
       Future.delayed(Duration.zero, () {
-        useViewModel.fetchTaskHistory(context);
+       
       });
     }, []);
     return SafeArea(
       child: Scaffold(
         body: SizedBox(
           height: dimension["height"]!,
-          child: Column(
+          child: const Column(
             children: [
-              SizedBox(
-                width: dimension["width"],
-                height: 16,
-              ),
-              const HeadingText("History"),
-              const SizedBox(
-                height: 20,
-              ),
-              useViewModel.loading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : SizedBox(
-                      height: dimension["height"]! - 80,
-                      child: ListView.builder(
-                        itemBuilder: ((context, index) {
-                          return HistoryCard(
-                            data: useViewModel.taskHistory[index],
-                          );
-                        }),
-                        itemCount: useViewModel.taskHistory.length,
-                      ),
-                    )
+              HeadingText("History")
             ],
           ),
         ),
