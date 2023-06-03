@@ -60,8 +60,8 @@ class LandingAuthScreen extends HookWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Column(
-                        children: [
+                       Column(
+                        children:const [
                           SizedBox(
                             width: double.infinity,
                             child: HeadingText("Account"),

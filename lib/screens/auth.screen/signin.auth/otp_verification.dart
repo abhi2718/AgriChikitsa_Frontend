@@ -51,10 +51,10 @@ class OtpVerification extends HookWidget {
                       ),
                     ],
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 32),
+                   Padding(
+                    padding:const EdgeInsets.only(left: 32),
                     child: Row(
-                      children: [SubHeadingText("VERIFY DETAILS")],
+                      children: const[SubHeadingText("VERIFY DETAILS")],
                     ),
                   ),
                   Padding(
@@ -80,8 +80,8 @@ class OtpVerification extends HookWidget {
               width: dimension['width']! - 32,
               child: Column(
                 children: [
-                  const Row(
-                    children: [ParagraphHeadingText("Enter OTP")],
+                   Row(
+                    children: const[ParagraphHeadingText("Enter OTP")],
                   ),
                   OTPTextField(
                     length: 6,

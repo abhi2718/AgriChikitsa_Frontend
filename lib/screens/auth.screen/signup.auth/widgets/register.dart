@@ -43,18 +43,18 @@ class RegisterUser extends HookWidget {
                         ),
                       ],
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 32),
+                     Padding(
+                      padding: const EdgeInsets.only(left: 32),
                       child: Row(
-                        children: [SubHeadingText("CREATE ACCOUNT")],
+                        children: const [SubHeadingText("CREATE ACCOUNT")],
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 32),
                       child: Container(
                         margin: const EdgeInsets.only(top: 12),
-                        child: const Row(
-                          children: [
+                        child:  Row(
+                          children: const[
                             ParagraphText(
                               'Enter your details to continue with AGRICHIKITSA',
                             )
