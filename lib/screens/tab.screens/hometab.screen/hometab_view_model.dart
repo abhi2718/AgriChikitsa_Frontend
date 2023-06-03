@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class HomeTabViewModel with ChangeNotifier {
   final _homeTabRepository = HomeTabRepository();
@@ -23,7 +23,11 @@ class HomeTabViewModel with ChangeNotifier {
     final profile = jsonDecode(rawProfile!);
     authService.setUser(profile);
   }
-  
+
+  void goToProfile(BuildContext context) {
+    Navigator.pushNamed(context, RouteName.editProfileRoute);
+  }
+
   void disposeValues() {
     _loading = true;
   }

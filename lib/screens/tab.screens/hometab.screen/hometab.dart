@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,6 +9,7 @@ import '../../../services/auth.dart';
 import '../../../services/socket_io.dart';
 import '../../../widgets/text.widgets/text.dart';
 import './hometab_view_model.dart';
+import './widgets/notification_widget.dart';
 
 class _AppLifecycleObserver extends WidgetsBindingObserver {
   final ValueChanged<AppLifecycleState> onAppLifecycleStateChanged;
@@ -21,11 +23,34 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
   }
 }
 
+class Category {
+  final String name;
+  bool isActive;
+
+  Category({required this.name, this.isActive = false});
+}
+
 class HomeTabScreen extends HookWidget {
   const HomeTabScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final dimension = Utils.getDimensions(context, true);
+    final List<Category> categories = [
+      Category(name: 'Category 1', isActive: true),
+      Category(name: 'Category 2', isActive: false),
+      Category(name: 'Category 3', isActive: false),
+      Category(name: 'Category 4', isActive: false),
+      Category(name: 'Category 5', isActive: false),
+      Category(name: 'Category 6', isActive: false),
+      Category(name: 'Category 7', isActive: false),
+      Category(name: 'Category 8', isActive: false),
+      Category(name: 'Category 9', isActive: false),
+      Category(name: 'Category 10', isActive: false),
+    ];
+    final activeCategory = useState<Category?>(categories[0]);
+    const defaultImage =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
     final appLifecycleState = useState(AppLifecycleState.resumed);
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
@@ -46,18 +71,124 @@ class HomeTabScreen extends HookWidget {
       binding.addObserver(observer);
       return () => binding.removeObserver(observer);
     }, []);
-    return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: 200,),
-          Container(
-            height: 150,
-            color: AppColor.lightColor,
-            child: Text(AppLocalizations.of(context)!.language),
-          ),
-          
-        ],
+    return (SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Card(
+              margin: EdgeInsets.all(0),
+              child: Container(
+                color: AppColor.lightColor,
+                height: 150,
+                width: dimension["width"],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Image.asset(
+                            "assets/images/logoagrichikitsa.png",
+                            height: 50,
+                            width: 50,
+                          ),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            NotificationIndicatorButton(
+                              notificationCount: 10,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            InkWell(
+                              onTap: () => useViewModel.goToProfile(context),
+                              child: Consumer<AuthService>(
+                                builder: (context, provider, child) {
+                                  final user = provider.userInfo["user"];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 16),
+                                    child: Container(
+                                      alignment: Alignment.bottomRight,
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.grey[300],
+                                        image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: user["profileImage"] != null
+                                              ? NetworkImage(
+                                                  user["profileImage"])
+                                              : const NetworkImage(
+                                                  defaultImage,
+                                                ),
+                                        ),
+                                      ),
+                                      child: Container(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: dimension["width"],
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: categories.map((category) {
+                            final isActive = category.name == activeCategory.value!.name;
+                            return InkWell(
+                              onTap: () {
+                                Utils.toastMessage(category.name);
+                                activeCategory.value = category;
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(right: 10),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: isActive ? AppColor.darkColor : null,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color:
+                                        isActive ? AppColor.darkColor : AppColor.darkColor,
+                                    width: isActive ? 2 : 1,
+                                  ),
+                                ),
+                                child: Text(
+                                  category.name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color:
+                                        isActive ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
-    );
+    ));
   }
 }

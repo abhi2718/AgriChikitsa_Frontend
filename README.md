@@ -116,3 +116,8 @@ class SignInScreen extends HookWidget {
     );
   }
 }
+ Container(
+            height: 150,
+            color: AppColor.lightColor,
+            child: Text(AppLocalizations.of(context)!.language),
+          )
