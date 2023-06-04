@@ -28,7 +28,7 @@ class Utils {
     return {"height": deviceHeight, "width": deviceWidth};
   }
 
-  static void model(BuildContext context, Widget  widgetContainer) {
+  static void model(BuildContext context, Widget widgetContainer) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => widgetContainer,
@@ -156,5 +156,16 @@ class Utils {
     } catch (error) {
       rethrow;
     }
+  }
+
+  static showAlert(BuildContext context, String title, String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+          );
+        });
   }
 }
