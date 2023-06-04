@@ -22,8 +22,8 @@ class HistortTabScreen extends HookWidget {
       child: Scaffold(
         body: SizedBox(
           height: dimension["height"]!,
-          child:  Column(
-            children:const [
+          child: const Column(
+            children: [
               HeadingText("History")
             ],
           ),

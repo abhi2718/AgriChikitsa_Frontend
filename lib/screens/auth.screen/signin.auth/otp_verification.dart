@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:agriChikitsa/res/color.dart';
@@ -51,10 +52,10 @@ class OtpVerification extends HookWidget {
                       ),
                     ],
                   ),
-                   Padding(
-                    padding:const EdgeInsets.only(left: 32),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 32),
                     child: Row(
-                      children: const[SubHeadingText("VERIFY DETAILS")],
+                      children: [SubHeadingText("VERIFY DETAILS")],
                     ),
                   ),
                   Padding(
@@ -80,20 +81,24 @@ class OtpVerification extends HookWidget {
               width: dimension['width']! - 32,
               child: Column(
                 children: [
-                   Row(
-                    children: const[ParagraphHeadingText("Enter OTP")],
+                  const Row(
+                    children: [ParagraphHeadingText("Enter OTP")],
                   ),
-                  OTPTextField(
-                    length: 6,
-                    width: MediaQuery.of(context).size.width,
-                    outlineBorderRadius: 20,
-                    fieldWidth: ((MediaQuery.of(context).size.width - 72) / 6),
-                    style: const TextStyle(fontSize: 17),
-                    textFieldAlignment: MainAxisAlignment.spaceAround,
-                    fieldStyle: FieldStyle.underline,
-                    onCompleted: (pin) {
-                      useViewModel.setOTP(pin,context);
+                  OtpTextField(
+                    numberOfFields: 6,
+                    borderColor: Color(0xFF512DA8),
+                    //set to true to show as box or false to show as dash
+                    showFieldAsBox: !true,
+                    //runs when a code is typed in
+                    onCodeChanged: (String code) {
+                      //handle validation or checks here
                     },
+                    //fieldWidth:((MediaQuery.of(context).size.width - 72) / 6),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //runs when every textfield is filled
+                    onSubmit: (String verificationCode) {
+                      useViewModel.setOTP(verificationCode, context);
+                    }, // end onSubmit
                   ),
                   const SizedBox(
                     height: 30,
@@ -141,7 +146,8 @@ class OtpVerification extends HookWidget {
                       loading: provider.loading,
                       title: "VERIFY & PROCEED",
                       width: dimension["width"]! - 32,
-                      onPress: () => provider.verifyOTPCode(provider.verificationIdToken,provider.otp,context),
+                      onPress: () => provider.verifyOTPCode(
+                          provider.verificationIdToken, provider.otp, context),
                     );
                   })
                 ],
