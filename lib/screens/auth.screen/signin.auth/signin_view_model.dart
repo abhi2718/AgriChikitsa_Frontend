@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';

@@ -17,4 +17,12 @@ class HistoryTabViewModel with ChangeNotifier {
   void disposeValues() {
     _loading = false;
   }
+
+  void fetchCategory() async{
+    try {
+
+    } catch (e) {
+
+    }
+  }
 }
