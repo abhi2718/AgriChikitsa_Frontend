@@ -15,7 +15,7 @@ class HistortTabScreen extends HookWidget {
         () => Provider.of<HistoryTabViewModel>(context, listen: true));
     useEffect(() {
       Future.delayed(Duration.zero, () {
-       
+        useViewModel.fetchCategory();
       });
     }, []);
     return SafeArea(
@@ -23,9 +23,7 @@ class HistortTabScreen extends HookWidget {
         body: SizedBox(
           height: dimension["height"]!,
           child: const Column(
-            children: [
-              HeadingText("History")
-            ],
+            children: [HeadingText("History")],
           ),
         ),
       ),
