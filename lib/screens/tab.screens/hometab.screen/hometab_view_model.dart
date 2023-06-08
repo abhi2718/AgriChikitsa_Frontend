@@ -7,9 +7,11 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../model/category_model.dart';
+
 class HomeTabViewModel with ChangeNotifier {
   dynamic feedList = [];
-  dynamic categoryList = [];
+  late Future<Category> categoryList;
   final _homeTabRepository = HomeTabRepository();
   var _loading = true;
   bool get loading {
@@ -41,7 +43,6 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final data = await _homeTabRepository.fetchFeeds();
       feedList = data['feeds'];
-
       setloading(false);
       notifyListeners();
     } catch (error) {

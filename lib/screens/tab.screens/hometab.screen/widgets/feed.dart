@@ -7,7 +7,10 @@ import 'package:remixicon/remixicon.dart';
 class Feed extends StatelessWidget {
   final feed;
 
-  Feed({super.key, required this.feed});
+  Feed({
+    super.key,
+    required this.feed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -157,110 +160,131 @@ class Feed extends StatelessWidget {
                           height: 500,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 20),
-                            child: Wrap(
+                            child: Column(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 10, 0, 0),
-                                      child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                          user['profileImage'],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 10, 0, 10),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      BaseText(
-                                        title: user['name'],
-                                        style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w700),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const BaseText(
-                                        title:
-                                            'Agrichiktsa is best solution for the agriculture\nneeds',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Column(
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon:
+                                            const Icon(Remix.close_circle_line))
+                                  ],
+                                ),
+                                Wrap(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 10, 0, 0),
+                                          child: CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                              user['profileImage'],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 10,
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 10, 0, 10),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          BaseText(
+                                            title: user['name'],
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          const BaseText(
+                                            title:
+                                                'Agrichiktsa is best solution for the agriculture\nneeds',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        ],
                                       ),
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 350),
-                                        child: Row(
-                                          children: [
-                                            CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                user['profileImage'],
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Container(
-                                              width: 235,
-                                              height: 48,
-                                              child: const TextField(
-                                                decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0xffd9d9d9),
-                                                  hintText: 'Add Comment',
-                                                  hintStyle: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                      Radius.circular(18),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 10,
+                                          ),
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 300),
+                                            child: Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                    user['profileImage'],
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Container(
+                                                  width: 235,
+                                                  height: 48,
+                                                  child: const TextField(
+                                                    decoration: InputDecoration(
+                                                      filled: true,
+                                                      fillColor:
+                                                          Color(0xffd9d9d9),
+                                                      hintText: 'Add Comment',
+                                                      hintStyle: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                          Radius.circular(18),
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 15,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  width: 35,
-                                                  height: 35,
-                                                  child: const InkWell(
-                                                    child: Image(
-                                                        image: AssetImage(
-                                                            'assets/icons/send_icon.png')),
-                                                  ),
+                                                const SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 35,
+                                                      height: 35,
+                                                      child: const InkWell(
+                                                        child: Image(
+                                                            image: AssetImage(
+                                                                'assets/icons/send_icon.png')),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ],
