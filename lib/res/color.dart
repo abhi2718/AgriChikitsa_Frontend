@@ -8,4 +8,5 @@ class AppColor {
   static const darkColor = Color(0xFF5f9e29);
   static const extraDark = Color.fromARGB(255, 104, 122, 84);
   static const errorColor = Colors.red;
+  static const lightFeedContainerColor = Color(0xFFF8F8F8);
 }

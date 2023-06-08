@@ -56,11 +56,12 @@ class ProfileTabScreen extends HookWidget {
                     color: Colors.grey[300],
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: user.profileImage != null
-                          ? NetworkImage(user.profileImage!)
-                          : const NetworkImage(
-                              defaultImage,
-                            ),
+                      image: NetworkImage("https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg"),
+                      // image: user.profileImage != null
+                      //     ? NetworkImage(user.profileImage!)
+                      //     : const NetworkImage(
+                      //         defaultImage,
+                      //       ),
                     ),
                   ),
                   child: Container(),
