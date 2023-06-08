@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeTabViewModel with ChangeNotifier {
   dynamic feedList = [];
+  dynamic categoryList = [];
   final _homeTabRepository = HomeTabRepository();
   var _loading = true;
   bool get loading {
@@ -40,7 +41,21 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final data = await _homeTabRepository.fetchFeeds();
       feedList = data['feeds'];
-      
+
+      setloading(false);
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void fetchFeedsCategory(BuildContext context) async {
+    setloading(true);
+    try {
+      final data = await _homeTabRepository.fetchFeedsCatogory();
+      // categoryList = data['category'];
+
       setloading(false);
       notifyListeners();
     } catch (error) {

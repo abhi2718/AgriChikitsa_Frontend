@@ -24,7 +24,6 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
 class Category {
   final String name;
   bool isActive;
-
   Category({required this.name, this.isActive = false});
 }
 
@@ -35,6 +34,7 @@ class HomeTabScreen extends HookWidget {
   Widget build(BuildContext context) {
     TextEditingController userInput = TextEditingController();
     final dimension = Utils.getDimensions(context, true);
+
     final List<Category> categories = [
       Category(name: 'Category 1', isActive: true),
       Category(name: 'Category 2', isActive: false),
@@ -73,6 +73,7 @@ class HomeTabScreen extends HookWidget {
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.fetchFeeds(context);
+        useViewModel.fetchFeedsCategory(context);
       });
     }, []);
 
@@ -85,14 +86,14 @@ class HomeTabScreen extends HookWidget {
                   ? Container(
                       height: dimension['height'],
                       width: dimension['width'],
-                      child: Center(
+                      child: const Center(
                         child: CircularProgressIndicator(),
                       ),
                     )
                   : Column(
                       children: [
                         Card(
-                          margin: EdgeInsets.all(0),
+                          margin: const EdgeInsets.all(0),
                           child: Container(
                             color: AppColor.lightColor,
                             height: 150,
@@ -106,8 +107,8 @@ class HomeTabScreen extends HookWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 16),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
                                       child: Image.asset(
                                         "assets/images/logoagrichikitsa.png",
                                         height: 50,
