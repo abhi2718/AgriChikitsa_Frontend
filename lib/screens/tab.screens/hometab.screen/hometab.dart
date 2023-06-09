@@ -172,47 +172,73 @@ class HomeTabScreen extends HookWidget {
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
-                                        children: categories.map((category) {
-                                          final isActive = category.name ==
-                                              activeCategory.value!.name;
-                                          return InkWell(
-                                            onTap: () {
-                                              Utils.toastMessage(category.name);
-                                              activeCategory.value = category;
-                                            },
-                                            child: Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: 10),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 16,
-                                                      vertical: 8),
-                                              decoration: BoxDecoration(
-                                                color: isActive
-                                                    ? AppColor.darkColor
-                                                    : null,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                border: Border.all(
-                                                  color: isActive
-                                                      ? AppColor.darkColor
-                                                      : AppColor.darkColor,
-                                                  width: isActive ? 2 : 1,
-                                                ),
-                                              ),
-                                              child: Text(
-                                                category.name,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: isActive
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
+                                        children: [
+                                          Container(
+                                            height: 60,
+                                            width: dimension["width"],
+                                            child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: provider
+                                                    .categoriesList.length,
+                                                itemBuilder: (context, index) {
+                                                  final isActive =
+                                                      categories[index].name ==
+                                                          activeCategory
+                                                              .value!.name;
+                                                  return InkWell(
+                                                    onTap: () {
+                                                      Utils.toastMessage(
+                                                          categories[index]
+                                                              .name);
+                                                      activeCategory.value =
+                                                          categories[index];
+                                                    },
+                                                    child: Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              right: 10),
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 16,
+                                                          vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                        color: isActive
+                                                            ? AppColor.darkColor
+                                                            : null,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        border: Border.all(
+                                                          color: isActive
+                                                              ? AppColor
+                                                                  .darkColor
+                                                              : AppColor
+                                                                  .darkColor,
+                                                          width:
+                                                              isActive ? 2 : 1,
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          provider.categoriesList[
+                                                                  index]
+                                                              ['category'],
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: isActive
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -243,3 +269,59 @@ class HomeTabScreen extends HookWidget {
     ));
   }
 }
+
+
+
+
+// SizedBox(
+//                                   width: dimension["width"],
+//                                   child: Padding(
+//                                     padding: const EdgeInsets.only(left: 16),
+//                                     child: SingleChildScrollView(
+//                                       scrollDirection: Axis.horizontal,
+//                                       child: Row(
+//                                         children: categories.map((category) {
+//                                           final isActive = category.name ==
+//                                               activeCategory.value!.name;
+//                                           return InkWell(
+//                                             onTap: () {
+//                                               Utils.toastMessage(category.name);
+//                                               activeCategory.value = category;
+//                                             },
+//                                             child: Container(
+//                                               margin: const EdgeInsets.only(
+//                                                   right: 10),
+//                                               padding:
+//                                                   const EdgeInsets.symmetric(
+//                                                       horizontal: 16,
+//                                                       vertical: 8),
+//                                               decoration: BoxDecoration(
+//                                                 color: isActive
+//                                                     ? AppColor.darkColor
+//                                                     : null,
+//                                                 borderRadius:
+//                                                     BorderRadius.circular(10),
+//                                                 border: Border.all(
+//                                                   color: isActive
+//                                                       ? AppColor.darkColor
+//                                                       : AppColor.darkColor,
+//                                                   width: isActive ? 2 : 1,
+//                                                 ),
+//                                               ),
+//                                               child: Text(
+//                                                 category.name,
+//                                                 style: TextStyle(
+//                                                   fontSize: 16,
+//                                                   fontWeight: FontWeight.w600,
+//                                                   color: isActive
+//                                                       ? Colors.white
+//                                                       : Colors.black,
+//                                                 ),
+//                                               ),
+//                                             ),
+//                                           );
+//                                         }).toList(),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ),

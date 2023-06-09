@@ -11,6 +11,7 @@ import '../../../model/category_model.dart';
 
 class HomeTabViewModel with ChangeNotifier {
   dynamic feedList = [];
+  dynamic categoriesList = [];
   var categoryList = [
     {"name": "All", "_id": "All"}
   ];
@@ -57,6 +58,7 @@ class HomeTabViewModel with ChangeNotifier {
     setloading(true);
     try {
       final data = await _homeTabRepository.fetchFeedsCatogory();
+      categoriesList = data['categories'];
       setloading(false);
       notifyListeners();
     } catch (error) {
