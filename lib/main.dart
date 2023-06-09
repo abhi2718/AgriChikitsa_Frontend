@@ -1,19 +1,21 @@
 import 'package:agriChikitsa/l10n/l10n.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart';
-import 'routes/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import './screens/auth.screen/signin.auth/signin_view_model.dart';
-import './services/socket_io.dart';
-import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+
 import './res/primary_swatch.dart';
+import './screens/auth.screen/signin.auth/signin_view_model.dart';
 import './screens/auth.screen/signup.auth/signup_view_model.dart';
-import './services/auth.dart';
-import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import './screens/tab.screens/historytab.screen/history_tab_view_model.dart';
+import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
+import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
+import './services/auth.dart';
+import './services/socket_io.dart';
+import 'routes/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +61,9 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<EditProfileViewModel>(
           create: (_) => EditProfileViewModel(),
         ),
+        ChangeNotifierProvider<JankariViewModel>(
+          create: (_) => JankariViewModel(),
+        )
       ],
       child: Consumer<ProfileViewModel>(
         builder: (context, provider, child) {
@@ -66,7 +71,8 @@ class App extends StatelessWidget {
             title: 'Aluma',
             theme: ThemeData(primarySwatch: primaryswatch),
             routes: Routes().routes,
-            locale: Locale(provider.locale["language"]!, provider.locale["country"]!),
+            locale: Locale(
+                provider.locale["language"]!, provider.locale["country"]!),
             supportedLocales: L10n.all,
             localizationsDelegates: const [
               AppLocalizations.delegate,

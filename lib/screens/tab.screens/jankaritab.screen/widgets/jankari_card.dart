@@ -3,21 +3,19 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 
-class JankariCard extends StatefulWidget {
-  const JankariCard({super.key});
+class JankariCard extends StatelessWidget {
+  final jankari;
+  JankariCard({super.key, required this.jankari});
 
-  @override
-  State<JankariCard> createState() => _JankariCardState();
-}
-
-class _JankariCardState extends State<JankariCard> {
   @override
   Widget build(BuildContext context) {
+    final jankariCat = jankari['Category'];
+    print(jankariCat);
     final dimension = Utils.getDimensions(context, true);
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.only(top: 60, right: 10, left: 10),
+          padding: const EdgeInsets.only(right: 10, left: 10),
           child: Container(
             height: 110,
             width: 357,

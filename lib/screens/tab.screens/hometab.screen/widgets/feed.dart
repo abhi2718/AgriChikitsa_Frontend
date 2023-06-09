@@ -1,5 +1,4 @@
 import 'package:agriChikitsa/res/color.dart';
-import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:remixicon/remixicon.dart';
@@ -15,8 +14,6 @@ class Feed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = feed['user'];
-
-    final dimension = Utils.getDimensions(context, true);
 
     return Container(
       decoration: BoxDecoration(color: AppColor.lightFeedContainerColor),

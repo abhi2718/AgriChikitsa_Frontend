@@ -26,7 +26,8 @@ class HomeTabRepository {
 
   Future<dynamic> fetchComments() async {
     try {
-      const url = '${AppUrl.feedEndPoint}/getComments/64799a0879ce2c1993efbc4e';
+      const url =
+          '${AppUrl.feedEndPoint}/subCategory/64705dc08e2ac459fc3b9688/1';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
