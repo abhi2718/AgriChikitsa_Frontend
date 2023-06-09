@@ -18,7 +18,6 @@ class Feed extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = feed['user'];
     final dimension = Utils.getDimensions(context, true);
-
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Padding(

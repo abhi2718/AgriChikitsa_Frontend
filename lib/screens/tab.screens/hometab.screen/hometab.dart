@@ -1,10 +1,12 @@
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/category_button.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../../model/category_model.dart';
 import './hometab_view_model.dart';
 import './widgets/notification_widget.dart';
 import '../../../services/auth.dart';
@@ -21,12 +23,6 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
   }
 }
 
-class Category {
-  final String name;
-  bool isActive;
-  Category({required this.name, this.isActive = false});
-}
-
 class HomeTabScreen extends HookWidget {
   const HomeTabScreen({super.key});
 
@@ -34,27 +30,15 @@ class HomeTabScreen extends HookWidget {
   Widget build(BuildContext context) {
     TextEditingController userInput = TextEditingController();
     final dimension = Utils.getDimensions(context, true);
-
-    final List<Category> categories = [
-      Category(name: 'Category 1', isActive: true),
-      Category(name: 'Category 2', isActive: false),
-      Category(name: 'Category 3', isActive: false),
-      Category(name: 'Category 4', isActive: false),
-      Category(name: 'Category 5', isActive: false),
-      Category(name: 'Category 6', isActive: false),
-      Category(name: 'Category 7', isActive: false),
-      Category(name: 'Category 8', isActive: false),
-      Category(name: 'Category 9', isActive: false),
-      Category(name: 'Category 10', isActive: false),
-    ];
-    final activeCategory = useState<Category?>(categories[0]);
     const defaultImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
     final appLifecycleState = useState(AppLifecycleState.resumed);
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
-
+    late final List<Category> categories = useViewModel.categoriesList;
+    // final activeCategoryIndex = useState<int>(0);
+    // var activeCategory = categories1[activeCategoryIndex.value];
     useEffect(() {
       useViewModel.getUserProfile(authService);
     }, []);
@@ -83,7 +67,7 @@ class HomeTabScreen extends HookWidget {
           child: Consumer<HomeTabViewModel>(
             builder: (context, provider, child) {
               return provider.loading
-                  ? Container(
+                  ? SizedBox(
                       height: dimension['height'],
                       width: dimension['width'],
                       child: const Center(
@@ -165,81 +149,44 @@ class HomeTabScreen extends HookWidget {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  // padding: EdgeInsets.symmetric(horizontal: 8),
                                   width: dimension["width"],
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 16),
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            height: 60,
-                                            width: dimension["width"],
-                                            child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount: provider
-                                                    .categoriesList.length,
-                                                itemBuilder: (context, index) {
-                                                  final isActive =
-                                                      categories[index].name ==
-                                                          activeCategory
-                                                              .value!.name;
-                                                  return InkWell(
-                                                    onTap: () {
-                                                      Utils.toastMessage(
-                                                          categories[index]
-                                                              .name);
-                                                      activeCategory.value =
-                                                          categories[index];
-                                                    },
-                                                    child: Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              right: 10),
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 16,
-                                                          vertical: 8),
-                                                      decoration: BoxDecoration(
-                                                        color: isActive
-                                                            ? AppColor.darkColor
-                                                            : null,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        border: Border.all(
-                                                          color: isActive
-                                                              ? AppColor
-                                                                  .darkColor
-                                                              : AppColor
-                                                                  .darkColor,
-                                                          width:
-                                                              isActive ? 2 : 1,
-                                                        ),
-                                                      ),
-                                                      child: Center(
-                                                        child: Text(
-                                                          provider.categoriesList[
-                                                                  index]
-                                                              ['category'],
-                                                          style: TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: isActive
-                                                                ? Colors.white
-                                                                : Colors.black,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }),
-                                          ),
-                                        ],
-                                      ),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          height: 60,
+                                          width: dimension["width"],
+                                          child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: categories.length,
+                                              itemBuilder: (context, index) {
+                                                // final isActive =
+                                                //     categories1[index].name ==
+                                                //         activeCategory.name;
+                                                return CategoryButton(
+                                                  category: categories[index],
+                                                  onTap: () {
+                                                    Utils.toastMessage(
+                                                        categories[index].name);
+                                                    provider.setActiveState(
+                                                        categories[index],
+                                                        categories[index]
+                                                            .isActive);
+                                                    // activeCategory =
+                                                    //     categories1[index];
+                                                  },
+                                                );
+                                              }),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -250,14 +197,21 @@ class HomeTabScreen extends HookWidget {
                         SizedBox(
                           height: dimension['height']! - 150,
                           child: ListView.builder(
+                            itemCount: provider.feedList.length,
                             itemBuilder: (context, index) {
                               final feed = provider.feedList[index];
-
-                              return Feed(
-                                feed: feed,
-                              );
+                              if (provider.currentSelectedCategory.isEmpty) {
+                                return Feed(
+                                  feed: feed,
+                                );
+                              } else if (provider.feedList[index]
+                                      ['categoryRef'] ==
+                                  provider.currentSelectedCategory) {
+                                return Feed(feed: feed);
+                              } else {
+                                return Container();
+                              }
                             },
-                            itemCount: provider.feedList.length,
                           ),
                         ),
                       ],
@@ -269,59 +223,3 @@ class HomeTabScreen extends HookWidget {
     ));
   }
 }
-
-
-
-
-// SizedBox(
-//                                   width: dimension["width"],
-//                                   child: Padding(
-//                                     padding: const EdgeInsets.only(left: 16),
-//                                     child: SingleChildScrollView(
-//                                       scrollDirection: Axis.horizontal,
-//                                       child: Row(
-//                                         children: categories.map((category) {
-//                                           final isActive = category.name ==
-//                                               activeCategory.value!.name;
-//                                           return InkWell(
-//                                             onTap: () {
-//                                               Utils.toastMessage(category.name);
-//                                               activeCategory.value = category;
-//                                             },
-//                                             child: Container(
-//                                               margin: const EdgeInsets.only(
-//                                                   right: 10),
-//                                               padding:
-//                                                   const EdgeInsets.symmetric(
-//                                                       horizontal: 16,
-//                                                       vertical: 8),
-//                                               decoration: BoxDecoration(
-//                                                 color: isActive
-//                                                     ? AppColor.darkColor
-//                                                     : null,
-//                                                 borderRadius:
-//                                                     BorderRadius.circular(10),
-//                                                 border: Border.all(
-//                                                   color: isActive
-//                                                       ? AppColor.darkColor
-//                                                       : AppColor.darkColor,
-//                                                   width: isActive ? 2 : 1,
-//                                                 ),
-//                                               ),
-//                                               child: Text(
-//                                                 category.name,
-//                                                 style: TextStyle(
-//                                                   fontSize: 16,
-//                                                   fontWeight: FontWeight.w600,
-//                                                   color: isActive
-//                                                       ? Colors.white
-//                                                       : Colors.black,
-//                                                 ),
-//                                               ),
-//                                             ),
-//                                           );
-//                                         }).toList(),
-//                                       ),
-//                                     ),
-//                                   ),
-//                                 ),

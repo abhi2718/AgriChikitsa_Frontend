@@ -11,7 +11,8 @@ import '../../../model/category_model.dart';
 
 class HomeTabViewModel with ChangeNotifier {
   dynamic feedList = [];
-  dynamic categoriesList = [];
+  List<Category> categoriesList = [];
+  String currentSelectedCategory = "";
   var categoryList = [
     {"name": "All", "_id": "All"}
   ];
@@ -19,6 +20,22 @@ class HomeTabViewModel with ChangeNotifier {
   var _loading = true;
   bool get loading {
     return _loading;
+  }
+
+  setActiveState(Category category, bool value) {
+    category.isActive = !value;
+    for (var value in categoriesList) {
+      if (value.id == category.id) {
+        if (value.isActive) {
+          currentSelectedCategory = value.id.toString();
+        } else {
+          currentSelectedCategory = "";
+        }
+      } else {
+        value.isActive = false;
+      }
+    }
+    notifyListeners();
   }
 
   setloading(bool value) {
@@ -58,12 +75,22 @@ class HomeTabViewModel with ChangeNotifier {
     setloading(true);
     try {
       final data = await _homeTabRepository.fetchFeedsCatogory();
-      categoriesList = data['categories'];
+      categoriesList = mapCategories(data['categories']);
       setloading(false);
       notifyListeners();
     } catch (error) {
       setloading(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
+  }
+
+  List<Category> mapCategories(dynamic categories) {
+    return List<Category>.from(categories.map((category) {
+      return Category(
+        name: category['category'],
+        id: category['_id'],
+        isActive: false,
+      );
+    }));
   }
 }
