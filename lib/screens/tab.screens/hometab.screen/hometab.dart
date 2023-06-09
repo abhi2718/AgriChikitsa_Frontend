@@ -181,10 +181,12 @@ class HomeTabScreen extends HookWidget {
                                               activeCategory.value = category;
                                             },
                                             child: Container(
-                                              margin:
-                                                  const EdgeInsets.only(right: 10),
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 16, vertical: 8),
+                                              margin: const EdgeInsets.only(
+                                                  right: 10),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 8),
                                               decoration: BoxDecoration(
                                                 color: isActive
                                                     ? AppColor.darkColor
