@@ -1,41 +1,31 @@
 import 'dart:convert';
-
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../model/category_model.dart';
+import '../../../model/comment.dart';
 
 class HomeTabViewModel with ChangeNotifier {
+  final _homeTabRepository = HomeTabRepository();
   dynamic feedList = [];
   List<Category> categoriesList = [];
-  String currentSelectedCategory = "";
-  var categoryList = [
-    {"name": "All", "_id": "All"}
-  ];
-  final _homeTabRepository = HomeTabRepository();
+  List<Comment> commentsList = [];
+  String currentSelectedCategory = "All";
+  var categoryLoading = true;
+  var commentLoading = true;
   var _loading = true;
+
   bool get loading {
     return _loading;
   }
 
-  setActiveState(Category category, bool value) {
-    category.isActive = !value;
-    for (var value in categoriesList) {
-      if (value.id == category.id) {
-        if (value.isActive) {
-          currentSelectedCategory = value.id.toString();
-        } else {
-          currentSelectedCategory = "";
-        }
-      } else {
-        value.isActive = false;
-      }
-    }
+  setActiveState(BuildContext context, Category category, bool value) {
+    currentSelectedCategory = category.id;
     notifyListeners();
+    fetchFeeds(context);
   }
 
   setloading(bool value) {
@@ -61,7 +51,7 @@ class HomeTabViewModel with ChangeNotifier {
   void fetchFeeds(BuildContext context) async {
     setloading(true);
     try {
-      final data = await _homeTabRepository.fetchFeeds();
+      final data = await _homeTabRepository.fetchFeeds(currentSelectedCategory);
       feedList = data['feeds'];
       setloading(false);
       notifyListeners();
@@ -72,11 +62,17 @@ class HomeTabViewModel with ChangeNotifier {
   }
 
   void fetchFeedsCategory(BuildContext context) async {
-    setloading(true);
     try {
       final data = await _homeTabRepository.fetchFeedsCatogory();
-      categoriesList = mapCategories(data['categories']);
-      setloading(false);
+      categoriesList = [
+        Category(
+          name: "All",
+          id: "All",
+          isActive: false,
+        ),
+        ...mapCategories(data['categories'])
+      ];
+      categoryLoading = false;
       notifyListeners();
     } catch (error) {
       setloading(false);
@@ -93,4 +89,48 @@ class HomeTabViewModel with ChangeNotifier {
       );
     }));
   }
+
+  void toggleLike(BuildContext context, String id) async {
+    try {
+      await _homeTabRepository.toggleLike(id);
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void fetchComments(BuildContext context, String id) async {
+    commentLoading = true;
+    notifyListeners();
+    try {
+      final data = await _homeTabRepository.fetchComments(id);
+      commentLoading = false;
+      commentsList = mapComments(data["comments"]);
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  List<Comment> mapComments(dynamic comments) {
+    return List<Comment>.from(comments.map((comment) {
+      return Comment.fromJson(comment);
+    }));
+  }
+
+  void addComment(
+      BuildContext context, String id, String comment, User user) async {
+    final newComment = Comment(id: "newComment", user: user, comment: comment);
+    commentsList = [...commentsList,newComment];
+    notifyListeners();
+    try {
+      final payload = {"comment": comment};
+      await _homeTabRepository.addComments(id, payload);
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
 }

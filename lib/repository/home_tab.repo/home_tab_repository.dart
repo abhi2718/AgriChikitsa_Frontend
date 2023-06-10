@@ -4,9 +4,11 @@ import '../../res/app_url.dart';
 class HomeTabRepository {
   final _apiServices = NetworkApiService();
 
-  Future<dynamic> fetchFeeds() async {
+  Future<dynamic> fetchFeeds(String id) async {
     try {
-      const url = '${AppUrl.feedEndPoint}/*/1/*/approved';
+      final url = id == "All"
+          ? '${AppUrl.feedEndPoint}/*/1/*/approved'
+          : '${AppUrl.feedEndPoint}/$id/1/*/approved';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
@@ -24,13 +26,33 @@ class HomeTabRepository {
     }
   }
 
-  Future<dynamic> fetchComments() async {
+ Future<dynamic> toggleLike(String id) async {
     try {
-      const url = '${AppUrl.feedEndPoint}/getComments/64799a0879ce2c1993efbc4e';
+      final url = '${AppUrl.feedEndPoint}/togglelike/$id';
+      final response = await _apiServices.getPatchApiResponse(url,{});
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchComments(String id) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/getComments/$id';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
       rethrow;
     }
   }
+ Future<dynamic> addComments(String id, dynamic payload) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/comment/$id';
+      final response = await _apiServices.getPatchApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+ 
 }

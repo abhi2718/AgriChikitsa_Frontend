@@ -1,5 +1,6 @@
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import '../../../../model/category_model.dart';
 import '../../../../res/color.dart';
 
@@ -11,30 +12,41 @@ class CategoryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: category.isActive ? AppColor.darkColor : null,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: category.isActive ? AppColor.darkColor : AppColor.darkColor,
-            width: category.isActive ? 2 : 1,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            category.name,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: category.isActive ? Colors.white : Colors.black,
+    return Consumer<HomeTabViewModel>(builder: (context, provider, child) {
+      return SizedBox(
+        height: 30,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            margin: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            decoration: BoxDecoration(
+              color: provider.currentSelectedCategory == category.id
+                  ? AppColor.darkColor
+                  : null,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: provider.currentSelectedCategory == category.id
+                    ? AppColor.darkColor
+                    : AppColor.darkColor,
+                width: category.isActive ? 1 : 1,
+              ),
+            ),
+            child: Center(
+              child: Text(
+                category.name,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: provider.currentSelectedCategory == category.id
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
