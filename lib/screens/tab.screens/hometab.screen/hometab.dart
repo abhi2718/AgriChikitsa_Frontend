@@ -65,7 +65,7 @@ class HomeTabScreen extends HookWidget {
                 height: dimension['height']! - 100,
                 child: Consumer<HomeTabViewModel>(
                     builder: (context, provider, child) {
-                  return ListView.builder(
+                  return provider.loading?const Center(child: CircularProgressIndicator(),):ListView.builder(
                     itemCount: provider.feedList.length,
                     itemBuilder: (context, index) {
                       final feed = provider.feedList[index];

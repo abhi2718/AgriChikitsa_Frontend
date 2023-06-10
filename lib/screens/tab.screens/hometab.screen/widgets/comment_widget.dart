@@ -43,7 +43,7 @@ class UserComment extends HookWidget {
                       ? Container(
                           height: (dimension["height"]! - 100) * 0.9,
                           child: Center(
-                            child: Text("Loading"),
+                            child: CircularProgressIndicator(),
                           ),
                         )
                       : SingleChildScrollView(
