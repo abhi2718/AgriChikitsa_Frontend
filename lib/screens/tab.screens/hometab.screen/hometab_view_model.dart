@@ -92,7 +92,15 @@ class HomeTabViewModel with ChangeNotifier {
 
   void toggleLike(BuildContext context, String id) async {
     try {
-      await _homeTabRepository.toggleLike(id);
+      final data = await _homeTabRepository.toggleLike(id);
+      int index = feedList.indexWhere((feed) => feed['_id'] == id);
+      if (index != -1) {
+        dynamic updatedFeed = {
+          ...feedList[index],
+          "likes": data["likes"],
+        };
+        feedList.replaceRange(index, index + 1, [updatedFeed]);
+      }
     } catch (error) {
       setloading(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
@@ -122,15 +130,23 @@ class HomeTabViewModel with ChangeNotifier {
   void addComment(
       BuildContext context, String id, String comment, User user) async {
     final newComment = Comment(id: "newComment", user: user, comment: comment);
-    commentsList = [...commentsList,newComment];
+    commentsList = [...commentsList, newComment];
     notifyListeners();
     try {
       final payload = {"comment": comment};
-      await _homeTabRepository.addComments(id, payload);
+      final data = await _homeTabRepository.addComments(id, payload);
+      int index = feedList.indexWhere((feed) => feed['_id'] == id);
+      if (index != -1) {
+        final updatedFeed = data["updatedFeed"];
+        dynamic update = {
+          ...feedList[index],
+          "comments": updatedFeed["comments"],
+        };
+         feedList.replaceRange(index, index + 1, [update]);
+      }
     } catch (error) {
       setloading(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }
-
 }

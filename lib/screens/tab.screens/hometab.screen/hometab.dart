@@ -29,7 +29,7 @@ class HomeTabScreen extends HookWidget {
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
-    
+
     useEffect(() {
       useViewModel.getUserProfile(authService);
     }, []);

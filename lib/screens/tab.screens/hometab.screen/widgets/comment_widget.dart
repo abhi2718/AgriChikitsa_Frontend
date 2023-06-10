@@ -10,8 +10,12 @@ import '../hometab_view_model.dart';
 
 class UserComment extends HookWidget {
   final feedId;
-  const UserComment(
-      {super.key, required this.feedId,});
+  final Function setNumberOfComment;
+  const UserComment({
+    super.key,
+    required this.setNumberOfComment,
+    required this.feedId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +155,7 @@ class UserComment extends HookWidget {
                                     textEditingController.text,
                                     User.fromJson(authService.userInfo["user"]),
                                   );
+                                  setNumberOfComment(provider.commentsList.length);
                                   Navigator.pop(context);
                                 },
                                 child: const Text("Submit"),
