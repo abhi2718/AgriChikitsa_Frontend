@@ -45,7 +45,7 @@ class Feed extends HookWidget {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Card(
           child: Column(
             children: [
