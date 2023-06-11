@@ -1,17 +1,34 @@
-import 'package:agriChikitsa/main.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
-import 'package:remixicon/remixicon.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:provider/provider.dart';
+import '../../../../model/comment.dart';
+import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
+import '../hometab_view_model.dart';
 
-class UserComment extends StatelessWidget {
-  final user;
-  const UserComment({super.key, required this.user});
+class UserComment extends HookWidget {
+  final feedId;
+  final Function setNumberOfComment;
+  const UserComment({
+    super.key,
+    required this.setNumberOfComment,
+    required this.feedId,
+  });
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
+    final textEditingController = TextEditingController();
+    final useViewModel = useMemoized(
+        () => Provider.of<HomeTabViewModel>(context, listen: false));
+    final authService = Provider.of<AuthService>(context, listen: false);
+    useEffect(() {
+      Future.delayed(Duration.zero, () {
+        useViewModel.fetchComments(context, feedId);
+      });
+    }, []);
     return SizedBox(
       height: dimension["height"]! - 100,
       child: SingleChildScrollView(
@@ -20,58 +37,95 @@ class UserComment extends StatelessWidget {
           children: [
             Container(
               height: (dimension["height"]! - 100) * 0.9,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [Container(
-                      margin: const EdgeInsets.only(top: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
+              child: Consumer<HomeTabViewModel>(
+                builder: (context, provider, child) {
+                  return provider.commentLoading
+                      ? Container(
+                          height: (dimension["height"]! - 100) * 0.9,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          child: Column(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.network(
-                                  user['profileImage'],
-                                  width: 40,
-                                  height: 40,
+                              Container(
+                                margin: const EdgeInsets.only(top: 16),
+                                child: SizedBox(
+                                  height: (dimension["height"]! - 100) * 0.9,
+                                  child: ListView.builder(
+                                    itemCount: provider.commentsList.length,
+                                    itemBuilder: (context, index) {
+                                      final comment =
+                                          provider.commentsList[index];
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: Image.network(
+                                                      comment.user.profileImage,
+                                                      width: 40,
+                                                      height: 40,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                width: 6,
+                                              ),
+                                              SizedBox(
+                                                width: dimension['width']! - 98,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    BaseText(
+                                                      title: comment.user.name,
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w700),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    BaseText(
+                                                      title: comment.comment,
+                                                      style: const TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 16,
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  ),
                                 ),
                               )
                             ],
                           ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          SizedBox(
-                            width: dimension['width']! - 98,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                BaseText(
-                                  title: user['name'],
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                const BaseText(
-                                  title:
-                                      'Agrichiktsa is best solution for test text the agriculture needs Agrichiktsa is best solution for the agriculture needs Agrichiktsa is best solution for the agriculture needs',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )],
-                ),
+                        );
+                },
               ),
             ),
             Container(
@@ -80,43 +134,67 @@ class UserComment extends StatelessWidget {
               child: SizedBox(
                 height: 30,
                 child: InkWell(
-                onTap: () {
-                  Utils.model(context, Container(
-                    height: 500,
-                    child: const TextField(
-                      autofocus: true,
-                    ),
-                  ),);
-                },
-                child: Container(
-                    width: dimension['width'],
-                     child: Padding(
-                      padding: const EdgeInsets.all(16),
-                     child: Container(
-                     decoration: const BoxDecoration(
-                      color: Color(0xffd9d9d9),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
+                  onTap: () {
+                    Utils.model(
+                      context,
+                      Container(
+                        height: 500,
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: textEditingController,
+                              autofocus: true,
+                            ),
+                            Consumer<HomeTabViewModel>(
+                                builder: (context, provider, child) {
+                              return ElevatedButton(
+                                onPressed: () {
+                                  useViewModel.addComment(
+                                    context,
+                                    feedId,
+                                    textEditingController.text,
+                                    User.fromJson(authService.userInfo["user"]),
+                                  );
+                                  setNumberOfComment(provider.commentsList.length);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Submit"),
+                              );
+                            }),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16),
-                          child: BaseText(
-                            title: 'Add a  comment',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w700),
+                    );
+                  },
+                  child: Container(
+                    width: dimension['width'],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xffd9d9d9),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20.0),
                           ),
                         ),
-                      ],
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 16),
+                              child: BaseText(
+                                title: 'Add a  comment',
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                     ),
-                     ),
                   ),
-              ),
+                ),
               ),
             )
           ],

@@ -66,7 +66,8 @@ class App extends StatelessWidget {
             title: 'Aluma',
             theme: ThemeData(primarySwatch: primaryswatch),
             routes: Routes().routes,
-            locale: Locale(provider.locale["language"]!, provider.locale["country"]!),
+            locale: Locale(
+                provider.locale["language"]!, provider.locale["country"]!),
             supportedLocales: L10n.all,
             localizationsDelegates: const [
               AppLocalizations.delegate,
