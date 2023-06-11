@@ -1,4 +1,3 @@
-import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,10 +14,6 @@ class HeaderWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final authService = Provider.of<AuthService>(context, listen: false);
-    final user = authService.userInfo["user"];
-    final useViewModel = useMemoized(
-        () => Provider.of<HomeTabViewModel>(context, listen: false));
     return Card(
       margin: const EdgeInsets.all(0),
       child: Container(
@@ -48,16 +43,16 @@ class HeaderWidget extends HookWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      InkWell(
-                        onTap: () => useViewModel.goToProfile(context),
-                        child: Consumer<AuthService>(
+                      Consumer<AuthService>(
                           builder: (context, provider, child) {
-                            return CircleAvatar(
-                              backgroundImage: NetworkImage(user["profileImage"]),
-                            );
-                          },
-                        ),
-                      )
+                        if (provider.userInfo != null) {
+                          final user = provider.userInfo["user"];
+                          return CircleAvatar(
+                            backgroundImage: NetworkImage(user["profileImage"]),
+                          );
+                        }
+                        return Container();
+                      }),
                     ],
                   ),
                 ],

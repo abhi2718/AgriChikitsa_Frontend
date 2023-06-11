@@ -14,6 +14,7 @@ import './services/auth.dart';
 import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import './screens/tab.screens/historytab.screen/history_tab_view_model.dart';
 import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
+import './screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +59,10 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<EditProfileViewModel>(
           create: (_) => EditProfileViewModel(),
+        ),
+        //
+        ChangeNotifierProvider<JankariViewModel>(
+          create: (_) => JankariViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(
