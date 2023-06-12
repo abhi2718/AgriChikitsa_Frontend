@@ -3,5 +3,4 @@ import '../../res/app_url.dart';
 
 class HistoryTabRepository {
   final _apiServices = NetworkApiService();
-
 }

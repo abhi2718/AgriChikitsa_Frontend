@@ -1,12 +1,12 @@
 class JankariCategoryModal {
- final String id;
- final String name;
- final String description;
-final  String backgroundImage;
-final  String icon;
-final  String createdAt;
- final String updatedAt;
-
+  final String id;
+  final String name;
+  final String description;
+  final String backgroundImage;
+  final String icon;
+  final String createdAt;
+  final String updatedAt;
+  bool isActive;
 
   JankariCategoryModal({
     required this.id,
@@ -16,6 +16,7 @@ final  String createdAt;
     required this.icon,
     required this.createdAt,
     required this.updatedAt,
+    this.isActive = false,
   });
 
   factory JankariCategoryModal.fromJson(Map<String, dynamic> json) {
@@ -27,6 +28,7 @@ final  String createdAt;
       icon: json['icon'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
+      isActive: false,
     );
   }
 }
