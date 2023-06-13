@@ -14,9 +14,20 @@ class JankariRepository {
       rethrow;
     }
   }
+
   Future<dynamic> getJankariSubCategory(String id) async {
     try {
       final url = '${AppUrl.jankariEndPoint}/subCategory/$id/1';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getJankariSubCategoryPost(String id) async {
+    try {
+      final url = '${AppUrl.jankariEndPoint}/post/$id/1';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {

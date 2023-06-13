@@ -8,7 +8,6 @@ class JankariSubCategoryModel {
   DateTime createdAt;
   DateTime updatedAt;
 
-
   JankariSubCategoryModel({
     required this.id,
     required this.categoryId,

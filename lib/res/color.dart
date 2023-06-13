@@ -9,5 +9,9 @@ class AppColor {
   static const extraDark = Color.fromARGB(255, 104, 122, 84);
   static const errorColor = Colors.red;
   static const lightFeedContainerColor = Color(0xFFF8F8F8);
+<<<<<<< HEAD
   static const backgroungButtonColor = Color(0xffd9d9d9);
+=======
+  static const iconColor = Color(0xff858484);
+>>>>>>> 4691084c2bf1f4e38a4d1b3138a985e24fb11508
 }
