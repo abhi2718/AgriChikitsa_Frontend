@@ -1,10 +1,10 @@
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_card.dart';
-import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import '../../../widgets/skeleton/skeleton.dart';
 
 class JankariHomeTab extends HookWidget {
   const JankariHomeTab({super.key});
@@ -12,9 +12,6 @@ class JankariHomeTab extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final appLifecycleState = useState(AppLifecycleState.resumed);
-    final authService = Provider.of<AuthService>(context, listen: false);
-
     final useViewModel = useMemoized(
         () => Provider.of<JankariViewModel>(context, listen: false));
     useEffect(() {
@@ -24,18 +21,28 @@ class JankariHomeTab extends HookWidget {
     }, []);
 
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         height: dimension['height'],
         width: dimension['width'],
         child: SingleChildScrollView(
           child:
               Consumer<JankariViewModel>(builder: (context, provider, child) {
             return provider.loading
-                ? SizedBox(
+                ? Container(
+                    padding:
+                        const EdgeInsets.only(top: 32, left: 16, right: 16),
                     height: dimension['height'],
                     width: dimension['width'],
-                    child: const Center(
-                      child: CircularProgressIndicator(),
+                    child: ListView.builder(
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: Skeleton(
+                              height: dimension['height']! * 0.13,
+                              width: dimension['width']!),
+                        );
+                      },
                     ),
                   )
                 : SizedBox(

@@ -142,7 +142,7 @@ class HomeTabViewModel with ChangeNotifier {
           ...feedList[index],
           "comments": updatedFeed["comments"],
         };
-         feedList.replaceRange(index, index + 1, [update]);
+        feedList.replaceRange(index, index + 1, [update]);
       }
     } catch (error) {
       setloading(false);

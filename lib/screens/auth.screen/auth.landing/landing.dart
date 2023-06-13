@@ -2,9 +2,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/utils/utils.dart';
-import '../../../widgets/button.widgets/outlined_button.dart';
 import '../../../widgets/text.widgets/text.dart';
 import '../signin.auth/signin.dart';
 

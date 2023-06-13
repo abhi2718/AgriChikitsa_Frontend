@@ -1,4 +1,4 @@
-import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -35,16 +35,45 @@ class UserComment extends HookWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
+            SizedBox(
               height: (dimension["height"]! - 100) * 0.9,
+              width: dimension['width']!,
               child: Consumer<HomeTabViewModel>(
                 builder: (context, provider, child) {
                   return provider.commentLoading
-                      ? Container(
-                          height: (dimension["height"]! - 100) * 0.9,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                      ? Padding(
+                          padding: const EdgeInsets.only(
+                              left: 28, right: 32, top: 16),
+                          child: ListView.builder(
+                              itemCount: 10,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Row(
+                                    children: [
+                                      Skeleton(
+                                        height: 40,
+                                        width: 40,
+                                        radius: 20,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Skeleton(height: 10, width: 140),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Skeleton(height: 10, width: 80),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }),
                         )
                       : SingleChildScrollView(
                           child: Column(
@@ -129,7 +158,6 @@ class UserComment extends HookWidget {
               ),
             ),
             Container(
-              color: AppColor.lightColor,
               height: (dimension["height"]! - 100) * 0.1,
               child: SizedBox(
                 height: 30,
@@ -155,7 +183,8 @@ class UserComment extends HookWidget {
                                     textEditingController.text,
                                     User.fromJson(authService.userInfo["user"]),
                                   );
-                                  setNumberOfComment(provider.commentsList.length);
+                                  setNumberOfComment(
+                                      provider.commentsList.length);
                                   Navigator.pop(context);
                                 },
                                 child: const Text("Submit"),
