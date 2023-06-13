@@ -90,8 +90,6 @@ class SubCategoryContainer extends HookWidget {
                                         category:
                                             provider.jankaricardList[index],
                                         onTap: () {
-                                          Utils.toastMessage(provider
-                                              .jankaricardList[index].name);
                                           provider.setActiveState(
                                             context,
                                             provider.jankaricardList[index],
@@ -198,12 +196,12 @@ class SubCategoryContainer extends HookWidget {
                                           alignment: Alignment.center,
                                           child: Center(
                                             child: BaseText(
-                                                title: subCategory.name,
-                                                style: const TextStyle(
-                                                    color: AppColor.whiteColor,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w600)),
+                                              title: subCategory.name,
+                                              style: const TextStyle(
+                                                  color: AppColor.whiteColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
                                           ),
                                         ),
                                       ],

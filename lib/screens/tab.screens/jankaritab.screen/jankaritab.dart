@@ -31,7 +31,6 @@ class JankariHomeTab extends HookWidget {
                 ? Container(
                     padding:
                         const EdgeInsets.only(top: 32, left: 16, right: 16),
-                    // margin: EdgeInsets.only(bottom: 10, top: 16),
                     height: dimension['height'],
                     width: dimension['width'],
                     child: ListView.builder(

@@ -53,7 +53,7 @@ class JankariPost extends HookWidget {
                           height: 23,
                         ),
                         Skeleton(height: 10, width: 40),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Skeleton(
@@ -152,7 +152,8 @@ class JankariPost extends HookWidget {
                         ),
                       ),
                     ],
-                  ));
+                  ),
+                );
         },
       ),
     );

@@ -14,7 +14,7 @@ class JankariSubCategoryPost extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
     final useViewModel = useMemoized(
-        () => Provider.of<JankariViewModel>(context, listen: false));
+        () => Provider.of<JankariViewModel>(context, listen: true));
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.getJankariSubCategoryPost(context);
@@ -92,33 +92,34 @@ class JankariSubCategoryPost extends HookWidget {
                             provider.jankariSubcategoryPostList.length - 1 &&
                         provider.showActiveButton)
                       Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: InkWell(
-                            onTap: () => useViewModel.updateCurrentPostIndex(
-                                provider.currentPostIndex + 1),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: AppColor.whiteColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColor.darkBlackColor
-                                        .withOpacity(0.4),
-                                    blurRadius: 5,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              height: 40,
-                              width: 40,
-                              child: const Icon(
-                                Icons.arrow_forward,
-                                size: 30,
-                                color: AppColor.iconColor,
-                              ),
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () => useViewModel.updateCurrentPostIndex(
+                              provider.currentPostIndex + 1),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: AppColor.whiteColor,
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      AppColor.darkBlackColor.withOpacity(0.4),
+                                  blurRadius: 5,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                          )),
+                            height: 40,
+                            width: 40,
+                            child: const Icon(
+                              Icons.arrow_forward,
+                              size: 30,
+                              color: AppColor.iconColor,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               );
