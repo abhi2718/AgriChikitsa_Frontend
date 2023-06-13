@@ -2,6 +2,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../model/comment.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
@@ -139,29 +140,65 @@ class UserComment extends HookWidget {
                       context,
                       Container(
                         height: 500,
-                        child: Column(
-                          children: [
-                            TextField(
-                              controller: textEditingController,
-                              autofocus: true,
-                            ),
-                            Consumer<HomeTabViewModel>(
-                                builder: (context, provider, child) {
-                              return ElevatedButton(
-                                onPressed: () {
-                                  useViewModel.addComment(
-                                    context,
-                                    feedId,
-                                    textEditingController.text,
-                                    User.fromJson(authService.userInfo["user"]),
-                                  );
-                                  setNumberOfComment(provider.commentsList.length);
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("Submit"),
-                              );
-                            }),
-                          ],
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const CircleAvatar(
+                                child: Image(
+                                  image:
+                                      AssetImage('assets/images/prof_img.png'),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                width: 235,
+                                height: 48,
+                                child: const TextField(
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Color(0xffC5C5C5),
+                                    hintText: 'Add Comment',
+                                    hintStyle: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16.0))),
+                                  ),
+                                ),
+                              ),
+                              Consumer<HomeTabViewModel>(
+                                  builder: (context, provider, child) {
+                                return InkWell(
+                                  onTap: () {
+                                    useViewModel.addComment(
+                                      context,
+                                      feedId,
+                                      textEditingController.text,
+                                      User.fromJson(
+                                          authService.userInfo["user"]),
+                                    );
+                                    setNumberOfComment(
+                                        provider.commentsList.length);
+                                    Navigator.pop(context);
+                                  },
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: const Image(
+                                        image: AssetImage(
+                                            'assets/images/buttonCommit.png')),
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
                         ),
                       ),
                     );

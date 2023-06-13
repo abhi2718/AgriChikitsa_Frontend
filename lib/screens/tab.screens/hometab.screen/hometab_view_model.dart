@@ -1,10 +1,12 @@
 import 'dart:convert';
+
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../model/category_model.dart';
 import '../../../model/comment.dart';
 
@@ -16,6 +18,7 @@ class HomeTabViewModel with ChangeNotifier {
   String currentSelectedCategory = "All";
   var categoryLoading = true;
   var commentLoading = true;
+  var feedLoader = false;
   var _loading = true;
 
   bool get loading {
@@ -30,6 +33,11 @@ class HomeTabViewModel with ChangeNotifier {
 
   setloading(bool value) {
     _loading = value;
+    notifyListeners();
+  }
+
+  void setFeedLoader(bool state) {
+    feedLoader = state;
     notifyListeners();
   }
 
@@ -142,7 +150,7 @@ class HomeTabViewModel with ChangeNotifier {
           ...feedList[index],
           "comments": updatedFeed["comments"],
         };
-         feedList.replaceRange(index, index + 1, [update]);
+        feedList.replaceRange(index, index + 1, [update]);
       }
     } catch (error) {
       setloading(false);

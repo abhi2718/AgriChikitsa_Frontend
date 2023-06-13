@@ -3,6 +3,7 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import './hometab_view_model.dart';
 import '../../../services/auth.dart';
 import 'widgets/header.dart';
@@ -65,15 +66,19 @@ class HomeTabScreen extends HookWidget {
                 height: dimension['height']! - 100,
                 child: Consumer<HomeTabViewModel>(
                     builder: (context, provider, child) {
-                  return provider.loading?const Center(child: CircularProgressIndicator(),):ListView.builder(
-                    itemCount: provider.feedList.length,
-                    itemBuilder: (context, index) {
-                      final feed = provider.feedList[index];
-                      return Feed(
-                        feed: feed,
-                      );
-                    },
-                  );
+                  return provider.loading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ListView.builder(
+                          itemCount: provider.feedList.length,
+                          itemBuilder: (context, index) {
+                            final feed = provider.feedList[index];
+                            return Feed(
+                              feed: feed,
+                            );
+                          },
+                        );
                 }),
               ),
             ],

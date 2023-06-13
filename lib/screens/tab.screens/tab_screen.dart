@@ -27,7 +27,7 @@ class TabScreen extends HookWidget {
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTap,
         showUnselectedLabels: true,
-        backgroundColor: AppColor.lightColor,
+        backgroundColor: AppColor.whiteColor,
         showSelectedLabels: true,
         selectedItemColor: AppColor.darkColor,
         unselectedItemColor: AppColor.extraDark,
@@ -36,24 +36,24 @@ class TabScreen extends HookWidget {
         items: [
           BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/images/homeDeactive.png',
+                'assets/images/home_deactive.png',
                 width: 20,
                 height: 20,
               ),
               activeIcon: Image.asset(
-                'assets/images/homeActive.png',
+                'assets/images/home_active.png',
                 width: 20,
                 height: 20,
               ),
               label: 'Home'),
           BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/icons/chat.png',
+                'assets/images/chat_deactive.png',
                 width: 20,
                 height: 20,
               ),
               activeIcon: Image.asset(
-                'assets/images/historyActive.png',
+                'assets/images/chat_active_icon.png',
                 width: 20,
                 height: 20,
               ),
@@ -73,12 +73,12 @@ class TabScreen extends HookWidget {
           // ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/jankari.png',
+              'assets/images/jankari_deactive.png',
               width: 20,
               height: 20,
             ),
             activeIcon: Image.asset(
-              'assets/images/active_add.png',
+              'assets/images/jankari_active.png',
               width: 20,
               height: 20,
             ),
@@ -86,12 +86,12 @@ class TabScreen extends HookWidget {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/setting.png',
+              'assets/images/setting_deactive.png',
               width: 20,
               height: 20,
             ),
             activeIcon: Image.asset(
-              'assets/icons/setting.png',
+              'assets/images/setting_active.png',
               width: 20,
               height: 20,
             ),

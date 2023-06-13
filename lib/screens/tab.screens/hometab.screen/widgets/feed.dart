@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:shimmer/shimmer.dart';
+
 import '../../../../services/auth.dart';
 import 'comment_widget.dart';
 
@@ -25,8 +28,8 @@ class Feed extends HookWidget {
     final isLiked = useState(feed['likes'].contains(userInfo["_id"]));
     final numberOfComments = useState(feed['comments'].length);
 
-    void setNumberOfComment(int count){
-      numberOfComments.value = count; 
+    void setNumberOfComment(int count) {
+      numberOfComments.value = count;
     }
 
     void handleLike() {
@@ -42,6 +45,7 @@ class Feed extends HookWidget {
 
     final user = feed['user'];
     final dimension = Utils.getDimensions(context, true);
+
     return Container(
       margin: const EdgeInsets.only(top: 10),
       child: Padding(
@@ -59,9 +63,13 @@ class Feed extends HookWidget {
                       children: [
                         Column(
                           children: [
-                            CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(user['profileImage']),
+                            Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(user['profileImage']),
+                              ),
                             ),
                           ],
                         ),
@@ -71,15 +79,23 @@ class Feed extends HookWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            BaseText(
-                              title: user['name'],
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w700),
+                            Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              child: BaseText(
+                                title: user['name'],
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w700),
+                              ),
                             ),
-                            const BaseText(
-                              title: '@atin',
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w400),
+                            Shimmer.fromColors(
+                              baseColor: Colors.grey.shade300,
+                              highlightColor: Colors.grey.shade100,
+                              child: const BaseText(
+                                title: '@atin',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
                             ),
                           ],
                         ),
@@ -107,9 +123,12 @@ class Feed extends HookWidget {
                         children: [
                           InkWell(
                             onTap: handleLike,
-                            child: Icon(isLiked.value
-                                ? Remix.heart_2_fill
-                                : Remix.heart_line),
+                            child: Icon(
+                              isLiked.value
+                                  ? Remix.heart_2_fill
+                                  : Remix.heart_line,
+                              color: AppColor.errorColor,
+                            ),
                           ),
                           const SizedBox(
                             width: 6,
@@ -129,7 +148,12 @@ class Feed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      const InkWell(child: Icon(Remix.bookmark_line))
+                      const InkWell(
+                        child: Icon(
+                          Remix.bookmark_line,
+                          color: AppColor.extraDark,
+                        ),
+                      ),
                     ]),
               ),
               Padding(
@@ -152,7 +176,7 @@ class Feed extends HookWidget {
                         context,
                         UserComment(
                           feedId: feed["_id"],
-                          setNumberOfComment:setNumberOfComment,
+                          setNumberOfComment: setNumberOfComment,
                         ));
                   },
                   child: Container(

@@ -52,6 +52,7 @@ dependencies:
   intl: ^0.18.0
   flutter_otp_text_field: ^1.1.1
   remixicon: ^1.0.0
+  skeleton_loader: ^2.0.0+4
   
 
 
