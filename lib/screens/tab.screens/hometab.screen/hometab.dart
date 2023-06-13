@@ -1,10 +1,13 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import './hometab_view_model.dart';
 import '../../../services/auth.dart';
+import 'widgets/feed_loader.dart';
 import 'widgets/header.dart';
 
 class _AppLifecycleObserver extends WidgetsBindingObserver {
@@ -65,15 +68,22 @@ class HomeTabScreen extends HookWidget {
                 height: dimension['height']! - 100,
                 child: Consumer<HomeTabViewModel>(
                     builder: (context, provider, child) {
-                  return provider.loading?const Center(child: CircularProgressIndicator(),):ListView.builder(
-                    itemCount: provider.feedList.length,
-                    itemBuilder: (context, index) {
-                      final feed = provider.feedList[index];
-                      return Feed(
-                        feed: feed,
-                      );
-                    },
-                  );
+                  return provider.loading
+                      ? ListView.builder(
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return FeedLoader();
+                          },
+                        )
+                      : ListView.builder(
+                          itemCount: provider.feedList.length,
+                          itemBuilder: (context, index) {
+                            final feed = provider.feedList[index];
+                            return Feed(
+                              feed: feed,
+                            );
+                          },
+                        );
                 }),
               ),
             ],

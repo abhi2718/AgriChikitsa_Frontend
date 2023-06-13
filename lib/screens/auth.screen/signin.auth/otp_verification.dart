@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:agriChikitsa/res/color.dart';
 import '../../../utils/utils.dart';
-import '../../../widgets/Input.widgets/input.dart';
 import '../../../widgets/button.widgets/elevated_button.dart';
 import '../../../widgets/text.widgets/text.dart';
-import '../../../widgets/tools.widgets/tools.dart';
 import 'signin_view_model.dart';
 
 class OtpVerification extends HookWidget {
@@ -86,7 +82,7 @@ class OtpVerification extends HookWidget {
                   ),
                   OtpTextField(
                     numberOfFields: 6,
-                    borderColor: Color(0xFF512DA8),
+                    borderColor: const Color(0xFF512DA8),
                     //set to true to show as box or false to show as dash
                     showFieldAsBox: !true,
                     //runs when a code is typed in

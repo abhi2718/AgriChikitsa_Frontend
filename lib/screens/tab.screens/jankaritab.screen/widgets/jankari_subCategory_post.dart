@@ -42,7 +42,7 @@ class JankariPost extends HookWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        const Skeleton(height: 20, width: 60),
+                        Skeleton(height: 20, width: 60),
                         const SizedBox(
                           height: 10,
                         ),
@@ -52,8 +52,8 @@ class JankariPost extends HookWidget {
                         const SizedBox(
                           height: 23,
                         ),
-                        const Skeleton(height: 10, width: 40),
-                        const SizedBox(
+                        Skeleton(height: 10, width: 40),
+                        SizedBox(
                           height: 10,
                         ),
                         Skeleton(
@@ -99,27 +99,33 @@ class JankariPost extends HookWidget {
                                         .jankariSubcategoryPostList[index]
                                         .youtubeUrl
                                         .isNotEmpty
-                                    ? YoutubePlayer(
-                                        controller: YoutubePlayerController(
-                                          initialVideoId: YoutubePlayer
-                                                  .convertUrlToId(provider
-                                                      .jankariSubcategoryPostList[
-                                                          index]
-                                                      .youtubeUrl) ??
-                                              '',
-                                          flags: const YoutubePlayerFlags(
-                                            autoPlay: false,
-                                            mute: false,
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: YoutubePlayer(
+                                          controller: YoutubePlayerController(
+                                            initialVideoId: YoutubePlayer
+                                                    .convertUrlToId(provider
+                                                        .jankariSubcategoryPostList[
+                                                            index]
+                                                        .youtubeUrl) ??
+                                                '',
+                                            flags: const YoutubePlayerFlags(
+                                              autoPlay: false,
+                                              mute: false,
+                                            ),
                                           ),
+                                          showVideoProgressIndicator: true,
+                                          progressIndicatorColor: Colors.amber,
                                         ),
-                                        showVideoProgressIndicator: true,
-                                        progressIndicatorColor: Colors.amber,
                                       )
-                                    : Image.network(
-                                        provider
-                                            .jankariSubcategoryPostList[index]
-                                            .imageUrl,
-                                        fit: BoxFit.cover,
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Image.network(
+                                          provider
+                                              .jankariSubcategoryPostList[index]
+                                              .imageUrl,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                               ),
                               const SizedBox(

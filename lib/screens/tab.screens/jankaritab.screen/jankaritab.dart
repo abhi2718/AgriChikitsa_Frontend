@@ -1,6 +1,5 @@
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_card.dart';
-import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -30,40 +29,19 @@ class JankariHomeTab extends HookWidget {
               Consumer<JankariViewModel>(builder: (context, provider, child) {
             return provider.loading
                 ? Container(
-                    padding: const EdgeInsets.only(
-                        top: 32, left: 16, right: 16, bottom: 16),
+                    padding:
+                        const EdgeInsets.only(top: 32, left: 16, right: 16),
                     // margin: EdgeInsets.only(bottom: 10, top: 16),
                     height: dimension['height'],
                     width: dimension['width'],
                     child: ListView.builder(
-                      itemCount: provider.jankaricardList.length,
+                      itemCount: 10,
                       itemBuilder: (context, index) {
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 50),
-                          child: Row(
-                            children: [
-                              const Skeleton(
-                                height: 50,
-                                width: 50,
-                              ),
-                              const SizedBox(
-                                width: 30,
-                              ),
-                              Column(
-                                children: [
-                                  Skeleton(
-                                      height: 20,
-                                      width: dimension['width']! - 130),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Skeleton(
-                                      height: 10,
-                                      width: dimension['width']! - 150),
-                                ],
-                              ),
-                            ],
-                          ),
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: Skeleton(
+                              height: dimension['height']! * 0.13,
+                              width: dimension['width']!),
                         );
                       },
                     ),

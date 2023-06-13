@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Skeleton extends StatelessWidget {
-  const Skeleton({
+  Skeleton({
     super.key,
     required this.height,
     required this.width,
+    this.radius = 16,
   });
   final double height;
   final double width;
+  double radius;
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
@@ -19,7 +21,7 @@ class Skeleton extends StatelessWidget {
         width: width,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(radius),
         ),
       ),
     );

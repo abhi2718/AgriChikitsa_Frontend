@@ -3,6 +3,8 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../res/color.dart';
+import '../../../../utils/utils.dart';
+import '../../../../widgets/skeleton/skeleton.dart';
 
 class JankariSubCategoryButton extends StatelessWidget {
   final JankariCategoryModal category;
@@ -12,6 +14,7 @@ class JankariSubCategoryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dimension = Utils.getDimensions(context, true);
     return Consumer<JankariViewModel>(builder: (context, provider, child) {
       return SizedBox(
         height: 30,

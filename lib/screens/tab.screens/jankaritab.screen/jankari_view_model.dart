@@ -17,8 +17,14 @@ class JankariViewModel with ChangeNotifier {
   var selectedSubCategory = "";
   var showSubCategoryModal = false;
   int currentPostIndex = 0;
+  bool showActiveButton = false;
   bool get loading {
     return _loading;
+  }
+
+  changeActiveButtonState(bool value) {
+    showActiveButton = value;
+    notifyListeners();
   }
 
   updateCurrentPostIndex(int index) {
