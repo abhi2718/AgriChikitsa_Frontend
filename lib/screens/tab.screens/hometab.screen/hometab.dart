@@ -72,7 +72,7 @@ class HomeTabScreen extends HookWidget {
                       ? ListView.builder(
                           itemCount: 10,
                           itemBuilder: (context, index) {
-                            return FeedLoader();
+                            return const FeedLoader();
                           },
                         )
                       : ListView.builder(

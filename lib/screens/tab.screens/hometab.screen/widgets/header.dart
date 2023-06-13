@@ -78,7 +78,8 @@ class HeaderWidget extends HookWidget {
                                     const EdgeInsets.symmetric(horizontal: 8),
                                 child: Skeleton(
                                   height: 10,
-                                  width: 80,
+                                  width: 100,
+                                  radius: 10,
                                 ),
                               );
                             })
@@ -89,8 +90,6 @@ class HeaderWidget extends HookWidget {
                               return CategoryButton(
                                 category: provider.categoriesList[index],
                                 onTap: () {
-                                  Utils.toastMessage(
-                                      provider.categoriesList[index].name);
                                   provider.setActiveState(
                                     context,
                                     provider.categoriesList[index],
