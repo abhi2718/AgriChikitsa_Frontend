@@ -1,7 +1,36 @@
 {
+    
     "language": "नमस्ते",
-    "LOGIN":""
+    
+    "ACCOUNT":"",
+    "Login/Create Account":"",
+    "LOGIN":"",
+    "I agree with Terms & Conditions":"",
+
+    "Home":"",
+    "Chat":"",
+    "Jankari":"",
+    "Setting":"",
+
+    "LOGIN":"",
+    "Enter your phone number to proceed":"",
+    "10 digit mobile number":"",
+    "Continue":"",
+    "VERIFY  DETAILS":"",
+    "OTP sent to":"",
+    "Enter OTP":"",
+    "Din't receive the OTP?":"",
+    "SMS":"",
+    "VERIFY & PROCEED":"",
+
+    "Setting":"",
+    "Edit Profile":"",
+    "Contact Support":"",
+    "Terms and Condition":"",
+    "Privacy Policy":"",
+    "Delete Account":"",
+    "LOGOUT":"",
+    "Change Local":""
+        
+
 }
-
-
-
