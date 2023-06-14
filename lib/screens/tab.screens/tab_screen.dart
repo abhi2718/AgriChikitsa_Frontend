@@ -2,7 +2,7 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.da
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import './historytab.screen/historytab.dart';
+import 'chattab.screen/chattab.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
@@ -13,7 +13,7 @@ class TabScreen extends HookWidget {
   Widget build(BuildContext context) {
     final List tabScreen = [
       const HomeTabScreen(),
-      const HistortTabScreen(),
+      const ChatTabScreen(),
       const JankariHomeTab(),
       const ProfileTabScreen(),
     ];

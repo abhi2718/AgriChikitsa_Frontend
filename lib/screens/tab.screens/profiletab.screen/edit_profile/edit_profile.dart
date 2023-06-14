@@ -52,10 +52,11 @@ class EditProfileScreen extends HookWidget {
               ),
               // ClipRRect(
               //   borderRadius: BorderRadius.circular(40),
-              //   child: Image.network("https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg",
-              // width:80,
-              // height: 80,
-              // ),
+              //   child: Image.network(
+              //     "https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg",
+              //     width: 80,
+              //     height: 80,
+              //   ),
               // ),
               ProfilePicture(
                 picImage: useViewModel.pickProfileImage,
@@ -85,8 +86,7 @@ class EditProfileScreen extends HookWidget {
                             Utils.fieldFocusChange(
                                 context,
                                 useViewModel.nameFocusNode,
-                                useViewModel.emailFocusNode
-                                );
+                                useViewModel.emailFocusNode);
                           },
                         ),
                       ),
@@ -115,7 +115,7 @@ class EditProfileScreen extends HookWidget {
                             CustomElevatedButton(
                           title: "Update",
                           loading: provider.loading,
-                          width: dimension["width"]!-32,
+                          width: dimension["width"]! - 32,
                           onPress: () =>
                               provider.saveForm(context, user, authService),
                         ),

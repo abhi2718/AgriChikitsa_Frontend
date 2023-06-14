@@ -119,6 +119,7 @@ class Utils {
         ..files.add(await http.MultipartFile.fromPath('image', image.path));
       final response = await http.Response.fromStream(await request.send());
       final body = jsonDecode(response.body);
+      print(body);
       switch (response.statusCode) {
         case 200:
           return body;
@@ -140,7 +141,10 @@ class Utils {
     try {
       final XFile? photo =
           await ImagePicker().pickImage(source: ImageSource.camera);
-      if (photo == null) return null;
+      if (photo == null) {
+        print("null");
+        return null;
+      }
       return photo;
     } catch (error) {
       rethrow;

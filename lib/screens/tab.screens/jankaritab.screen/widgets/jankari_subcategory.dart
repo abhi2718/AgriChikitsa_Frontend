@@ -111,7 +111,7 @@ class SubCategoryContainer extends HookWidget {
                     return provider.jankariSubCategoryLoader
                         ? Container(
                             padding: const EdgeInsets.only(
-                                left: 16, right: 16, top: 18.5),
+                                left: 16, right: 16, top: 17.5),
                             child: GridView.builder(
                               padding: const EdgeInsets.all(10),
                               gridDelegate:
@@ -120,13 +120,18 @@ class SubCategoryContainer extends HookWidget {
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 10.0,
                                 childAspectRatio:
-                                    ((dimension['width']! - 10) / 2) / 140,
+                                    ((dimension['width']! - 10) / 2) / 147,
                               ),
                               itemCount: provider.jankaricardList.length,
                               itemBuilder: (context, index) {
-                                return Skeleton(
-                                  height: 100,
-                                  width: 150,
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 6, right: 6),
+                                  child: Skeleton(
+                                    height: 100,
+                                    width: 150,
+                                    radius: 12,
+                                  ),
                                 );
                               },
                             ),

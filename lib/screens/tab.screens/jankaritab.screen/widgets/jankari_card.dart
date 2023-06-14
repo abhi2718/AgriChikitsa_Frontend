@@ -28,26 +28,29 @@ class JankariCard extends HookWidget {
         useViewModel.getJankariSubCategory(context, jankari.id);
         Utils.model(context, const SubCategoryContainer());
       },
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10, left: 10, top: 10),
-        child: Container(
-          height: 110,
-          width: dimension['width']! - 20,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(jankari.backgroundImage),
-              fit: BoxFit.fill,
+      child: ClipRRect(
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(20),
+        child: Card(
+          child: Container(
+            height: 110,
+            width: dimension['width']! - 20,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(jankari.backgroundImage),
+                fit: BoxFit.fill,
+              ),
+              // borderRadius: const BorderRadius.all(
+              //   Radius.circular(12),
+              // ),
             ),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(12),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                const SizedBox(
+                  width: 2,
+                ),
                 Image(
                   height: 50,
                   width: 50,

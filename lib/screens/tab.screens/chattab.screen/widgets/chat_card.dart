@@ -5,9 +5,9 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import '../../../../res/color.dart';
 import '../../../../widgets/card.widgets/card.dart';
 
-class HistoryCard extends HookWidget {
+class ChatCard extends HookWidget {
   dynamic data;
-  HistoryCard({super.key, required this.data});
+  ChatCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {

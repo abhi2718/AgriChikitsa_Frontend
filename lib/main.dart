@@ -12,7 +12,7 @@ import './res/primary_swatch.dart';
 import './screens/auth.screen/signup.auth/signup_view_model.dart';
 import './services/auth.dart';
 import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
-import './screens/tab.screens/historytab.screen/history_tab_view_model.dart';
+import 'screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
 import './screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 
@@ -54,8 +54,8 @@ class App extends StatelessWidget {
           create: (_) => ProfileViewModel(),
         ),
         //EditProfileViewModel
-        ChangeNotifierProvider<HistoryTabViewModel>(
-          create: (_) => HistoryTabViewModel(),
+        ChangeNotifierProvider<ChatTabViewModel>(
+          create: (_) => ChatTabViewModel(),
         ),
         ChangeNotifierProvider<EditProfileViewModel>(
           create: (_) => EditProfileViewModel(),
