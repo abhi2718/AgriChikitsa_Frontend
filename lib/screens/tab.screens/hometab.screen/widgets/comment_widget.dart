@@ -127,7 +127,7 @@ class UserComment extends HookWidget {
                                                 ],
                                               ),
                                               const SizedBox(
-                                                width: 6,
+                                                width: 10,
                                               ),
                                               SizedBox(
                                                 width: dimension['width']! - 98,
