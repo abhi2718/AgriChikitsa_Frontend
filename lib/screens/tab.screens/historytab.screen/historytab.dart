@@ -21,7 +21,7 @@ class HistortTabScreen extends HookWidget {
         body: SizedBox(
           height: dimension["height"]!,
           child: const Column(
-            children: [HeadingText('History')],
+            children: [HeadingText('Chat screen')],
           ),
         ),
       ),
