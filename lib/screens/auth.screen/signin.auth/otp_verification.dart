@@ -1,9 +1,11 @@
 import 'dart:async';
+
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:agriChikitsa/res/color.dart';
+import 'package:provider/provider.dart';
+
 import '../../../utils/utils.dart';
 import '../../../widgets/button.widgets/elevated_button.dart';
 import '../../../widgets/text.widgets/text.dart';
@@ -124,7 +126,7 @@ class OtpVerification extends HookWidget {
                             child: Row(
                               children: [
                                 Image.asset(
-                                  'assets/images/SMS.png',
+                                  'assets/images/smsButton.png',
                                   width: 60,
                                   height: 40,
                                 )
