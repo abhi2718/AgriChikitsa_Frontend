@@ -50,18 +50,18 @@ class EditProfileScreen extends HookWidget {
               const SizedBox(
                 height: 16,
               ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: Image.network("https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg",
-              width:80,
-              height: 80,
-              ),
-              ),
-              // ProfilePicture(
-              //   picImage: useViewModel.pickProfileImage,
-              //   captureImage: useViewModel.captureProfileImage,
-              //   authService: authService,
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(40),
+              //   child: Image.network("https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg",
+              // width:80,
+              // height: 80,
               // ),
+              // ),
+              ProfilePicture(
+                picImage: useViewModel.pickProfileImage,
+                captureImage: useViewModel.captureProfileImage,
+                authService: authService,
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -85,7 +85,8 @@ class EditProfileScreen extends HookWidget {
                             Utils.fieldFocusChange(
                                 context,
                                 useViewModel.nameFocusNode,
-                                useViewModel.emailFocusNode);
+                                useViewModel.emailFocusNode
+                                );
                           },
                         ),
                       ),
