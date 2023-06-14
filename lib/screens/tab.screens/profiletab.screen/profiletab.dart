@@ -9,7 +9,7 @@ import '../../../services/auth.dart';
 import '../../../services/socket_io.dart';
 import '../../auth.screen/signin.auth/signin_view_model.dart';
 import '../../auth.screen/signup.auth/signup_view_model.dart';
-import '../historytab.screen/history_tab_view_model.dart';
+import '../chattab.screen/chat_tab_view_model.dart';
 import '../hometab.screen/hometab_view_model.dart';
 import './widgets/profile_button.dart';
 import './profile_view_model.dart';
@@ -30,8 +30,8 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<SocketService>(context, listen: false),
       Provider.of<HomeTabViewModel>(context, listen: false),
       Provider.of<AuthService>(context, listen: false),
-      Provider.of<HistoryTabViewModel>(context, listen: false),
-      Provider.of<HistoryTabViewModel>(context, listen: false),
+      Provider.of<ChatTabViewModel>(context, listen: false),
+      Provider.of<ChatTabViewModel>(context, listen: false),
       Provider.of<EditProfileViewModel>(context, listen: false)
     ];
     const defaultImage =
@@ -135,19 +135,17 @@ class ProfileTabScreen extends HookWidget {
             const SizedBox(
               height: 20,
             ),
-            
             CustomElevatedButton(
               onPress: () =>
                   useViewModel.handleLogOut(context, disposableProvider),
               title: "Logout",
               width: dimension["width"]! - 32,
             ),
-             const SizedBox(
+            const SizedBox(
               height: 20,
             ),
             CustomElevatedButton(
-              onPress: () =>
-                  useViewModel.handleLocaleChange(),
+              onPress: () => useViewModel.handleLocaleChange(),
               title: "Change Local",
               width: dimension["width"]! - 32,
             )

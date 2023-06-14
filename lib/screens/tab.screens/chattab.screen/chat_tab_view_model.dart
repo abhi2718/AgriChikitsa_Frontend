@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/utils/utils.dart';
-import '../../../repository/history_tab.repo/history_tab_repository.dart';
+import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 
-class HistoryTabViewModel with ChangeNotifier {
-  final _historyTabRepository = HistoryTabRepository();
+class ChatTabViewModel with ChangeNotifier {
+  final _chatTabRepository = ChatTabRepository();
   var _loading = false;
   bool get loading {
     return _loading;
@@ -18,11 +18,7 @@ class HistoryTabViewModel with ChangeNotifier {
     _loading = false;
   }
 
-  void fetchCategory() async{
-    try {
-
-    } catch (e) {
-
-    }
+  void fetchCategory() async {
+    try {} catch (e) {}
   }
 }

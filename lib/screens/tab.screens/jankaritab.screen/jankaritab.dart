@@ -30,22 +30,25 @@ class JankariHomeTab extends HookWidget {
             return provider.loading
                 ? Container(
                     padding:
-                        const EdgeInsets.only(top: 32, left: 16, right: 16),
+                        const EdgeInsets.only(top: 33, left: 16, right: 16),
                     height: dimension['height'],
                     width: dimension['width'],
                     child: ListView.builder(
                       itemCount: 10,
                       itemBuilder: (context, index) {
                         return Padding(
-                          padding: EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Skeleton(
-                              height: dimension['height']! * 0.13,
-                              width: dimension['width']!),
+                            height: dimension['height']! * 0.16,
+                            width: dimension['width']!,
+                            radius: 8,
+                          ),
                         );
                       },
                     ),
                   )
-                : SizedBox(
+                : Container(
+                    padding: EdgeInsets.only(left: 12, top: 32, right: 12),
                     width: dimension['width'],
                     height: dimension['height'],
                     child: ListView.builder(

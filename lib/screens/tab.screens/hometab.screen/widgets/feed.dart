@@ -25,8 +25,8 @@ class Feed extends HookWidget {
     final isLiked = useState(feed['likes'].contains(userInfo["_id"]));
     final numberOfComments = useState(feed['comments'].length);
 
-    void setNumberOfComment(int count){
-      numberOfComments.value = count; 
+    void setNumberOfComment(int count) {
+      numberOfComments.value = count;
     }
 
     void handleLike() {
@@ -152,7 +152,7 @@ class Feed extends HookWidget {
                         context,
                         UserComment(
                           feedId: feed["_id"],
-                          setNumberOfComment:setNumberOfComment,
+                          setNumberOfComment: setNumberOfComment,
                         ));
                   },
                   child: Container(

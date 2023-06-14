@@ -47,6 +47,13 @@ class SignInViewModel with ChangeNotifier {
     }
   }
 
+  void resetTimer() {
+    countDown = 30;
+    showResendOTPButton = false;
+    showTimmer = true;
+    notifyListeners();
+  }
+
   void setResendOTPButton() {
     showResendOTPButton = true;
     notifyListeners();
@@ -153,6 +160,7 @@ class SignInViewModel with ChangeNotifier {
           await localStorage.setString("profile", jsonEncode(profile));
           setUserProfile(data);
           setloading(false);
+          resetTimer();
           Navigator.of(context)
               .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         }
