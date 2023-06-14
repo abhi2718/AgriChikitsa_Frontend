@@ -1,18 +1,21 @@
+import 'package:agriChikitsa/model/user_model.dart';
+import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
+import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:agriChikitsa/model/user_model.dart';
-import 'package:agriChikitsa/utils/utils.dart';
-import 'package:agriChikitsa/widgets/text.widgets/text.dart';
-import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
+import './profile_view_model.dart';
+import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
 import '../../../services/socket_io.dart';
 import '../../auth.screen/signin.auth/signin_view_model.dart';
 import '../../auth.screen/signup.auth/signup_view_model.dart';
 import '../historytab.screen/history_tab_view_model.dart';
 import '../hometab.screen/hometab_view_model.dart';
-import './widgets/profile_button.dart';
-import './profile_view_model.dart';
 import 'edit_profile/edit_profile_view_model.dart';
 
 class ProfileTabScreen extends HookWidget {
@@ -37,6 +40,19 @@ class ProfileTabScreen extends HookWidget {
     const defaultImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(Remix.arrow_left_line),
+          color: AppColor.midBlackColor,
+        ),
+        backgroundColor: AppColor.whiteColor,
+        title: const BaseText(
+          title: 'Settings',
+          style: TextStyle(color: AppColor.midBlackColor),
+        ),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -54,9 +70,10 @@ class ProfileTabScreen extends HookWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.grey[300],
-                    image: DecorationImage(
+                    image: const DecorationImage(
                       fit: BoxFit.fill,
-                      image: NetworkImage("https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg"),
+                      image: NetworkImage(
+                          "https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg"),
                       // image: user.profileImage != null
                       //     ? NetworkImage(user.profileImage!)
                       //     : const NetworkImage(
@@ -76,7 +93,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.goToEditProfileScreen(context),
-                leftIcon: "assets/images/terms.png",
+                leftIcon: "assets/images/Profile.png",
                 title: 'Edit Profile',
                 width: dimension["width"]! - 32,
               ),
@@ -100,7 +117,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
-                leftIcon: "assets/images/terms.png",
+                leftIcon: "assets/images/tc.png",
                 title: 'Terms and Conditions',
                 width: dimension["width"]! - 32,
               ),
@@ -112,7 +129,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
-                leftIcon: "assets/images/privacy.png",
+                leftIcon: "assets/images/pp.png",
                 title: 'Privacy Policy',
                 width: dimension["width"]! - 32,
               ),
@@ -135,19 +152,21 @@ class ProfileTabScreen extends HookWidget {
             const SizedBox(
               height: 20,
             ),
-            
-            CustomElevatedButton(
-              onPress: () =>
-                  useViewModel.handleLogOut(context, disposableProvider),
-              title: "Logout",
-              width: dimension["width"]! - 32,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ProfileButton(
+                onPress: () =>
+                    useViewModel.handleLogOut(context, disposableProvider),
+                title: "Logout",
+                width: dimension["width"]! - 32,
+                leftIcon: 'assets/images/icon_logout.png',
+              ),
             ),
-             const SizedBox(
+            const SizedBox(
               height: 20,
             ),
             CustomElevatedButton(
-              onPress: () =>
-                  useViewModel.handleLocaleChange(),
+              onPress: () => useViewModel.handleLocaleChange(),
               title: "Change Local",
               width: dimension["width"]! - 32,
             )

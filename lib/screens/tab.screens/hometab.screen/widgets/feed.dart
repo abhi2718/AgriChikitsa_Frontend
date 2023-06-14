@@ -63,13 +63,9 @@ class Feed extends HookWidget {
                       children: [
                         Column(
                           children: [
-                            Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(user['profileImage']),
-                              ),
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(user['profileImage']),
                             ),
                           ],
                         ),
@@ -79,23 +75,15 @@ class Feed extends HookWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: BaseText(
-                                title: user['name'],
-                                style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w700),
-                              ),
+                            BaseText(
+                              title: user['name'],
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w700),
                             ),
-                            Shimmer.fromColors(
-                              baseColor: Colors.grey.shade300,
-                              highlightColor: Colors.grey.shade100,
-                              child: const BaseText(
-                                title: '@atin',
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w400),
-                              ),
+                            const BaseText(
+                              title: '@atin',
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w400),
                             ),
                           ],
                         ),

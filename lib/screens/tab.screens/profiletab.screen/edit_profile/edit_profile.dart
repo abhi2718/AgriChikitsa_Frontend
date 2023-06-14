@@ -1,15 +1,16 @@
+import 'package:agriChikitsa/model/user_model.dart';
+import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:agriChikitsa/model/user_model.dart';
-import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
+import './edit_profile_view_model.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/Input.widgets/input.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
-import '../../../../widgets/tools.widgets/tools.dart';
-import '../../../../widgets/tools.widgets/upload_profile.dart';
-import './edit_profile_view_model.dart';
 
 class EditProfileScreen extends HookWidget {
   const EditProfileScreen({super.key});
@@ -23,39 +24,57 @@ class EditProfileScreen extends HookWidget {
     final user = User.fromJson(authService.userInfo["user"]);
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Remix.arrow_left_line),
+            color: AppColor.midBlackColor,
+          ),
+          backgroundColor: AppColor.whiteColor,
+          title: const BaseText(
+            title: 'Profile',
+            style: TextStyle(
+              color: AppColor.midBlackColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          centerTitle: true,
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  width: dimension["width"]! - 32,
-                  child: Row(
-                    children: [
-                      BackIconButton(onTap: () => useViewModel.goBack(context)),
-                    ],
-                  ),
-                ),
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // SizedBox(
+              //   width: dimension["width"]! - 32,
+              //   child: Row(
+              //     children: [
+              //       BackIconButton(onTap: () => useViewModel.goBack(context)),
+              //     ],
+              //   ),
+              // ),
               const SizedBox(
                 height: 16,
               ),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [SubHeadingText("Edit Profile")],
+                children: [
+                  // SubHeadingText("Edit Profile"),
+                ],
               ),
               const SizedBox(
                 height: 16,
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(40),
-                child: Image.network("https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg",
-              width:80,
-              height: 80,
-              ),
+                child: Image.network(
+                  "https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg",
+                  width: 80,
+                  height: 80,
+                ),
               ),
               // ProfilePicture(
               //   picImage: useViewModel.pickProfileImage,
@@ -114,7 +133,7 @@ class EditProfileScreen extends HookWidget {
                             CustomElevatedButton(
                           title: "Update",
                           loading: provider.loading,
-                          width: dimension["width"]!-32,
+                          width: dimension["width"]! - 32,
                           onPress: () =>
                               provider.saveForm(context, user, authService),
                         ),
