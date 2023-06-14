@@ -21,7 +21,9 @@ class UserComment extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
+
     final textEditingController = TextEditingController();
+
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -147,12 +149,17 @@ class UserComment extends HookWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const CircleAvatar(
-                                child: Image(
-                                  image:
-                                      AssetImage('assets/images/prof_img.png'),
-                                ),
-                              ),
+                              Consumer<AuthService>(
+                                  builder: (context, provider, child) {
+                                if (provider.userInfo != null) {
+                                  final user = provider.userInfo["user"];
+                                  return CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(user["profileImage"]),
+                                  );
+                                }
+                                return Container();
+                              }),
                               const SizedBox(
                                 width: 10,
                               ),
