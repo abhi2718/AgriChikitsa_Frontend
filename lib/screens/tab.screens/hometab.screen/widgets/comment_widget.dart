@@ -143,10 +143,10 @@ class UserComment extends HookWidget {
                       Container(
                         height: 500,
                         child: Padding(
-                          padding:
-                              const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                          padding: const EdgeInsets.only(
+                              top: 10.0, bottom: 10.0, left: 10.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Consumer<AuthService>(
@@ -181,29 +181,33 @@ class UserComment extends HookWidget {
                                   ),
                                 ),
                               ),
+                              const SizedBox(
+                                width: 10,
+                              ),
                               Consumer<HomeTabViewModel>(
-                                  builder: (context, provider, child) {
-                                return InkWell(
-                                  onTap: () {
-                                    useViewModel.addComment(
-                                      context,
-                                      feedId,
-                                      textEditingController.text,
-                                      User.fromJson(
-                                          authService.userInfo["user"]),
-                                    );
-                                    setNumberOfComment(
-                                        provider.commentsList.length);
-                                    Navigator.pop(context);
-                                  },
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: const Image(
-                                        image: AssetImage(
-                                            'assets/images/buttonCommit.png')),
-                                  ),
-                                );
-                              }),
+                                builder: (context, provider, child) {
+                                  return InkWell(
+                                    onTap: () {
+                                      useViewModel.addComment(
+                                        context,
+                                        feedId,
+                                        textEditingController.text,
+                                        User.fromJson(
+                                            authService.userInfo["user"]),
+                                      );
+                                      setNumberOfComment(
+                                          provider.commentsList.length);
+                                      Navigator.pop(context);
+                                    },
+                                    child: IconButton(
+                                      onPressed: () {},
+                                      icon: const Image(
+                                          image: AssetImage(
+                                              'assets/images/buttonCommit.png')),
+                                    ),
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
