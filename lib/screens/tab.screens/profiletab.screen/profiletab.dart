@@ -1,18 +1,20 @@
+import 'package:agriChikitsa/model/user_model.dart';
+import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
+import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:agriChikitsa/model/user_model.dart';
-import 'package:agriChikitsa/utils/utils.dart';
-import 'package:agriChikitsa/widgets/text.widgets/text.dart';
-import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:provider/provider.dart';
+
+import './profile_view_model.dart';
+import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
 import '../../../services/socket_io.dart';
 import '../../auth.screen/signin.auth/signin_view_model.dart';
 import '../../auth.screen/signup.auth/signup_view_model.dart';
 import '../chattab.screen/chat_tab_view_model.dart';
 import '../hometab.screen/hometab_view_model.dart';
-import './widgets/profile_button.dart';
-import './profile_view_model.dart';
 import 'edit_profile/edit_profile_view_model.dart';
 
 class ProfileTabScreen extends HookWidget {
@@ -37,12 +39,23 @@ class ProfileTabScreen extends HookWidget {
     const defaultImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColor.whiteColor,
+        foregroundColor: AppColor.darkBlackColor,
+        centerTitle: true,
+        title: const BaseText(
+          title: "Settings",
+          style: TextStyle(
+            color: AppColor.darkBlackColor,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(
-              height: 60,
+              height: 30,
             ),
             SizedBox(
               height: 180,
@@ -76,7 +89,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.goToEditProfileScreen(context),
-                leftIcon: "assets/images/terms.png",
+                leftIcon: "assets/images/Profile.png",
                 title: 'Edit Profile',
                 width: dimension["width"]! - 32,
               ),
@@ -88,7 +101,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => Utils.launchDialer('8318064327'),
-                leftIcon: "assets/images/contacts.png",
+                leftIcon: "assets/images/phone.png",
                 title: 'Contact Support',
                 width: dimension["width"]! - 32,
               ),
@@ -100,7 +113,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
-                leftIcon: "assets/images/terms.png",
+                leftIcon: "assets/images/Terms And Condition.png",
                 title: 'Terms and Conditions',
                 width: dimension["width"]! - 32,
               ),
@@ -112,7 +125,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
-                leftIcon: "assets/images/privacy.png",
+                leftIcon: "assets/images/Privacy And Policy.png",
                 title: 'Privacy Policy',
                 width: dimension["width"]! - 32,
               ),
@@ -127,19 +140,23 @@ class ProfileTabScreen extends HookWidget {
                   // useViewModel.handleDelete(
                   //     context, user.companyId!, disposableProvider);
                 },
-                leftIcon: "assets/images/delete.png",
+                leftIcon: "assets/images/Delete Account.png",
                 title: 'Delete Account',
                 width: dimension["width"]! - 32,
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 8,
             ),
-            CustomElevatedButton(
-              onPress: () =>
-                  useViewModel.handleLogOut(context, disposableProvider),
-              title: "Logout",
-              width: dimension["width"]! - 32,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ProfileButton(
+                onPress: () =>
+                    useViewModel.handleLogOut(context, disposableProvider),
+                leftIcon: "assets/images/logout.png",
+                title: 'Logout',
+                width: dimension["width"]! - 32,
+              ),
             ),
             const SizedBox(
               height: 20,

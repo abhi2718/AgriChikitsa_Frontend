@@ -1,15 +1,17 @@
+import 'package:agriChikitsa/model/user_model.dart';
+import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:agriChikitsa/model/user_model.dart';
-import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
+import './edit_profile_view_model.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/Input.widgets/input.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
-import '../../../../widgets/tools.widgets/tools.dart';
 import '../../../../widgets/tools.widgets/upload_profile.dart';
-import './edit_profile_view_model.dart';
 
 class EditProfileScreen extends HookWidget {
   const EditProfileScreen({super.key});
@@ -23,6 +25,22 @@ class EditProfileScreen extends HookWidget {
     final user = User.fromJson(authService.userInfo["user"]);
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColor.whiteColor,
+          foregroundColor: AppColor.darkBlackColor,
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Remix.arrow_left_line,
+            ),
+          ),
+          title: const BaseText(
+              title: "Edit Profile",
+              style: TextStyle(color: AppColor.darkBlackColor)),
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -33,20 +51,20 @@ class EditProfileScreen extends HookWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SizedBox(
                   width: dimension["width"]! - 32,
-                  child: Row(
-                    children: [
-                      BackIconButton(onTap: () => useViewModel.goBack(context)),
-                    ],
-                  ),
+                  // child: Row(
+                  //   children: [
+                  //     BackIconButton(onTap: () => useViewModel.goBack(context)),
+                  //   ],
+                  // ),
                 ),
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [SubHeadingText("Edit Profile")],
-              ),
+              // const SizedBox(
+              //   height: 16,
+              // ),
+              // const Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [SubHeadingText("Edit Profile")],
+              // ),
               const SizedBox(
                 height: 16,
               ),
