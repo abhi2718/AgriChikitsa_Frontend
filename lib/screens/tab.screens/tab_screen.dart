@@ -2,10 +2,10 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.da
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'chattab.screen/chattab.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
+import 'chattab.screen/chattab.dart';
 
 class TabScreen extends HookWidget {
   const TabScreen({super.key});
@@ -36,24 +36,24 @@ class TabScreen extends HookWidget {
         items: [
           BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/images/homeDeactive.png',
+                'assets/icons/Home.png',
                 width: 20,
                 height: 20,
               ),
               activeIcon: Image.asset(
-                'assets/images/homeActive.png',
+                'assets/icons/Home Filled.png',
                 width: 20,
                 height: 20,
               ),
               label: 'Home'),
           BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/icons/chat.png',
+                'assets/icons/Chat Icon.png',
                 width: 20,
                 height: 20,
               ),
               activeIcon: Image.asset(
-                'assets/images/historyActive.png',
+                'assets/icons/Chat Icon Filled.png',
                 width: 20,
                 height: 20,
               ),
@@ -73,12 +73,12 @@ class TabScreen extends HookWidget {
           // ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/jankari.png',
+              'assets/icons/Jankari Icon.png',
               width: 20,
               height: 20,
             ),
             activeIcon: Image.asset(
-              'assets/images/active_add.png',
+              'assets/icons/Jankari Icon Filled.png',
               width: 20,
               height: 20,
             ),
@@ -86,12 +86,12 @@ class TabScreen extends HookWidget {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/setting.png',
+              'assets/icons/Settings.png',
               width: 20,
               height: 20,
             ),
             activeIcon: Image.asset(
-              'assets/icons/setting.png',
+              'assets/icons/Setting Filled.png',
               width: 20,
               height: 20,
             ),
