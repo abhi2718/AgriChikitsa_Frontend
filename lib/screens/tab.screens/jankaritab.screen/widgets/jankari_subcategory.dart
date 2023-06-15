@@ -72,7 +72,7 @@ class SubCategoryContainer extends HookWidget {
                                         width: 80,
                                         child: Skeleton(
                                           height: 10,
-                                          width: 30,
+                                          width: 40,
                                           radius: 8,
                                         ),
                                       );
@@ -200,13 +200,30 @@ class SubCategoryContainer extends HookWidget {
                                         Container(
                                           alignment: Alignment.center,
                                           child: Center(
-                                            child: BaseText(
-                                              title: subCategory.name,
-                                              style: const TextStyle(
-                                                  color: AppColor.whiteColor,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
+                                            child: subCategory.name.length > 8
+                                                ? Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 20),
+                                                    child: BaseText(
+                                                      title: subCategory.name,
+                                                      style: const TextStyle(
+                                                          color: AppColor
+                                                              .whiteColor,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  )
+                                                : BaseText(
+                                                    title: subCategory.name,
+                                                    style: const TextStyle(
+                                                        color:
+                                                            AppColor.whiteColor,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
                                           ),
                                         ),
                                       ],

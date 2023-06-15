@@ -149,4 +149,8 @@ class HomeTabViewModel with ChangeNotifier {
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }
+
+  void goToCreatePostScreen(BuildContext context) {
+    Navigator.of(context).pushNamed(RouteName.createPostRoute);
+  }
 }

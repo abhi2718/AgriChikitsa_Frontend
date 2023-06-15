@@ -1,4 +1,4 @@
-import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/create_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
@@ -60,34 +60,97 @@ class HomeTabScreen extends HookWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const HeaderWidget(),
-              SizedBox(
-                height: dimension['height']! - 100,
-                child: Consumer<HomeTabViewModel>(
-                    builder: (context, provider, child) {
-                  return provider.loading
-                      ? ListView.builder(
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return const FeedLoader();
-                          },
-                        )
-                      : ListView.builder(
-                          itemCount: provider.feedList.length,
-                          itemBuilder: (context, index) {
-                            final feed = provider.feedList[index];
-                            return Feed(
-                              feed: feed,
-                            );
-                          },
-                        );
-                }),
-              ),
-            ],
-          ),
+        body: Column(
+          children: [
+            const HeaderWidget(),
+            Consumer<HomeTabViewModel>(builder: (context, provider, child) {
+              return provider.loading
+                  ? SizedBox(
+                      height: dimension['height']! - 100,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Card(
+                                  child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 8),
+                                height: dimension['height']! * 0.182,
+                                width: dimension['width'],
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Row(
+                                        children: [
+                                          Skeleton(
+                                            height: 40,
+                                            width: 40,
+                                            radius: 30,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Skeleton(
+                                              height: 13,
+                                              width: dimension['width']! - 250,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Skeleton(
+                                          height: 50,
+                                          width: dimension['width']!,
+                                          radius: 6,
+                                        )),
+                                  ],
+                                ),
+                              )),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 10,
+                                itemBuilder: (context, index) {
+                                  return const FeedLoader();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SizedBox(
+                      height: dimension['height']! - 100,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const CreatePostCard(),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: provider.feedList.length,
+                              itemBuilder: (context, index) {
+                                final feed = provider.feedList[index];
+                                return Feed(
+                                  feed: feed,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+            }),
+          ],
         ),
       ),
     );
