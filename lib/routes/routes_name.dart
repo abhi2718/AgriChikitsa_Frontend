@@ -6,4 +6,5 @@ class RouteName {
   static const String otpVerificationRoute = "/otp/verification";
   static const String homeRoute = "/home";
   static const String editProfileRoute = "/edit/profile";
+  static const String createPostRoute = "/create/post";
 }
