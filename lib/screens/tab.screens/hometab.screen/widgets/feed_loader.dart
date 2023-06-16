@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/widgets/card.widgets/card.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../res/color.dart';
@@ -14,7 +15,7 @@ class FeedLoader extends StatelessWidget {
     final dimension = Utils.getDimensions(context, true);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Card(
+      child: CustomCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

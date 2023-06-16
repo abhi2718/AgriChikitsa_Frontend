@@ -1,10 +1,13 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/card.widgets/card.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+
 import '../../../../services/auth.dart';
 import 'comment_widget.dart';
 
@@ -46,7 +49,7 @@ class Feed extends HookWidget {
       margin: const EdgeInsets.only(top: 10),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Card(
+        child: CustomCard(
           child: Column(
             children: [
               Padding(
@@ -93,7 +96,7 @@ class Feed extends HookWidget {
               ),
               Image.network(
                 feed['imgurl'],
-                width: dimension["width"]! - 16,
+                width: dimension["width"]! - 15,
                 fit: BoxFit.fill,
                 height: 240,
               ),
@@ -107,9 +110,12 @@ class Feed extends HookWidget {
                         children: [
                           InkWell(
                             onTap: handleLike,
-                            child: Icon(isLiked.value
-                                ? Remix.heart_2_fill
-                                : Remix.heart_line),
+                            child: Icon(
+                              isLiked.value
+                                  ? Remix.heart_2_fill
+                                  : Remix.heart_2_line,
+                              color: AppColor.likeButtonColor,
+                            ),
                           ),
                           const SizedBox(
                             width: 6,
@@ -133,7 +139,7 @@ class Feed extends HookWidget {
                     ]),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 17),
                 child: BaseText(
                   title: feed["caption"],
                   style: const TextStyle(
@@ -142,7 +148,7 @@ class Feed extends HookWidget {
                 ),
               ),
               const SizedBox(
-                height: 16,
+                height: 17,
               ),
               SizedBox(
                 height: 40,

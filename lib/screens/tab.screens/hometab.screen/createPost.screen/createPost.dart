@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/widgets/post_header.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
 
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
@@ -22,60 +25,63 @@ class CreatePostScreen extends HookWidget {
         useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColor.whiteColor,
-        foregroundColor: AppColor.darkBlackColor,
-        leading: InkWell(
-            onTap: () => useViewModel.goBack(context),
-            child: Icon(Icons.arrow_back)),
-        elevation: 0.0,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const BaseText(
-                title: "Create Post",
-                style: TextStyle(
-                    color: AppColor.darkBlackColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500),
-              ),
-              Consumer<CreatePostModel>(builder: (context, provider, child) {
-                return InkWell(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const PostHeader(),
+            SizedBox(
+              height: 16,
+            ),
+            Consumer<CreatePostModel>(builder: (context, provider, child) {
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: InkWell(
                   onTap: () => provider.pickPostImage(context, authService),
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    height: dimension['height']! * 0.45,
-                    width: dimension['width'],
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: AppColor.darkColor, width: 2.0)),
-                    child: useViewModel.imagePath.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset('assets/icons/gallery.jpg'),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                BaseText(
-                                    title: "Click Here to Upload Image",
-                                    style: TextStyle()),
-                              ],
+                  child: DottedBorder(
+                    color: AppColor.darkColor,
+                    strokeWidth: 2,
+                    dashPattern: [8, 4],
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      height: dimension['height']! - 450,
+                      width: dimension['width'],
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                      child: useViewModel.imagePath.isEmpty
+                          ? const Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Remix.add_line),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  BaseText(
+                                    title: "Upload Image",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Image.file(
+                              File(provider.imagePath),
+                              fit: BoxFit.cover,
                             ),
-                          )
-                        : Image.file(
-                            File(provider.imagePath),
-                            fit: BoxFit.cover,
-                          ),
+                    ),
                   ),
-                );
-              }),
-              Form(
+                ),
+              );
+            }),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Form(
                 key: useViewModel.editUserformKey,
                 child: Column(
                   children: [
@@ -120,20 +126,21 @@ class CreatePostScreen extends HookWidget {
                     Consumer<CreatePostModel>(
                       builder: (context, provider, child) =>
                           CustomElevatedButton(
-                              title: "Update",
+                              title: "Post",
                               // loading: provider.loading,
                               width: dimension["width"]! - 32,
                               onPress: () {
                                 useViewModel.clearImagePath();
                               }
+            
                               // provider.saveForm(context, user, authService),
                               ),
                     )
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

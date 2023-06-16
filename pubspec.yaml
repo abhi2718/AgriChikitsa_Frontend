@@ -54,8 +54,7 @@ dependencies:
   remixicon: ^1.0.0
   shimmer: ^3.0.0
   youtube_player_flutter: ^8.1.2
-  
-
+  dotted_border: ^2.0.0+3
 
 dev_dependencies:
   flutter_test:

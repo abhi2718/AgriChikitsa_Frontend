@@ -5,6 +5,8 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
 import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 import '../jankari_view_model.dart';
@@ -37,12 +39,16 @@ class SubCategoryContainer extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
-                            onTap: () => Navigator.of(context).pop(),
-                            child: const Icon(Icons.arrow_back)),
+                          onTap: () => Navigator.of(context).pop(),
+                          child: const Icon(
+                            Remix.arrow_left_line,
+                          ),
+                        ),
                         InkWell(
-                            onTap: () => Navigator.of(context)
-                                .popUntil((route) => route.isFirst),
-                            child: const Icon(Icons.cancel)),
+                          onTap: () => Navigator.of(context)
+                              .popUntil((route) => route.isFirst),
+                          child: const Icon(Remix.close_circle_line),
+                        ),
                       ],
                     ),
                     const SizedBox(
