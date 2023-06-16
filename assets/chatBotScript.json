@@ -1,0 +1,196 @@
+[
+    {
+        "id": "1",
+        "question_hi": "🍃अपनी फसल के बारेमें जानेएग्री-चिकित्सा के साथ। �",
+        "question_en": "Know about your crop with Agrichikitsa"
+    },
+    {
+        "id": "2",
+        "question_hi": "नमस्कार {USER_Name} जी🤗, आपका एग्रीचिकित्सा में स्वागत है। इस मच्छ सेहम आपके फसलों के रोगों एवं सबंधित समस्याओं का समाधान देनेकी कोशिश कर रहेहै। कृपया नीचे पछूए गए सवालों के सही उत्तर चुने।⏬",
+        "question_en": "Hello {USER_Name} , Welcome to Agrichikitsa. Choose Your Age (",
+        "options": [
+            {
+                "option_hi": "30 साल से कम",
+                "option_en": "Below 30",
+                "q_id": "2",
+                "opt_id": "1"
+            },
+            {
+                "option_hi": "30 साल से 50 साल",
+                "option_en": "In Between 30 to 50",
+                "q_id": "2",
+                "opt_id": "2"
+            },
+            {
+                "option_hi": "50 साल से ऊपर",
+                "option_en": "50 plus",
+                "q_id": "2",
+                "opt_id": "3"
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "question_hi": "कृपया अपनी फसल चुनें, यदि आपकी फसल यहाँ लिस्ट में नहीं है तो अकिंकित करें। ⏬",
+        "question_en": "Now Select your crop. Note: If the crop is not in the list, then type your crop name",
+        "options": [
+            {
+                "option_hi": "धान",
+                "option_en": "Rice",
+                "q_id": "3",
+                "opt_id": "1"
+            },
+            {
+                "option_hi": "गेहूँ",
+                "option_en": "Wheat",
+                "q_id": "3",
+                "opt_id": "2"
+            },
+            {
+                "option_hi": "अरहर",
+                "option_en": "Pigeon Pea / Toor Dal",
+                "q_id": "3",
+                "opt_id": "3"
+            },
+            {
+                "option_hi": "शलजम",
+                "option_en": "Turnip",
+                "q_id": "3",
+                "opt_id": "4"
+            },
+            {
+                "option_hi": "धनिया",
+                "option_en": "Coriander",
+                "q_id": "3",
+                "opt_id": "5"
+            },
+            {
+                "option_hi": "मलूरी",
+                "option_en": "Amaranth Leaves",
+                "q_id": "3",
+                "opt_id": "6"
+            },
+            {
+                "option_hi": "गाजर",
+                "option_en": "Carrot",
+                "q_id": "3",
+                "opt_id": "7"
+            },
+            {
+                "option_hi": "फूलगोभी",
+                "option_en": "Cauliflower",
+                "q_id": "3",
+                "opt_id": "8"
+            },
+            {
+                "option_hi": "पत्ता गोभी",
+                "option_en": "Cabbage",
+                "q_id": "3",
+                "opt_id": "9"
+            },
+            {
+                "option_hi": "बगैन",
+                "option_en": "Eggplant / Brinjal",
+                "q_id": "3",
+                "opt_id": "10"
+            },
+            {
+                "option_hi": "खीरा",
+                "option_en": "Cucumber",
+                "q_id": "3",
+                "opt_id": "11"
+            },
+            {
+                "option_hi": "चकुंदर",
+                "option_en": "Beetroot",
+                "q_id": "3",
+                "opt_id": "12"
+            },
+            {
+                "option_hi": "प्याज",
+                "option_en": "Onion",
+                "q_id": "3",
+                "opt_id": "13"
+            },
+            {
+                "option_hi": "मिर्च",
+                "option_en": "Pepper / Chili",
+                "q_id": "3",
+                "opt_id": "14"
+            },
+            {
+                "option_hi": "शिमला मिर्च",
+                "option_en": "Bell Pepper / Capsicum",
+                "q_id": "3",
+                "opt_id": "15"
+            },
+            {
+                "option_hi": "अदरक",
+                "option_en": "Ginger",
+                "q_id": "3",
+                "opt_id": "16"
+            },
+            {
+                "option_hi": "आम",
+                "option_en": "Mango",
+                "q_id": "3",
+                "opt_id": "17"
+            },
+            {
+                "option_hi": "केला",
+                "option_en": "Banana",
+                "q_id": "3",
+                "opt_id": "18"
+            },
+            {
+                "option_hi": "पपीता",
+                "option_en": "Papaya",
+                "q_id": "3",
+                "opt_id": "19"
+            }
+        ]
+    },
+    {
+        "id": "4",
+        "question_en": "Now select your crop problem. Note: If the problem is not in the list, then select option 6. Others.",
+        "question_hi": "अपनी फसल चुनें के लिए धन्यवाद🙏🤗, कृपया अपनी फसल की समस्या चुनें⚠",
+        "options": [
+            {
+                "option_hi": "1. पत्तियों का पीलापन",
+                "option_en": "1. Yellowing of leaves",
+                "q_id": "4",
+                "opt_id": "1"
+            },
+            {
+                "option_hi": "2. पत्तियों का गहरा हरा",
+                "option_en": "2. Dark green leaves",
+                "q_id": "4",
+                "opt_id": "2"
+            },
+            {
+                "option_hi": "3. पत्तों की नरसता",
+                "option_en": "3. Dry leaves",
+                "q_id": "4",
+                "opt_id": "3"
+            },
+            {
+                "option_hi": "4. खरपतवार",
+                "option_en": "4. Weeding",
+                "q_id": "4",
+                "opt_id": "4"
+            },
+            {
+                "option_hi": "5. कीट-पतंग और रोग",
+                "option_en": "5. Pests and diseases",
+                "q_id": "4",
+                "opt_id": "5"
+            },
+            {
+                "option_hi": "6. अन्य ➡",
+                "option_en": "6. Others",
+                "q_id": "4",
+                "opt_id": "6"
+            }
+        ]
+    }
+]

@@ -18,7 +18,9 @@ class ChatTabScreen extends HookWidget {
         useMemoized(() => Provider.of<ChatTabViewModel>(context, listen: true));
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
-      Future.delayed(Duration.zero, () {});
+      Future.delayed(Duration.zero, () {
+        useViewModel.fetchBotMessages();
+      });
     }, []);
     return Scaffold(
       body: SafeArea(

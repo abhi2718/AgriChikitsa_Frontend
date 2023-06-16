@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import '../../../model/bot_message_model.dart';
 import '../../../model/chat_message_model.dart';
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 import '../../../services/auth.dart';
 
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
+
 class ChatTabViewModel with ChangeNotifier {
   final _chatTabRepository = ChatTabRepository();
-  List<ChatMessageModel> chatMessageList = [];
+  List<dynamic> chatMessageList = [];
+  List botMessageList = [];
+  int totalMessageCount = 0;
   var messageController = TextEditingController();
   String message = "";
   var _loading = false;
@@ -24,6 +30,12 @@ class ChatTabViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setMessageFieldOption(value) {
+    message = value;
+    setChatMessagesList();
+    notifyListeners();
+  }
+
   void disposeValues() {
     _loading = false;
   }
@@ -32,22 +44,49 @@ class ChatTabViewModel with ChangeNotifier {
     try {} catch (e) {}
   }
 
-  void setChatMessagesList() async {
-    try {
-      if (message.isNotEmpty) {
-        chatMessageList = mapChatMessages(message);
-        message = "";
-        messageController.clear();
-      }
+  void fetchBotMessages() async {
+    final filePath = 'assets/chatBotScript.json'; // Replace with your file path
+    botMessageList = await loadBotMessages(filePath);
+    if (botMessageList.length >= 1) {
+      chatMessageList.add(botMessageList[0]);
+      totalMessageCount += 1;
+    }
 
-      notifyListeners();
-    } catch (error) {
-      // Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    if (botMessageList.length >= 2) {
+      chatMessageList.add(botMessageList[1]);
+      totalMessageCount += 1;
     }
   }
 
-  List<ChatMessageModel> mapChatMessages(String message) {
-    return [...chatMessageList, ChatMessageModel(message: message, isMe: true)];
+  void setChatMessagesList() async {
+    try {
+      if (message.isNotEmpty) {
+        chatMessageList.addAll(mapChatMessages(message));
+        chatMessageList.addAll(mapBotMessages());
+        message = "";
+        messageController.clear();
+      }
+      notifyListeners();
+    } catch (error) {
+      // Handle error
+    }
+  }
+
+  List<dynamic> mapChatMessages(String message) {
+    final newMessage = ChatMessage(text: message);
+    return [newMessage];
+  }
+
+  List<dynamic> mapBotMessages() {
+    List<dynamic> botMessages = [];
+    if (botMessageList.isNotEmpty) {
+      // Assuming totalMessageCount is properly initialized and incremented elsewhere
+      if (totalMessageCount < botMessageList.length) {
+        botMessages.add(botMessageList[totalMessageCount]);
+        totalMessageCount += 1;
+      }
+    }
+    return botMessages;
   }
 
   void captureProfileImage(context, AuthService authService) async {
@@ -77,5 +116,11 @@ class ChatTabViewModel with ChangeNotifier {
     } catch (error) {
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
+  }
+
+  Future<List<BotMessage1>> loadBotMessages(String filePath) async {
+    final jsonString = await rootBundle.loadString(filePath);
+    final jsonData = json.decode(jsonString) as List<dynamic>;
+    return jsonData.map((json) => BotMessage1.fromJson(json)).toList();
   }
 }

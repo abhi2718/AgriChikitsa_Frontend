@@ -1,5 +1,7 @@
-class ChatMessageModel {
-  final String message;
-  bool isMe;
-  ChatMessageModel({required this.message, this.isMe = true});
+import 'package:flutter/material.dart';
+
+class ChatMessage {
+  final String text;
+
+  ChatMessage({required this.text});
 }
