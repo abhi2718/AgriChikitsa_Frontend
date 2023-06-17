@@ -1,10 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../../model/chat_message_model.dart';
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 import '../../../services/auth.dart';
 
+class ChatMessage {
+  final String text;
+  final bool isUserMessage;
+
+  ChatMessage({required this.text, required this.isUserMessage});
+}
+
 class ChatTabViewModel with ChangeNotifier {
+  //final textEditingController = useTextEditingController();
+  final List<ChatMessage> chatMessages = [];
+  void handleUserQuery(String query) {
+    
+    if (query.isNotEmpty) {
+      final botResponse = generateBotResponse(query);
+
+      final botMessage = ChatMessage(text: botResponse, isUserMessage: false);
+
+      chatMessages.add(botMessage);
+      notifyListeners();
+    }
+  }
+
+  String generateBotResponse(String userQuery) {
+    for (final rule in rules) {
+      final pattern = rule['pattern'] as String;
+      final response = rule['response'] as String;
+
+      if (userQuery.toLowerCase().contains(pattern)) {
+        return response;
+      }
+    }
+
+    return 'Sorry, I don\'t understand. Can you please rephrase your query?';
+  }
+
+  final List<Map<String, dynamic>> rules = [
+    {
+      'pattern': 'hi',
+      'response': 'Hello! How can I assist you?',
+    },
+    {
+      'pattern': 'how are you',
+      'response': 'I am doing well. Thank you!',
+    },
+    // Add more rules as needed
+  ];
+
   final _chatTabRepository = ChatTabRepository();
   List<ChatMessageModel> chatMessageList = [];
   var messageController = TextEditingController();
