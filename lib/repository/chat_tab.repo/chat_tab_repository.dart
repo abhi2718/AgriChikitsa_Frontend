@@ -3,12 +3,21 @@ import '../../res/app_url.dart';
 
 class ChatTabRepository {
   final _apiServices = NetworkApiService();
-  Future<dynamic> fetchBotMessage(String id) async {
+  Future<dynamic> fetchBotMessage() async {
     try {
-      final url = id == "All"
-          ? '${AppUrl.feedEndPoint}/*/1/*/approved'
-          : '${AppUrl.feedEndPoint}/$id/1/*/approved';
+      const url = '${AppUrl.botEndPoint}/script';
       final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> addQuestion(dynamic payload) async {
+    try {
+      const url = '${AppUrl.botEndPoint}/chat';
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      print(response);
       return response;
     } catch (e) {
       rethrow;

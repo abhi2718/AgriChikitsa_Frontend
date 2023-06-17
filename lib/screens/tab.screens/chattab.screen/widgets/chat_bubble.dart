@@ -36,7 +36,8 @@ class ChatBubbles extends HookWidget {
           children: options
               .map((option) => InkWell(
                     onTap: () {
-                      useViewModel.setMessageFieldOption(option.optionHi);
+                      useViewModel.setMessageFieldOption(
+                          context, option.optionHi);
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),

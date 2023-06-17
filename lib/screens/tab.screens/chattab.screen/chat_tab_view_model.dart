@@ -5,9 +5,6 @@ import '../../../model/chat_message_model.dart';
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 import '../../../services/auth.dart';
 
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-
 class ChatTabViewModel with ChangeNotifier {
   final _chatTabRepository = ChatTabRepository();
   List<dynamic> chatMessageList = [];
@@ -30,8 +27,9 @@ class ChatTabViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setMessageFieldOption(value) {
+  void setMessageFieldOption(BuildContext context, value) {
     message = value;
+    addQuestion(context, message);
     setChatMessagesList();
     notifyListeners();
   }
@@ -42,20 +40,6 @@ class ChatTabViewModel with ChangeNotifier {
 
   void fetchCategory() async {
     try {} catch (e) {}
-  }
-
-  void fetchBotMessages() async {
-    final filePath = 'assets/chatBotScript.json'; // Replace with your file path
-    botMessageList = await loadBotMessages(filePath);
-    if (botMessageList.length >= 1) {
-      chatMessageList.add(botMessageList[0]);
-      totalMessageCount += 1;
-    }
-
-    if (botMessageList.length >= 2) {
-      chatMessageList.add(botMessageList[1]);
-      totalMessageCount += 1;
-    }
   }
 
   void setChatMessagesList() async {
@@ -80,7 +64,6 @@ class ChatTabViewModel with ChangeNotifier {
   List<dynamic> mapBotMessages() {
     List<dynamic> botMessages = [];
     if (botMessageList.isNotEmpty) {
-      // Assuming totalMessageCount is properly initialized and incremented elsewhere
       if (totalMessageCount < botMessageList.length) {
         botMessages.add(botMessageList[totalMessageCount]);
         totalMessageCount += 1;
@@ -118,9 +101,61 @@ class ChatTabViewModel with ChangeNotifier {
     }
   }
 
-  Future<List<BotMessage1>> loadBotMessages(String filePath) async {
-    final jsonString = await rootBundle.loadString(filePath);
-    final jsonData = json.decode(jsonString) as List<dynamic>;
-    return jsonData.map((json) => BotMessage1.fromJson(json)).toList();
+  // Future<List<BotMessage1>> loadBotMessages(String data) async {
+  //   final jsonData = json.decode(data) as List<dynamic>;
+  //   return jsonData.map((json) => BotMessage1.fromJson(json)).toList();
+  // }
+  void fetchBotMessages(BuildContext context) async {
+    // final filePath = 'assets/chatBotScript.json'; // Replace with your file path
+    // botMessageList = await loadBotMessages(filePath);
+    // if (botMessageList.length >= 1) {
+    //   chatMessageList.add(botMessageList[0]);
+    //   totalMessageCount += 1;
+    // }
+
+    // if (botMessageList.length >= 2) {
+    //   chatMessageList.add(botMessageList[1]);
+    //   totalMessageCount += 1;
+    // }
+    try {
+      final data = await _chatTabRepository.fetchBotMessage();
+      loadBotMessages(data);
+      if (botMessageList.length >= 1) {
+        chatMessageList.add(botMessageList[0]);
+        totalMessageCount += 1;
+      }
+      if (botMessageList.length >= 2) {
+        chatMessageList.add(botMessageList[1]);
+        totalMessageCount += 1;
+      }
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void loadBotMessages(dynamic data) {
+    final List<dynamic> messages = data;
+    botMessageList =
+        messages.map((message) => BotMessage1.fromJson(message)).toList();
+  }
+
+  void addQuestion(BuildContext context, String chatMessage) async {
+    try {
+      //There might be a parsing issue here.
+      final payload = {"question": chatMessage};
+      final data = await _chatTabRepository.addQuestion(payload);
+      //Here {"answer":"random tex"} this is being generated  which is not getting mapped i guess.
+      // loadBotMessages(data);
+
+      //Solution 1- Create a new model BotMessage and manipulate condition on frontend.
+      // final newMessage = BotMessage(text: data['answer']);
+      // chatMessageList = [...chatMessageList, newMessage];
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
   }
 }

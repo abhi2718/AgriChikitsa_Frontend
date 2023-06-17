@@ -46,6 +46,7 @@ class NetworkApiService extends BaseApiServices {
           .post(Uri.parse(url), headers: headers, body: jsonEncode(payload))
           .timeout(const Duration(seconds: 10));
       _jsonResponse = returnResponse(response);
+      print(response);
     } on SocketException {
       throw FetchDataException("No Internet connection!");
     }

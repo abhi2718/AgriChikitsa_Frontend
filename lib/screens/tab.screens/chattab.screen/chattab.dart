@@ -19,7 +19,7 @@ class ChatTabScreen extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
       Future.delayed(Duration.zero, () {
-        useViewModel.fetchBotMessages();
+        useViewModel.fetchBotMessages(context);
       });
     }, []);
     return Scaffold(
