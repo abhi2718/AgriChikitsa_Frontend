@@ -1,128 +1,140 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:agriChikitsa/utils/utils.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import '../../../model/chat_message_model.dart';
-import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
-import '../../../services/auth.dart';
-
-class ChatMessage {
-  final String text;
-  final bool isUserMessage;
-
-  ChatMessage({required this.text, required this.isUserMessage});
-}
 
 class ChatTabViewModel with ChangeNotifier {
-  //final textEditingController = useTextEditingController();
-  final List<ChatMessage> chatMessages = [];
-  void handleUserQuery(String query) {
-    
-    if (query.isNotEmpty) {
-      final botResponse = generateBotResponse(query);
-
-      final botMessage = ChatMessage(text: botResponse, isUserMessage: false);
-
-      chatMessages.add(botMessage);
-      notifyListeners();
-    }
-  }
-
-  String generateBotResponse(String userQuery) {
-    for (final rule in rules) {
-      final pattern = rule['pattern'] as String;
-      final response = rule['response'] as String;
-
-      if (userQuery.toLowerCase().contains(pattern)) {
-        return response;
-      }
-    }
-
-    return 'Sorry, I don\'t understand. Can you please rephrase your query?';
-  }
-
-  final List<Map<String, dynamic>> rules = [
+  bool showFirstBubbleLoader = false;
+  bool showSecondBubbleLoader = false;
+  bool showFourthLoading = false;
+  final dynamic questions = [
     {
-      'pattern': 'hi',
-      'response': 'Hello! How can I assist you?',
+      "id": "1",
+      "question_hi": "🍃अपनी फसल के बारे में जाने एग्रीचिकित्सा के साथ। �",
+      "question_en": "Know about your crop with Agrichikitsa",
+      "isMe": false,
     },
     {
-      'pattern': 'how are you',
-      'response': 'I am doing well. Thank you!',
+      "id": "3",
+      "question_hi": "कृपया अपनी आयु सीमा चनु े।",
+      "question_en": "Choose Your Age",
+      "options_hi": ["#30 साल से कम", "#30 साल से 50 साल", "#50 साल से उपर"],
+      "options_en": ["Below 30", "In Between 30 to 50", "50 plus"],
+      "isAnswerSelected": false,
+      "answer": "",
+      "isMe": false,
     },
-    // Add more rules as needed
+    {
+      "id": "4",
+      "question_hi":
+          "कृपया अपनी फसल चुनें, यदि आपकी फसल यहाँ लिस्ट में नहीं है तो अकिंकित करें। ⏬",
+      "question_en":
+          "Now Select your crop. Note: If the crop is not in the list, then type your crop name",
+      "options_hi": [
+        "धान",
+        "गेहूँ",
+        "अरहर",
+        "शलजम",
+        "धनया",
+        "मूल",
+        "गाजर",
+        "फूलगोभी",
+        "पागोभी",
+        "बैगन",
+        "खीरा",
+        "चुकंदर",
+        "याज",
+        "मच",
+        "शमलामच",
+        "अदरक",
+        "आम",
+        "केला",
+        "पपीता"
+      ],
+      "isAnswerSelected": false,
+      "answer": "",
+      "isMe": false,
+    }
   ];
+  var chatMessages = [];
 
-  final _chatTabRepository = ChatTabRepository();
-  List<ChatMessageModel> chatMessageList = [];
-  var messageController = TextEditingController();
-  String message = "";
-  var _loading = false;
-  bool get loading {
-    return _loading;
+  void initialTask() {
+    if (chatMessages.isEmpty) {
+      chatMessages.add(questions[0]);
+      Timer(const Duration(seconds: 2), () {
+        showFirstBubbleLoader = true;
+        notifyListeners();
+      });
+      Timer(const Duration(seconds: 4), () {
+        showFirstBubbleLoader = false;
+        chatMessages.add(questions[1]);
+        handleSecondBubbleLoader();
+        notifyListeners();
+      });
+    }
+  }
+  
+  void loadGreating(String name) {
+    final messageHi =
+        'नमस्कार $name जी🤗, आपका एग्रीचिकित्सा में स्वागत है। इस मच्छ से हम आपके फसलों के रोगों एवं सबंधित समस्याओं का समाधान देनेकी कोशिश कर रहेहै। कृपया नीचे पछूए गए सवालों के सही उत्तर चुने।⏬';
+    final messageEn = 'Hello $name, Welcome to Agrichikitsa';
+    final greating = {
+      "id": "2",
+      "question_hi": messageHi,
+      "question_en": messageEn,
+      "isMe": false,
+    };
+    questions.insert(1, greating);
   }
 
-  setloading(bool value) {
-    _loading = value;
+  void handleSecondBubbleLoader() {
+    showSecondBubbleLoader = true;
     notifyListeners();
-  }
-
-  void setMessageField() {
-    message = messageController.text;
-    notifyListeners();
-  }
-
-  void disposeValues() {
-    _loading = false;
-  }
-
-  void fetchCategory() async {
-    try {} catch (e) {}
-  }
-
-  void setChatMessagesList() async {
-    try {
-      if (message.isNotEmpty) {
-        chatMessageList = mapChatMessages(message);
-        message = "";
-        messageController.clear();
-      }
-
+    Timer(const Duration(seconds: 4), () {
+      showSecondBubbleLoader = false;
+      chatMessages.add(questions[2]);
       notifyListeners();
-    } catch (error) {
-      // Utils.flushBarErrorMessage('Alert', error.toString(), context);
-    }
+    });
   }
 
-  List<ChatMessageModel> mapChatMessages(String message) {
-    return [...chatMessageList, ChatMessageModel(message: message, isMe: true)];
-  }
-
-  void captureProfileImage(context, AuthService authService) async {
-    try {
-      final data = await Utils.capturePhoto();
-      if (data != null) {
-        // final response = await Utils.uploadImage(data);
-        // print(response);
-        // final user = User.fromJson(authService.userInfo["user"]);
-        // final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
-        // updateProfile(userInfo, context, authService);
+  void selectAge(String age, String id) {
+    var updatedChatMessages = chatMessages.map((item) {
+      if (item['id'] == id) {
+        return {
+          ...item,
+          "isAnswerSelected": true,
+          "answer": age,
+        };
       }
-    } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
-    }
+      return item;
+    });
+    chatMessages = updatedChatMessages.toList();
+    notifyListeners();
+    loadQuestionFour();
   }
 
-  void pickProfileImage(context, AuthService authService) async {
-    try {
-      final data = await Utils.pickImage();
-      if (data != null) {
-        // final response = await Utils.uploadImage(data);
-        // final user = User.fromJson(authService.userInfo["user"]);
-        // final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
-        // updateProfile(userInfo, context, authService);
-      }
-    } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
-    }
+  void loadQuestionFour() {
+    showFourthLoading = true;
+    notifyListeners();
+    Timer(const Duration(seconds: 4), () {
+      showFourthLoading = false;
+      chatMessages.add(questions[3]);
+      notifyListeners();
+    });
   }
+
+void handleSelctCrop(String crop, String id){
+var updatedChatMessages = chatMessages.map((item) {
+      if (item['id'] == id) {
+        return {
+          ...item,
+          "isAnswerSelected": true,
+          "answer": crop,
+        };
+      }
+      return item;
+    });
+    chatMessages = updatedChatMessages.toList();
+    notifyListeners();
+}
+
+  
 }

@@ -22,7 +22,7 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
   }
 }
 
-class HomeTabScreen extends HookWidget {
+class HomeTabScreen extends HookWidget  {
   const HomeTabScreen({super.key});
 
   @override

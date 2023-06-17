@@ -16,6 +16,7 @@ import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
 import './screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
+import 'screens/tab.screens/tab_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +68,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<CreatePostModel>(
           create: (_) => CreatePostModel(),
+        ),
+        ChangeNotifierProvider<TabViewModel>(
+          create: (_) => TabViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(
