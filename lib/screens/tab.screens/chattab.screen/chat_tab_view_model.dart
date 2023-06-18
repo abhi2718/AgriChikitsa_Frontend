@@ -14,53 +14,17 @@ class ChatTabViewModel with ChangeNotifier {
   bool showFourthLoader = false;
   bool showFifthBubbleLoader = false;
   bool showSixthBubbleLoader = false;
+  bool showSeventhBubbleLoader = false;
+  bool showLastMessage = false;
+  bool showCropImageLoader = false;
+  var cropImage = "";
   var questionIndex = 0;
+  var selectedDisease = '';
   final dynamic questions = [
     {
       "id": "1",
       "question_hi": "🍃अपनी फसल के बारे में जाने एग्रीचिकित्सा के साथ। �",
       "question_en": "Know about your crop with Agrichikitsa",
-      "isMe": false,
-    },
-    {
-      "id": "3",
-      "question_hi": "कृपया अपनी आयु सीमा चनु े।",
-      "question_en": "Choose Your Age",
-      "options_hi": ["#30 साल से कम", "#30 साल से 50 साल", "#50 साल से उपर"],
-      "options_en": ["Below 30", "In Between 30 to 50", "50 plus"],
-      "isAnswerSelected": false,
-      "answer": "",
-      "isMe": false,
-    },
-    {
-      "id": "4",
-      "question_hi":
-          "कृपया अपनी फसल चुनें, यदि आपकी फसल यहाँ लिस्ट में नहीं है तो अकिंकित करें। ⏬",
-      "question_en":
-          "Now Select your crop. Note: If the crop is not in the list, then type your crop name",
-      "options_hi": [
-        "धान",
-        "गेहूँ",
-        "अरहर",
-        "शलजम",
-        "धनया",
-        "मूल",
-        "गाजर",
-        "फूलगोभी",
-        "पागोभी",
-        "बैगन",
-        "खीरा",
-        "चुकंदर",
-        "याज",
-        "मच",
-        "शमलामच",
-        "अदरक",
-        "आम",
-        "केला",
-        "पपीता"
-      ],
-      "isAnswerSelected": false,
-      "answer": "",
       "isMe": false,
     }
   ];
@@ -77,6 +41,11 @@ class ChatTabViewModel with ChangeNotifier {
     showThirdLoader = false;
     showFourthLoader = false;
     showFifthBubbleLoader = false;
+    showSixthBubbleLoader = false;
+    showSeventhBubbleLoader = false;
+    showLastMessage = false;
+    showCropImageLoader = false;
+    cropImage = "";
   }
 
   void initialTask(context) {
@@ -194,6 +163,7 @@ class ChatTabViewModel with ChangeNotifier {
   }
 
   void selectCropDisease(context, String disease, String id) {
+    selectedDisease = disease;
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
         return {
@@ -220,14 +190,17 @@ class ChatTabViewModel with ChangeNotifier {
       chatMessages.add(data["question"]);
       showFifthBubbleLoader = false;
       final question = data["question"];
-      final isToShowCameraIcon =
-          question["showCameraIcon"] == null ? false : true;
-      if (!isToShowCameraIcon) {
-        showSixthBubbleLoader = true;
-        final t7 = Timer(const Duration(seconds: 2), () {
-          fetchSixthQuestion(context, '6${question["id"]}');
-        });
-        timmerInstances.add(t7);
+      final checkList = ['अन्य', 'खरपतवार'];
+      if (!checkList.contains(id)) {
+        final isToShowCameraIcon =
+            question["showCameraIcon"] == null ? false : true;
+        if (!isToShowCameraIcon) {
+          showSixthBubbleLoader = true;
+          final t7 = Timer(const Duration(seconds: 2), () {
+            fetchSixthQuestion(context, '6${question["id"]}');
+          });
+          timmerInstances.add(t7);
+        }
       }
       notifyListeners();
     } catch (error) {
@@ -267,10 +240,84 @@ class ChatTabViewModel with ChangeNotifier {
         notifyListeners();
       });
       timmerInstances.add(t5);
-    } else {
-      Utils.flushBarErrorMessage(
-          "Alert!", "Answer is allredy selected", context);
+    }
+    final selectedDiseaseList = ['अन्य', 'Other'];
+    if (selectedDiseaseList.contains(selectedDisease)) {
+      var updatedChatMessages = chatMessages.map((item) {
+        if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
+          return {
+            ...item,
+            "isAnswerSelected": true,
+            "answer": textEditingController.text,
+          };
+        }
+        return item;
+      });
+      chatMessages = updatedChatMessages.toList();
+      selectedDisease = '';
       textEditingController.clear();
+      showSixthBubbleLoader = true;
+      showLastMessage = true;
+      notifyListeners();
+      final t7 = Timer(const Duration(seconds: 2), () {
+        chatMessages.add(
+          {
+            "id": "7",
+            "question_hi":
+                "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+            "question_en": "Know about your crop with Agrichikitsa",
+            "options_hi": [],
+            "options_en": [],
+            "isAnswerSelected": false,
+            "answer": "",
+            "isMe": false,
+          },
+        );
+        showSixthBubbleLoader = false;
+        notifyListeners();
+      });
+      timmerInstances.add(t7);
+    }
+    //  else {
+    //   Utils.flushBarErrorMessage(
+    //       "Alert!", "Answer is allredy selected", context);
+    //   textEditingController.clear();
+    // }
+  }
+
+  void uploadImage(context) async {
+    try {
+      final imageFile = await Utils.capturePhoto();
+      if (imageFile != null) {
+        showCropImageLoader = true;
+        notifyListeners();
+        final data = await Utils.uploadImage(imageFile);
+        cropImage = data["imgurl"];
+        showCropImageLoader = false;
+        showSeventhBubbleLoader = true;
+        notifyListeners();
+        final t8 = Timer(const Duration(seconds: 2), () {
+        chatMessages.add(
+          {
+            "id": "8",
+            "question_hi":
+                "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+            "question_en": "Know about your crop with Agrichikitsa",
+            "options_hi": [],
+            "options_en": [],
+            "isAnswerSelected": false,
+            "answer": "",
+            "isMe": false,
+          },
+        );
+        showSeventhBubbleLoader = false;
+        showLastMessage = true;
+        notifyListeners();
+      });
+      timmerInstances.add(t8);
+      }
+    } catch (error) {
+      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
   }
 }

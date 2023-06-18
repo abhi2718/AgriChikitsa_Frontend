@@ -249,8 +249,10 @@ class ChatScreen extends HookWidget {
                                       color: Colors.black, fontSize: 16),
                                 )
                               : Container(),
-                              const SizedBox(height: 16,),
-                              provider.showFourthLoader
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          provider.showFourthLoader
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -264,7 +266,6 @@ class ChatScreen extends HookWidget {
                                   ],
                                 )
                               : Container()
-
                         ],
                       );
                     }
@@ -330,7 +331,7 @@ class ChatScreen extends HookWidget {
                                       color: Colors.black, fontSize: 16),
                                 )
                               : Container(),
-                              provider.showFifthBubbleLoader
+                          provider.showFifthBubbleLoader
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -361,35 +362,39 @@ class ChatScreen extends HookWidget {
                           const SizedBox(
                             height: 16,
                           ),
-                          SizedBox(
-                            width: dimension['width']! - 32,
-                            height: 40,
-                            child: SingleChildScrollView(
-                              child: SizedBox(
-                                width: dimension['width']! - 32,
-                                height: 40,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: message["options_hi"].length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: message["isAnswerSelected"]
-                                            ? null
-                                            : null,
-                                        child: BubbleSpecialThree(
-                                          text: message["options_hi"][index],
-                                          color: Color(0xFFE8E8EE),
-                                          tail: false,
-                                          isSender: false,
-                                          textStyle: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ),
-                          ),
+                          message["options_hi"].length > 0
+                              ? SizedBox(
+                                  width: dimension['width']! - 32,
+                                  height: 40,
+                                  child: SingleChildScrollView(
+                                    child: SizedBox(
+                                      width: dimension['width']! - 32,
+                                      height: 40,
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount:
+                                              message["options_hi"].length,
+                                          itemBuilder: (context, index) {
+                                            return InkWell(
+                                              onTap: message["isAnswerSelected"]
+                                                  ? null
+                                                  : null,
+                                              child: BubbleSpecialThree(
+                                                text: message["options_hi"]
+                                                    [index],
+                                                color: Color(0xFFE8E8EE),
+                                                tail: false,
+                                                isSender: false,
+                                                textStyle: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16),
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                           const SizedBox(
                             height: 16,
                           ),
@@ -403,7 +408,7 @@ class ChatScreen extends HookWidget {
                                       color: Colors.black, fontSize: 16),
                                 )
                               : Container(),
-                              provider.showSixthBubbleLoader
+                          provider.showSixthBubbleLoader
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -417,7 +422,16 @@ class ChatScreen extends HookWidget {
                                   ],
                                 )
                               : Container(),
-                              message["showCameraIcon"] == null?Container():Text("Show camera icon")
+                          message["showCameraIcon"] == null
+                              ? Container()
+                              : Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.camera),
+                                      onPressed: () {},
+                                    )
+                                  ],
+                                )
                         ],
                       );
                     }
@@ -435,49 +449,50 @@ class ChatScreen extends HookWidget {
                           const SizedBox(
                             height: 16,
                           ),
-                          SizedBox(
-                            width: dimension['width']! - 32,
-                            height: 40,
-                            child: SingleChildScrollView(
-                              child: SizedBox(
-                                width: dimension['width']! - 32,
-                                height: 40,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: message["options_hi"].length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: message["isAnswerSelected"]
-                                            ? null
-                                            : null,
-                                        child: BubbleSpecialThree(
-                                          text: message["options_hi"][index],
-                                          color: Color(0xFFE8E8EE),
-                                          tail: false,
-                                          isSender: false,
-                                          textStyle: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          message["options_hi"].length > 0
+                              ? SizedBox(
+                                  width: dimension['width']! - 32,
+                                  height: 40,
+                                  child: SingleChildScrollView(
+                                    child: SizedBox(
+                                      width: dimension['width']! - 32,
+                                      height: 40,
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount:
+                                              message["options_hi"].length,
+                                          itemBuilder: (context, index) {
+                                            return InkWell(
+                                              onTap: message["isAnswerSelected"]
+                                                  ? null
+                                                  : null,
+                                              child: BubbleSpecialThree(
+                                                text: message["options_hi"]
+                                                    [index],
+                                                color: Color(0xFFE8E8EE),
+                                                tail: false,
+                                                isSender: false,
+                                                textStyle: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16),
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Color(0xFFE8E8EE),
+                                  color: Colors.red,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
                                       color: Colors.black, fontSize: 16),
                                 )
                               : Container(),
-                              provider.showFifthBubbleLoader
+                          provider.showFifthBubbleLoader
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -491,7 +506,78 @@ class ChatScreen extends HookWidget {
                                   ],
                                 )
                               : Container(),
-                              message["showCameraIcon"] == null?Container():Text("Show camera icon")
+                          message["showCameraIcon"] == null
+                              ? Container()
+                              : Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.camera_alt_outlined),
+                                      onPressed: () {
+                                        provider.uploadImage(context);
+                                      },
+                                    )
+                                  ],
+                                ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          provider.showCropImageLoader
+                              ? BubbleSpecialThree(
+                                  text: message["question_hi"],
+                                  color: Color(0xFF1B97F3),
+                                  tail: true,
+                                  isSender: message["isMe"],
+                                  textStyle: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                )
+                              : Container(),
+                          provider.cropImage != ""
+                              ? Image.network(provider.cropImage)
+                              : Container(),
+                          SizedBox(
+                            height: 16,
+                          ),
+                        ],
+                      );
+                    }
+                    if (index == 7) {
+                      return Column(
+                        children: [
+                          provider.showSeventhBubbleLoader
+                              ? JumpingDots(
+                                  color: Colors.red,
+                                  radius: 4,
+                                  numberOfDots: 3,
+                                  animationDuration:
+                                      const Duration(milliseconds: 200),
+                                )
+                              : Container(),
+                          BubbleSpecialThree(
+                            text: message["question_hi"],
+                            color: Color(0xFF1B97F3),
+                            tail: true,
+                            isSender: message["isMe"],
+                            textStyle:
+                                TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          provider.showLastMessage
+                              ? AnimatedTextKit(
+                                  animatedTexts: [
+                                    TyperAnimatedText(
+                                      "फसलों की सुरक्षा एग्री-चिकित्सा",
+                                      textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                  onTap: null,
+                                  isRepeatingAnimation: false,
+                                  totalRepeatCount: 1,
+                                )
+                              : Container()
                         ],
                       );
                     }
