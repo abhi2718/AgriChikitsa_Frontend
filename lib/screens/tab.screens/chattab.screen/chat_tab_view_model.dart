@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class ChatTabViewModel with ChangeNotifier {
+  final textEditingController = TextEditingController();
+  final dynamic timmerInstances = [];
   bool showFirstBubbleLoader = false;
   bool showSecondBubbleLoader = false;
   bool showFourthLoading = false;
+  var questionIndex = 0;
   final dynamic questions = [
     {
       "id": "1",
@@ -56,22 +60,35 @@ class ChatTabViewModel with ChangeNotifier {
   ];
   var chatMessages = [];
 
-  void initialTask() {
+  void reinitilize() {
+    timmerInstances.forEach((timer) => timer.cancel());
+    chatMessages.clear();
+    questionIndex = 0;
+    textEditingController.clear();
+    timmerInstances.clear();
+    showFirstBubbleLoader = false;
+    showSecondBubbleLoader = false;
+    showFourthLoading = false;
+  }
+
+  void initialTask(context) {
     if (chatMessages.isEmpty) {
       chatMessages.add(questions[0]);
-      Timer(const Duration(seconds: 2), () {
+      final t1 = Timer(const Duration(seconds: 2), () {
         showFirstBubbleLoader = true;
         notifyListeners();
       });
-      Timer(const Duration(seconds: 4), () {
+      timmerInstances.add(t1);
+      final t2 = Timer(const Duration(seconds: 4), () {
         showFirstBubbleLoader = false;
         chatMessages.add(questions[1]);
-        handleSecondBubbleLoader();
+        handleSecondBubbleLoader(context);
         notifyListeners();
       });
+      timmerInstances.add(t2);
     }
   }
-  
+
   void loadGreating(String name) {
     final messageHi =
         'नमस्कार $name जी🤗, आपका एग्रीचिकित्सा में स्वागत है। इस मच्छ से हम आपके फसलों के रोगों एवं सबंधित समस्याओं का समाधान देनेकी कोशिश कर रहेहै। कृपया नीचे पछूए गए सवालों के सही उत्तर चुने।⏬';
@@ -85,14 +102,16 @@ class ChatTabViewModel with ChangeNotifier {
     questions.insert(1, greating);
   }
 
-  void handleSecondBubbleLoader() {
+  void handleSecondBubbleLoader(context) {
     showSecondBubbleLoader = true;
     notifyListeners();
-    Timer(const Duration(seconds: 4), () {
+    final t3 = Timer(const Duration(seconds: 4), () {
       showSecondBubbleLoader = false;
       chatMessages.add(questions[2]);
+      questionIndex = 1;
       notifyListeners();
     });
+    timmerInstances.add(t3);
   }
 
   void selectAge(String age, String id) {
@@ -114,15 +133,17 @@ class ChatTabViewModel with ChangeNotifier {
   void loadQuestionFour() {
     showFourthLoading = true;
     notifyListeners();
-    Timer(const Duration(seconds: 4), () {
+    final t4 = Timer(const Duration(seconds: 4), () {
       showFourthLoading = false;
       chatMessages.add(questions[3]);
+      questionIndex = 3;
       notifyListeners();
     });
+    timmerInstances.add(t4);
   }
 
-void handleSelctCrop(String crop, String id){
-var updatedChatMessages = chatMessages.map((item) {
+  void handleSelctCrop(String crop, String id) {
+    var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
         return {
           ...item,
@@ -134,7 +155,14 @@ var updatedChatMessages = chatMessages.map((item) {
     });
     chatMessages = updatedChatMessages.toList();
     notifyListeners();
-}
+  }
 
-  
+  void handleUserInput() {
+    if (questionIndex == 3) {
+      final currentQuestion = chatMessages[questionIndex];
+      handleSelctCrop(textEditingController.text, currentQuestion["id"]);
+      textEditingController.clear();
+      questionIndex = 4;
+    }
+  }
 }

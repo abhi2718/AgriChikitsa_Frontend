@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class ChatScreen extends HookWidget {
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
-      useViewModel.initialTask();
+      useViewModel.initialTask(context);
       useViewModel.loadGreating("Abhishek Singh");
     }, []);
 
@@ -22,7 +23,8 @@ class ChatScreen extends HookWidget {
         builder: (context, provider, child) {
           return Column(
             children: [
-              Expanded(
+              SizedBox(
+                height: ((dimension["height"]!)) - 250,
                 child: ListView.builder(
                   itemCount: provider.chatMessages.length,
                   itemBuilder: (context, index) {
@@ -165,8 +167,10 @@ class ChatScreen extends HookWidget {
                                       color: Colors.black, fontSize: 16),
                                 )
                               : Container(),
-                              const SizedBox(height: 16,),
-                              provider.showFourthLoading
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          provider.showFourthLoading
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -250,14 +254,14 @@ class ChatScreen extends HookWidget {
                   },
                 ),
               ),
-              SizedBox(
-                height: 60,
-                width: dimension["width"],
-                child: Container(
-                  color: Colors.red,
-                  child: TextField(),
-                ),
-              )
+              TextField(
+                controller: useViewModel.textEditingController,
+              ),
+              CustomElevatedButton(
+                  title: "Send",
+                  onPress: () {
+                    useViewModel.handleUserInput();
+                  })
             ],
           );
         },

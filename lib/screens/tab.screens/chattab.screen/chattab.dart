@@ -1,6 +1,3 @@
-import 'package:agriChikitsa/res/color.dart';
-import 'package:agriChikitsa/screens/tab.screens/chattab.screen/chat_message.dart';
-import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/header.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -20,17 +17,33 @@ class ChatTabScreen extends HookWidget {
     useEffect(() {
       Future.delayed(Duration.zero, () {});
     }, []);
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 700,
-              width: double.infinity,
-              child: ChatScreen(),
-            ),
-            
-          ],
+    Future<bool> _onWillPop() async {
+      return false;
+    }
+
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  useViewModel.reinitilize();
+                  Navigator.pop(context);
+                },
+                child: Icon(
+                  Icons.close,
+                  size: 30.0,
+                ),
+              ),
+              SizedBox(
+                height: dimension['height'],
+                width: double.infinity,
+                child: ChatScreen(),
+              ),
+            ],
+          ),
         ),
       ),
     );

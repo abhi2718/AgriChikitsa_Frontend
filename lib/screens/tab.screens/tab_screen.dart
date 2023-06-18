@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
-import 'chattab.screen/chattab.dart';
 
 class TabScreen extends HookWidget {
   const TabScreen({super.key});
@@ -14,11 +13,10 @@ class TabScreen extends HookWidget {
     final useViewModel = Provider.of<TabViewModel>(context, listen: false);
     final List tabScreen = useMemoized(() {
       return [
-      const HomeTabScreen(),
-      const ChatTabScreen(),
-      const JankariHomeTab(),
-      const ProfileTabScreen(),
-    ];
+        const HomeTabScreen(),
+        const JankariHomeTab(),
+        const ProfileTabScreen(),
+      ];
     });
     final tabWidgets = useMemoized(() {
       return [
@@ -34,31 +32,6 @@ class TabScreen extends HookWidget {
               height: 20,
             ),
             label: 'Home'),
-        BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/Chat Icon.png',
-              width: 20,
-              height: 20,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/Chat Icon Filled.png',
-              width: 20,
-              height: 20,
-            ),
-            label: 'Chat'),
-        // BottomNavigationBarItem(
-        //   icon: Image.asset(
-        //     'assets/icons/ag.png',
-        //     width: 20,
-        //     height: 20,
-        //   ),
-        //   activeIcon: Image.asset(
-        //     'assets/images/active_add.png',
-        //     width: 20,
-        //     height: 20,
-        //   ),
-        //   label: 'AG+',
-        // ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/Jankari Icon.png',
@@ -89,19 +62,23 @@ class TabScreen extends HookWidget {
     });
 
     return Scaffold(
-      body: Consumer<TabViewModel>(builder: (context,provider,child){
+      body: Consumer<TabViewModel>(builder: (context, provider, child) {
         return tabScreen[provider.screenIndex];
       }),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: useViewModel.onTap,
-        showUnselectedLabels: true,
-        backgroundColor: AppColor.lightColor,
-        showSelectedLabels: true,
-        selectedItemColor: AppColor.darkColor,
-        unselectedItemColor: AppColor.extraDark,
-        currentIndex: useViewModel.screenIndex,
-        type: BottomNavigationBarType.fixed,
-        items: tabWidgets,
+      bottomNavigationBar: Consumer<TabViewModel>(
+        builder: (context, provider, child) {
+          return BottomNavigationBar(
+            onTap: useViewModel.onTap,
+            showUnselectedLabels: true,
+            backgroundColor: AppColor.lightColor,
+            showSelectedLabels: true,
+            selectedItemColor: AppColor.darkColor,
+            unselectedItemColor: AppColor.extraDark,
+            currentIndex: useViewModel.screenIndex,
+            type: BottomNavigationBarType.fixed,
+            items: tabWidgets,
+          );
+        },
       ),
     );
   }
