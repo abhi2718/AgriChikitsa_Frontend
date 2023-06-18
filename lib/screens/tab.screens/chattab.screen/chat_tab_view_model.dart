@@ -2,12 +2,18 @@ import 'dart:async';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 
+import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
+
 class ChatTabViewModel with ChangeNotifier {
+  final _chatTabRepository = ChatTabRepository();
   final textEditingController = TextEditingController();
   final dynamic timmerInstances = [];
   bool showFirstBubbleLoader = false;
   bool showSecondBubbleLoader = false;
-  bool showFourthLoading = false;
+  bool showThirdLoader = false;
+  bool showFourthLoader = false;
+  bool showFifthBubbleLoader = false;
+  bool showSixthBubbleLoader = false;
   var questionIndex = 0;
   final dynamic questions = [
     {
@@ -68,53 +74,52 @@ class ChatTabViewModel with ChangeNotifier {
     timmerInstances.clear();
     showFirstBubbleLoader = false;
     showSecondBubbleLoader = false;
-    showFourthLoading = false;
+    showThirdLoader = false;
+    showFourthLoader = false;
+    showFifthBubbleLoader = false;
   }
 
   void initialTask(context) {
     if (chatMessages.isEmpty) {
       chatMessages.add(questions[0]);
+      showFirstBubbleLoader = true;
       final t1 = Timer(const Duration(seconds: 2), () {
-        showFirstBubbleLoader = true;
-        notifyListeners();
+        fetchFirstQuestion(context, "1");
       });
       timmerInstances.add(t1);
-      final t2 = Timer(const Duration(seconds: 4), () {
-        showFirstBubbleLoader = false;
-        chatMessages.add(questions[1]);
-        handleSecondBubbleLoader(context);
-        notifyListeners();
-      });
-      timmerInstances.add(t2);
     }
   }
 
-  void loadGreating(String name) {
-    final messageHi =
-        'नमस्कार $name जी🤗, आपका एग्रीचिकित्सा में स्वागत है। इस मच्छ से हम आपके फसलों के रोगों एवं सबंधित समस्याओं का समाधान देनेकी कोशिश कर रहेहै। कृपया नीचे पछूए गए सवालों के सही उत्तर चुने।⏬';
-    final messageEn = 'Hello $name, Welcome to Agrichikitsa';
-    final greating = {
-      "id": "2",
-      "question_hi": messageHi,
-      "question_en": messageEn,
-      "isMe": false,
-    };
-    questions.insert(1, greating);
-  }
-
-  void handleSecondBubbleLoader(context) {
-    showSecondBubbleLoader = true;
-    notifyListeners();
-    final t3 = Timer(const Duration(seconds: 4), () {
-      showSecondBubbleLoader = false;
-      chatMessages.add(questions[2]);
-      questionIndex = 1;
+  void fetchFirstQuestion(BuildContext context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showFirstBubbleLoader = false;
+      showSecondBubbleLoader = true;
       notifyListeners();
-    });
-    timmerInstances.add(t3);
+      final t2 = Timer(const Duration(seconds: 2), () {
+        fetchSecondQuestion(context, "2");
+      });
+      timmerInstances.add(t2);
+    } catch (error) {
+      showSecondBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
   }
 
-  void selectAge(String age, String id) {
+  void fetchSecondQuestion(BuildContext context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showSecondBubbleLoader = false;
+      notifyListeners();
+    } catch (error) {
+      showSecondBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void selectAge(context, String age, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
         return {
@@ -127,22 +132,33 @@ class ChatTabViewModel with ChangeNotifier {
     });
     chatMessages = updatedChatMessages.toList();
     notifyListeners();
-    loadQuestionFour();
+    loadQuestionFour(context);
   }
 
-  void loadQuestionFour() {
-    showFourthLoading = true;
+  void loadQuestionFour(context) {
+    showThirdLoader = true;
     notifyListeners();
-    final t4 = Timer(const Duration(seconds: 4), () {
-      showFourthLoading = false;
-      chatMessages.add(questions[3]);
+    final t4 = Timer(const Duration(seconds: 2), () {
+      fetchThirdQuestion(context, "3");
       questionIndex = 3;
       notifyListeners();
     });
     timmerInstances.add(t4);
   }
 
-  void handleSelctCrop(String crop, String id) {
+  void fetchThirdQuestion(BuildContext context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showThirdLoader = false;
+      notifyListeners();
+    } catch (error) {
+      showThirdLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void handleSelctCrop(context, String crop, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
         return {
@@ -153,16 +169,108 @@ class ChatTabViewModel with ChangeNotifier {
       }
       return item;
     });
+    questionIndex = 4;
     chatMessages = updatedChatMessages.toList();
+    showFourthLoader = true;
     notifyListeners();
+    final t5 = Timer(const Duration(seconds: 2), () {
+      fetchFouthQuestion(context, "4");
+      questionIndex = 5;
+      notifyListeners();
+    });
+    timmerInstances.add(t5);
   }
 
-  void handleUserInput() {
+  void fetchFouthQuestion(BuildContext context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showFourthLoader = false;
+      notifyListeners();
+    } catch (error) {
+      showFourthLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void selectCropDisease(context, String disease, String id) {
+    var updatedChatMessages = chatMessages.map((item) {
+      if (item['id'] == id) {
+        return {
+          ...item,
+          "isAnswerSelected": true,
+          "answer": disease,
+        };
+      }
+      return item;
+    });
+    questionIndex = 6;
+    chatMessages = updatedChatMessages.toList();
+    showFifthBubbleLoader = true;
+    notifyListeners();
+    final t6 = Timer(const Duration(seconds: 2), () {
+      fetchFifthQuestion(context, disease);
+    });
+    timmerInstances.add(t6);
+  }
+
+  void fetchFifthQuestion(context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showFifthBubbleLoader = false;
+      final question = data["question"];
+      final isToShowCameraIcon =
+          question["showCameraIcon"] == null ? false : true;
+      if (!isToShowCameraIcon) {
+        showSixthBubbleLoader = true;
+        final t7 = Timer(const Duration(seconds: 2), () {
+          fetchSixthQuestion(context, '6${question["id"]}');
+        });
+        timmerInstances.add(t7);
+      }
+      notifyListeners();
+    } catch (error) {
+      showFifthBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void fetchSixthQuestion(context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showSixthBubbleLoader = false;
+      final question = data["question"];
+      final isToShowCameraIcon =
+          question["showCameraIcon"] == null ? false : true;
+      if (!isToShowCameraIcon) {}
+      notifyListeners();
+    } catch (error) {
+      showSixthBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void handleUserInput(context) {
     if (questionIndex == 3) {
       final currentQuestion = chatMessages[questionIndex];
-      handleSelctCrop(textEditingController.text, currentQuestion["id"]);
+      handleSelctCrop(
+          context, textEditingController.text, currentQuestion["id"]);
       textEditingController.clear();
       questionIndex = 4;
+      showFourthLoader = true;
+      notifyListeners();
+      final t5 = Timer(const Duration(seconds: 2), () {
+        fetchFouthQuestion(context, "4");
+        questionIndex = 5;
+        notifyListeners();
+      });
+      timmerInstances.add(t5);
+    } else {
+      Utils.flushBarErrorMessage(
+          "Alert!", "Answer is allredy selected", context);
+      textEditingController.clear();
     }
   }
 }
