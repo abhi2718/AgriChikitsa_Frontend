@@ -91,6 +91,8 @@ class CreatePostModel with ChangeNotifier {
     BuildContext context,
   ) {
     HomeTabViewModel().createPost(context, selectedKey, caption, imagePath);
+    selectedKey = "";
+    selectedValue = "";
     Navigator.of(context).pop();
   }
 }

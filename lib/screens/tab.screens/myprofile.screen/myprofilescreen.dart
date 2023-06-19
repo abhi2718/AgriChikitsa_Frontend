@@ -89,7 +89,7 @@ class MyProfileScreen extends HookWidget {
             Consumer<MyProfileViewModel>(builder: (context, provider, child) {
               return provider.bookMarkFeedList.isEmpty
                   ? Container(
-                      child: Text("Npthing"),
+                      child: Text("Nothing"),
                     )
                   : SizedBox(
                       height: dimension['height']! - 100,

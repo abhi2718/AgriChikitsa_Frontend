@@ -42,12 +42,12 @@ class Feed extends HookWidget {
     }
 
     void handleBookMark() {
-      useViewModel.toggleTimeline(context, feed["_id"], userInfo);
       if (isBookMarked.value == true) {
         isBookMarked.value = false;
       } else {
         isBookMarked.value = true;
       }
+      useViewModel.toggleTimeline(context, feed["_id"], userInfo, isBookMarked);
     }
 
     final user = feed['user'];

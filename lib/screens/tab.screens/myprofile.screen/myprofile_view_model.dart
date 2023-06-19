@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/model/user_model.dart';
+import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/repository/myprofile.repo/myprofile_tab_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,17 @@ class MyProfileViewModel with ChangeNotifier {
       final data = await _myProfileTabRepository.fetchTimeLine();
       bookMarkFeedList = data['timelineFeeds'];
       // setloading(false);
+      notifyListeners();
+    } catch (error) {
+      // setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void toggleTimeline(BuildContext context, String id, User user) async {
+    try {
+      final data = await HomeTabRepository().toggleTimeline(id);
+      user.timeline = data['timeLine'];
       notifyListeners();
     } catch (error) {
       // setloading(false);

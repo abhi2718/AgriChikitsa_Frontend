@@ -109,12 +109,19 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  void toggleTimeline(
-      BuildContext context, String id, currentUser.User user) async {
+  void toggleTimeline(BuildContext context, String id, currentUser.User user,
+      isBookMarked) async {
     try {
       final data = await _homeTabRepository.toggleTimeline(id);
+      int index = feedList.indexWhere((feed) => feed['_id'] == id);
       user.timeline = data['timeLine'];
-      print(user.timeline);
+      if (index != -1) {
+        dynamic updatedFeed = {
+          ...feedList[index],
+          "isBookMarked": isBookMarked,
+        };
+        feedList.replaceRange(index, index + 1, [updatedFeed]);
+      }
       notifyListeners();
     } catch (error) {
       setloading(false);

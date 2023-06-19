@@ -101,56 +101,56 @@ class CreatePostScreen extends HookWidget {
                     const SizedBox(
                       height: 16,
                     ),
-                    Consumer<CreatePostModel>(
-                        builder: (context, provider, child) {
-                      return Container(
-                        height: 40,
-                        width: dimension['width'],
-                        decoration: BoxDecoration(
-                          border: Border.all(color: AppColor.darkColor),
-                        ),
-                        child: Center(
-                          child: Builder(builder: (BuildContext context) {
-                            return DropdownButton<String>(
-                              value: provider.selectedKey,
-                              onChanged: (String? key) {
-                                provider.updateSelectedOption(key!);
-                              },
-                              items: provider.dropdownOptions.entries
-                                  .map<DropdownMenuItem<String>>(
-                                (MapEntry<String, String> entry) {
-                                  return DropdownMenuItem<String>(
-                                    value: entry.key,
-                                    child: Text(entry.value),
-                                  );
-                                },
-                              ).toList(),
-                            );
-                          }),
-                        ),
-                      );
-                    }),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Consumer<CreatePostModel>(
-                      builder: (context, provider, child) =>
-                          CustomElevatedButton(
-                              title: "Update",
-                              // loading: provider.loading,
-                              width: dimension["width"]! - 32,
-                              onPress: () {
-                                useViewModel.createPost(
-                                  context,
-                                );
-                                useViewModel.clearImagePath();
-                              }
-                              // provider.saveForm(context, user, authService),
-                              ),
-                    )
                   ],
                 ),
               ),
+              Consumer<CreatePostModel>(builder: (context, provider, child) {
+                return Container(
+                  height: 40,
+                  width: dimension['width'],
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColor.darkColor),
+                  ),
+                  child: Center(
+                    child: Builder(builder: (BuildContext context) {
+                      return DropdownButton<String>(
+                        value: provider.selectedKey.isEmpty
+                            ? "Select Category"
+                            : provider.selectedKey,
+                        onChanged: (String? key) {
+                          provider.updateSelectedOption(key!);
+                        },
+                        items: provider.dropdownOptions.entries
+                            .map<DropdownMenuItem<String>>(
+                          (MapEntry<String, String> entry) {
+                            return DropdownMenuItem<String>(
+                              value: entry.key,
+                              child: Text(entry.value),
+                            );
+                          },
+                        ).toList(),
+                      );
+                    }),
+                  ),
+                );
+              }),
+              const SizedBox(
+                height: 40,
+              ),
+              Consumer<CreatePostModel>(
+                builder: (context, provider, child) => CustomElevatedButton(
+                    title: "Update",
+                    // loading: provider.loading,
+                    width: dimension["width"]! - 32,
+                    onPress: () {
+                      useViewModel.createPost(
+                        context,
+                      );
+                      useViewModel.clearImagePath();
+                    }
+                    // provider.saveForm(context, user, authService),
+                    ),
+              )
             ],
           ),
         ),

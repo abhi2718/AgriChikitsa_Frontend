@@ -1,5 +1,5 @@
 class AppUrl {
-  static const String baseUrl = "http://192.168.1.108:1010/api/v1";
+  static const String baseUrl = "http://192.168.1.106:1010/api/v1";
   // "https://agrichikitsa-backend-abhiwebdev2718-gmailcom.vercel.app/api/v1";
   // "https://agrichikitsa-backend-abhiwebdev2718-gmailcom.vercel.app/api/v1":
   static const String loginEndPoint = '$baseUrl/auth/checkuser';
