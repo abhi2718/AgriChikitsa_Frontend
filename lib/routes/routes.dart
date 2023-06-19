@@ -5,6 +5,7 @@ import '../screens/auth.screen/signin.auth/otp_Verification.dart';
 import '../screens/auth.screen/signin.auth/signin.dart';
 import '../screens/auth.screen/signup.auth/signup.dart';
 import '../screens/splash_screen.dart';
+import '../screens/tab.screens/chattab.screen/chattab.dart';
 import '../screens/tab.screens/profiletab.screen/edit_profile/edit_profile.dart';
 import '../screens/tab.screens/tab_screen.dart';
 import './routes_name.dart';
@@ -19,5 +20,6 @@ class Routes {
     RouteName.signUpRoute: (context) => const SignUpScreen(),
     RouteName.editProfileRoute: (context) => const EditProfileScreen(),
     RouteName.createPostRoute: (context) => const CreatePostScreen(),
+    RouteName.chatBotRoute:(context) => const ChatTabScreen(),
   };
 }

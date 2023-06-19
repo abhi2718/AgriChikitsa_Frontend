@@ -1,78 +1,320 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:agriChikitsa/utils/utils.dart';
-import '../../../model/chat_message_model.dart';
+import 'package:flutter/material.dart';
+
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
-import '../../../services/auth.dart';
 
 class ChatTabViewModel with ChangeNotifier {
   final _chatTabRepository = ChatTabRepository();
-  List<ChatMessageModel> chatMessageList = [];
-  var messageController = TextEditingController();
-  String message = "";
-  var _loading = false;
-  bool get loading {
-    return _loading;
+  final textEditingController = TextEditingController();
+  final dynamic timmerInstances = [];
+  bool showFirstBubbleLoader = false;
+  bool showSecondBubbleLoader = false;
+  bool showThirdLoader = false;
+  bool showFourthLoader = false;
+  bool showFifthBubbleLoader = false;
+  bool showSixthBubbleLoader = false;
+  bool showSeventhBubbleLoader = false;
+  bool showLastMessage = false;
+  bool showCropImageLoader = false;
+  var cropImage = "";
+  var questionIndex = 0;
+  var selectedDisease = '';
+  final dynamic questions = [
+    {
+      "id": "1",
+      "question_hi": "🍃अपनी फसल के बारे में जाने एग्रीचिकित्सा के साथ। �",
+      "question_en": "Know about your crop with Agrichikitsa",
+      "isMe": false,
+    }
+  ];
+  var chatMessages = [];
+
+  void reinitilize() {
+    timmerInstances.forEach((timer) => timer.cancel());
+    chatMessages.clear();
+    questionIndex = 0;
+    textEditingController.clear();
+    timmerInstances.clear();
+    showFirstBubbleLoader = false;
+    showSecondBubbleLoader = false;
+    showThirdLoader = false;
+    showFourthLoader = false;
+    showFifthBubbleLoader = false;
+    showSixthBubbleLoader = false;
+    showSeventhBubbleLoader = false;
+    showLastMessage = false;
+    showCropImageLoader = false;
+    cropImage = "";
   }
 
-  setloading(bool value) {
-    _loading = value;
-    notifyListeners();
+  void initialTask(context) {
+    if (chatMessages.isEmpty) {
+      chatMessages.add(questions[0]);
+      showFirstBubbleLoader = true;
+      final t1 = Timer(const Duration(seconds: 2), () {
+        fetchFirstQuestion(context, "1");
+      });
+      timmerInstances.add(t1);
+    }
   }
 
-  void setMessageField() {
-    message = messageController.text;
-    notifyListeners();
-  }
-
-  void disposeValues() {
-    _loading = false;
-  }
-
-  void fetchCategory() async {
-    try {} catch (e) {}
-  }
-
-  void setChatMessagesList() async {
+  void fetchFirstQuestion(BuildContext context, String id) async {
     try {
-      if (message.isNotEmpty) {
-        chatMessageList = mapChatMessages(message);
-        message = "";
-        messageController.clear();
-      }
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showFirstBubbleLoader = false;
+      showSecondBubbleLoader = true;
+      notifyListeners();
+      final t2 = Timer(const Duration(seconds: 2), () {
+        fetchSecondQuestion(context, "2");
+      });
+      timmerInstances.add(t2);
+    } catch (error) {
+      showSecondBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
 
+  void fetchSecondQuestion(BuildContext context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showSecondBubbleLoader = false;
       notifyListeners();
     } catch (error) {
-      // Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      showSecondBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }
 
-  List<ChatMessageModel> mapChatMessages(String message) {
-    return [...chatMessageList, ChatMessageModel(message: message, isMe: true)];
-  }
-
-  void captureProfileImage(context, AuthService authService) async {
-    try {
-      final data = await Utils.capturePhoto();
-      if (data != null) {
-        // final response = await Utils.uploadImage(data);
-        // print(response);
-        // final user = User.fromJson(authService.userInfo["user"]);
-        // final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
-        // updateProfile(userInfo, context, authService);
+  void selectAge(context, String age, String id) {
+    var updatedChatMessages = chatMessages.map((item) {
+      if (item['id'] == id) {
+        return {
+          ...item,
+          "isAnswerSelected": true,
+          "answer": age,
+        };
       }
+      return item;
+    });
+    chatMessages = updatedChatMessages.toList();
+    notifyListeners();
+    loadQuestionFour(context);
+  }
+
+  void loadQuestionFour(context) {
+    showThirdLoader = true;
+    notifyListeners();
+    final t4 = Timer(const Duration(seconds: 2), () {
+      fetchThirdQuestion(context, "3");
+      questionIndex = 3;
+      notifyListeners();
+    });
+    timmerInstances.add(t4);
+  }
+
+  void fetchThirdQuestion(BuildContext context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showThirdLoader = false;
+      notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      showThirdLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }
 
-  void pickProfileImage(context, AuthService authService) async {
+  void handleSelctCrop(context, String crop, String id) {
+    var updatedChatMessages = chatMessages.map((item) {
+      if (item['id'] == id) {
+        return {
+          ...item,
+          "isAnswerSelected": true,
+          "answer": crop,
+        };
+      }
+      return item;
+    });
+    questionIndex = 4;
+    chatMessages = updatedChatMessages.toList();
+    showFourthLoader = true;
+    notifyListeners();
+    final t5 = Timer(const Duration(seconds: 2), () {
+      fetchFouthQuestion(context, "4");
+      questionIndex = 5;
+      notifyListeners();
+    });
+    timmerInstances.add(t5);
+  }
+
+  void fetchFouthQuestion(BuildContext context, String id) async {
     try {
-      final data = await Utils.pickImage();
-      if (data != null) {
-        // final response = await Utils.uploadImage(data);
-        // final user = User.fromJson(authService.userInfo["user"]);
-        // final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
-        // updateProfile(userInfo, context, authService);
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showFourthLoader = false;
+      notifyListeners();
+    } catch (error) {
+      showFourthLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void selectCropDisease(context, String disease, String id) {
+    selectedDisease = disease;
+    var updatedChatMessages = chatMessages.map((item) {
+      if (item['id'] == id) {
+        return {
+          ...item,
+          "isAnswerSelected": true,
+          "answer": disease,
+        };
+      }
+      return item;
+    });
+    questionIndex = 6;
+    chatMessages = updatedChatMessages.toList();
+    showFifthBubbleLoader = true;
+    notifyListeners();
+    final t6 = Timer(const Duration(seconds: 2), () {
+      fetchFifthQuestion(context, disease);
+    });
+    timmerInstances.add(t6);
+  }
+
+  void fetchFifthQuestion(context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showFifthBubbleLoader = false;
+      final question = data["question"];
+      final checkList = ['अन्य', 'खरपतवार'];
+      if (!checkList.contains(id)) {
+        final isToShowCameraIcon =
+            question["showCameraIcon"] == null ? false : true;
+        if (!isToShowCameraIcon) {
+          showSixthBubbleLoader = true;
+          final t7 = Timer(const Duration(seconds: 2), () {
+            fetchSixthQuestion(context, '6${question["id"]}');
+          });
+          timmerInstances.add(t7);
+        }
+      }
+      notifyListeners();
+    } catch (error) {
+      showFifthBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void fetchSixthQuestion(context, String id) async {
+    try {
+      final data = await _chatTabRepository.fetchBotQuestion(id);
+      chatMessages.add(data["question"]);
+      showSixthBubbleLoader = false;
+      final question = data["question"];
+      final isToShowCameraIcon =
+          question["showCameraIcon"] == null ? false : true;
+      if (!isToShowCameraIcon) {}
+      notifyListeners();
+    } catch (error) {
+      showSixthBubbleLoader = false;
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void handleUserInput(context) {
+    if (questionIndex == 3) {
+      final currentQuestion = chatMessages[questionIndex];
+      handleSelctCrop(
+          context, textEditingController.text, currentQuestion["id"]);
+      textEditingController.clear();
+      questionIndex = 4;
+      showFourthLoader = true;
+      notifyListeners();
+      final t5 = Timer(const Duration(seconds: 2), () {
+        fetchFouthQuestion(context, "4");
+        questionIndex = 5;
+        notifyListeners();
+      });
+      timmerInstances.add(t5);
+    }
+    final selectedDiseaseList = ['अन्य', 'Other'];
+    if (selectedDiseaseList.contains(selectedDisease)) {
+      var updatedChatMessages = chatMessages.map((item) {
+        if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
+          return {
+            ...item,
+            "isAnswerSelected": true,
+            "answer": textEditingController.text,
+          };
+        }
+        return item;
+      });
+      chatMessages = updatedChatMessages.toList();
+      selectedDisease = '';
+      textEditingController.clear();
+      showSixthBubbleLoader = true;
+      showLastMessage = true;
+      notifyListeners();
+      final t7 = Timer(const Duration(seconds: 2), () {
+        chatMessages.add(
+          {
+            "id": "7",
+            "question_hi":
+                "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+            "question_en": "Know about your crop with Agrichikitsa",
+            "options_hi": [],
+            "options_en": [],
+            "isAnswerSelected": false,
+            "answer": "",
+            "isMe": false,
+          },
+        );
+        showSixthBubbleLoader = false;
+        notifyListeners();
+      });
+      timmerInstances.add(t7);
+    }
+    //  else {
+    //   Utils.flushBarErrorMessage(
+    //       "Alert!", "Answer is allredy selected", context);
+    //   textEditingController.clear();
+    // }
+  }
+
+  void uploadImage(context) async {
+    try {
+      final imageFile = await Utils.capturePhoto();
+      if (imageFile != null) {
+        showCropImageLoader = true;
+        notifyListeners();
+        final data = await Utils.uploadImage(imageFile);
+        cropImage = data["imgurl"];
+        showCropImageLoader = false;
+        showSeventhBubbleLoader = true;
+        notifyListeners();
+        final t8 = Timer(const Duration(seconds: 2), () {
+        chatMessages.add(
+          {
+            "id": "8",
+            "question_hi":
+                "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+            "question_en": "Know about your crop with Agrichikitsa",
+            "options_hi": [],
+            "options_en": [],
+            "isAnswerSelected": false,
+            "answer": "",
+            "isMe": false,
+          },
+        );
+        showSeventhBubbleLoader = false;
+        showLastMessage = true;
+        notifyListeners();
+      });
+      timmerInstances.add(t8);
       }
     } catch (error) {
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);

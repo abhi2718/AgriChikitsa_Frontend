@@ -54,6 +54,8 @@ dependencies:
   remixicon: ^1.0.0
   shimmer: ^3.0.0
   youtube_player_flutter: ^8.1.2
+  chat_bubbles: ^1.4.1
+  jumping_dot: ^0.0.6
   
 
 

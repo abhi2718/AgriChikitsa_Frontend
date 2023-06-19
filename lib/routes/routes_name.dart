@@ -7,4 +7,5 @@ class RouteName {
   static const String homeRoute = "/home";
   static const String editProfileRoute = "/edit/profile";
   static const String createPostRoute = "/create/post";
+  static const String chatBotRoute = "/chat/bot";
 }
