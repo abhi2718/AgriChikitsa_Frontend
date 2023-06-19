@@ -2,6 +2,7 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
 
 import '../../../services/auth.dart';
 import 'chat_tab_view_model.dart';
@@ -32,9 +33,20 @@ class ChatTabScreen extends HookWidget {
                   useViewModel.reinitilize();
                   Navigator.pop(context);
                 },
-                child: Icon(
-                  Icons.close,
-                  size: 30.0,
+                child: const Padding(
+                  padding: EdgeInsets.only(
+                    right: 10,
+                    top: 10,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        Remix.close_circle_line,
+                        size: 30.0,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(

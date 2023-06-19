@@ -1,10 +1,10 @@
-import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:jumping_dot/jumping_dot.dart';
+import 'package:provider/provider.dart';
+
 import '../../../../../utils/utils.dart';
 import '../../chat_tab_view_model.dart';
 
@@ -12,12 +12,15 @@ class ChatScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
+    final textEditingController = TextEditingController();
+
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
       useViewModel.initialTask(context);
     }, []);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Consumer<ChatTabViewModel>(
         builder: (context, provider, child) {
           return Column(
@@ -35,10 +38,10 @@ class ChatScreen extends HookWidget {
                           provider.chatMessages.length > 1
                               ? BubbleSpecialThree(
                                   text: message["question_hi"],
-                                  color: Color(0xFF1B97F3),
+                                  color: const Color(0xFF1B97F3),
                                   tail: true,
                                   isSender: message["isMe"],
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 )
                               : AnimatedTextKit(
@@ -145,7 +148,7 @@ class ChatScreen extends HookWidget {
                                           color: Color(0xFFE8E8EE),
                                           tail: false,
                                           isSender: false,
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 16),
                                         ),
@@ -227,7 +230,7 @@ class ChatScreen extends HookWidget {
                                           color: Color(0xFFE8E8EE),
                                           tail: false,
                                           isSender: false,
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 16),
                                         ),
@@ -306,10 +309,10 @@ class ChatScreen extends HookWidget {
                                               },
                                         child: BubbleSpecialThree(
                                           text: message["options_hi"][index],
-                                          color: Color(0xFFE8E8EE),
+                                          color: const Color(0xFFE8E8EE),
                                           tail: false,
                                           isSender: false,
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                               color: Colors.black,
                                               fontSize: 16),
                                         ),
@@ -324,7 +327,7 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Color(0xFFE8E8EE),
+                                  color: const Color(0xFFE8E8EE),
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
@@ -353,7 +356,7 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: const Color(0xFF1B97F3),
                             tail: true,
                             isSender: message["isMe"],
                             textStyle:
@@ -382,10 +385,10 @@ class ChatScreen extends HookWidget {
                                               child: BubbleSpecialThree(
                                                 text: message["options_hi"]
                                                     [index],
-                                                color: Color(0xFFE8E8EE),
+                                                color: const Color(0xFFE8E8EE),
                                                 tail: false,
                                                 isSender: false,
-                                                textStyle: TextStyle(
+                                                textStyle: const TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 16),
                                               ),
@@ -401,7 +404,7 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Color(0xFFE8E8EE),
+                                  color: const Color(0xFFE8E8EE),
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
@@ -427,7 +430,7 @@ class ChatScreen extends HookWidget {
                               : Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.camera),
+                                      icon: const Icon(Icons.camera),
                                       onPressed: () {},
                                     )
                                   ],
@@ -440,11 +443,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: const Color(0xFF1B97F3),
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -469,10 +472,10 @@ class ChatScreen extends HookWidget {
                                               child: BubbleSpecialThree(
                                                 text: message["options_hi"]
                                                     [index],
-                                                color: Color(0xFFE8E8EE),
+                                                color: const Color(0xFFE8E8EE),
                                                 tail: false,
                                                 isSender: false,
-                                                textStyle: TextStyle(
+                                                textStyle: const TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 16),
                                               ),
@@ -511,20 +514,21 @@ class ChatScreen extends HookWidget {
                               : Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.camera_alt_outlined),
+                                      icon:
+                                          const Icon(Icons.camera_alt_outlined),
                                       onPressed: () {
                                         provider.uploadImage(context);
                                       },
                                     )
                                   ],
                                 ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           provider.showCropImageLoader
                               ? BubbleSpecialThree(
                                   text: message["question_hi"],
-                                  color: Color(0xFF1B97F3),
+                                  color: const Color(0xFF1B97F3),
                                   tail: true,
                                   isSender: message["isMe"],
                                   textStyle: TextStyle(
@@ -534,7 +538,7 @@ class ChatScreen extends HookWidget {
                           provider.cropImage != ""
                               ? Image.network(provider.cropImage)
                               : Container(),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                         ],
@@ -557,8 +561,8 @@ class ChatScreen extends HookWidget {
                             color: Color(0xFF1B97F3),
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -584,14 +588,76 @@ class ChatScreen extends HookWidget {
                   },
                 ),
               ),
-              TextField(
-                controller: useViewModel.textEditingController,
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 168,
+                ),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: Image.asset(
+                          'assets/icons/camera.png',
+                          height: 25,
+                          width: 25,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          provider.uploadImage(context);
+                        },
+                        icon: Image.asset(
+                          'assets/icons/Gallery.png',
+                          height: 25,
+                          width: 25,
+                        ),
+                      ),
+                      SizedBox(
+                        width: dimension['width']! - 155,
+                        height: 50,
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            hintText: 'Add a Comment',
+                            hintStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  12,
+                                ),
+                              ),
+                            ),
+                          ),
+                          controller: useViewModel.textEditingController,
+                          autofocus: true,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: InkWell(
+                          onTap: () {
+                            useViewModel.handleUserInput(context);
+                          },
+                          child: Image.asset(
+                            "assets/icons/send_icon.png",
+                            height: 35,
+                            width: 35,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              CustomElevatedButton(
-                  title: "Send",
-                  onPress: () {
-                    useViewModel.handleUserInput(context);
-                  })
             ],
           );
         },

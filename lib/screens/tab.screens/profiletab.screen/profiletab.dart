@@ -101,7 +101,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => Utils.launchDialer('8318064327'),
-                leftIcon: "assets/images/phone.png",
+                leftIcon: "assets/images/contact us.png",
                 title: 'Contact Support',
                 width: dimension["width"]! - 32,
               ),
@@ -125,7 +125,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
-                leftIcon: "assets/images/Privacy And Policy.png",
+                leftIcon: "assets/images/lock.png",
                 title: 'Privacy Policy',
                 width: dimension["width"]! - 32,
               ),
@@ -140,7 +140,7 @@ class ProfileTabScreen extends HookWidget {
                   // useViewModel.handleDelete(
                   //     context, user.companyId!, disposableProvider);
                 },
-                leftIcon: "assets/images/Delete Account.png",
+                leftIcon: "assets/images/trash.png",
                 title: 'Delete Account',
                 width: dimension["width"]! - 32,
               ),
