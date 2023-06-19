@@ -198,8 +198,8 @@ class ChatScreen extends HookWidget {
                             color: Color(0xFF1B97F3),
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -277,11 +277,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: const Color(0xFF1B97F3),
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -359,8 +359,8 @@ class ChatScreen extends HookWidget {
                             color: const Color(0xFF1B97F3),
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -531,7 +531,7 @@ class ChatScreen extends HookWidget {
                                   color: const Color(0xFF1B97F3),
                                   tail: true,
                                   isSender: message["isMe"],
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 )
                               : Container(),
@@ -581,7 +581,7 @@ class ChatScreen extends HookWidget {
                                   isRepeatingAnimation: false,
                                   totalRepeatCount: 1,
                                 )
-                              : Container()
+                              : Container(),
                         ],
                       );
                     }
@@ -592,70 +592,66 @@ class ChatScreen extends HookWidget {
                 padding: const EdgeInsets.only(
                   top: 168,
                 ),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: Image.asset(
-                          'assets/icons/camera.png',
-                          height: 25,
-                          width: 25,
-                        ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(
+                        'assets/icons/camera.png',
+                        height: 25,
+                        width: 25,
                       ),
-                      IconButton(
-                        onPressed: () {
-                          provider.uploadImage(context);
-                        },
-                        icon: Image.asset(
-                          'assets/icons/Gallery.png',
-                          height: 25,
-                          width: 25,
-                        ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        provider.uploadImage(context);
+                      },
+                      icon: Image.asset(
+                        'assets/icons/Gallery.png',
+                        height: 25,
+                        width: 25,
                       ),
-                      SizedBox(
-                        width: dimension['width']! - 155,
-                        height: 50,
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            hintText: 'Add a Comment',
-                            hintStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(
-                                  12,
-                                ),
+                    ),
+                    SizedBox(
+                      width: dimension['width']! - 155,
+                      height: 48,
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: 'Add a Comment',
+                          hintStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                12,
                               ),
                             ),
                           ),
-                          controller: useViewModel.textEditingController,
-                          autofocus: true,
+                        ),
+                        controller: useViewModel.textEditingController,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: InkWell(
+                        onTap: () {
+                          useViewModel.handleUserInput(context);
+                        },
+                        child: Image.asset(
+                          "assets/icons/send_icon.png",
+                          height: 35,
+                          width: 35,
                         ),
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: InkWell(
-                          onTap: () {
-                            useViewModel.handleUserInput(context);
-                          },
-                          child: Image.asset(
-                            "assets/icons/send_icon.png",
-                            height: 35,
-                            width: 35,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
