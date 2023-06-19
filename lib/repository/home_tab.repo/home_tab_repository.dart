@@ -26,10 +26,20 @@ class HomeTabRepository {
     }
   }
 
- Future<dynamic> toggleLike(String id) async {
+  Future<dynamic> toggleLike(String id) async {
     try {
       final url = '${AppUrl.feedEndPoint}/togglelike/$id';
-      final response = await _apiServices.getPatchApiResponse(url,{});
+      final response = await _apiServices.getPatchApiResponse(url, {});
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> toggleTimeline(String id) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/toggleInTimeLine/$id';
+      final response = await _apiServices.getPatchApiResponse(url, {});
       return response;
     } catch (e) {
       rethrow;
@@ -45,7 +55,18 @@ class HomeTabRepository {
       rethrow;
     }
   }
- Future<dynamic> addComments(String id, dynamic payload) async {
+
+  Future<dynamic> createPost(dynamic payload) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/';
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> addComments(String id, dynamic payload) async {
     try {
       final url = '${AppUrl.feedEndPoint}/comment/$id';
       final response = await _apiServices.getPatchApiResponse(url, payload);
@@ -54,5 +75,4 @@ class HomeTabRepository {
       rethrow;
     }
   }
- 
 }

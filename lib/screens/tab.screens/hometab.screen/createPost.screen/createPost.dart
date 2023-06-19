@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +16,15 @@ import '../../../../widgets/text.widgets/text.dart';
 
 class CreatePostScreen extends HookWidget {
   const CreatePostScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel =
         useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
+    useEffect(() {
+      useViewModel.fetchFeedsCategory(context);
+    }, []);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
@@ -82,18 +86,15 @@ class CreatePostScreen extends HookWidget {
                     Consumer<CreatePostModel>(
                       builder: (context, provider, child) => Input(
                         labelText: "Enter Caption",
-                        focusNode: useViewModel.nameFocusNode,
+                        focusNode: useViewModel.captionFocusNode,
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
                         // suffixIcon: useViewModel.suffixIconForName(),
                         // initialValue: "Enter Caption",
                         validator: useViewModel.nameFieldValidator,
-                        onSaved: useViewModel.onSavedNameField,
-                        onFieldSubmitted: (_) {
-                          Utils.fieldFocusChange(
-                              context,
-                              useViewModel.nameFocusNode,
-                              useViewModel.emailFocusNode);
+                        onSaved: useViewModel.onSavedCaptionField,
+                        onFieldSubmitted: (value) {
+                          useViewModel.onSavedCaptionField(value);
                         },
                       ),
                     ),
@@ -101,19 +102,34 @@ class CreatePostScreen extends HookWidget {
                       height: 16,
                     ),
                     Consumer<CreatePostModel>(
-                      builder: (context, provider, child) => Input(
-                          labelText: "Select Category",
-                          focusNode: useViewModel.emailFocusNode,
-                          // suffixIcon: useViewModel.suffixIconForEmail(),
-                          keyboardType: TextInputType.emailAddress,
-                          // initialValue: user.email ?? "",
-                          textInputAction: TextInputAction.done,
-                          validator: useViewModel.nameFieldValidator,
-                          onSaved: useViewModel.onSavedNameField,
-                          onFieldSubmitted: (_) {}
-                          // provider.saveForm(context, user, authService),
-                          ),
-                    ),
+                        builder: (context, provider, child) {
+                      return Container(
+                        height: 40,
+                        width: dimension['width'],
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColor.darkColor),
+                        ),
+                        child: Center(
+                          child: Builder(builder: (BuildContext context) {
+                            return DropdownButton<String>(
+                              value: provider.selectedKey,
+                              onChanged: (String? key) {
+                                provider.updateSelectedOption(key!);
+                              },
+                              items: provider.dropdownOptions.entries
+                                  .map<DropdownMenuItem<String>>(
+                                (MapEntry<String, String> entry) {
+                                  return DropdownMenuItem<String>(
+                                    value: entry.key,
+                                    child: Text(entry.value),
+                                  );
+                                },
+                              ).toList(),
+                            );
+                          }),
+                        ),
+                      );
+                    }),
                     const SizedBox(
                       height: 40,
                     ),
@@ -124,6 +140,9 @@ class CreatePostScreen extends HookWidget {
                               // loading: provider.loading,
                               width: dimension["width"]! - 32,
                               onPress: () {
+                                useViewModel.createPost(
+                                  context,
+                                );
                                 useViewModel.clearImagePath();
                               }
                               // provider.saveForm(context, user, authService),

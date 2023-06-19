@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
 import 'comment_widget.dart';
 
@@ -20,11 +21,11 @@ class Feed extends HookWidget {
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
     final useViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
-    final userInfo = authService.userInfo["user"];
+    final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
-    final isLiked = useState(feed['likes'].contains(userInfo["_id"]));
+    final isLiked = useState(feed['likes'].contains(userInfo.sId));
+    var isBookMarked = useState(userInfo.timeline!.contains(feed['_id']));
     final numberOfComments = useState(feed['comments'].length);
-
     void setNumberOfComment(int count) {
       numberOfComments.value = count;
     }
@@ -37,6 +38,15 @@ class Feed extends HookWidget {
       } else {
         isLiked.value = true;
         numberOfLikes.value = numberOfLikes.value + 1;
+      }
+    }
+
+    void handleBookMark() {
+      useViewModel.toggleTimeline(context, feed["_id"], userInfo);
+      if (isBookMarked.value == true) {
+        isBookMarked.value = false;
+      } else {
+        isBookMarked.value = true;
       }
     }
 
@@ -129,7 +139,12 @@ class Feed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      const InkWell(child: Icon(Remix.bookmark_line))
+                      InkWell(
+                        onTap: handleBookMark,
+                        child: Icon(isBookMarked.value
+                            ? Remix.bookmark_fill
+                            : Remix.bookmark_line),
+                      )
                     ]),
               ),
               Padding(

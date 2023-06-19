@@ -4,9 +4,11 @@ import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../model/category_model.dart';
 import '../../../model/comment.dart';
+import '../../../model/user_model.dart' as currentUser;
 
 class HomeTabViewModel with ChangeNotifier {
   final _homeTabRepository = HomeTabRepository();
@@ -107,6 +109,19 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
+  void toggleTimeline(
+      BuildContext context, String id, currentUser.User user) async {
+    try {
+      final data = await _homeTabRepository.toggleTimeline(id);
+      user.timeline = data['timeLine'];
+      print(user.timeline);
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
   void fetchComments(BuildContext context, String id) async {
     commentLoading = true;
     notifyListeners();
@@ -125,6 +140,24 @@ class HomeTabViewModel with ChangeNotifier {
     return List<Comment>.from(comments.map((comment) {
       return Comment.fromJson(comment);
     }));
+  }
+
+  void createPost(
+      BuildContext context, String id, String caption, String imageUrl) async {
+    try {
+      final payload = {
+        "categoryId": id,
+        "caption": caption,
+        "imgurl": imageUrl
+      };
+      final data = await _homeTabRepository.createPost(payload);
+      if (data['message'] == "Feed created successfully") {
+        Utils.toastMessage("Post Request has been sent to admin");
+      }
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
   }
 
   void addComment(

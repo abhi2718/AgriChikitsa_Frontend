@@ -32,6 +32,7 @@ class User {
   String? email;
   int? phoneNumber;
   String? profileImage;
+  List? timeline;
 
   User({
     this.isProfileCompleted,
@@ -46,6 +47,7 @@ class User {
     this.email,
     this.phoneNumber,
     this.profileImage,
+    this.timeline,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -61,6 +63,7 @@ class User {
     email = json['email'];
     phoneNumber = json['phoneNumber'];
     profileImage = json['profileImage'];
+    timeline = json['timeLine'];
   }
 
   Map<String, dynamic> toJson() {
@@ -77,6 +80,7 @@ class User {
     data['email'] = email;
     data['phoneNumber'] = phoneNumber;
     data['profileImage'] = profileImage;
+    data['timeLine'] = timeline;
     return data;
   }
 }

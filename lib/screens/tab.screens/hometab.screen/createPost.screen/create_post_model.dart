@@ -1,3 +1,6 @@
+import 'package:agriChikitsa/model/category_model.dart';
+import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../repository/auth.repo/auth_repository.dart';
@@ -7,12 +10,42 @@ import '../../../../utils/utils.dart';
 class CreatePostModel with ChangeNotifier {
   final _authRepository = AuthRepository();
   final editUserformKey = GlobalKey<FormState>();
-  final nameFocusNode = FocusNode();
-  final emailFocusNode = FocusNode();
+  final captionFocusNode = FocusNode();
+  final categoryFocusNode = FocusNode();
+  List<dynamic> categoriesList = [];
+  String selectedKey = "";
+  String selectedValue = "";
+
+  Map<String, String> dropdownOptions = {};
   var imagePath = "";
   var _loading = false;
-  var userName = '';
-  var email = '';
+  var caption = '';
+  var category = '';
+
+  void updateSelectedOption(String key) {
+    selectedKey = key;
+    selectedValue = dropdownOptions[key]!;
+    notifyListeners();
+  }
+
+  void fetchFeedsCategory(BuildContext context) async {
+    try {
+      final data = await HomeTabRepository().fetchFeedsCatogory();
+      categoriesList = data['categories']
+          .map((data) => Category(
+                id: data['_id'],
+                name: data['category'],
+              ))
+          .toList();
+
+      dropdownOptions = {
+        for (final category in categoriesList) category.id: category.name!,
+      };
+      notifyListeners();
+    } catch (error) {
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
 
   String? nameFieldValidator(value) {
     if (value!.isEmpty) {
@@ -21,8 +54,12 @@ class CreatePostModel with ChangeNotifier {
     return null;
   }
 
-  void onSavedNameField(value) {
-    userName = value;
+  void onSavedCaptionField(value) {
+    caption = value;
+  }
+
+  void onSavedCategoryField(value) {
+    category = value.toString();
   }
 
   void goBack(BuildContext context) {
@@ -48,5 +85,12 @@ class CreatePostModel with ChangeNotifier {
     } catch (error) {
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
+  }
+
+  void createPost(
+    BuildContext context,
+  ) {
+    HomeTabViewModel().createPost(context, selectedKey, caption, imagePath);
+    Navigator.of(context).pop();
   }
 }

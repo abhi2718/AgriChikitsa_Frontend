@@ -8,4 +8,5 @@ class RouteName {
   static const String editProfileRoute = "/edit/profile";
   static const String createPostRoute = "/create/post";
   static const String chatBotRoute = "/chat/bot";
+  static const String myProfileScreenRoute = "/myProfileScreen";
 }
