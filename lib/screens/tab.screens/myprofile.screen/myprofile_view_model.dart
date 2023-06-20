@@ -24,7 +24,6 @@ class MyProfileViewModel with ChangeNotifier {
     try {
       final data = await _myProfileTabRepository.fetchFeeds();
       feedList = data['feeds'];
-      print(feedList);
       // setloading(false);
       notifyListeners();
     } catch (error) {

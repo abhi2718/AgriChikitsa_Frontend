@@ -9,7 +9,7 @@ import '../../../../utils/utils.dart';
 
 class CreatePostModel with ChangeNotifier {
   final _authRepository = AuthRepository();
-  final editUserformKey = GlobalKey<FormState>();
+  var editUserformKey = GlobalKey<FormState>();
   final captionFocusNode = FocusNode();
   final categoryFocusNode = FocusNode();
   List<dynamic> categoriesList = [];
@@ -18,6 +18,7 @@ class CreatePostModel with ChangeNotifier {
 
   Map<String, String> dropdownOptions = {};
   var imagePath = "";
+  var imageUrl = "";
   var _loading = false;
   var caption = '';
   var category = '';
@@ -47,11 +48,12 @@ class CreatePostModel with ChangeNotifier {
     }
   }
 
-  String? nameFieldValidator(value) {
-    if (value!.isEmpty) {
-      return "Name is required!";
+  String? nameFieldValidator(caption) {
+    if (caption.isEmpty) {
+      return "Caption is required!";
+    } else {
+      return null;
     }
-    return null;
   }
 
   void onSavedCaptionField(value) {
@@ -76,10 +78,8 @@ class CreatePostModel with ChangeNotifier {
       final data = await Utils.pickImage();
       if (data != null) {
         imagePath = data.path;
-        // final response = await Utils.uploadImage(data);
-        // final user = User.fromJson(authService.userInfo["user"]);
-        // final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
-        // updateProfile(userInfo, context, authService);
+        var response = Utils.uploadImage(data);
+        response.then((value) => imageUrl = value['imgurl']);
         notifyListeners();
       }
     } catch (error) {
@@ -90,7 +90,10 @@ class CreatePostModel with ChangeNotifier {
   void createPost(
     BuildContext context,
   ) {
-    HomeTabViewModel().createPost(context, selectedKey, caption, imagePath);
+    HomeTabViewModel().createPost(context, selectedKey, caption, imageUrl);
+    imagePath = "";
+    imageUrl = "";
+    caption = "";
     selectedKey = "";
     selectedValue = "";
     Navigator.of(context).pop();

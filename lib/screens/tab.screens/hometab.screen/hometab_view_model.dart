@@ -159,6 +159,8 @@ class HomeTabViewModel with ChangeNotifier {
       final data = await _homeTabRepository.createPost(payload);
       if (data['message'] == "Feed created successfully") {
         Utils.toastMessage("Post Request has been sent to admin");
+      } else {
+        Utils.toastMessage("Error! Try Again");
       }
     } catch (error) {
       setloading(false);

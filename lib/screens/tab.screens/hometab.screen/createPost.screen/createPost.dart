@@ -4,6 +4,7 @@ import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/widgets/tools.widgets/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class CreatePostScreen extends HookWidget {
         foregroundColor: AppColor.darkBlackColor,
         leading: InkWell(
             onTap: () => useViewModel.goBack(context),
-            child: Icon(Icons.arrow_back)),
+            child: const Icon(Icons.arrow_back)),
         elevation: 0.0,
       ),
       body: Padding(
@@ -81,16 +82,15 @@ class CreatePostScreen extends HookWidget {
               }),
               Form(
                 key: useViewModel.editUserformKey,
+                autovalidateMode: AutovalidateMode.always,
                 child: Column(
                   children: [
                     Consumer<CreatePostModel>(
                       builder: (context, provider, child) => Input(
                         labelText: "Enter Caption",
-                        focusNode: useViewModel.captionFocusNode,
+                        // focusNode: useViewModel.captionFocusNode,
                         keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
                         // suffixIcon: useViewModel.suffixIconForName(),
-                        // initialValue: "Enter Caption",
                         validator: useViewModel.nameFieldValidator,
                         onSaved: useViewModel.onSavedCaptionField,
                         onFieldSubmitted: (value) {
@@ -143,10 +143,14 @@ class CreatePostScreen extends HookWidget {
                     // loading: provider.loading,
                     width: dimension["width"]! - 32,
                     onPress: () {
-                      useViewModel.createPost(
-                        context,
-                      );
-                      useViewModel.clearImagePath();
+                      if (useViewModel
+                              .nameFieldValidator(useViewModel.caption) ==
+                          null) {
+                        useViewModel.createPost(
+                          context,
+                        );
+                        useViewModel.clearImagePath();
+                      }
                     }
                     // provider.saveForm(context, user, authService),
                     ),
