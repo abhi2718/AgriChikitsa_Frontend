@@ -1,4 +1,29 @@
 {
-    "language": "English"
-    
+    "language": "language",
+    "account": "Account",
+    "loginCreateAccount":"Login/Create Account",
+    "login":"LOGIN",
+    "termsConditions":"I agree with Terms & Conditions",
+    "home":"Home",
+    "chat":"Chat",
+    "jankari":"Jankari",
+    "enterYourPhoneNumberToProceed":"Enter your phone number to proceed",
+    "digitmobilenumber":"10 digit mobile number",
+    "continueText":"Continue",
+    "verifyDetails":"VERIFY DETAILS",
+    "otpSentTo":"OTP sent to",
+    "enterOTP":"Enter OTP",
+    "dintreceiveTheOTP":"Din't receive the OTP",
+    "sms":"SMS",
+    "verifyProceed":"VERIFY & PROCEED",
+    "setting":"Setting",
+    "editProfile":"Edit Profile",
+    "contactSupport":"Contact Support",
+    "termsAndCondition":"Terms and Conditions",
+    "privacyPolicy":"Privacy Policy",
+    "deleteAccount":"Delete Account",
+    "logout":"LOGOUT",
+    "changeLocal":"Change Local"
 }
+
+

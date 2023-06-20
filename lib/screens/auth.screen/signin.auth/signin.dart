@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import '../../../utils/utils.dart';
 import '../../../widgets/button.widgets/elevated_button.dart';
 import '../../../widgets/text.widgets/text.dart';
@@ -20,13 +22,14 @@ class SignInScreen extends HookWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const SizedBox(
+            SizedBox(
               width: double.infinity,
-              child: SubHeadingText("LOGIN"),
+              child: SubHeadingText(AppLocalizationsHi().login),
             ),
-            const SizedBox(
+            SizedBox(
               width: double.infinity,
-              child: ParagraphText("Enter your phone number to proceed"),
+              child: ParagraphText(
+                  AppLocalizationsHi().enterYourPhoneNumberToProceed),
             ),
             const SizedBox(
               height: 26,
@@ -39,7 +42,7 @@ class SignInScreen extends HookWidget {
                 maxLength: 10,
                 onChanged: useViewModel.onPhoneNumberChanged,
                 decoration: InputDecoration(
-                  labelText: '10 digit mobile number',
+                  labelText: AppLocalizationsHi().digitmobilenumber,
                   errorText: useViewModel.errorMessage,
                 ),
               );
@@ -48,7 +51,7 @@ class SignInScreen extends HookWidget {
               height: 16,
             ),
             CustomElevatedButton(
-              title: "Continue",
+              title: AppLocalizationsHi().continueText,
               onPress: () => useViewModel.verifyUserPhoneNumber(context),
               width: (dimension["width"]! - 32),
             )
@@ -58,4 +61,3 @@ class SignInScreen extends HookWidget {
     ));
   }
 }
-
