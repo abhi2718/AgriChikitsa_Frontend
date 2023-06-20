@@ -2,6 +2,7 @@ import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -37,9 +38,12 @@ class EditProfileScreen extends HookWidget {
               Remix.arrow_left_line,
             ),
           ),
-          title: const BaseText(
-              title: "Edit Profile",
-              style: TextStyle(color: AppColor.darkBlackColor)),
+          title: BaseText(
+            title: AppLocalizationsHi().editProfile,
+            style: const TextStyle(
+              color: AppColor.darkBlackColor,
+            ),
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(

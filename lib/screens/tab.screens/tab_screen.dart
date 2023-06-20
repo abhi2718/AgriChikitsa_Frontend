@@ -1,7 +1,9 @@
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
@@ -21,17 +23,18 @@ class TabScreen extends HookWidget {
     final tabWidgets = useMemoized(() {
       return [
         BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/Home.png',
-              width: 20,
-              height: 20,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/Home Filled.png',
-              width: 20,
-              height: 20,
-            ),
-            label: 'Home'),
+          icon: Image.asset(
+            'assets/icons/Home.png',
+            width: 20,
+            height: 20,
+          ),
+          activeIcon: Image.asset(
+            'assets/icons/Home Filled.png',
+            width: 20,
+            height: 20,
+          ),
+          label: AppLocalizationsHi().home,
+        ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/Jankari Icon.png',
@@ -43,7 +46,7 @@ class TabScreen extends HookWidget {
             width: 20,
             height: 20,
           ),
-          label: 'Jankari',
+          label: AppLocalizationsHi().jankari,
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
@@ -56,7 +59,7 @@ class TabScreen extends HookWidget {
             width: 20,
             height: 20,
           ),
-          label: 'Setting',
+          label: AppLocalizationsHi().setting,
         ),
       ];
     });

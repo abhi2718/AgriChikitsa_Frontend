@@ -70,7 +70,8 @@ class LandingAuthScreen extends HookWidget {
                             SizedBox(
                               width: double.infinity,
                               child: ParagraphText(
-                                  AppLocalizationsHi().loginCreateAccount),
+                                AppLocalizationsHi().loginCreateAccount,
+                              ),
                             ),
                           ],
                         ),

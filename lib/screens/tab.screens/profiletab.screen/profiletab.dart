@@ -4,6 +4,7 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -43,9 +44,9 @@ class ProfileTabScreen extends HookWidget {
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
         centerTitle: true,
-        title: const BaseText(
-          title: "Settings",
-          style: TextStyle(
+        title: BaseText(
+          title: AppLocalizationsHi().setting,
+          style: const TextStyle(
             color: AppColor.darkBlackColor,
           ),
         ),
@@ -90,7 +91,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.goToEditProfileScreen(context),
                 leftIcon: "assets/images/Profile.png",
-                title: 'Edit Profile',
+                title: AppLocalizationsHi().editProfile,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -102,7 +103,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => Utils.launchDialer('8318064327'),
                 leftIcon: "assets/images/contact us.png",
-                title: 'Contact Support',
+                title: AppLocalizationsHi().contactSupport,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -114,7 +115,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
                 leftIcon: "assets/images/Terms And Condition.png",
-                title: 'Terms and Conditions',
+                title: AppLocalizationsHi().termsConditions,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -126,7 +127,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
                 leftIcon: "assets/images/lock.png",
-                title: 'Privacy Policy',
+                title: AppLocalizationsHi().privacyPolicy,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -141,7 +142,7 @@ class ProfileTabScreen extends HookWidget {
                   //     context, user.companyId!, disposableProvider);
                 },
                 leftIcon: "assets/images/trash.png",
-                title: 'Delete Account',
+                title: AppLocalizationsHi().deleteAccount,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -154,7 +155,7 @@ class ProfileTabScreen extends HookWidget {
                 onPress: () =>
                     useViewModel.handleLogOut(context, disposableProvider),
                 leftIcon: "assets/images/logout.png",
-                title: 'Logout',
+                title: AppLocalizationsHi().logout,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -163,7 +164,7 @@ class ProfileTabScreen extends HookWidget {
             ),
             CustomElevatedButton(
               onPress: () => useViewModel.handleLocaleChange(),
-              title: "Change Local",
+              title: AppLocalizationsHi().changeLocal,
               width: dimension["width"]! - 32,
             )
           ],
