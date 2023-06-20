@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/l10n/l10n.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -71,6 +72,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<TabViewModel>(
           create: (_) => TabViewModel(),
+        ),
+        ChangeNotifierProvider<MyProfileViewModel>(
+          create: (_) => MyProfileViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(

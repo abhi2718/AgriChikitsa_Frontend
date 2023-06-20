@@ -160,7 +160,7 @@ class HomeTabScreen extends HookWidget {
               size: 30.0,
             ),
             onPressed: () {
-               Navigator.pushNamed(context, RouteName.chatBotRoute);
+              Navigator.pushNamed(context, RouteName.chatBotRoute);
             }),
       ),
     );

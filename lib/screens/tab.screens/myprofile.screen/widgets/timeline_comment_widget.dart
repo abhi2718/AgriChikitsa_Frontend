@@ -8,12 +8,12 @@ import '../../../../model/comment.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
-import '../hometab_view_model.dart';
+import '../../hometab.screen/hometab_view_model.dart';
 
-class UserComment extends HookWidget {
+class TimelineUserComment extends HookWidget {
   final feedId;
   final Function setNumberOfComment;
-  const UserComment({
+  const TimelineUserComment({
     super.key,
     required this.setNumberOfComment,
     required this.feedId,
@@ -172,138 +172,6 @@ class UserComment extends HookWidget {
                 },
               ),
             ),
-            Container(
-              height: (dimension["height"]! - 100) * 0.1,
-              child: InkWell(
-                onTap: () {
-                  Utils.model(
-                    context,
-                    SizedBox(
-                      height: dimension['height']! * 0.53,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Remix.close_circle_line,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Consumer<AuthService>(
-                                  builder: (context, provider, child) {
-                                if (provider.userInfo != null) {
-                                  final user = provider.userInfo["user"];
-                                  return CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(user["profileImage"]),
-                                  );
-                                }
-                                return Container();
-                              }),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              SizedBox(
-                                width: dimension['width']! - 160,
-                                child: TextField(
-                                  decoration: const InputDecoration(
-                                    hintText: 'Add a Comment',
-                                    hintStyle: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                          12,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  controller: textEditingController,
-                                  autofocus: true,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Consumer<HomeTabViewModel>(
-                                  builder: (context, provider, child) {
-                                return InkWell(
-                                  onTap: () {
-                                    useViewModel.addComment(
-                                      context,
-                                      feedId,
-                                      textEditingController.text,
-                                      User.fromJson(
-                                          authService.userInfo["user"]),
-                                    );
-                                    setNumberOfComment(
-                                        provider.commentsList.length);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Image.asset(
-                                    "assets/icons/send_icon.png",
-                                    height: 30,
-                                    width: 30,
-                                  ),
-                                );
-                              }),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: dimension['width'],
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xffd9d9d9),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20.0),
-                        ),
-                      ),
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 16),
-                            child: BaseText(
-                              title: 'Add a  comment',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w700),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),

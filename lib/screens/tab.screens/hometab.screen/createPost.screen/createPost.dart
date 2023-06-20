@@ -10,24 +10,36 @@ import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/Input.widgets/input.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
+import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
+import './widgets/post_category_button.dart';
 
 class CreatePostScreen extends HookWidget {
   const CreatePostScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel =
         useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
+    useEffect(() {
+      useViewModel.fetchFeedsCategory(context);
+    }, []);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
+        centerTitle: true,
         leading: InkWell(
             onTap: () => useViewModel.goBack(context),
-            child: Icon(Icons.arrow_back)),
+            child: const Icon(Icons.arrow_back)),
+        title: const BaseText(
+          title: "Create Post",
+          style: TextStyle(
+              color: AppColor.darkBlackColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w500),
+        ),
         elevation: 0.0,
       ),
       body: Padding(
@@ -36,13 +48,6 @@ class CreatePostScreen extends HookWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const BaseText(
-                title: "Create Post",
-                style: TextStyle(
-                    color: AppColor.darkBlackColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500),
-              ),
               Consumer<CreatePostModel>(builder: (context, provider, child) {
                 return InkWell(
                   onTap: () => provider.pickPostImage(context, authService),
@@ -77,61 +82,94 @@ class CreatePostScreen extends HookWidget {
               }),
               Form(
                 key: useViewModel.editUserformKey,
+                autovalidateMode: AutovalidateMode.always,
                 child: Column(
                   children: [
                     Consumer<CreatePostModel>(
                       builder: (context, provider, child) => Input(
                         labelText: "Enter Caption",
-                        focusNode: useViewModel.nameFocusNode,
+                        // focusNode: useViewModel.captionFocusNode,
                         keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
                         // suffixIcon: useViewModel.suffixIconForName(),
-                        // initialValue: "Enter Caption",
                         validator: useViewModel.nameFieldValidator,
-                        onSaved: useViewModel.onSavedNameField,
-                        onFieldSubmitted: (_) {
-                          Utils.fieldFocusChange(
-                              context,
-                              useViewModel.nameFocusNode,
-                              useViewModel.emailFocusNode);
+                        onSaved: useViewModel.onSavedCaptionField,
+                        onFieldSubmitted: (value) {
+                          useViewModel.onSavedCaptionField(value);
                         },
                       ),
                     ),
                     const SizedBox(
                       height: 16,
                     ),
-                    Consumer<CreatePostModel>(
-                      builder: (context, provider, child) => Input(
-                          labelText: "Select Category",
-                          focusNode: useViewModel.emailFocusNode,
-                          // suffixIcon: useViewModel.suffixIconForEmail(),
-                          keyboardType: TextInputType.emailAddress,
-                          // initialValue: user.email ?? "",
-                          textInputAction: TextInputAction.done,
-                          validator: useViewModel.nameFieldValidator,
-                          onSaved: useViewModel.onSavedNameField,
-                          onFieldSubmitted: (_) {}
-                          // provider.saveForm(context, user, authService),
-                          ),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Consumer<CreatePostModel>(
-                      builder: (context, provider, child) =>
-                          CustomElevatedButton(
-                              title: "Update",
-                              // loading: provider.loading,
-                              width: dimension["width"]! - 32,
-                              onPress: () {
-                                useViewModel.clearImagePath();
-                              }
-                              // provider.saveForm(context, user, authService),
-                              ),
-                    )
                   ],
                 ),
               ),
+              const BaseText(title: "Select Category", style: TextStyle()),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: dimension["width"],
+                child: SizedBox(
+                  height: 30,
+                  child: Consumer<CreatePostModel>(
+                    builder: (context, provider, child) {
+                      return provider.categoryLoading
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 10,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: 100,
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Skeleton(
+                                    height: 10,
+                                    width: 100,
+                                    radius: 10,
+                                  ),
+                                );
+                              })
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: provider.categoriesList.length,
+                              itemBuilder: (context, index) {
+                                return CategoryButton(
+                                  category: provider.categoriesList[index],
+                                  onTap: () {
+                                    provider.setActiveState(
+                                      context,
+                                      provider.categoriesList[index],
+                                      provider.categoriesList[index].isActive,
+                                    );
+                                  },
+                                );
+                              });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Consumer<CreatePostModel>(
+                builder: (context, provider, child) => CustomElevatedButton(
+                    title: "Update",
+                    // loading: provider.loading,
+                    width: dimension["width"]! - 32,
+                    onPress: () {
+                      if (useViewModel
+                              .nameFieldValidator(useViewModel.caption) ==
+                          null) {
+                        useViewModel.createPost(
+                          context,
+                        );
+                        useViewModel.clearImagePath();
+                      }
+                    }
+                    // provider.saveForm(context, user, authService),
+                    ),
+              )
             ],
           ),
         ),

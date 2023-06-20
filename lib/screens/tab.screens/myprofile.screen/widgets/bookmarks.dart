@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
-import 'comment_widget.dart';
 
-class Feed extends HookWidget {
+class BookmarkFeed extends HookWidget {
   final feed;
 
-  const Feed({
+  const BookmarkFeed({
     super.key,
     required this.feed,
   });
@@ -22,6 +22,8 @@ class Feed extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final useViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
     final userInfo = User.fromJson(authService.userInfo["user"]);
+    final useViewModel1 = useMemoized(
+        () => Provider.of<MyProfileViewModel>(context, listen: false));
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
     var isBookMarked = useState(feed['bookmarks'].contains(userInfo.sId));
@@ -42,8 +44,7 @@ class Feed extends HookWidget {
     }
 
     void handleBookMark() {
-      useViewModel.toggleTimeline(
-          context, feed['_id'], userInfo.sId!, isBookMarked.value);
+      useViewModel1.toggleTimeline(context, feed['_id'], userInfo);
       isBookMarked.value = !isBookMarked.value;
     }
 
@@ -151,47 +152,6 @@ class Feed extends HookWidget {
                   title: feed["caption"],
                   style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w400),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 40,
-                child: InkWell(
-                  onTap: () {
-                    Utils.model(
-                        context,
-                        UserComment(
-                          feedId: feed["_id"],
-                          setNumberOfComment: setNumberOfComment,
-                        ));
-                  },
-                  child: Container(
-                    height: 40,
-                    width: dimension['width']! - 52,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffd9d9d9),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
-                      ),
-                    ),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16),
-                          child: BaseText(
-                            title: 'Add a  comment',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ),
               const SizedBox(

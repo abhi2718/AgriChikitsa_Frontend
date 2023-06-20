@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../model/category_model.dart';
 import '../../../model/comment.dart';
+import '../../../model/user_model.dart' as currentUser;
 
 class HomeTabViewModel with ChangeNotifier {
   final _homeTabRepository = HomeTabRepository();
@@ -107,6 +109,33 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
+  void toggleTimeline(
+    BuildContext context,
+    String id,
+    String userId,
+    bool isbookmarked,
+  ) async {
+    try {
+      await _homeTabRepository.toggleTimeline(id);
+      int index = feedList.indexWhere((feed) => feed['_id'] == id);
+      if (index != -1) {
+        final feedItem = feedList[index];
+        final oldBookmarks = feedItem['bookmarks'];
+        if (isbookmarked) {
+          oldBookmarks.removeWhere((item) => item == userId);
+        }
+        dynamic updatedFeed = {
+          ...feedItem,
+          "bookmarks": isbookmarked ? oldBookmarks : [...oldBookmarks, userId]
+        };
+        feedList.replaceRange(index, index + 1, [updatedFeed]);
+      }
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
   void fetchComments(BuildContext context, String id) async {
     commentLoading = true;
     notifyListeners();
@@ -125,6 +154,29 @@ class HomeTabViewModel with ChangeNotifier {
     return List<Comment>.from(comments.map((comment) {
       return Comment.fromJson(comment);
     }));
+  }
+
+  void createPost(
+      BuildContext context, String id, String caption, String imageUrl) async {
+    try {
+      final payload = {
+        "categoryId": id,
+        "caption": caption,
+        "imgurl": imageUrl
+      };
+      final data = await _homeTabRepository.createPost(payload);
+      if (data['message'] == "Feed created successfully") {
+        Utils.toastMessage(
+            "Hurray! Post created successfully, Admin will approve this soon!");
+        Navigator.pushNamed(context, RouteName.myProfileScreenRoute);
+      } else {
+        Navigator.pop(context);
+        Utils.toastMessage("Snap! Post cannot be created right now!");
+      }
+    } catch (error) {
+      setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
   }
 
   void addComment(

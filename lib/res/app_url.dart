@@ -1,5 +1,5 @@
 class AppUrl {
-  static const String baseUrl = "http://192.168.1.3:1010/api/v1";
+  static const String baseUrl = "http://192.168.1.105:1010/api/v1";
   // "https://agrichikitsa-backend-abhiwebdev2718-gmailcom.vercel.app/api/v1";
   // "https://agrichikitsa-backend-abhiwebdev2718-gmailcom.vercel.app/api/v1":
   static const String loginEndPoint = '$baseUrl/auth/checkuser';
@@ -8,5 +8,5 @@ class AppUrl {
   static const String uploadImageEndPoint = '$baseUrl/upload';
   static const String feedEndPoint = '$baseUrl/feed';
   static const String jankariEndPoint = '$baseUrl/jankari';
-  static const String botQquestionsEndPoint = '$baseUrl/botquestion';
+  static const String botQquestionsEndPoint = '$baseUrl/chat/script';
 }

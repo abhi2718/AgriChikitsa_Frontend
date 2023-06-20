@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../../res/color.dart';
 import '../../../services/auth.dart';
+import '../../../widgets/text.widgets/text.dart';
 import 'chat_tab_view_model.dart';
 import 'widgets/helper/simplebot.dart';
 
@@ -24,19 +26,21 @@ class ChatTabScreen extends HookWidget {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColor.whiteColor,
+          foregroundColor: AppColor.darkBlackColor,
+          centerTitle: true,
+          leading: InkWell(
+              onTap: () => useViewModel.goBack(context),
+              child: const Icon(Icons.arrow_back)),
+          title: const BaseText(title: "Chat Pancham", style: TextStyle()),
+        ),
         body: SafeArea(
           child: Column(
             children: [
-              InkWell(
-                onTap: () {
-                  useViewModel.reinitilize();
-                  Navigator.pop(context);
-                },
-                child: Icon(
-                  Icons.close,
-                  size: 30.0,
-                ),
-              ),
+              // SizedBox(
+              //   height: 10,
+              // ),
               SizedBox(
                 height: dimension['height'],
                 width: double.infinity,

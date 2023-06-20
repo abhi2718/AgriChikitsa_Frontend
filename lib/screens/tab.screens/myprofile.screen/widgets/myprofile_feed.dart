@@ -1,4 +1,6 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/timeline_comment_widget.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
-import 'comment_widget.dart';
 
-class Feed extends HookWidget {
+class MyProfileFeed extends HookWidget {
   final feed;
 
-  const Feed({
+  const MyProfileFeed({
     super.key,
     required this.feed,
   });
@@ -24,7 +25,6 @@ class Feed extends HookWidget {
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
-    var isBookMarked = useState(feed['bookmarks'].contains(userInfo.sId));
     final numberOfComments = useState(feed['comments'].length);
     void setNumberOfComment(int count) {
       numberOfComments.value = count;
@@ -39,12 +39,6 @@ class Feed extends HookWidget {
         isLiked.value = true;
         numberOfLikes.value = numberOfLikes.value + 1;
       }
-    }
-
-    void handleBookMark() {
-      useViewModel.toggleTimeline(
-          context, feed['_id'], userInfo.sId!, isBookMarked.value);
-      isBookMarked.value = !isBookMarked.value;
     }
 
     final user = feed['user'];
@@ -113,35 +107,88 @@ class Feed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          InkWell(
-                            onTap: handleLike,
-                            child: Icon(isLiked.value
-                                ? Remix.heart_2_fill
-                                : Remix.heart_line),
-                          ),
+                          feed['approved']
+                              ? InkWell(
+                                  onTap: handleLike,
+                                  child: Icon(isLiked.value
+                                      ? Remix.heart_2_fill
+                                      : Remix.heart_line),
+                                )
+                              : const Icon(
+                                  Remix.heart_2_line,
+                                  color: AppColor.iconColor,
+                                ),
                           const SizedBox(
                             width: 6,
                           ),
-                          Text(numberOfLikes.value.toString())
+                          Text(numberOfLikes.value.toString()),
+                          SizedBox(
+                            width: feed['approved'] ? 70 : 55,
+                          ),
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const InkWell(
-                            child: Icon(Remix.chat_4_line),
-                          ),
+                          feed['approved']
+                              ? InkWell(
+                                  onTap: () {
+                                    Utils.model(
+                                        context,
+                                        TimelineUserComment(
+                                          feedId: feed["_id"],
+                                          setNumberOfComment:
+                                              setNumberOfComment,
+                                        ));
+                                  },
+                                  child: const Icon(Remix.chat_4_line),
+                                )
+                              : const Icon(
+                                  Remix.chat_4_line,
+                                  color: AppColor.iconColor,
+                                ),
                           const SizedBox(
                             width: 6,
                           ),
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      InkWell(
-                        onTap: handleBookMark,
-                        child: Icon(isBookMarked.value
-                            ? Remix.bookmark_fill
-                            : Remix.bookmark_line),
+                      Container(
+                        height: 30,
+                        width: feed['approved']
+                            ? dimension['width']! * 0.25
+                            : dimension['width']! * 0.22,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: feed['approved']
+                                  ? AppColor.darkColor
+                                  : AppColor.errorColor,
+                              width: 1),
+                          borderRadius: BorderRadius.circular(7),
+                          color: AppColor.whiteColor,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            feed['approved']
+                                ? const Icon(
+                                    Icons.verified_rounded,
+                                    color: AppColor.darkColor,
+                                  )
+                                : const Icon(
+                                    Icons.hourglass_bottom,
+                                    color: AppColor.errorColor,
+                                  ),
+                            feed['approved']
+                                ? const BaseText(
+                                    title: "Approved",
+                                    style: TextStyle(),
+                                  )
+                                : const BaseText(
+                                    title: "Waiting", style: TextStyle())
+                          ],
+                        ),
                       )
                     ]),
               ),
@@ -151,47 +198,7 @@ class Feed extends HookWidget {
                   title: feed["caption"],
                   style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w400),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 40,
-                child: InkWell(
-                  onTap: () {
-                    Utils.model(
-                        context,
-                        UserComment(
-                          feedId: feed["_id"],
-                          setNumberOfComment: setNumberOfComment,
-                        ));
-                  },
-                  child: Container(
-                    height: 40,
-                    width: dimension['width']! - 52,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffd9d9d9),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
-                      ),
-                    ),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 16),
-                          child: BaseText(
-                            title: 'Add a  comment',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  textAlign: TextAlign.start,
                 ),
               ),
               const SizedBox(

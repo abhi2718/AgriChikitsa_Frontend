@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ class TabScreen extends HookWidget {
       return [
         const HomeTabScreen(),
         const JankariHomeTab(),
+        const MyProfileScreen(),
         const ProfileTabScreen(),
       ];
     });
@@ -44,6 +46,11 @@ class TabScreen extends HookWidget {
             height: 20,
           ),
           label: 'Jankari',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.view_timeline_outlined),
+          activeIcon: Icon(Icons.view_timeline_rounded),
+          label: 'Timeline',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(

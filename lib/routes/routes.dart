@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
 import '../screens/auth.screen/auth.landing/landing.dart';
 import '../screens/auth.screen/signin.auth/otp_Verification.dart';
@@ -20,6 +21,7 @@ class Routes {
     RouteName.signUpRoute: (context) => const SignUpScreen(),
     RouteName.editProfileRoute: (context) => const EditProfileScreen(),
     RouteName.createPostRoute: (context) => const CreatePostScreen(),
-    RouteName.chatBotRoute:(context) => const ChatTabScreen(),
+    RouteName.chatBotRoute: (context) => const ChatTabScreen(),
+    RouteName.myProfileScreenRoute: (context) => const MyProfileScreen(),
   };
 }
