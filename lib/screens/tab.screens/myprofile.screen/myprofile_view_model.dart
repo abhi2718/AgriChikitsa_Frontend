@@ -7,6 +7,7 @@ import '../../../utils/utils.dart';
 
 class MyProfileViewModel with ChangeNotifier {
   final _myProfileTabRepository = MyProfileTabRepository();
+  dynamic feedList = [];
   List<dynamic> bookMarkFeedList = [];
   var commentLoading = true;
   var _loading = true;
@@ -18,8 +19,21 @@ class MyProfileViewModel with ChangeNotifier {
   //   _loading = value;
   //   notifyListeners();
   // }
-
   void fetchFeeds(BuildContext context) async {
+    // setloading(true);
+    try {
+      final data = await _myProfileTabRepository.fetchFeeds();
+      feedList = data['feeds'];
+      print(feedList);
+      // setloading(false);
+      notifyListeners();
+    } catch (error) {
+      // setloading(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void fetchTimeline(BuildContext context) async {
     // setloading(true);
     try {
       final data = await _myProfileTabRepository.fetchTimeLine();

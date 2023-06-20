@@ -4,7 +4,6 @@ import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../model/category_model.dart';
 import '../../../model/comment.dart';

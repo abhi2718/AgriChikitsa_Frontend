@@ -174,127 +174,130 @@ class UserComment extends HookWidget {
             ),
             Container(
               height: (dimension["height"]! - 100) * 0.1,
-              child: SizedBox(
-                height: 30,
-                child: InkWell(
-                  onTap: () {
-                    Utils.model(
-                      context,
-                      Container(
-                        height: 500,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(
-                                    Remix.close_circle_line,
-                                  ),
+              child: InkWell(
+                onTap: () {
+                  Utils.model(
+                    context,
+                    SizedBox(
+                      height: dimension['height']! * 0.53,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(
+                                  Remix.close_circle_line,
                                 ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Consumer<AuthService>(
-                                    builder: (context, provider, child) {
-                                  if (provider.userInfo != null) {
-                                    final user = provider.userInfo["user"];
-                                    return CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(user["profileImage"]),
-                                    );
-                                  }
-                                  return Container();
-                                }),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                SizedBox(
-                                  width: dimension['width']! - 145,
-                                  child: TextField(
-                                    decoration: const InputDecoration(
-                                      hintText: 'Add a Comment',
-                                      hintStyle: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(
-                                            12,
-                                          ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Consumer<AuthService>(
+                                  builder: (context, provider, child) {
+                                if (provider.userInfo != null) {
+                                  final user = provider.userInfo["user"];
+                                  return CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(user["profileImage"]),
+                                  );
+                                }
+                                return Container();
+                              }),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              SizedBox(
+                                width: dimension['width']! - 160,
+                                child: TextField(
+                                  decoration: const InputDecoration(
+                                    hintText: 'Add a Comment',
+                                    hintStyle: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                          12,
                                         ),
                                       ),
                                     ),
-                                    controller: textEditingController,
-                                    autofocus: true,
                                   ),
+                                  controller: textEditingController,
+                                  autofocus: true,
                                 ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Consumer<HomeTabViewModel>(
-                                    builder: (context, provider, child) {
-                                  return InkWell(
-                                    onTap: () {
-                                      useViewModel.addComment(
-                                        context,
-                                        feedId,
-                                        textEditingController.text,
-                                        User.fromJson(
-                                            authService.userInfo["user"]),
-                                      );
-                                      setNumberOfComment(
-                                          provider.commentsList.length);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Image.asset(
-                                      "assets/icons/send_icon.png",
-                                      height: 35,
-                                      width: 35,
-                                    ),
-                                  );
-                                }),
-                              ],
-                            ),
-                          ],
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Consumer<HomeTabViewModel>(
+                                  builder: (context, provider, child) {
+                                return InkWell(
+                                  onTap: () {
+                                    useViewModel.addComment(
+                                      context,
+                                      feedId,
+                                      textEditingController.text,
+                                      User.fromJson(
+                                          authService.userInfo["user"]),
+                                    );
+                                    setNumberOfComment(
+                                        provider.commentsList.length);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Image.asset(
+                                    "assets/icons/send_icon.png",
+                                    height: 30,
+                                    width: 30,
+                                  ),
+                                );
+                              }),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: dimension['width'],
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xffd9d9d9),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20.0),
                         ),
                       ),
-                    );
-                  },
-                  child: Container(
-                    width: dimension['width'],
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Color(0xffd9d9d9),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20.0),
-                          ),
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 16),
-                              child: BaseText(
-                                title: 'Add a  comment',
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w700),
-                              ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 16),
+                            child: BaseText(
+                              title: 'Add a  comment',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w700),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

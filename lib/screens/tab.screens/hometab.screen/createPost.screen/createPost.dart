@@ -115,7 +115,7 @@ class CreatePostScreen extends HookWidget {
                     child: Builder(builder: (BuildContext context) {
                       return DropdownButton<String>(
                         value: provider.selectedKey.isEmpty
-                            ? "Select Category"
+                            ? null
                             : provider.selectedKey,
                         onChanged: (String? key) {
                           provider.updateSelectedOption(key!);

@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -7,12 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
-import 'comment_widget.dart';
+import '../../hometab.screen/widgets/comment_widget.dart';
 
-class Feed extends HookWidget {
+class MyProfileFeed extends HookWidget {
   final feed;
 
-  const Feed({
+  const MyProfileFeed({
     super.key,
     required this.feed,
   });
@@ -24,7 +25,6 @@ class Feed extends HookWidget {
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
-    var isBookMarked = useState(userInfo.timeline!.contains(feed['_id']));
     final numberOfComments = useState(feed['comments'].length);
     void setNumberOfComment(int count) {
       numberOfComments.value = count;
@@ -39,15 +39,6 @@ class Feed extends HookWidget {
         isLiked.value = true;
         numberOfLikes.value = numberOfLikes.value + 1;
       }
-    }
-
-    void handleBookMark() {
-      if (isBookMarked.value == true) {
-        isBookMarked.value = false;
-      } else {
-        isBookMarked.value = true;
-      }
-      useViewModel.toggleTimeline(context, feed["_id"], userInfo, isBookMarked);
     }
 
     final user = feed['user'];
@@ -125,7 +116,10 @@ class Feed extends HookWidget {
                           const SizedBox(
                             width: 6,
                           ),
-                          Text(numberOfLikes.value.toString())
+                          Text(numberOfLikes.value.toString()),
+                          SizedBox(
+                            width: feed['approved'] ? 70 : 55,
+                          ),
                         ],
                       ),
                       Row(
@@ -140,11 +134,44 @@ class Feed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      InkWell(
-                        onTap: handleBookMark,
-                        child: Icon(isBookMarked.value
-                            ? Remix.bookmark_fill
-                            : Remix.bookmark_line),
+                      Container(
+                        height: 30,
+                        width: feed['approved']
+                            ? dimension['width']! * 0.25
+                            : dimension['width']! * 0.22,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: feed['approved']
+                                  ? AppColor.darkColor
+                                  : Colors.red,
+                              width: 1),
+                          borderRadius: BorderRadius.circular(7),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            feed['approved']
+                                ? const Icon(
+                                    Icons.verified_rounded,
+                                    color: AppColor.darkColor,
+                                  )
+                                : const Icon(
+                                    Icons.hourglass_bottom,
+                                    color: Colors.red,
+                                  ),
+                            feed['approved']
+                                ? const BaseText(
+                                    title: "Approved",
+                                    style: TextStyle(),
+                                  )
+                                : const BaseText(
+                                    title: "Waiting",
+                                    style: TextStyle(),
+                                  ),
+                          ],
+                        ),
                       )
                     ]),
               ),
@@ -154,6 +181,7 @@ class Feed extends HookWidget {
                   title: feed["caption"],
                   style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w400),
+                  textAlign: TextAlign.start,
                 ),
               ),
               const SizedBox(

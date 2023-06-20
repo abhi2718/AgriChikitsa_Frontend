@@ -22,8 +22,8 @@ class CreatePostModel with ChangeNotifier {
   var caption = '';
   var category = '';
 
-  void updateSelectedOption(String key) {
-    selectedKey = key;
+  void updateSelectedOption(String? key) {
+    selectedKey = key!;
     selectedValue = dropdownOptions[key]!;
     notifyListeners();
   }

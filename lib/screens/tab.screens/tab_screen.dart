@@ -16,8 +16,8 @@ class TabScreen extends HookWidget {
       return [
         const HomeTabScreen(),
         const JankariHomeTab(),
-        const ProfileTabScreen(),
         const MyProfileScreen(),
+        const ProfileTabScreen(),
       ];
     });
     final tabWidgets = useMemoized(() {
@@ -48,6 +48,11 @@ class TabScreen extends HookWidget {
           label: 'Jankari',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.view_timeline_outlined),
+          activeIcon: Icon(Icons.view_timeline_rounded),
+          label: 'Timeline',
+        ),
+        BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/Settings.png',
             width: 20,
@@ -59,11 +64,6 @@ class TabScreen extends HookWidget {
             height: 20,
           ),
           label: 'Setting',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          activeIcon: Icon(Icons.person),
-          label: 'My Profile',
         ),
       ];
     });
