@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -108,20 +109,27 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  void toggleTimeline(BuildContext context, String id, currentUser.User user,
-      isBookMarked) async {
+  void toggleTimeline(
+    BuildContext context,
+    String id,
+    String userId,
+    bool isbookmarked,
+  ) async {
     try {
-      final data = await _homeTabRepository.toggleTimeline(id);
+      await _homeTabRepository.toggleTimeline(id);
       int index = feedList.indexWhere((feed) => feed['_id'] == id);
-      user.timeline = data['timeLine'];
       if (index != -1) {
+        final feedItem = feedList[index];
+        final oldBookmarks = feedItem['bookmarks'];
+        if (isbookmarked) {
+          oldBookmarks.removeWhere((item) => item == userId);
+        }
         dynamic updatedFeed = {
-          ...feedList[index],
-          "isBookMarked": isBookMarked,
+          ...feedItem,
+          "bookmarks": isbookmarked ? oldBookmarks : [...oldBookmarks, userId]
         };
         feedList.replaceRange(index, index + 1, [updatedFeed]);
       }
-      notifyListeners();
     } catch (error) {
       setloading(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
@@ -158,9 +166,12 @@ class HomeTabViewModel with ChangeNotifier {
       };
       final data = await _homeTabRepository.createPost(payload);
       if (data['message'] == "Feed created successfully") {
-        Utils.toastMessage("Post Request has been sent to admin");
+        Utils.toastMessage(
+            "Hurray! Post created successfully, Admin will approve this soon!");
+        Navigator.pushNamed(context, RouteName.myProfileScreenRoute);
       } else {
-        Utils.toastMessage("Error! Try Again");
+        Navigator.pop(context);
+        Utils.toastMessage("Snap! Post cannot be created right now!");
       }
     } catch (error) {
       setloading(false);

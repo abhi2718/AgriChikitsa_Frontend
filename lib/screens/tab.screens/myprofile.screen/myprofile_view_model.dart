@@ -11,6 +11,7 @@ class MyProfileViewModel with ChangeNotifier {
   List<dynamic> bookMarkFeedList = [];
   var commentLoading = true;
   var _loading = true;
+  bool bookMarkLoader = false;
   bool get loading {
     return _loading;
   }
@@ -19,6 +20,11 @@ class MyProfileViewModel with ChangeNotifier {
   //   _loading = value;
   //   notifyListeners();
   // }
+  setBookMarkLoader(bool value) {
+    bookMarkLoader = value;
+    notifyListeners();
+  }
+
   void fetchFeeds(BuildContext context) async {
     // setloading(true);
     try {
@@ -33,25 +39,27 @@ class MyProfileViewModel with ChangeNotifier {
   }
 
   void fetchTimeline(BuildContext context) async {
-    // setloading(true);
+    setBookMarkLoader(true);
     try {
       final data = await _myProfileTabRepository.fetchTimeLine();
       bookMarkFeedList = data['timelineFeeds'];
-      // setloading(false);
+      setBookMarkLoader(false);
       notifyListeners();
     } catch (error) {
-      // setloading(false);
+      setBookMarkLoader(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }
 
   void toggleTimeline(BuildContext context, String id, User user) async {
+    setBookMarkLoader(true);
     try {
-      final data = await HomeTabRepository().toggleTimeline(id);
-      user.timeline = data['timeLine'];
+      await HomeTabRepository().toggleTimeline(id);
+      bookMarkFeedList.removeWhere((element) => element['_id'] == id);
+      setBookMarkLoader(false);
       notifyListeners();
     } catch (error) {
-      // setloading(false);
+      setBookMarkLoader(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }

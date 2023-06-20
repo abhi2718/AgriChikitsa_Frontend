@@ -1,10 +1,7 @@
 import 'dart:io';
 
-import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
-import 'package:agriChikitsa/widgets/tools.widgets/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +10,9 @@ import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/Input.widgets/input.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
+import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
+import './widgets/post_category_button.dart';
 
 class CreatePostScreen extends HookWidget {
   const CreatePostScreen({super.key});
@@ -30,9 +29,17 @@ class CreatePostScreen extends HookWidget {
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
+        centerTitle: true,
         leading: InkWell(
             onTap: () => useViewModel.goBack(context),
             child: const Icon(Icons.arrow_back)),
+        title: const BaseText(
+          title: "Create Post",
+          style: TextStyle(
+              color: AppColor.darkBlackColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w500),
+        ),
         elevation: 0.0,
       ),
       body: Padding(
@@ -41,13 +48,6 @@ class CreatePostScreen extends HookWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const BaseText(
-                title: "Create Post",
-                style: TextStyle(
-                    color: AppColor.darkBlackColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500),
-              ),
               Consumer<CreatePostModel>(builder: (context, provider, child) {
                 return InkWell(
                   onTap: () => provider.pickPostImage(context, authService),
@@ -104,36 +104,51 @@ class CreatePostScreen extends HookWidget {
                   ],
                 ),
               ),
-              Consumer<CreatePostModel>(builder: (context, provider, child) {
-                return Container(
-                  height: 40,
-                  width: dimension['width'],
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColor.darkColor),
+              const BaseText(title: "Select Category", style: TextStyle()),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: dimension["width"],
+                child: SizedBox(
+                  height: 30,
+                  child: Consumer<CreatePostModel>(
+                    builder: (context, provider, child) {
+                      return provider.categoryLoading
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 10,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: 100,
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Skeleton(
+                                    height: 10,
+                                    width: 100,
+                                    radius: 10,
+                                  ),
+                                );
+                              })
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: provider.categoriesList.length,
+                              itemBuilder: (context, index) {
+                                return CategoryButton(
+                                  category: provider.categoriesList[index],
+                                  onTap: () {
+                                    provider.setActiveState(
+                                      context,
+                                      provider.categoriesList[index],
+                                      provider.categoriesList[index].isActive,
+                                    );
+                                  },
+                                );
+                              });
+                    },
                   ),
-                  child: Center(
-                    child: Builder(builder: (BuildContext context) {
-                      return DropdownButton<String>(
-                        value: provider.selectedKey.isEmpty
-                            ? null
-                            : provider.selectedKey,
-                        onChanged: (String? key) {
-                          provider.updateSelectedOption(key!);
-                        },
-                        items: provider.dropdownOptions.entries
-                            .map<DropdownMenuItem<String>>(
-                          (MapEntry<String, String> entry) {
-                            return DropdownMenuItem<String>(
-                              value: entry.key,
-                              child: Text(entry.value),
-                            );
-                          },
-                        ).toList(),
-                      );
-                    }),
-                  ),
-                );
-              }),
+                ),
+              ),
               const SizedBox(
                 height: 40,
               ),

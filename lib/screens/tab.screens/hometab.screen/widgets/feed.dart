@@ -24,7 +24,7 @@ class Feed extends HookWidget {
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
-    var isBookMarked = useState(userInfo.timeline!.contains(feed['_id']));
+    var isBookMarked = useState(feed['bookmarks'].contains(userInfo.sId));
     final numberOfComments = useState(feed['comments'].length);
     void setNumberOfComment(int count) {
       numberOfComments.value = count;
@@ -42,12 +42,9 @@ class Feed extends HookWidget {
     }
 
     void handleBookMark() {
-      if (isBookMarked.value == true) {
-        isBookMarked.value = false;
-      } else {
-        isBookMarked.value = true;
-      }
-      useViewModel.toggleTimeline(context, feed["_id"], userInfo, isBookMarked);
+      useViewModel.toggleTimeline(
+          context, feed['_id'], userInfo.sId!, isBookMarked.value);
+      isBookMarked.value = !isBookMarked.value;
     }
 
     final user = feed['user'];

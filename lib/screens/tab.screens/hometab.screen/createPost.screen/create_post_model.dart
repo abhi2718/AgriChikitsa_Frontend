@@ -2,19 +2,19 @@ import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
-import '../../../../repository/auth.repo/auth_repository.dart';
+import '../../../../routes/routes_name.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
 class CreatePostModel with ChangeNotifier {
-  final _authRepository = AuthRepository();
   var editUserformKey = GlobalKey<FormState>();
   final captionFocusNode = FocusNode();
   final categoryFocusNode = FocusNode();
   List<dynamic> categoriesList = [];
-  String selectedKey = "";
-  String selectedValue = "";
+  String currentSelectedCategory = "";
+  var categoryLoading = true;
 
   Map<String, String> dropdownOptions = {};
   var imagePath = "";
@@ -23,9 +23,8 @@ class CreatePostModel with ChangeNotifier {
   var caption = '';
   var category = '';
 
-  void updateSelectedOption(String? key) {
-    selectedKey = key!;
-    selectedValue = dropdownOptions[key]!;
+  setActiveState(BuildContext context, Category category, bool value) {
+    currentSelectedCategory = category.id;
     notifyListeners();
   }
 
@@ -38,10 +37,7 @@ class CreatePostModel with ChangeNotifier {
                 name: data['category'],
               ))
           .toList();
-
-      dropdownOptions = {
-        for (final category in categoriesList) category.id: category.name!,
-      };
+      categoryLoading = false;
       notifyListeners();
     } catch (error) {
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
@@ -90,12 +86,11 @@ class CreatePostModel with ChangeNotifier {
   void createPost(
     BuildContext context,
   ) {
-    HomeTabViewModel().createPost(context, selectedKey, caption, imageUrl);
+    HomeTabViewModel()
+        .createPost(context, currentSelectedCategory, caption, imageUrl);
     imagePath = "";
     imageUrl = "";
     caption = "";
-    selectedKey = "";
-    selectedValue = "";
-    Navigator.of(context).pop();
+    currentSelectedCategory = "";
   }
 }
