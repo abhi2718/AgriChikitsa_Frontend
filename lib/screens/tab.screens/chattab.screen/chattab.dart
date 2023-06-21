@@ -31,7 +31,10 @@ class ChatTabScreen extends HookWidget {
           foregroundColor: AppColor.darkBlackColor,
           centerTitle: true,
           leading: InkWell(
-              onTap: () => useViewModel.goBack(context),
+              onTap: () {
+                useViewModel.goBack(context);
+                useViewModel.reinitilize();
+              },
               child: const Icon(Icons.arrow_back)),
           title: const BaseText(title: "Chat Pancham", style: TextStyle()),
         ),

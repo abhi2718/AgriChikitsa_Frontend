@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/timeline_comment_widget.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -21,7 +22,8 @@ class MyProfileFeed extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
-    final useViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
+    final useViewModel =
+        Provider.of<MyProfileViewModel>(context, listen: false);
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
@@ -99,75 +101,59 @@ class MyProfileFeed extends HookWidget {
                 fit: BoxFit.fill,
                 height: 240,
               ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          feed['approved']
-                              ? InkWell(
-                                  onTap: handleLike,
-                                  child: Icon(isLiked.value
-                                      ? Remix.heart_2_fill
-                                      : Remix.heart_line),
-                                )
-                              : const Icon(
-                                  Remix.heart_2_line,
-                                  color: AppColor.iconColor,
-                                ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(numberOfLikes.value.toString()),
-                          SizedBox(
-                            width: feed['approved'] ? 70 : 55,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          feed['approved']
-                              ? InkWell(
-                                  onTap: () {
-                                    Utils.model(
-                                        context,
-                                        TimelineUserComment(
-                                          feedId: feed["_id"],
-                                          setNumberOfComment:
-                                              setNumberOfComment,
-                                        ));
-                                  },
-                                  child: const Icon(Remix.chat_4_line),
-                                )
-                              : const Icon(
-                                  Remix.chat_4_line,
-                                  color: AppColor.iconColor,
-                                ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(numberOfComments.value.toString())
-                        ],
-                      ),
-                      Container(
-                        height: 30,
-                        width: feed['approved']
-                            ? dimension['width']! * 0.25
-                            : dimension['width']! * 0.22,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: feed['approved']
-                                  ? AppColor.darkColor
-                                  : AppColor.errorColor,
-                              width: 1),
-                          borderRadius: BorderRadius.circular(7),
-                          color: AppColor.whiteColor,
+              Consumer<HomeTabViewModel>(builder: (context, provider, child) {
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            feed['approved']
+                                ? InkWell(
+                                    onTap: handleLike,
+                                    child: Icon(isLiked.value
+                                        ? Remix.heart_2_fill
+                                        : Remix.heart_line),
+                                  )
+                                : const Icon(
+                                    Remix.heart_2_line,
+                                    color: AppColor.iconColor,
+                                  ),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            Text(numberOfLikes.value.toString()),
+                          ],
                         ),
-                        child: Row(
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            feed['approved']
+                                ? InkWell(
+                                    onTap: () {
+                                      Utils.model(
+                                          context,
+                                          TimelineUserComment(
+                                            feedId: feed["_id"],
+                                            setNumberOfComment:
+                                                setNumberOfComment,
+                                          ));
+                                    },
+                                    child: const Icon(Remix.chat_4_line),
+                                  )
+                                : const Icon(
+                                    Remix.chat_4_line,
+                                    color: AppColor.iconColor,
+                                  ),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            Text(numberOfComments.value.toString())
+                          ],
+                        ),
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -180,18 +166,11 @@ class MyProfileFeed extends HookWidget {
                                     Icons.hourglass_bottom,
                                     color: AppColor.errorColor,
                                   ),
-                            feed['approved']
-                                ? const BaseText(
-                                    title: "Approved",
-                                    style: TextStyle(),
-                                  )
-                                : const BaseText(
-                                    title: "Waiting", style: TextStyle())
                           ],
-                        ),
-                      )
-                    ]),
-              ),
+                        )
+                      ]),
+                );
+              }),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: BaseText(

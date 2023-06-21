@@ -1,14 +1,16 @@
+import 'dart:async';
+
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import '../../../../routes/routes_name.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
 class CreatePostModel with ChangeNotifier {
+  final _homeTabViewModel = HomeTabViewModel();
   var editUserformKey = GlobalKey<FormState>();
   final captionFocusNode = FocusNode();
   final categoryFocusNode = FocusNode();
@@ -19,12 +21,17 @@ class CreatePostModel with ChangeNotifier {
   Map<String, String> dropdownOptions = {};
   var imagePath = "";
   var imageUrl = "";
-  var _loading = false;
+  var buttonloading = false;
   var caption = '';
   var category = '';
 
   setActiveState(BuildContext context, Category category, bool value) {
     currentSelectedCategory = category.id;
+    notifyListeners();
+  }
+
+  setloading(bool value) {
+    buttonloading = value;
     notifyListeners();
   }
 
@@ -50,6 +57,15 @@ class CreatePostModel with ChangeNotifier {
     } else {
       return null;
     }
+  }
+
+  void reinitialize() {
+    Timer(const Duration(milliseconds: 2000), () {
+      imagePath = "";
+      imageUrl = "";
+      caption = "";
+      currentSelectedCategory = "";
+    });
   }
 
   void onSavedCaptionField(value) {
@@ -85,12 +101,19 @@ class CreatePostModel with ChangeNotifier {
 
   void createPost(
     BuildContext context,
-  ) {
-    HomeTabViewModel()
-        .createPost(context, currentSelectedCategory, caption, imageUrl);
-    imagePath = "";
-    imageUrl = "";
-    caption = "";
-    currentSelectedCategory = "";
+  ) async {
+    setloading(true);
+    if (currentSelectedCategory.isNotEmpty &&
+        caption.isNotEmpty &&
+        imageUrl.isNotEmpty) {
+      final data = await _homeTabViewModel.createPost(
+          context, currentSelectedCategory, caption, imageUrl);
+      if (data) {
+        Navigator.pushNamed(context, RouteName.myProfileScreenRoute);
+      }
+    }
+    setloading(false);
+    reinitialize();
+    notifyListeners();
   }
 }

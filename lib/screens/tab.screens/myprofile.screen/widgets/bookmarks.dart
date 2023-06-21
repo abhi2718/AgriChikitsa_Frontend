@@ -1,4 +1,3 @@
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -8,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
+import 'timeline_comment_widget.dart';
 
 class BookmarkFeed extends HookWidget {
   final feed;
@@ -20,10 +20,9 @@ class BookmarkFeed extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
-    final useViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
+    final useViewModel =
+        Provider.of<MyProfileViewModel>(context, listen: false);
     final userInfo = User.fromJson(authService.userInfo["user"]);
-    final useViewModel1 = useMemoized(
-        () => Provider.of<MyProfileViewModel>(context, listen: false));
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
     var isBookMarked = useState(feed['bookmarks'].contains(userInfo.sId));
@@ -44,7 +43,7 @@ class BookmarkFeed extends HookWidget {
     }
 
     void handleBookMark() {
-      useViewModel1.toggleTimeline(context, feed['_id'], userInfo);
+      useViewModel.toggleTimeline(context, feed['_id'], userInfo);
       isBookMarked.value = !isBookMarked.value;
     }
 
@@ -129,8 +128,16 @@ class BookmarkFeed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const InkWell(
-                            child: Icon(Remix.chat_4_line),
+                          InkWell(
+                            onTap: () {
+                              Utils.model(
+                                  context,
+                                  TimelineUserComment(
+                                    feedId: feed["_id"],
+                                    setNumberOfComment: setNumberOfComment,
+                                  ));
+                            },
+                            child: const Icon(Remix.chat_4_line),
                           ),
                           const SizedBox(
                             width: 6,

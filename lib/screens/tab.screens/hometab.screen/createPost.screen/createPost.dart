@@ -23,6 +23,7 @@ class CreatePostScreen extends HookWidget {
         useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
+      useViewModel.reinitialize();
       useViewModel.fetchFeedsCategory(context);
     }, []);
     return Scaffold(
@@ -42,138 +43,144 @@ class CreatePostScreen extends HookWidget {
         ),
         elevation: 0.0,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Consumer<CreatePostModel>(builder: (context, provider, child) {
-                return InkWell(
-                  onTap: () => provider.pickPostImage(context, authService),
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    height: dimension['height']! * 0.45,
-                    width: dimension['width'],
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: AppColor.darkColor, width: 2.0)),
-                    child: useViewModel.imagePath.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset('assets/icons/gallery.jpg'),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                BaseText(
-                                    title: "Click Here to Upload Image",
-                                    style: TextStyle()),
-                              ],
-                            ),
-                          )
-                        : Image.file(
-                            File(provider.imagePath),
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                );
-              }),
-              Form(
-                key: useViewModel.editUserformKey,
-                autovalidateMode: AutovalidateMode.always,
+      body: useViewModel.buttonloading
+          ? const CircularProgressIndicator()
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Consumer<CreatePostModel>(
-                      builder: (context, provider, child) => Input(
-                        labelText: "Enter Caption",
-                        // focusNode: useViewModel.captionFocusNode,
-                        keyboardType: TextInputType.name,
-                        // suffixIcon: useViewModel.suffixIconForName(),
-                        validator: useViewModel.nameFieldValidator,
-                        onSaved: useViewModel.onSavedCaptionField,
-                        onFieldSubmitted: (value) {
-                          useViewModel.onSavedCaptionField(value);
-                        },
+                        builder: (context, provider, child) {
+                      return InkWell(
+                        onTap: () =>
+                            provider.pickPostImage(context, authService),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          height: dimension['height']! * 0.45,
+                          width: dimension['width'],
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: AppColor.darkColor, width: 2.0)),
+                          child: useViewModel.imagePath.isEmpty
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset('assets/icons/gallery.jpg'),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const BaseText(
+                                          title: "Click Here to Upload Image",
+                                          style: TextStyle()),
+                                    ],
+                                  ),
+                                )
+                              : Image.file(
+                                  File(provider.imagePath),
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      );
+                    }),
+                    Form(
+                      key: useViewModel.editUserformKey,
+                      autovalidateMode: AutovalidateMode.always,
+                      child: Column(
+                        children: [
+                          Consumer<CreatePostModel>(
+                            builder: (context, provider, child) => Input(
+                              labelText: "Enter Caption",
+                              // focusNode: useViewModel.captionFocusNode,
+                              keyboardType: TextInputType.name,
+                              // suffixIcon: useViewModel.suffixIconForName(),
+                              validator: useViewModel.nameFieldValidator,
+                              onSaved: useViewModel.onSavedCaptionField,
+                              onFieldSubmitted: (value) {
+                                useViewModel.onSavedCaptionField(value);
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const BaseText(
+                        title: "Select Category", style: TextStyle()),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: dimension["width"],
+                      child: SizedBox(
+                        height: 30,
+                        child: Consumer<CreatePostModel>(
+                          builder: (context, provider, child) {
+                            return provider.categoryLoading
+                                ? ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: 10,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        width: 100,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8),
+                                        child: Skeleton(
+                                          height: 10,
+                                          width: 100,
+                                          radius: 10,
+                                        ),
+                                      );
+                                    })
+                                : ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: provider.categoriesList.length,
+                                    itemBuilder: (context, index) {
+                                      return CategoryButton(
+                                        category:
+                                            provider.categoriesList[index],
+                                        onTap: () {
+                                          provider.setActiveState(
+                                            context,
+                                            provider.categoriesList[index],
+                                            provider
+                                                .categoriesList[index].isActive,
+                                          );
+                                        },
+                                      );
+                                    });
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 40,
                     ),
+                    Consumer<CreatePostModel>(
+                      builder: (context, provider, child) =>
+                          CustomElevatedButton(
+                              title: "Update",
+                              // loading: provider.loading,
+                              width: dimension["width"]! - 32,
+                              onPress: () {
+                                if (useViewModel.nameFieldValidator(
+                                        useViewModel.caption) ==
+                                    null) {
+                                  useViewModel.createPost(
+                                    context,
+                                  );
+                                  useViewModel.clearImagePath();
+                                }
+                              }),
+                    )
                   ],
                 ),
               ),
-              const BaseText(title: "Select Category", style: TextStyle()),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: dimension["width"],
-                child: SizedBox(
-                  height: 30,
-                  child: Consumer<CreatePostModel>(
-                    builder: (context, provider, child) {
-                      return provider.categoryLoading
-                          ? ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 10,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: 100,
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  child: Skeleton(
-                                    height: 10,
-                                    width: 100,
-                                    radius: 10,
-                                  ),
-                                );
-                              })
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: provider.categoriesList.length,
-                              itemBuilder: (context, index) {
-                                return CategoryButton(
-                                  category: provider.categoriesList[index],
-                                  onTap: () {
-                                    provider.setActiveState(
-                                      context,
-                                      provider.categoriesList[index],
-                                      provider.categoriesList[index].isActive,
-                                    );
-                                  },
-                                );
-                              });
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Consumer<CreatePostModel>(
-                builder: (context, provider, child) => CustomElevatedButton(
-                    title: "Update",
-                    // loading: provider.loading,
-                    width: dimension["width"]! - 32,
-                    onPress: () {
-                      if (useViewModel
-                              .nameFieldValidator(useViewModel.caption) ==
-                          null) {
-                        useViewModel.createPost(
-                          context,
-                        );
-                        useViewModel.clearImagePath();
-                      }
-                    }
-                    // provider.saveForm(context, user, authService),
-                    ),
-              )
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

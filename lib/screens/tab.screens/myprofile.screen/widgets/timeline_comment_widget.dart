@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 
-import '../../../../model/comment.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
@@ -22,10 +21,8 @@ class TimelineUserComment extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
-    final textEditingController = TextEditingController();
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
-    final authService = Provider.of<AuthService>(context, listen: false);
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.fetchComments(context, feedId);

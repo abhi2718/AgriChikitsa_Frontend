@@ -2,7 +2,7 @@ import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprofile_feed.dart';
-import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/post_pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -20,23 +20,19 @@ class MyProfileScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final authService = Provider.of<AuthService>(context, listen: true);
     final useViewModel = useMemoized(
         () => Provider.of<MyProfileViewModel>(context, listen: true));
-    final user = User.fromJson(authService.userInfo["user"]);
     useEffect(() {
       useViewModel.fetchFeeds(context);
       useViewModel.fetchTimeline(context);
     }, []);
-    const defaultImage =
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
     return DefaultTabController(
       length: 2,
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
             systemOverlayStyle:
-                SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+                const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
             backgroundColor: AppColor.whiteColor,
             foregroundColor: AppColor.darkBlackColor,
             flexibleSpace:
@@ -84,124 +80,26 @@ class MyProfileScreen extends HookWidget {
                           )
                         ],
                       )
-                    : SizedBox(
-                        height: dimension['height']! - 100,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          // physics: const NeverScrollableScrollPhysics(),
-                          itemCount: provider.feedList.length,
-                          itemBuilder: (context, index) {
-                            final feed = provider.feedList[index];
-                            return MyProfileFeed(feed: feed);
-                          },
-                        ),
-                      );
-              }),
-              Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.bookMarkFeedList.isEmpty
-                    ? Container(
-                        child: Center(child: Text("No Bookmarks added yet!")),
-                      )
-                    : provider.bookMarkLoader
-                        ? SizedBox(
+                    : provider.loading
+                        ? const PreLoader()
+                        : SizedBox(
                             height: dimension['height']! - 100,
                             child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: 3,
+                              // physics: const NeverScrollableScrollPhysics(),
+                              itemCount: provider.feedList.length,
                               itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  child: Card(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Row(
-                                            children: [
-                                              Skeleton(
-                                                height: 40,
-                                                width: 40,
-                                                radius: 30,
-                                              ),
-                                              const SizedBox(
-                                                width: 16,
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Skeleton(
-                                                    height: 13,
-                                                    width: dimension['width']! -
-                                                        250,
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 4,
-                                                  ),
-                                                  Skeleton(
-                                                    height: 10,
-                                                    width: dimension['width']! -
-                                                        300,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Skeleton(
-                                          height: 240,
-                                          width: dimension['width']! - 16,
-                                          radius: 0,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Skeleton(
-                                                height: 27,
-                                                width: 30,
-                                                radius: 0,
-                                              ),
-                                              Skeleton(
-                                                height: 27,
-                                                width: 30,
-                                                radius: 0,
-                                              ),
-                                              Skeleton(
-                                                height: 27,
-                                                width: 30,
-                                                radius: 0,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16.0),
-                                          child: Skeleton(
-                                            height: 72,
-                                            width: dimension['width']!,
-                                            radius: 0,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 16,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
+                                final feed = provider.feedList[index];
+                                return MyProfileFeed(feed: feed);
                               },
                             ),
-                          )
+                          );
+              }),
+              Consumer<MyProfileViewModel>(builder: (context, provider, child) {
+                return provider.bookMarkFeedList.isEmpty
+                    ? const Center(child: Text("No Bookmarks added yet!"))
+                    : provider.bookMarkLoader
+                        ? const PreLoader()
                         : SizedBox(
                             height: dimension['height']! - 100,
                             child: ListView.builder(
