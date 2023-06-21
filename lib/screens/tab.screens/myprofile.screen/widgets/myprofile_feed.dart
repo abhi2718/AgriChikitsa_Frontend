@@ -33,7 +33,8 @@ class MyProfileFeed extends HookWidget {
     }
 
     void handleLike() {
-      useViewModel.toggleLike(context, feed["_id"]);
+      useViewModel.toggleLike(
+          context, feed["_id"], isLiked.value, userInfo.sId!);
       if (isLiked.value == true) {
         isLiked.value = false;
         numberOfLikes.value = numberOfLikes.value - 1;

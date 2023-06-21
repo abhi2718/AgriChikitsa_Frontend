@@ -7,7 +7,7 @@ import '../../../utils/utils.dart';
 
 class MyProfileViewModel with ChangeNotifier {
   final _myProfileTabRepository = MyProfileTabRepository();
-  dynamic feedList = [];
+  List<dynamic> feedList = [];
   List<dynamic> bookMarkFeedList = [];
   var commentLoading = true;
   var _loading = true;
@@ -27,7 +27,6 @@ class MyProfileViewModel with ChangeNotifier {
   }
 
   void fetchFeeds(BuildContext context) async {
-    setloading(true);
     try {
       final data = await _myProfileTabRepository.fetchFeeds();
       feedList = data['feeds'];
@@ -52,22 +51,37 @@ class MyProfileViewModel with ChangeNotifier {
     }
   }
 
-  void toggleLike(BuildContext context, String id) async {
+  void toggleLike(
+      BuildContext context, String id, bool isLiked, String userId) async {
     try {
-      final data = await HomeTabRepository().toggleLike(id);
+      await HomeTabRepository().toggleLike(id);
       int index = feedList.indexWhere((feed) => feed['_id'] == id);
       int indexBook = bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
       if (index != -1) {
+        final feedItem = feedList[index];
+        final bookMarkItem = bookMarkFeedList[indexBook];
+
+        if (isLiked) {
+          feedItem['likes'].removeWhere((item) => item == userId);
+          bookMarkItem['likes'].removeWhere((item) => item == userId);
+        } else {
+          feedItem['likes'].add(userId);
+          bookMarkItem['likes'].add(userId);
+        }
+
         dynamic updatedFeed = {
-          ...feedList[index],
-          "likes": data["likes"],
+          ...feedItem,
+          "likes": [...feedItem['likes']]
         };
         dynamic updatedBookMarkList = {
-          ...bookMarkFeedList[indexBook],
-          "likes": data["likes"],
+          ...bookMarkItem,
+          "likes": [...bookMarkItem['likes']]
         };
-        bookMarkFeedList.replaceRange(indexBook, indexBook + 1, [updatedFeed]);
+
         feedList.replaceRange(index, index + 1, [updatedFeed]);
+        bookMarkFeedList
+            .replaceRange(indexBook, indexBook + 1, [updatedBookMarkList]);
+        notifyListeners();
       }
     } catch (error) {
       Utils.flushBarErrorMessage('Alert', error.toString(), context);

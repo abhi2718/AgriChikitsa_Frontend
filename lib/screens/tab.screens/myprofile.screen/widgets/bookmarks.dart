@@ -32,8 +32,9 @@ class BookmarkFeed extends HookWidget {
     }
 
     void handleLike() {
-      useViewModel.toggleLike(context, feed["_id"]);
-      if (isLiked.value == true) {
+      useViewModel.toggleLike(
+          context, feed["_id"], isLiked.value, userInfo.sId!);
+      if (isLiked.value) {
         isLiked.value = false;
         numberOfLikes.value = numberOfLikes.value - 1;
       } else {

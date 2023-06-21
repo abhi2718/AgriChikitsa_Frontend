@@ -23,9 +23,12 @@ class CreatePostScreen extends HookWidget {
         useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
-      useViewModel.reinitialize();
       useViewModel.fetchFeedsCategory(context);
     }, []);
+    void closeKeyboard() {
+      useFocusNode().unfocus();
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
@@ -44,7 +47,7 @@ class CreatePostScreen extends HookWidget {
         elevation: 0.0,
       ),
       body: useViewModel.buttonloading
-          ? const CircularProgressIndicator()
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(
@@ -85,29 +88,26 @@ class CreatePostScreen extends HookWidget {
                         ),
                       );
                     }),
-                    Form(
-                      key: useViewModel.editUserformKey,
-                      autovalidateMode: AutovalidateMode.always,
-                      child: Column(
-                        children: [
-                          Consumer<CreatePostModel>(
-                            builder: (context, provider, child) => Input(
-                              labelText: "Enter Caption",
-                              // focusNode: useViewModel.captionFocusNode,
-                              keyboardType: TextInputType.name,
-                              // suffixIcon: useViewModel.suffixIconForName(),
-                              validator: useViewModel.nameFieldValidator,
-                              onSaved: useViewModel.onSavedCaptionField,
-                              onFieldSubmitted: (value) {
-                                useViewModel.onSavedCaptionField(value);
-                              },
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                        ],
+                    TextField(
+                      controller: useViewModel.captionController,
+                      decoration: const InputDecoration(
+                        labelText: "Enter Caption",
+                        border: OutlineInputBorder(),
                       ),
+                      keyboardType: TextInputType.name,
+                      onChanged: (value) {
+                        useViewModel.onSavedCaptionField(value);
+                      },
+                      onTapOutside: (_) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
+                      onSubmitted: (_) => useViewModel.onSavedCaptionField(
+                          useViewModel.captionController.text),
+                      onEditingComplete: () {
+                        useViewModel.handleUserInput(context);
+                      },
+                    ),
+                    const SizedBox(
+                      height: 16,
                     ),
                     const BaseText(
                         title: "Select Category", style: TextStyle()),
@@ -167,14 +167,7 @@ class CreatePostScreen extends HookWidget {
                               // loading: provider.loading,
                               width: dimension["width"]! - 32,
                               onPress: () {
-                                if (useViewModel.nameFieldValidator(
-                                        useViewModel.caption) ==
-                                    null) {
-                                  useViewModel.createPost(
-                                    context,
-                                  );
-                                  useViewModel.clearImagePath();
-                                }
+                                useViewModel.createPost(context);
                               }),
                     )
                   ],

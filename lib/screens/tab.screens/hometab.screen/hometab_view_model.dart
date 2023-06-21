@@ -165,8 +165,6 @@ class HomeTabViewModel with ChangeNotifier {
         "imgurl": imageUrl
       };
       final data = await _homeTabRepository.createPost(payload);
-      Utils.toastMessage(
-          "Hurray! Post created successfully, Admin will approve this soon!");
       return true;
     } catch (error) {
       setloading(false);
