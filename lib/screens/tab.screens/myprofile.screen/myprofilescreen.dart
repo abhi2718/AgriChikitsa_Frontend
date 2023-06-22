@@ -58,8 +58,8 @@ class MyProfileScreen extends HookWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const BaseText(
-                            title: "No posts yet!",
+                          BaseText(
+                            title: AppLocalizationsHi().noPostYet,
                             style: TextStyle(),
                           ),
                           const SizedBox(
@@ -75,10 +75,11 @@ class MyProfileScreen extends HookWidget {
                                   borderRadius: BorderRadius.circular(8),
                                   color: AppColor.darkColor,
                                 ),
-                                child: const Center(
+                                child: Center(
                                     child: BaseText(
-                                  title: "Create one!",
-                                  style: TextStyle(color: AppColor.whiteColor),
+                                  title: AppLocalizationsHi().createOne,
+                                  style: const TextStyle(
+                                      color: AppColor.whiteColor),
                                 ))),
                           )
                         ],
@@ -100,7 +101,11 @@ class MyProfileScreen extends HookWidget {
               }),
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
                 return provider.bookMarkFeedList.isEmpty
-                    ? const Center(child: Text("No Bookmarks added yet!"))
+                    ? Center(
+                        child: Text(
+                          AppLocalizationsHi().noBookMarkAdd,
+                        ),
+                      )
                     : provider.bookMarkLoader
                         ? const PreLoader()
                         : SizedBox(

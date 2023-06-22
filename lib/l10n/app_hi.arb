@@ -35,5 +35,10 @@
 "post":"डाक",
 "whatsHappening":"क्या हो रहा है?",
 "iagreewith":"मैं सहमत हूं",
-"timeline":"समय"
+"timeline":"समय",
+"noBookMarkAdd":"अभी तक कोई बुकमार्क नहीं जोड़ा गया!",
+"createOne":"एक तैयार करें!",
+"nopostYet":"अब तक कोई पोस्ट नहीं",
+"chatPancham":"चैट पंचम",
+"typeHere":"यहाँ टाइप करें..."
 }
