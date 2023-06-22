@@ -1,10 +1,10 @@
-import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
+import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
-import 'package:jumping_dot/jumping_dot.dart';
 import '../../../../../utils/utils.dart';
 import '../../chat_tab_view_model.dart';
 
@@ -22,8 +22,7 @@ class ChatScreen extends HookWidget {
         builder: (context, provider, child) {
           return Column(
             children: [
-              SizedBox(
-                height: ((dimension["height"]!)) - 250,
+              Expanded(
                 child: ListView.builder(
                   itemCount: provider.chatMessages.length,
                   itemBuilder: (context, index) {
@@ -35,41 +34,42 @@ class ChatScreen extends HookWidget {
                           provider.chatMessages.length > 1
                               ? BubbleSpecialThree(
                                   text: message["question_hi"],
-                                  color: Color(0xFF1B97F3),
+                                  color: AppColor.chatBubbleColor,
                                   tail: true,
                                   isSender: message["isMe"],
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                  textStyle: const TextStyle(
+                                      color: AppColor.whiteColor, fontSize: 16),
                                 )
-                              : AnimatedTextKit(
-                                  animatedTexts: [
-                                    TyperAnimatedText(
-                                      message["question_hi"],
-                                      textStyle: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                  onTap: null,
-                                  isRepeatingAnimation: false,
-                                  totalRepeatCount: 1,
+                              : Container(
+                                  margin: const EdgeInsets.only(left: 18),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 7),
+                                  height: dimension['height']! * 0.073,
+                                  width: dimension['width']! * 0.735,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: AppColor.chatBubbleColor,
+                                  ),
+                                  child: AnimatedTextKit(
+                                    animatedTexts: [
+                                      TyperAnimatedText(
+                                        message["question_hi"],
+                                        textStyle: const TextStyle(
+                                            color: AppColor.whiteColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                    onTap: null,
+                                    isRepeatingAnimation: false,
+                                    totalRepeatCount: 1,
+                                  ),
                                 ),
                           const SizedBox(
                             height: 10,
                           ),
                           provider.showFirstBubbleLoader
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    JumpingDots(
-                                      color: Colors.green,
-                                      radius: 4,
-                                      numberOfDots: 3,
-                                      animationDuration:
-                                          const Duration(milliseconds: 200),
-                                    )
-                                  ],
-                                )
+                              ? const ChatLoader()
                               : Container()
                         ],
                       );
@@ -79,28 +79,17 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: AppColor.chatBubbleColor,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: AppColor.whiteColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
                           ),
                           provider.showSecondBubbleLoader
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    JumpingDots(
-                                      color: Colors.green,
-                                      radius: 4,
-                                      numberOfDots: 3,
-                                      animationDuration:
-                                          const Duration(milliseconds: 200),
-                                    )
-                                  ],
-                                )
+                              ? const ChatLoader()
                               : Container()
                         ],
                       );
@@ -110,11 +99,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: AppColor.chatBubbleColor,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: AppColor.whiteColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -142,11 +131,11 @@ class ChatScreen extends HookWidget {
                                               },
                                         child: BubbleSpecialThree(
                                           text: message["options_hi"][index],
-                                          color: Color(0xFFE8E8EE),
+                                          color: AppColor.chatSent,
                                           tail: false,
                                           isSender: false,
-                                          textStyle: TextStyle(
-                                              color: Colors.black,
+                                          textStyle: const TextStyle(
+                                              color: AppColor.darkBlackColor,
                                               fontSize: 16),
                                         ),
                                       );
@@ -160,29 +149,19 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Color(0xFFE8E8EE),
+                                  color: AppColor.chatSent,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
-                                      color: Colors.black, fontSize: 16),
+                                      color: AppColor.darkBlackColor,
+                                      fontSize: 16),
                                 )
                               : Container(),
                           const SizedBox(
                             height: 16,
                           ),
                           provider.showThirdLoader
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    JumpingDots(
-                                      color: Colors.red,
-                                      radius: 4,
-                                      numberOfDots: 3,
-                                      animationDuration:
-                                          const Duration(milliseconds: 200),
-                                    )
-                                  ],
-                                )
+                              ? const ChatLoader()
                               : Container()
                         ],
                       );
@@ -192,11 +171,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: AppColor.chatBubbleColor,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: AppColor.whiteColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -224,11 +203,11 @@ class ChatScreen extends HookWidget {
                                               },
                                         child: BubbleSpecialThree(
                                           text: message["options_hi"][index],
-                                          color: Color(0xFFE8E8EE),
+                                          color: AppColor.chatSent,
                                           tail: false,
                                           isSender: false,
-                                          textStyle: TextStyle(
-                                              color: Colors.black,
+                                          textStyle: const TextStyle(
+                                              color: AppColor.darkBlackColor,
                                               fontSize: 16),
                                         ),
                                       );
@@ -242,29 +221,19 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Color(0xFFE8E8EE),
+                                  color: AppColor.chatSent,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
-                                      color: Colors.black, fontSize: 16),
+                                      color: AppColor.darkBlackColor,
+                                      fontSize: 16),
                                 )
                               : Container(),
                           const SizedBox(
                             height: 16,
                           ),
                           provider.showFourthLoader
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    JumpingDots(
-                                      color: Colors.red,
-                                      radius: 4,
-                                      numberOfDots: 3,
-                                      animationDuration:
-                                          const Duration(milliseconds: 200),
-                                    )
-                                  ],
-                                )
+                              ? const ChatLoader()
                               : Container()
                         ],
                       );
@@ -274,11 +243,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: AppColor.chatBubbleColor,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: AppColor.whiteColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -306,11 +275,11 @@ class ChatScreen extends HookWidget {
                                               },
                                         child: BubbleSpecialThree(
                                           text: message["options_hi"][index],
-                                          color: Color(0xFFE8E8EE),
+                                          color: AppColor.chatSent,
                                           tail: false,
                                           isSender: false,
-                                          textStyle: TextStyle(
-                                              color: Colors.black,
+                                          textStyle: const TextStyle(
+                                              color: AppColor.darkBlackColor,
                                               fontSize: 16),
                                         ),
                                       );
@@ -324,26 +293,16 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Color(0xFFE8E8EE),
+                                  color: AppColor.chatSent,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
-                                      color: Colors.black, fontSize: 16),
+                                      color: AppColor.darkBlackColor,
+                                      fontSize: 16),
                                 )
                               : Container(),
                           provider.showFifthBubbleLoader
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    JumpingDots(
-                                      color: Colors.red,
-                                      radius: 4,
-                                      numberOfDots: 3,
-                                      animationDuration:
-                                          const Duration(milliseconds: 200),
-                                    )
-                                  ],
-                                )
+                              ? const ChatLoader()
                               : Container()
                         ],
                       );
@@ -353,11 +312,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: AppColor.chatBubbleColor,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: AppColor.whiteColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -382,11 +341,12 @@ class ChatScreen extends HookWidget {
                                               child: BubbleSpecialThree(
                                                 text: message["options_hi"]
                                                     [index],
-                                                color: Color(0xFFE8E8EE),
+                                                color: AppColor.chatSent,
                                                 tail: false,
                                                 isSender: false,
-                                                textStyle: TextStyle(
-                                                    color: Colors.black,
+                                                textStyle: const TextStyle(
+                                                    color:
+                                                        AppColor.darkBlackColor,
                                                     fontSize: 16),
                                               ),
                                             );
@@ -401,7 +361,7 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Color(0xFFE8E8EE),
+                                  color: AppColor.chatSent,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
@@ -409,25 +369,14 @@ class ChatScreen extends HookWidget {
                                 )
                               : Container(),
                           provider.showSixthBubbleLoader
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    JumpingDots(
-                                      color: Colors.red,
-                                      radius: 4,
-                                      numberOfDots: 3,
-                                      animationDuration:
-                                          const Duration(milliseconds: 200),
-                                    )
-                                  ],
-                                )
+                              ? const ChatLoader()
                               : Container(),
                           message["showCameraIcon"] == null
                               ? Container()
                               : Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.camera),
+                                      icon: const Icon(Icons.camera),
                                       onPressed: () {},
                                     )
                                   ],
@@ -440,11 +389,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: AppColor.chatBubbleColor,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: AppColor.whiteColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -469,11 +418,12 @@ class ChatScreen extends HookWidget {
                                               child: BubbleSpecialThree(
                                                 text: message["options_hi"]
                                                     [index],
-                                                color: Color(0xFFE8E8EE),
+                                                color: AppColor.chatSent,
                                                 tail: false,
                                                 isSender: false,
-                                                textStyle: TextStyle(
-                                                    color: Colors.black,
+                                                textStyle: const TextStyle(
+                                                    color:
+                                                        AppColor.darkBlackColor,
                                                     fontSize: 16),
                                               ),
                                             );
@@ -485,56 +435,47 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: Colors.red,
+                                  color: AppColor.errorColor,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
-                                      color: Colors.black, fontSize: 16),
+                                      color: AppColor.darkBlackColor,
+                                      fontSize: 16),
                                 )
                               : Container(),
                           provider.showFifthBubbleLoader
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    JumpingDots(
-                                      color: Colors.red,
-                                      radius: 4,
-                                      numberOfDots: 3,
-                                      animationDuration:
-                                          const Duration(milliseconds: 200),
-                                    )
-                                  ],
-                                )
+                              ? const ChatLoader()
                               : Container(),
                           message["showCameraIcon"] == null
                               ? Container()
                               : Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.camera_alt_outlined),
+                                      icon:
+                                          const Icon(Icons.camera_alt_outlined),
                                       onPressed: () {
                                         provider.uploadImage(context);
                                       },
                                     )
                                   ],
                                 ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           provider.showCropImageLoader
                               ? BubbleSpecialThree(
                                   text: message["question_hi"],
-                                  color: Color(0xFF1B97F3),
+                                  color: AppColor.chatBubbleColor,
                                   tail: true,
                                   isSender: message["isMe"],
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                  textStyle: const TextStyle(
+                                      color: AppColor.whiteColor, fontSize: 16),
                                 )
                               : Container(),
                           provider.cropImage != ""
                               ? Image.network(provider.cropImage)
                               : Container(),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                         ],
@@ -544,21 +485,15 @@ class ChatScreen extends HookWidget {
                       return Column(
                         children: [
                           provider.showSeventhBubbleLoader
-                              ? JumpingDots(
-                                  color: Colors.red,
-                                  radius: 4,
-                                  numberOfDots: 3,
-                                  animationDuration:
-                                      const Duration(milliseconds: 200),
-                                )
+                              ? const ChatLoader()
                               : Container(),
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: Color(0xFF1B97F3),
+                            color: AppColor.chatBubbleColor,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 16),
+                            textStyle: const TextStyle(
+                                color: AppColor.whiteColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -584,14 +519,6 @@ class ChatScreen extends HookWidget {
                   },
                 ),
               ),
-              TextField(
-                controller: useViewModel.textEditingController,
-              ),
-              CustomElevatedButton(
-                  title: "Send",
-                  onPress: () {
-                    useViewModel.handleUserInput(context);
-                  })
             ],
           );
         },

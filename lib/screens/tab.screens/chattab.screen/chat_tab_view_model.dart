@@ -324,4 +324,40 @@ class ChatTabViewModel with ChangeNotifier {
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
   }
+
+  void uploadGallery(context) async {
+    try {
+      final imageFile = await Utils.pickImage();
+      if (imageFile != null) {
+        showCropImageLoader = true;
+        notifyListeners();
+        final data = await Utils.uploadImage(imageFile);
+        cropImage = data["imgurl"];
+        showCropImageLoader = false;
+        showSeventhBubbleLoader = true;
+        notifyListeners();
+        final t8 = Timer(const Duration(seconds: 2), () {
+          chatMessages.add(
+            {
+              "id": "8",
+              "question_hi":
+                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_en": "Know about your crop with Agrichikitsa",
+              "options_hi": [],
+              "options_en": [],
+              "isAnswerSelected": false,
+              "answer": "",
+              "isMe": false,
+            },
+          );
+          showSeventhBubbleLoader = false;
+          showLastMessage = true;
+          notifyListeners();
+        });
+        timmerInstances.add(t8);
+      }
+    } catch (error) {
+      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+    }
+  }
 }

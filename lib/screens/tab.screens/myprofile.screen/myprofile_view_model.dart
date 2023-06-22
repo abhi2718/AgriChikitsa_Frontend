@@ -7,33 +7,33 @@ import '../../../utils/utils.dart';
 
 class MyProfileViewModel with ChangeNotifier {
   final _myProfileTabRepository = MyProfileTabRepository();
-  dynamic feedList = [];
+  List<dynamic> feedList = [];
   List<dynamic> bookMarkFeedList = [];
   var commentLoading = true;
   var _loading = true;
-  bool bookMarkLoader = false;
+  bool bookMarkLoader = true;
   bool get loading {
     return _loading;
   }
 
-  // setloading(bool value) {
-  //   _loading = value;
-  //   notifyListeners();
-  // }
+  setloading(bool value) {
+    _loading = value;
+    notifyListeners();
+  }
+
   setBookMarkLoader(bool value) {
     bookMarkLoader = value;
     notifyListeners();
   }
 
   void fetchFeeds(BuildContext context) async {
-    // setloading(true);
     try {
       final data = await _myProfileTabRepository.fetchFeeds();
       feedList = data['feeds'];
-      // setloading(false);
+      setloading(false);
       notifyListeners();
     } catch (error) {
-      // setloading(false);
+      setloading(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }
@@ -47,6 +47,43 @@ class MyProfileViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setBookMarkLoader(false);
+      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+    }
+  }
+
+  void toggleLike(
+      BuildContext context, String id, bool isLiked, String userId) async {
+    try {
+      await HomeTabRepository().toggleLike(id);
+      int index = feedList.indexWhere((feed) => feed['_id'] == id);
+      int indexBook = bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
+      if (index != -1) {
+        final feedItem = feedList[index];
+        final bookMarkItem = bookMarkFeedList[indexBook];
+
+        if (isLiked) {
+          feedItem['likes'].removeWhere((item) => item == userId);
+          bookMarkItem['likes'].removeWhere((item) => item == userId);
+        } else {
+          feedItem['likes'].add(userId);
+          bookMarkItem['likes'].add(userId);
+        }
+
+        dynamic updatedFeed = {
+          ...feedItem,
+          "likes": [...feedItem['likes']]
+        };
+        dynamic updatedBookMarkList = {
+          ...bookMarkItem,
+          "likes": [...bookMarkItem['likes']]
+        };
+
+        feedList.replaceRange(index, index + 1, [updatedFeed]);
+        bookMarkFeedList
+            .replaceRange(indexBook, indexBook + 1, [updatedBookMarkList]);
+        notifyListeners();
+      }
+    } catch (error) {
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }

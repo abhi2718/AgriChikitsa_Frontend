@@ -173,13 +173,13 @@ class UserComment extends HookWidget {
               ),
             ),
             Container(
-              height: (dimension["height"]! - 100) * 0.1,
+              height: (dimension["height"]! - 60) * 0.1,
               child: InkWell(
                 onTap: () {
                   Utils.model(
                     context,
                     SizedBox(
-                      height: dimension['height']! * 0.53,
+                      height: dimension['height']! * 0.50,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -198,12 +198,9 @@ class UserComment extends HookWidget {
                             ],
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const SizedBox(
-                                width: 20,
-                              ),
                               Consumer<AuthService>(
                                   builder: (context, provider, child) {
                                 if (provider.userInfo != null) {
@@ -215,13 +212,12 @@ class UserComment extends HookWidget {
                                 }
                                 return Container();
                               }),
-                              const SizedBox(
-                                width: 8,
-                              ),
                               SizedBox(
-                                width: dimension['width']! - 160,
+                                width: dimension['width']! - 150,
                                 child: TextField(
                                   decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 10),
                                     hintText: 'Add a Comment',
                                     hintStyle: TextStyle(
                                       fontSize: 12,
@@ -230,7 +226,7 @@ class UserComment extends HookWidget {
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(
-                                          12,
+                                          8,
                                         ),
                                       ),
                                     ),
@@ -238,9 +234,6 @@ class UserComment extends HookWidget {
                                   controller: textEditingController,
                                   autofocus: true,
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 8,
                               ),
                               Consumer<HomeTabViewModel>(
                                   builder: (context, provider, child) {
@@ -264,9 +257,6 @@ class UserComment extends HookWidget {
                                   ),
                                 );
                               }),
-                              const SizedBox(
-                                width: 20,
-                              ),
                             ],
                           ),
                         ],

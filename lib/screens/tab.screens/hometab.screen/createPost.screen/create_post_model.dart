@@ -1,15 +1,18 @@
+import 'dart:async';
+
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../routes/routes_name.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
 class CreatePostModel with ChangeNotifier {
-  var editUserformKey = GlobalKey<FormState>();
+  final _homeTabViewModel = HomeTabViewModel();
+  var captionController = TextEditingController();
   final captionFocusNode = FocusNode();
   final categoryFocusNode = FocusNode();
   List<dynamic> categoriesList = [];
@@ -19,12 +22,17 @@ class CreatePostModel with ChangeNotifier {
   Map<String, String> dropdownOptions = {};
   var imagePath = "";
   var imageUrl = "";
-  var _loading = false;
+  var buttonloading = false;
   var caption = '';
   var category = '';
 
   setActiveState(BuildContext context, Category category, bool value) {
     currentSelectedCategory = category.id;
+    notifyListeners();
+  }
+
+  setloading(bool value) {
+    buttonloading = value;
     notifyListeners();
   }
 
@@ -52,8 +60,25 @@ class CreatePostModel with ChangeNotifier {
     }
   }
 
+  void reinitialize() {
+    Timer(const Duration(milliseconds: 500), () {
+      captionController.clear();
+      imagePath = "";
+      imageUrl = "";
+      caption = "";
+      currentSelectedCategory = "";
+    });
+  }
+
   void onSavedCaptionField(value) {
     caption = value;
+  }
+
+  void handleUserInput(BuildContext context) {
+    final value = captionController.text;
+    if (value.isNotEmpty) {
+      caption = captionController.text;
+    }
   }
 
   void onSavedCategoryField(value) {
@@ -85,12 +110,26 @@ class CreatePostModel with ChangeNotifier {
 
   void createPost(
     BuildContext context,
-  ) {
-    HomeTabViewModel()
-        .createPost(context, currentSelectedCategory, caption, imageUrl);
-    imagePath = "";
-    imageUrl = "";
-    caption = "";
-    currentSelectedCategory = "";
+  ) async {
+    if (!currentSelectedCategory.isEmpty &&
+        !caption.isEmpty &&
+        !imagePath.isEmpty) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      final data = await _homeTabViewModel.createPost(
+          context, currentSelectedCategory, caption, imageUrl);
+      if (data) {
+        await Future.delayed(Duration(seconds: 1), () {
+          setloading(true);
+          goBack(context);
+          setloading(false);
+          Utils.flushBarErrorMessage(
+              "Post Created!", "Your post has been sent ", context);
+          reinitialize();
+        });
+      }
+    } else {
+      setloading(false);
+      Utils.flushBarErrorMessage("Snap!", "Please enter all details", context);
+    }
   }
 }

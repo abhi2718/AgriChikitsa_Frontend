@@ -10,6 +10,7 @@ class AppColor {
   static const errorColor = Colors.red;
   static const lightFeedContainerColor = Color(0xFFF8F8F8);
   static const iconColor = Color(0xff858484);
-  static const chatBubbleColor = Color(0xfff3f3f3);
-  static const chatSent = Color(0xffEFF4FF);
+  static const chatBubbleColor = Color(0xFF5f9e29);
+  static const chatSent = Color(0xFFE8E8EE);
 }
+// Color(0xFF1B97F3)

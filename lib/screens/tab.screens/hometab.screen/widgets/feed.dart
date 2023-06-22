@@ -128,8 +128,16 @@ class Feed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const InkWell(
-                            child: Icon(Remix.chat_4_line),
+                          InkWell(
+                            onTap: () {
+                              Utils.model(
+                                  context,
+                                  UserComment(
+                                    feedId: feed["_id"],
+                                    setNumberOfComment: setNumberOfComment,
+                                  ));
+                            },
+                            child: const Icon(Remix.chat_4_line),
                           ),
                           const SizedBox(
                             width: 6,

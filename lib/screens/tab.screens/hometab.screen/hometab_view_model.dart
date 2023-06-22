@@ -156,7 +156,7 @@ class HomeTabViewModel with ChangeNotifier {
     }));
   }
 
-  void createPost(
+  Future<bool> createPost(
       BuildContext context, String id, String caption, String imageUrl) async {
     try {
       final payload = {
@@ -165,17 +165,11 @@ class HomeTabViewModel with ChangeNotifier {
         "imgurl": imageUrl
       };
       final data = await _homeTabRepository.createPost(payload);
-      if (data['message'] == "Feed created successfully") {
-        Utils.toastMessage(
-            "Hurray! Post created successfully, Admin will approve this soon!");
-        Navigator.pushNamed(context, RouteName.myProfileScreenRoute);
-      } else {
-        Navigator.pop(context);
-        Utils.toastMessage("Snap! Post cannot be created right now!");
-      }
+      return true;
     } catch (error) {
       setloading(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      return false;
     }
   }
 
