@@ -25,17 +25,18 @@ class TabScreen extends HookWidget {
     final tabWidgets = useMemoized(() {
       return [
         BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/Home.png',
-              width: 20,
-              height: 20,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/Home Filled.png',
-              width: 20,
-              height: 20,
-            ),
-            label: 'Home'),
+          icon: Image.asset(
+            'assets/icons/Home.png',
+            width: 20,
+            height: 20,
+          ),
+          activeIcon: Image.asset(
+            'assets/icons/Home Filled.png',
+            width: 20,
+            height: 20,
+          ),
+          label: AppLocalizationsHi().home,
+        ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/Jankari Icon.png',
@@ -47,12 +48,12 @@ class TabScreen extends HookWidget {
             width: 20,
             height: 20,
           ),
-          label: 'Jankari',
+          label: AppLocalizationsHi().jankari,
         ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.view_timeline_outlined),
-          activeIcon: Icon(Icons.view_timeline_rounded),
-          label: 'Timeline',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.view_timeline_outlined),
+          activeIcon: const Icon(Icons.view_timeline_rounded),
+          label: AppLocalizationsHi().timeline,
         ),
         BottomNavigationBarItem(
           icon: Image.asset(

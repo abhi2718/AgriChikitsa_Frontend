@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/widgets/card.widgets/card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -37,11 +38,11 @@ class CreatePostCard extends HookWidget {
                   backgroundImage: NetworkImage(
                       authService.userInfo['user']['profileImage'].toString()),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: BaseText(
-                    title: "What's Happening?",
-                    style: TextStyle(
+                    title: AppLocalizationsHi().whatsHappening,
+                    style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: AppColor.darkBlackColor),
@@ -95,9 +96,9 @@ class CreatePostCard extends HookWidget {
                           onPressed: () {
                             useViewModel.goToCreatePostScreen(context);
                           },
-                          child: const BaseText(
-                            title: 'Post',
-                            style: TextStyle(
+                          child: BaseText(
+                            title: AppLocalizationsHi().post,
+                            style: const TextStyle(
                               fontSize: 15,
                             ),
                           ),

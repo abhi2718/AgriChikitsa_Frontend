@@ -90,7 +90,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.goToEditProfileScreen(context),
                 leftIcon: "assets/images/Profile.png",
-                title: 'Edit Profile',
+                title: AppLocalizationsHi().editprofile,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -102,7 +102,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => Utils.launchDialer('8318064327'),
                 leftIcon: "assets/images/contact us.png",
-                title: 'Contact Support',
+                title: AppLocalizationsHi().contactSupport,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -114,7 +114,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
                 leftIcon: "assets/images/Terms And Condition.png",
-                title: 'Terms and Conditions',
+                title: AppLocalizationsHi().termsandCondition,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -126,7 +126,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
                 leftIcon: "assets/images/privacy.png",
-                title: 'Privacy Policy',
+                title: AppLocalizationsHi().privacyPolicy,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -141,7 +141,7 @@ class ProfileTabScreen extends HookWidget {
                   //     context, user.companyId!, disposableProvider);
                 },
                 leftIcon: "assets/images/trash.png",
-                title: 'Delete Account',
+                title: AppLocalizationsHi().deleteAccount,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -154,7 +154,7 @@ class ProfileTabScreen extends HookWidget {
                 onPress: () =>
                     useViewModel.handleLogOut(context, disposableProvider),
                 leftIcon: "assets/images/logoutcurve.png",
-                title: 'Logout',
+                title: AppLocalizationsHi().logout,
                 width: dimension["width"]! - 32,
               ),
             ),

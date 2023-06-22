@@ -5,12 +5,11 @@ import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprof
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/post_pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
-import '../../../model/user_model.dart';
 import '../../../res/color.dart';
-import '../../../services/auth.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/text.widgets/text.dart';
 
@@ -36,15 +35,19 @@ class MyProfileScreen extends HookWidget {
             backgroundColor: AppColor.whiteColor,
             foregroundColor: AppColor.darkBlackColor,
             flexibleSpace:
-                const TabBar(padding: EdgeInsets.only(top: 10), tabs: [
+                TabBar(padding: const EdgeInsets.only(top: 10), tabs: [
               Tab(
-                  child: BaseText(
-                      title: "My Posts",
-                      style: TextStyle(color: Colors.black))),
+                child: BaseText(
+                  title: AppLocalizationsHi().mypost,
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ),
               Tab(
-                  child: BaseText(
-                      title: "Bookmarks",
-                      style: TextStyle(color: Colors.black))),
+                child: BaseText(
+                  title: AppLocalizationsHi().bookmark,
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ),
             ]),
           ),
           body: TabBarView(
