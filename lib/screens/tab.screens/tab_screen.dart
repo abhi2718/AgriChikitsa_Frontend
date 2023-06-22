@@ -44,7 +44,7 @@ class TabScreen extends HookWidget {
             height: 20,
           ),
           activeIcon: Image.asset(
-            'assets/icons/Jankari Icon Filled.png',
+            'assets/icons/Jankari Filled.png',
             width: 20,
             height: 20,
           ),
@@ -62,7 +62,7 @@ class TabScreen extends HookWidget {
             height: 20,
           ),
           activeIcon: Image.asset(
-            'assets/icons/Setting Filled.png',
+            'assets/icons/Settings Filled.png',
             width: 20,
             height: 20,
           ),
