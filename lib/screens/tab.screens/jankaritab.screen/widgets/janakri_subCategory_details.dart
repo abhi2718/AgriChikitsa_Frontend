@@ -13,8 +13,8 @@ class JankariSubCategoryPost extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
-    final useViewModel = useMemoized(
-        () => Provider.of<JankariViewModel>(context, listen: true));
+    final useViewModel =
+        useMemoized(() => Provider.of<JankariViewModel>(context, listen: true));
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.getJankariSubCategoryPost(context);

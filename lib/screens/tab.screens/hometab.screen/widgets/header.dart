@@ -19,6 +19,9 @@ class HeaderWidget extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
         () => Provider.of<NotificationViewModel>(context, listen: true));
+    useEffect(() {
+      useViewModel.fetchNotifications(context);
+    }, []);
     return Card(
       margin: const EdgeInsets.all(0),
       child: Container(

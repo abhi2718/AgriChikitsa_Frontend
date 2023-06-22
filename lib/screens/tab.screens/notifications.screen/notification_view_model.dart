@@ -14,12 +14,11 @@ class NotificationViewModel with ChangeNotifier {
 
   setloading(bool value) {
     _loading = value;
-    notifyListeners();
   }
 
   void toggleNotifications(BuildContext context, String id) async {
     try {
-      final data = await _notificationTabRepository.toggleNotifications(id, {});
+      await _notificationTabRepository.toggleNotifications(id, {});
       notifyListeners();
     } catch (error) {
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
