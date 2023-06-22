@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../res/color.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
@@ -19,90 +20,97 @@ class CreatePostCard extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 8,
+        horizontal: 0,
       ),
       child: CustomCard(
-        child: Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8,
+          child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+        ),
+        height: dimension['height']! * 0.17,
+        width: dimension['width'],
+        child: Column(
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      authService.userInfo['user']['profileImage'].toString()),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: BaseText(
+                    title: "What's Happening?",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: AppColor.darkBlackColor),
+                  ),
+                ),
+              ],
             ),
-            height: dimension['height']! * 0.17,
-            width: dimension['width'],
-            child: Column(children: [
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
+            Padding(
+              padding: const EdgeInsets.only(top: 28),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/image.png',
+                    height: 25,
+                    width: 25,
+                  ),
+                  const SizedBox(width: 15),
+                  Image.asset(
+                    'assets/icons/gif.png',
+                    height: 25,
+                    width: 25,
+                  ),
+                  const SizedBox(width: 15),
+                  Image.asset(
+                    'assets/icons/emoji.png',
+                    height: 25,
+                    width: 25,
+                  ),
+                  SizedBox(
+                    width: dimension['width']! - 220,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(authService
-                            .userInfo['user']['profileImage']
-                            .toString()),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 28),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/image.png',
-                              height: 25,
-                              width: 25,
+                      Container(
+                        width: dimension['width']! - 280,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            20.0,
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)),
+                          ),
+                          onPressed: () {
+                            useViewModel.goToCreatePostScreen(context);
+                          },
+                          child: const BaseText(
+                            title: 'Post',
+                            style: TextStyle(
+                              fontSize: 15,
                             ),
-                            const SizedBox(width: 15),
-                            Image.asset(
-                              'assets/icons/gif.png',
-                              height: 25,
-                              width: 25,
-                            ),
-                            const SizedBox(width: 15),
-                            Image.asset(
-                              'assets/icons/emoji.png',
-                              height: 25,
-                              width: 25,
-                            ),
-                            SizedBox(
-                              width: dimension['width']! - 220,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: dimension['width']! - 280,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      20.0,
-                                    ),
-                                  ),
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16)),
-                                    ),
-                                    onPressed: () {
-                                      useViewModel
-                                          .goToCreatePostScreen(context);
-                                    },
-                                    child: const BaseText(
-                                      title: 'Post',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
-                  ))
-            ])),
-      ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      )),
     );
   }
 }

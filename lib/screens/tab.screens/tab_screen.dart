@@ -1,8 +1,10 @@
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
@@ -47,7 +49,7 @@ class TabScreen extends HookWidget {
           ),
           label: 'Jankari',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.view_timeline_outlined),
           activeIcon: Icon(Icons.view_timeline_rounded),
           label: 'Timeline',
@@ -63,7 +65,7 @@ class TabScreen extends HookWidget {
             width: 20,
             height: 20,
           ),
-          label: 'Setting',
+          label: AppLocalizationsHi().setting,
         ),
       ];
     });

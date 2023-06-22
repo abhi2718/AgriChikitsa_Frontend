@@ -1,36 +1,30 @@
 {
-    
-    "language": "नमस्ते",
-    
-    "ACCOUNT":"",
-    "Login/Create Account":"",
-    "LOGIN":"",
-    "I agree with Terms & Conditions":"",
-
-    "Home":"",
-    "Chat":"",
-    "Jankari":"",
-    "Setting":"",
-
-    "LOGIN":"",
-    "Enter your phone number to proceed":"",
-    "10 digit mobile number":"",
-    "Continue":"",
-    "VERIFY  DETAILS":"",
-    "OTP sent to":"",
-    "Enter OTP":"",
-    "Din't receive the OTP?":"",
-    "SMS":"",
-    "VERIFY & PROCEED":"",
-
-    "Setting":"",
-    "Edit Profile":"",
-    "Contact Support":"",
-    "Terms and Condition":"",
-    "Privacy Policy":"",
-    "Delete Account":"",
-    "LOGOUT":"",
-    "Change Local":""
-        
-
+"language": "भाषा",
+    "aCCOUNT":"खाता",
+    "loginCreateAccount":"लॉग इन करें /अपना खाता बनाये",
+    "login":"लॉग इन",
+    "iagreewithTermsConditions":"मैं नियमों और शर्तों से सहमत हूं",
+    "home":"होम",
+    "chat":"चैट",
+    "jankari":"जानकारी",
+    "setting":"सेटिंग",
+   
+    "enterYourPhoneNumberToProceed":"आगे बढ़ने के लिए अपना फोन नंबर दर्ज करें",
+    "digitmobilenumber":"10 अंकों का मोबाइल नंबर",
+    "continue":"आगे बढ़े",
+    "verifyDetails":"विवरण सत्यापित करें",
+    "otpsentto":"ओटीपी भेजा गया",
+    "enterOTP":"sओटीपी दर्ज करें",
+    "din't receive the OTP?":"ओटीपी नहीं मिला?",
+    "sms":"एसएमएस(SMS)",
+    "verifyProcess":"सत्यापित करें और आगे बढ़ें",
+    "setting":"सेटिंग",
+    "editprofile":"प्रोफ़ाइल संपादित करें",
+    "contactSupport":"संपर्क करें",
+    "termsandCondition":"नियम व शर्तें",
+    "privacyPolicy":"गोपनीयता नीति",
+    "deleteAccount":"खाता डिलीट करें",
+    "logout":"लॉग आउट",
+    "createPost":"पोस्ट बनाएं",
+    "Change Local":"स्थानीय बदलें"
 }

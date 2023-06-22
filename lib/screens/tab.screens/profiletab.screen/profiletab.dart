@@ -1,9 +1,9 @@
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/utils/utils.dart';
-import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_hi.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -43,9 +43,9 @@ class ProfileTabScreen extends HookWidget {
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
         centerTitle: true,
-        title: const BaseText(
-          title: "Settings",
-          style: TextStyle(
+        title: BaseText(
+          title: AppLocalizationsHi().setting,
+          style: const TextStyle(
             color: AppColor.darkBlackColor,
           ),
         ),
@@ -101,7 +101,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => Utils.launchDialer('8318064327'),
-                leftIcon: "assets/images/phone.png",
+                leftIcon: "assets/images/contact us.png",
                 title: 'Contact Support',
                 width: dimension["width"]! - 32,
               ),
@@ -125,7 +125,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
-                leftIcon: "assets/images/Privacy And Policy.png",
+                leftIcon: "assets/images/privacy.png",
                 title: 'Privacy Policy',
                 width: dimension["width"]! - 32,
               ),
@@ -140,7 +140,7 @@ class ProfileTabScreen extends HookWidget {
                   // useViewModel.handleDelete(
                   //     context, user.companyId!, disposableProvider);
                 },
-                leftIcon: "assets/images/Delete Account.png",
+                leftIcon: "assets/images/trash.png",
                 title: 'Delete Account',
                 width: dimension["width"]! - 32,
               ),
@@ -153,7 +153,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () =>
                     useViewModel.handleLogOut(context, disposableProvider),
-                leftIcon: "assets/images/logout.png",
+                leftIcon: "assets/images/logoutcurve.png",
                 title: 'Logout',
                 width: dimension["width"]! - 32,
               ),
@@ -161,11 +161,11 @@ class ProfileTabScreen extends HookWidget {
             const SizedBox(
               height: 20,
             ),
-            CustomElevatedButton(
-              onPress: () => useViewModel.handleLocaleChange(),
-              title: "Change Local",
-              width: dimension["width"]! - 32,
-            )
+            // CustomElevatedButton(
+            //   onPress: () => useViewModel.handleLocaleChange(),
+            //   title: "Change Local",
+            //   width: dimension["width"]! - 32,
+            // )
           ],
         ),
       ),
