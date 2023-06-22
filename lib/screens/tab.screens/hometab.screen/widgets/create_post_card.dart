@@ -1,3 +1,5 @@
+import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
+import 'package:agriChikitsa/widgets/card.widgets/card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../../../../res/color.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
-import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/text.widgets/text.dart';
 import '../hometab_view_model.dart';
 
@@ -22,9 +23,11 @@ class CreatePostCard extends HookWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
       ),
-      child: Card(
+      child: CustomCard(
           child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+        ),
         height: dimension['height']! * 0.17,
         width: dimension['width'],
         child: Column(
@@ -54,7 +57,7 @@ class CreatePostCard extends HookWidget {
               child: CustomElevatedButton(
                 title: "Create Post",
                 onPress: () => useViewModel.goToCreatePostScreen(context),
-                width: dimension['width']!,
+                width: dimension['width']! - 230,
                 height: 50,
               ),
             )
