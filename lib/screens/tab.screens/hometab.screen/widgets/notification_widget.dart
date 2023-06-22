@@ -1,4 +1,4 @@
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/notification.screen/notification.dart';
+import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -19,11 +19,9 @@ class NotificationIndicatorButton extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const NoticationScreen(),
-                ),
+                RouteName.notificationRoute,
               );
             },
             child: Image.asset(

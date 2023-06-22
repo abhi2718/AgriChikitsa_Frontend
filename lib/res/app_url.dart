@@ -9,4 +9,5 @@ class AppUrl {
   static const String feedEndPoint = '$baseUrl/feed';
   static const String jankariEndPoint = '$baseUrl/jankari';
   static const String botQquestionsEndPoint = '$baseUrl/botquestion';
+  static const String notificationEndPoint = '$baseUrl/notification';
 }

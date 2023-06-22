@@ -1,21 +1,23 @@
 import 'package:agriChikitsa/l10n/l10n.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/notification.screen/notification_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart';
-import 'routes/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import './screens/auth.screen/signin.auth/signin_view_model.dart';
-import './services/socket_io.dart';
-import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+
 import './res/primary_swatch.dart';
+import './screens/auth.screen/signin.auth/signin_view_model.dart';
 import './screens/auth.screen/signup.auth/signup_view_model.dart';
-import './services/auth.dart';
-import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
-import 'screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
-import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
+import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import './screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
+import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
+import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
+import './services/auth.dart';
+import './services/socket_io.dart';
+import 'routes/routes.dart';
+import 'screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import 'screens/tab.screens/tab_screen.dart';
 
 void main() async {
@@ -28,6 +30,7 @@ void main() async {
       projectId: "agrichikitsa-8be74",
     ),
   );
+  await NotificationViewModel().initNotification();
   runApp(const App());
 }
 

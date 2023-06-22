@@ -1,5 +1,8 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/notification.screen/notification.dart';
 import 'package:flutter/material.dart';
+
+import './routes_name.dart';
 import '../screens/auth.screen/auth.landing/landing.dart';
 import '../screens/auth.screen/signin.auth/otp_Verification.dart';
 import '../screens/auth.screen/signin.auth/signin.dart';
@@ -8,7 +11,6 @@ import '../screens/splash_screen.dart';
 import '../screens/tab.screens/chattab.screen/chattab.dart';
 import '../screens/tab.screens/profiletab.screen/edit_profile/edit_profile.dart';
 import '../screens/tab.screens/tab_screen.dart';
-import './routes_name.dart';
 
 class Routes {
   Map<String, Widget Function(BuildContext)> routes = {
@@ -20,6 +22,7 @@ class Routes {
     RouteName.signUpRoute: (context) => const SignUpScreen(),
     RouteName.editProfileRoute: (context) => const EditProfileScreen(),
     RouteName.createPostRoute: (context) => const CreatePostScreen(),
-    RouteName.chatBotRoute:(context) => const ChatTabScreen(),
+    RouteName.chatBotRoute: (context) => const ChatTabScreen(),
+    RouteName.notificationRoute: (context) => const NoticationScreen(),
   };
 }
