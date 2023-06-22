@@ -2,6 +2,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:jumping_dot/jumping_dot.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
@@ -380,7 +381,7 @@ class ChatScreen extends HookWidget {
                                       onPressed: () {},
                                     )
                                   ],
-                                )
+                                ),
                         ],
                       );
                     }
@@ -389,7 +390,7 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: AppColor.chatBubbleColor,
+                            color: AppColor.darkColor,
                             tail: true,
                             isSender: message["isMe"],
                             textStyle: const TextStyle(
@@ -446,34 +447,56 @@ class ChatScreen extends HookWidget {
                           provider.showFifthBubbleLoader
                               ? const ChatLoader()
                               : Container(),
-                          message["showCameraIcon"] == null
-                              ? Container()
-                              : Row(
-                                  children: [
-                                    IconButton(
-                                      icon:
-                                          const Icon(Icons.camera_alt_outlined),
-                                      onPressed: () {
-                                        provider.uploadImage(context);
-                                      },
-                                    )
-                                  ],
-                                ),
                           const SizedBox(
                             height: 16,
                           ),
                           provider.showCropImageLoader
-                              ? BubbleSpecialThree(
-                                  text: message["question_hi"],
-                                  color: AppColor.chatBubbleColor,
-                                  tail: true,
-                                  isSender: message["isMe"],
-                                  textStyle: const TextStyle(
-                                      color: AppColor.whiteColor, fontSize: 16),
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      height: dimension['height']! * 0.05,
+                                      width: dimension['width']! * 0.15,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: AppColor.chatSent,
+                                      ),
+                                      child: Center(
+                                        child: JumpingDots(
+                                          color: AppColor.darkColor,
+                                          radius: 4,
+                                          numberOfDots: 3,
+                                          animationDuration:
+                                              const Duration(milliseconds: 200),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 )
+                              // ? BubbleSpecialThree(
+                              //     text: message["question_hi"],
+                              //     color: AppColor.chatBubbleColor,
+                              //     tail: true,
+                              //     isSender: message["isMe"],
+                              //     textStyle: const TextStyle(
+                              //         color: AppColor.whiteColor, fontSize: 16),
+                              //   )
                               : Container(),
                           provider.cropImage != ""
-                              ? Image.network(provider.cropImage)
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    SizedBox(
+                                      height: dimension['height']! * 0.40,
+                                      width: dimension['width']! * 0.6,
+                                      child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.network(
+                                              provider.cropImage)),
+                                    ),
+                                  ],
+                                )
                               : Container(),
                           const SizedBox(
                             height: 16,

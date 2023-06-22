@@ -12,4 +12,14 @@ class ChatTabRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> postChatQuestion(dynamic payload) async {
+    try {
+      const url = '${AppUrl.chatEndPoint}/';
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

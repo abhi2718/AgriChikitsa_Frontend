@@ -13,4 +13,3 @@ class AppColor {
   static const chatBubbleColor = Color(0xFF5f9e29);
   static const chatSent = Color(0xFFE8E8EE);
 }
-// Color(0xFF1B97F3)

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../notifications.screen/notification_view_model.dart';
 import './category_button.dart';
 import './notification_widget.dart';
 import '../../../../res/color.dart';
@@ -16,6 +17,8 @@ class HeaderWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final useViewModel = useMemoized(
+        () => Provider.of<NotificationViewModel>(context, listen: true));
     return Card(
       margin: const EdgeInsets.all(0),
       child: Container(
@@ -40,7 +43,7 @@ class HeaderWidget extends HookWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       NotificationIndicatorButton(
-                        notificationCount: 10,
+                        notificationCount: useViewModel.notificationCount,
                       ),
                       const SizedBox(
                         width: 10,

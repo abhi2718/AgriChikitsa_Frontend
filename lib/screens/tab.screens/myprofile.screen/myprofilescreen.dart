@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-
-import '../../../model/user_model.dart';
 import '../../../res/color.dart';
-import '../../../services/auth.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/text.widgets/text.dart';
 
@@ -86,7 +83,6 @@ class MyProfileScreen extends HookWidget {
                             height: dimension['height']! - 100,
                             child: ListView.builder(
                               shrinkWrap: true,
-                              // physics: const NeverScrollableScrollPhysics(),
                               itemCount: provider.feedList.length,
                               itemBuilder: (context, index) {
                                 final feed = provider.feedList[index];

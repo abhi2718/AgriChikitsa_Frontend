@@ -27,6 +27,7 @@ class MyProfileViewModel with ChangeNotifier {
   }
 
   void fetchFeeds(BuildContext context) async {
+    setloading(true);
     try {
       final data = await _myProfileTabRepository.fetchFeeds();
       feedList = data['feeds'];
@@ -55,34 +56,26 @@ class MyProfileViewModel with ChangeNotifier {
       BuildContext context, String id, bool isLiked, String userId) async {
     try {
       await HomeTabRepository().toggleLike(id);
-      int index = feedList.indexWhere((feed) => feed['_id'] == id);
+      int indexFeed = feedList.indexWhere((feed) => feed['_id'] == id);
       int indexBook = bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
-      if (index != -1) {
-        final feedItem = feedList[index];
-        final bookMarkItem = bookMarkFeedList[indexBook];
-
+      if (indexFeed != -1) {
+        final feedItem = feedList[indexFeed];
+        final oldLikes = feedItem['likes'];
         if (isLiked) {
-          feedItem['likes'].removeWhere((item) => item == userId);
-          bookMarkItem['likes'].removeWhere((item) => item == userId);
-        } else {
-          feedItem['likes'].add(userId);
-          bookMarkItem['likes'].add(userId);
+          oldLikes.removeWhere((item) => item == userId);
         }
-
         dynamic updatedFeed = {
           ...feedItem,
-          "likes": [...feedItem['likes']]
+          "likes": isLiked ? oldLikes : [...oldLikes, userId]
         };
-        dynamic updatedBookMarkList = {
-          ...bookMarkItem,
-          "likes": [...bookMarkItem['likes']]
-        };
+        feedList.replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
 
-        feedList.replaceRange(index, index + 1, [updatedFeed]);
-        bookMarkFeedList
-            .replaceRange(indexBook, indexBook + 1, [updatedBookMarkList]);
-        notifyListeners();
+        if (indexBook != -1) {
+          bookMarkFeedList
+              .replaceRange(indexBook, indexBook + 1, [updatedFeed]);
+        }
       }
+      notifyListeners();
     } catch (error) {
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }

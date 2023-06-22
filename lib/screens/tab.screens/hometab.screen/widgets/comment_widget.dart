@@ -172,7 +172,7 @@ class UserComment extends HookWidget {
                 },
               ),
             ),
-            Container(
+            SizedBox(
               height: (dimension["height"]! - 60) * 0.1,
               child: InkWell(
                 onTap: () {
@@ -264,7 +264,7 @@ class UserComment extends HookWidget {
                     ),
                   );
                 },
-                child: Container(
+                child: SizedBox(
                   width: dimension['width'],
                   child: Padding(
                     padding: const EdgeInsets.all(16),

@@ -58,7 +58,7 @@ class HomeTabRepository {
 
   Future<dynamic> createPost(dynamic payload) async {
     try {
-      final url = '${AppUrl.feedEndPoint}/';
+      const url = '${AppUrl.feedEndPoint}/';
       final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (e) {

@@ -129,7 +129,6 @@ class EditProfileViewModel with ChangeNotifier {
       final data = await Utils.capturePhoto();
       if (data != null) {
         final response = await Utils.uploadImage(data);
-        print(response);
         final user = User.fromJson(authService.userInfo["user"]);
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);

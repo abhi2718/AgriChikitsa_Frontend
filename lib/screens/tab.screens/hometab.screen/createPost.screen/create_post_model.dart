@@ -4,9 +4,6 @@ import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-
-import '../../../../routes/routes_name.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
@@ -111,19 +108,21 @@ class CreatePostModel with ChangeNotifier {
   void createPost(
     BuildContext context,
   ) async {
-    if (!currentSelectedCategory.isEmpty &&
-        !caption.isEmpty &&
-        !imagePath.isEmpty) {
+    if (currentSelectedCategory.isNotEmpty &&
+        caption.isNotEmpty &&
+        imagePath.isNotEmpty) {
+      setloading(true);
       FocusManager.instance.primaryFocus?.unfocus();
       final data = await _homeTabViewModel.createPost(
           context, currentSelectedCategory, caption, imageUrl);
       if (data) {
-        await Future.delayed(Duration(seconds: 1), () {
-          setloading(true);
+        await Future.delayed(const Duration(seconds: 1), () {
           goBack(context);
           setloading(false);
           Utils.flushBarErrorMessage(
-              "Post Created!", "Your post has been sent ", context);
+              "Post Created!",
+              "Your post has been created. Admin will approve in soon.",
+              context);
           reinitialize();
         });
       }

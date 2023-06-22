@@ -17,9 +17,13 @@ class ChatTabViewModel with ChangeNotifier {
   bool showSeventhBubbleLoader = false;
   bool showLastMessage = false;
   bool showCropImageLoader = false;
+  bool showCameraButton = false;
+  bool enableKeyBoard = false;
+  var questionAsked = "";
   var cropImage = "";
   var questionIndex = 0;
   var selectedDisease = '';
+  var cameraQuestionId = '';
   final dynamic questions = [
     {
       "id": "1",
@@ -29,13 +33,24 @@ class ChatTabViewModel with ChangeNotifier {
     }
   ];
   var chatMessages = [];
+  void setShowCameraButton(bool value) {
+    showCameraButton = value;
+  }
+
+  void unfocusKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
 
   void goBack(BuildContext context) {
+    unfocusKeyboard();
+    reinitilize();
     Navigator.pop(context);
   }
 
   void reinitilize() {
     timmerInstances.forEach((timer) => timer.cancel());
+    enableKeyBoard = false;
+    questionAsked = "";
     chatMessages.clear();
     questionIndex = 0;
     textEditingController.clear();
@@ -52,6 +67,11 @@ class ChatTabViewModel with ChangeNotifier {
     cropImage = "";
   }
 
+  void enableKeyboard(bool value) {
+    enableKeyBoard = value;
+    notifyListeners();
+  }
+
   void initialTask(context) {
     if (chatMessages.isEmpty) {
       chatMessages.add(questions[0]);
@@ -61,6 +81,19 @@ class ChatTabViewModel with ChangeNotifier {
       });
       timmerInstances.add(t1);
     }
+  }
+
+  void sendQuestion(
+      String id, String scriptQuestion, String answer, String imgurl) async {
+    final payloadStructure = {
+      "id": id,
+      "question": scriptQuestion,
+      "answer": answer,
+    };
+    final finalPayload = imgurl == ""
+        ? payloadStructure
+        : {...payloadStructure, "imageQuestion": imgurl};
+    await _chatTabRepository.postChatQuestion(finalPayload);
   }
 
   void fetchFirstQuestion(BuildContext context, String id) async {
@@ -95,6 +128,7 @@ class ChatTabViewModel with ChangeNotifier {
   void selectAge(context, String age, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
+        sendQuestion(id, item['question_hi'], age, "");
         return {
           ...item,
           "isAnswerSelected": true,
@@ -134,6 +168,7 @@ class ChatTabViewModel with ChangeNotifier {
   void handleSelctCrop(context, String crop, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
+        sendQuestion(id, item['question_hi'], crop, "");
         return {
           ...item,
           "isAnswerSelected": true,
@@ -170,6 +205,7 @@ class ChatTabViewModel with ChangeNotifier {
     selectedDisease = disease;
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
+        sendQuestion(id, item['question_hi'], selectedDisease, "");
         return {
           ...item,
           "isAnswerSelected": true,
@@ -205,6 +241,8 @@ class ChatTabViewModel with ChangeNotifier {
           });
           timmerInstances.add(t7);
         }
+      } else {
+        enableKeyboard(true);
       }
       notifyListeners();
     } catch (error) {
@@ -221,6 +259,10 @@ class ChatTabViewModel with ChangeNotifier {
       final question = data["question"];
       final isToShowCameraIcon =
           question["showCameraIcon"] == null ? false : true;
+      if (isToShowCameraIcon) {
+        setShowCameraButton(true);
+        cameraQuestionId = id;
+      }
       if (!isToShowCameraIcon) {}
       notifyListeners();
     } catch (error) {
@@ -230,6 +272,7 @@ class ChatTabViewModel with ChangeNotifier {
   }
 
   void handleUserInput(context) {
+    unfocusKeyboard();
     if (questionIndex == 3) {
       final currentQuestion = chatMessages[questionIndex];
       handleSelctCrop(
@@ -239,7 +282,6 @@ class ChatTabViewModel with ChangeNotifier {
       showFourthLoader = true;
       notifyListeners();
       final t5 = Timer(const Duration(seconds: 2), () {
-        fetchFouthQuestion(context, "4");
         questionIndex = 5;
         notifyListeners();
       });
@@ -247,8 +289,11 @@ class ChatTabViewModel with ChangeNotifier {
     }
     final selectedDiseaseList = ['अन्य', 'Other'];
     if (selectedDiseaseList.contains(selectedDisease)) {
+      enableKeyboard(false);
       var updatedChatMessages = chatMessages.map((item) {
         if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
+          sendQuestion("sendToAdmin", item['question_hi'],
+              textEditingController.text, "");
           return {
             ...item,
             "isAnswerSelected": true,
@@ -282,11 +327,6 @@ class ChatTabViewModel with ChangeNotifier {
       });
       timmerInstances.add(t7);
     }
-    //  else {
-    //   Utils.flushBarErrorMessage(
-    //       "Alert!", "Answer is allredy selected", context);
-    //   textEditingController.clear();
-    // }
   }
 
   void uploadImage(context) async {
@@ -297,6 +337,15 @@ class ChatTabViewModel with ChangeNotifier {
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
         cropImage = data["imgurl"];
+        final index = chatMessages.indexWhere((chatMessage) {
+          return chatMessage['id'] == cameraQuestionId;
+        });
+        // print(index);
+        if (index != -1) {
+          final item = chatMessages[index];
+          sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
+        }
+
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
         notifyListeners();
@@ -333,6 +382,13 @@ class ChatTabViewModel with ChangeNotifier {
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
         cropImage = data["imgurl"];
+        final index = chatMessages.indexWhere((chatMessage) {
+          return chatMessage['id'] == cameraQuestionId;
+        });
+        if (index != -1) {
+          final item = chatMessages[index];
+          sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
+        }
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
         notifyListeners();

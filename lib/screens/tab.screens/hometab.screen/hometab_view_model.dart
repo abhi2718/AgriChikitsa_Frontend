@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
-import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../model/category_model.dart';
 import '../../../model/comment.dart';
-import '../../../model/user_model.dart' as currentUser;
 
 class HomeTabViewModel with ChangeNotifier {
   final _homeTabRepository = HomeTabRepository();
@@ -164,7 +162,7 @@ class HomeTabViewModel with ChangeNotifier {
         "caption": caption,
         "imgurl": imageUrl
       };
-      final data = await _homeTabRepository.createPost(payload);
+      await _homeTabRepository.createPost(payload);
       return true;
     } catch (error) {
       setloading(false);

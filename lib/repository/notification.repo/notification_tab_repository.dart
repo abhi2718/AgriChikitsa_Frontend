@@ -1,12 +1,12 @@
 import '../../data/network/network_api_service.dart';
 import '../../res/app_url.dart';
 
-class MyProfileTabRepository {
+class NotificationTabRepository {
   final _apiServices = NetworkApiService();
 
-  Future<dynamic> fetchFeeds() async {
+  Future<dynamic> fetchNotifications() async {
     try {
-      const url = '${AppUrl.feedEndPoint}/userFeeds/1';
+      const url = '${AppUrl.notificationsEndPoint}/';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
@@ -14,10 +14,10 @@ class MyProfileTabRepository {
     }
   }
 
-  Future<dynamic> fetchTimeLine() async {
+  Future<dynamic> toggleNotifications(String id, dynamic payload) async {
     try {
-      const url = '${AppUrl.feedEndPoint}/timeLine';
-      final response = await _apiServices.getGetApiResponse(url);
+      final url = '${AppUrl.notificationsEndPoint}/$id';
+      final response = await _apiServices.getPatchApiResponse(url, payload);
       return response;
     } catch (e) {
       rethrow;

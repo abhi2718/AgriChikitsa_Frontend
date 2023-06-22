@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 
@@ -86,7 +84,7 @@ class FeedLoader extends StatelessWidget {
                 radius: 0,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Padding(
@@ -97,7 +95,7 @@ class FeedLoader extends StatelessWidget {
                 radius: 20,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
           ],
