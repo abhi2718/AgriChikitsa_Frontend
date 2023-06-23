@@ -42,7 +42,9 @@
     "typeHerehi",
     "namehi",
     "createhi",
-    "pleasecheck",
-    "alert"
+    "pleasecheckhi",
+    "alerthi",
+    "selectyourcrophi",
+    "addAComment"
   ]
 }

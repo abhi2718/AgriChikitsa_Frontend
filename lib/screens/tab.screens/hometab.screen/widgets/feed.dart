@@ -3,6 +3,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_mod
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -190,15 +191,15 @@ class Feed extends HookWidget {
                         Radius.circular(20.0),
                       ),
                     ),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: 16),
+                          padding: const EdgeInsets.only(left: 16),
                           child: BaseText(
-                            title: 'Add a  comment',
-                            style: TextStyle(
+                            title: AppLocalizations.of(context)!.addAComment,
+                            style: const TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w700),
                           ),
                         ),

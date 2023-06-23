@@ -3,6 +3,7 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janak
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_subCategory_details.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -53,8 +54,8 @@ class SubCategoryContainer extends HookWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    const BaseText(
-                      title: "Select your crop",
+                    BaseText(
+                      title: AppLocalizations.of(context)!.selectyourcrophi,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.start,

@@ -23,8 +23,8 @@ class LandingAuthScreen extends HookWidget {
 
     void handleLogin() {
       if (!isTermsAndConditions.value) {
-        return Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alert,
-            AppLocalizations.of(context)!.pleasecheck, context);
+        return Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.pleasecheckhi, context);
       }
       Utils.model(context, const SignInScreen());
     }

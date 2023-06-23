@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -215,15 +216,16 @@ class UserComment extends HookWidget {
                               SizedBox(
                                 width: dimension['width']! - 150,
                                 child: TextField(
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 10),
-                                    hintText: 'Add a Comment',
-                                    hintStyle: TextStyle(
+                                    hintText: AppLocalizations.of(context)!
+                                        .addAComment,
+                                    hintStyle: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    border: OutlineInputBorder(
+                                    border: const OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(
                                           8,
@@ -275,15 +277,15 @@ class UserComment extends HookWidget {
                           Radius.circular(20.0),
                         ),
                       ),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 16),
+                            padding: const EdgeInsets.only(left: 16),
                             child: BaseText(
-                              title: 'Add a  comment',
-                              style: TextStyle(
+                              title: AppLocalizations.of(context)!.addAComment,
+                              style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w700),
                             ),
                           ),
