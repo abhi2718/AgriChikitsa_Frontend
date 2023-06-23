@@ -1,6 +1,5 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
-import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notifications_screen.dart';
 import 'package:flutter/material.dart';
 import '../screens/auth.screen/auth.landing/landing.dart';
 import '../screens/auth.screen/signin.auth/otp_Verification.dart';
@@ -8,6 +7,7 @@ import '../screens/auth.screen/signin.auth/signin.dart';
 import '../screens/auth.screen/signup.auth/signup.dart';
 import '../screens/splash_screen.dart';
 import '../screens/tab.screens/chattab.screen/chattab.dart';
+import '../screens/tab.screens/notifications.screen/notification_screen.dart';
 import '../screens/tab.screens/profiletab.screen/edit_profile/edit_profile.dart';
 import '../screens/tab.screens/tab_screen.dart';
 import './routes_name.dart';
@@ -24,6 +24,6 @@ class Routes {
     RouteName.createPostRoute: (context) => const CreatePostScreen(),
     RouteName.chatBotRoute: (context) => const ChatTabScreen(),
     RouteName.myProfileScreenRoute: (context) => const MyProfileScreen(),
-    RouteName.notificationScreenRoute: (context) => const NotificationsScreen(),
+    RouteName.notificationScreenRoute: (context) => const NotificationScreen(),
   };
 }
