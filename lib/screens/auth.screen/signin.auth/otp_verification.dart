@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:provider/provider.dart';
@@ -52,10 +53,13 @@ class OtpVerification extends HookWidget {
                       ),
                     ],
                   ),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(left: 32),
                     child: Row(
-                      children: [SubHeadingText("VERIFY DETAILS")],
+                      children: [
+                        SubHeadingText(
+                            AppLocalizations.of(context)!.verifyDetailshi)
+                      ],
                     ),
                   ),
                   Padding(
@@ -65,8 +69,14 @@ class OtpVerification extends HookWidget {
                       child: Row(
                         children: [
                           ParagraphText(
-                            'OTP sent to ${useViewModel.phoneNumber}',
-                          )
+                            AppLocalizations.of(context)!.otpsenttohi,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          ParagraphText(
+                            useViewModel.phoneNumber,
+                          ),
                         ],
                       ),
                     ),
@@ -81,8 +91,11 @@ class OtpVerification extends HookWidget {
               width: dimension['width']! - 32,
               child: Column(
                 children: [
-                  const Row(
-                    children: [ParagraphHeadingText("Enter OTP")],
+                  Row(
+                    children: [
+                      ParagraphHeadingText(
+                          AppLocalizations.of(context)!.enterOtphi)
+                    ],
                   ),
                   OtpTextField(
                     numberOfFields: 6,
@@ -112,8 +125,8 @@ class OtpVerification extends HookWidget {
                                 "Didn't receive the OTP? Retry in 00:"
                                 '${useViewModel.countDown}',
                               )
-                            : const ParagraphText(
-                                "Didn't receive the OTP? Retry via:");
+                            : ParagraphText(AppLocalizations.of(context)!
+                                .didnottreceivetheOtphi);
                       }),
                     ],
                   ),
@@ -144,7 +157,7 @@ class OtpVerification extends HookWidget {
                       builder: (context, provider, child) {
                     return CustomElevatedButton(
                       loading: provider.loading,
-                      title: "VERIFY & PROCEED",
+                      title: AppLocalizations.of(context)!.verifyProcesshi,
                       width: dimension["width"]! - 32,
                       onPress: () => provider.verifyOTPCode(
                           provider.verificationIdToken, provider.otp, context),

@@ -1,12 +1,12 @@
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/utils/utils.dart';
-import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import './profile_view_model.dart';
 import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
@@ -43,9 +43,9 @@ class ProfileTabScreen extends HookWidget {
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
         centerTitle: true,
-        title: const BaseText(
-          title: "Settings",
-          style: TextStyle(
+        title: BaseText(
+          title: AppLocalizations.of(context)!.settinghi,
+          style: const TextStyle(
             color: AppColor.darkBlackColor,
           ),
         ),
@@ -89,7 +89,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.goToEditProfileScreen(context),
                 leftIcon: "assets/images/Profile.png",
-                title: AppLocalizations.of(context)!.editprofile,
+                title: AppLocalizations.of(context)!.editprofilehi,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -100,8 +100,8 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => Utils.launchDialer('8318064327'),
-                leftIcon: "assets/images/phone.png",
-                title: 'Contact Support',
+                leftIcon: "assets/images/calladd.png",
+                title: AppLocalizations.of(context)!.contactsupporthi,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -113,7 +113,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
                 leftIcon: "assets/images/Terms And Condition.png",
-                title: 'Terms and Conditions',
+                title: AppLocalizations.of(context)!.termsandConditionhi,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -124,8 +124,8 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
-                leftIcon: "assets/images/Privacy And Policy.png",
-                title: 'Privacy Policy',
+                leftIcon: "assets/images/lock.png",
+                title: AppLocalizations.of(context)!.privacyPolicyhi,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -139,8 +139,8 @@ class ProfileTabScreen extends HookWidget {
                   // useViewModel.handleDelete(
                   //     context, user.companyId!, disposableProvider);
                 },
-                leftIcon: "assets/images/Delete Account.png",
-                title: 'Delete Account',
+                leftIcon: "assets/images/trash.png",
+                title: AppLocalizations.of(context)!.deleteAccounthi,
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -153,18 +153,18 @@ class ProfileTabScreen extends HookWidget {
                 onPress: () =>
                     useViewModel.handleLogOut(context, disposableProvider),
                 leftIcon: "assets/images/logout.png",
-                title: 'Logout',
+                title: AppLocalizations.of(context)!.logouthi,
                 width: dimension["width"]! - 32,
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            CustomElevatedButton(
-              onPress: () => useViewModel.handleLocaleChange(),
-              title: "Change Local",
-              width: dimension["width"]! - 32,
-            )
+            // CustomElevatedButton(
+            //   onPress: () => useViewModel.handleLocaleChange(),
+            //   title: "Change Local",
+            //   width: dimension["width"]! - 32,
+            // ),
           ],
         ),
       ),

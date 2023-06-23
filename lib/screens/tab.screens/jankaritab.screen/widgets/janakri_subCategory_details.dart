@@ -2,6 +2,8 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
 import '../../../../utils/utils.dart';
 import '../jankari_view_model.dart';
 import 'jankari_subCategory_post.dart';
@@ -13,8 +15,8 @@ class JankariSubCategoryPost extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
-    final useViewModel = useMemoized(
-        () => Provider.of<JankariViewModel>(context, listen: true));
+    final useViewModel =
+        useMemoized(() => Provider.of<JankariViewModel>(context, listen: true));
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.getJankariSubCategoryPost(context);
@@ -39,9 +41,12 @@ class JankariSubCategoryPost extends HookWidget {
                           onTap: () => Navigator.of(context).pop(),
                           child: const Icon(Icons.arrow_back)),
                       InkWell(
-                          onTap: () => Navigator.of(context)
-                              .popUntil((route) => route.isFirst),
-                          child: const Icon(Icons.cancel)),
+                        onTap: () => Navigator.of(context)
+                            .popUntil((route) => route.isFirst),
+                        child: const Icon(
+                          Remix.close_circle_line,
+                        ),
+                      ),
                     ],
                   ),
                 ],

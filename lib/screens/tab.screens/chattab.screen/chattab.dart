@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,9 @@ class ChatTabScreen extends HookWidget {
                 useViewModel.goBack(context);
               },
               child: const Icon(Icons.arrow_back)),
-          title: const BaseText(title: "Chat Pancham", style: TextStyle()),
+          title: BaseText(
+              title: AppLocalizations.of(context)!.chatPanchamhi,
+              style: const TextStyle()),
         ),
         body: Column(
           children: [
@@ -70,15 +73,15 @@ class ChatTabScreen extends HookWidget {
                         child: TextField(
                           enabled: provider.enableKeyBoard,
                           controller: useViewModel.textEditingController,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 10),
-                            hintText: 'Type here...',
-                            hintStyle: TextStyle(
+                            hintText: AppLocalizations.of(context)!.typeHerehi,
+                            hintStyle: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
-                            border: OutlineInputBorder(
+                            border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(
                                   8,

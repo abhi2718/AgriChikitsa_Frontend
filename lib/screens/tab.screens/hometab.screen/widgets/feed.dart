@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
 import 'comment_widget.dart';
@@ -115,9 +117,12 @@ class Feed extends HookWidget {
                         children: [
                           InkWell(
                             onTap: handleLike,
-                            child: Icon(isLiked.value
-                                ? Remix.heart_2_fill
-                                : Remix.heart_line),
+                            child: Icon(
+                              isLiked.value
+                                  ? Remix.heart_2_fill
+                                  : Remix.heart_line,
+                              color: AppColor.iconHeartColor,
+                            ),
                           ),
                           const SizedBox(
                             width: 6,
