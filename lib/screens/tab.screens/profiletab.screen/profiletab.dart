@@ -6,7 +6,7 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import './profile_view_model.dart';
 import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
@@ -89,7 +89,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () => useViewModel.goToEditProfileScreen(context),
                 leftIcon: "assets/images/Profile.png",
-                title: 'Edit Profile',
+                title: AppLocalizations.of(context)!.editprofile,
                 width: dimension["width"]! - 32,
               ),
             ),
