@@ -17,7 +17,6 @@ class ChatScreen extends HookWidget {
     useEffect(() {
       useViewModel.initialTask(context);
     }, []);
-
     return Scaffold(
       body: Consumer<ChatTabViewModel>(
         builder: (context, provider, child) {
@@ -486,12 +485,15 @@ class ChatScreen extends HookWidget {
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    SizedBox(
+                                    Container(
                                       height: dimension['height']! * 0.40,
                                       width: dimension['width']! * 0.6,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
                                       child: ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(10),
+                                              BorderRadius.circular(8),
                                           child: Image.network(
                                               provider.cropImage)),
                                     ),

@@ -38,29 +38,24 @@ class Input extends StatelessWidget {
       validator: validator,
       initialValue: initialValue,
       obscureText: obscureText,
-      // To show keyboard done button or next button
       textInputAction: textInputAction,
-      // onFieldSubmitted -> this will run when user will press done button from keyboard
       onFieldSubmitted: onFieldSubmitted,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         suffixIconColor: AppColor.darkColor,
         labelText: labelText,
-        // when text field is disabled i.e enabled: false
         disabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.darkColor,
             width: borderWidth,
           ),
         ),
-        // when textField is inactive
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.extraDark,
             width: borderWidth,
           ),
         ),
-        // when inputBox receive focous (when user clicks)
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.darkColor,

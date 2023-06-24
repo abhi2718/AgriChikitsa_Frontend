@@ -49,7 +49,6 @@ class SignUpViewModel with ChangeNotifier {
     Navigator.pop(context);
   }
 
-// User Registration Logic
   void saveRegisterUserForm(BuildContext context) {
     final isValid = registerUserformKey.currentState?.validate();
     if (!isValid!) {
@@ -66,7 +65,6 @@ class SignUpViewModel with ChangeNotifier {
     register(userInfo, context);
   }
 
-// Name TextField
   Widget suffixIconForName() {
     return const Icon(Icons.person);
   }
@@ -145,5 +143,6 @@ class SignUpViewModel with ChangeNotifier {
     email = '';
     mobileNumber = '';
     userProfile = null;
+    registerUserformKey.currentState?.dispose();
   }
 }

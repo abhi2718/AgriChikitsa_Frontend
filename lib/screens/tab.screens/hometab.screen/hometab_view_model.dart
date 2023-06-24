@@ -1,17 +1,25 @@
 import 'dart:convert';
+import 'package:agriChikitsa/model/category_model.dart';
+import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../model/category_model.dart';
 import '../../../model/comment.dart';
 
+Future<void> handleBackgorundMessage(RemoteMessage message) async {}
+
 class HomeTabViewModel with ChangeNotifier {
+  final _authTabRepo = AuthRepository();
   final _homeTabRepository = HomeTabRepository();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   dynamic feedList = [];
-  List<Category> categoriesList = [];
+  List<CategoryHome> categoriesList = [];
   List<Comment> commentsList = [];
   String currentSelectedCategory = "All";
   var categoryLoading = true;
@@ -22,7 +30,17 @@ class HomeTabViewModel with ChangeNotifier {
     return _loading;
   }
 
-  setActiveState(BuildContext context, Category category, bool value) {
+  void disposeValues() {
+    feedList = [];
+    categoriesList = [];
+    commentsList = [];
+    currentSelectedCategory = "All";
+    categoryLoading = true;
+    commentLoading = true;
+    _loading = true;
+  }
+
+  setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
     notifyListeners();
     fetchFeeds(context);
@@ -31,6 +49,33 @@ class HomeTabViewModel with ChangeNotifier {
   setloading(bool value) {
     _loading = value;
     notifyListeners();
+  }
+
+  void updateProfile(String fcmToken) async {
+    final localStorage = await SharedPreferences.getInstance();
+    final rawProfile = localStorage.getString('profile');
+    final profile = jsonDecode(rawProfile!);
+    var userId = profile['user']['_id'];
+    dynamic payload = {
+      "fcmToken": fcmToken,
+    };
+    await _authTabRepo.updateProfile(userId, payload);
+  }
+
+  Future<void> getFCM(NotificationViewModel notificationViewModel) async {
+    await _firebaseMessaging.requestPermission();
+    _firebaseMessaging.getToken().then((fcmToken) {
+      if (kDebugMode) {
+        print(fcmToken);
+      }
+      if (fcmToken != null) {
+        updateProfile(fcmToken);
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+          notificationViewModel.fetchPushNotification();
+        });
+        FirebaseMessaging.onBackgroundMessage(handleBackgorundMessage);
+      }
+    });
   }
 
   void getUserProfile(AuthService authService) async {
@@ -42,10 +87,6 @@ class HomeTabViewModel with ChangeNotifier {
 
   void goToProfile(BuildContext context) {
     Navigator.pushNamed(context, RouteName.editProfileRoute);
-  }
-
-  void disposeValues() {
-    _loading = true;
   }
 
   void fetchFeeds(BuildContext context) async {
@@ -65,7 +106,7 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final data = await _homeTabRepository.fetchFeedsCatogory();
       categoriesList = [
-        Category(
+        CategoryHome(
           name: "All",
           id: "All",
           isActive: false,
@@ -80,9 +121,9 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  List<Category> mapCategories(dynamic categories) {
-    return List<Category>.from(categories.map((category) {
-      return Category(
+  List<CategoryHome> mapCategories(dynamic categories) {
+    return List<CategoryHome>.from(categories.map((category) {
+      return CategoryHome(
         name: category['category'],
         id: category['_id'],
         isActive: false,

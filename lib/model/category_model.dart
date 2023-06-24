@@ -1,6 +1,6 @@
-class Category {
+class CategoryHome {
   final String name;
   bool isActive;
   final String id;
-  Category({required this.name, this.isActive = false, required this.id});
+  CategoryHome({required this.name, this.isActive = false, required this.id});
 }

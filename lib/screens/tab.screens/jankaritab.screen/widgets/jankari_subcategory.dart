@@ -56,8 +56,8 @@ class SubCategoryContainer extends HookWidget {
                     ),
                     BaseText(
                       title: AppLocalizations.of(context)!.selectyourcrophi,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.start,
                     ),
                     const SizedBox(
@@ -74,7 +74,7 @@ class SubCategoryContainer extends HookWidget {
                                     itemCount: 8,
                                     itemBuilder: (context, index) {
                                       return Container(
-                                        margin: EdgeInsets.only(right: 8),
+                                        margin: const EdgeInsets.only(right: 8),
                                         width: 80,
                                         child: Skeleton(
                                           height: 10,

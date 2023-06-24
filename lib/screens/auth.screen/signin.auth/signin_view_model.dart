@@ -47,11 +47,25 @@ class SignInViewModel with ChangeNotifier {
     }
   }
 
+  void disposeValues() {
+    phoneNumberController.clear();
+    phoneNumber = "";
+    errorMessage = "";
+    countDown = 30;
+    showTimmer = false;
+    _loading = false;
+    showResendOTPButton = false;
+    otp = "";
+    verificationIdToken = "";
+    userProfile = null;
+    auth.signOut();
+  }
+
   void resetTimer() {
+    phoneNumberController.clear();
     countDown = 30;
     showResendOTPButton = false;
     showTimmer = true;
-    notifyListeners();
   }
 
   void setResendOTPButton() {
@@ -144,7 +158,6 @@ class SignInViewModel with ChangeNotifier {
     void handleLogin(context) async {
       try {
         final data = await _authRepository.login(phoneNumber);
-        Utils.toastMessage(data.toString());
         if (data["newUser"]) {
           setloading(false);
           Navigator.of(context).pushNamed(RouteName.signUpRoute, arguments: {

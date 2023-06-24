@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
-
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 
 class ChatTabViewModel with ChangeNotifier {
   final _chatTabRepository = ChatTabRepository();
   final textEditingController = TextEditingController();
-  final dynamic timmerInstances = [];
+  dynamic timmerInstances = [];
   bool showFirstBubbleLoader = false;
   bool showSecondBubbleLoader = false;
   bool showThirdLoader = false;
@@ -24,6 +23,28 @@ class ChatTabViewModel with ChangeNotifier {
   var questionIndex = 0;
   var selectedDisease = '';
   var cameraQuestionId = '';
+
+  void disposeValues() {
+    textEditingController.clear();
+    timmerInstances = null;
+    showFirstBubbleLoader = false;
+    showSecondBubbleLoader = false;
+    showThirdLoader = false;
+    showFourthLoader = false;
+    showFifthBubbleLoader = false;
+    showSixthBubbleLoader = false;
+    showSeventhBubbleLoader = false;
+    showLastMessage = false;
+    showCropImageLoader = false;
+    showCameraButton = false;
+    enableKeyBoard = false;
+    questionAsked = "";
+    cropImage = "";
+    questionIndex = 0;
+    selectedDisease = '';
+    cameraQuestionId = '';
+  }
+
   final dynamic questions = [
     {
       "id": "1",
@@ -63,6 +84,7 @@ class ChatTabViewModel with ChangeNotifier {
     showSixthBubbleLoader = false;
     showSeventhBubbleLoader = false;
     showLastMessage = false;
+    showCameraButton = false;
     showCropImageLoader = false;
     cropImage = "";
   }
@@ -340,7 +362,6 @@ class ChatTabViewModel with ChangeNotifier {
         final index = chatMessages.indexWhere((chatMessage) {
           return chatMessage['id'] == cameraQuestionId;
         });
-        // print(index);
         if (index != -1) {
           final item = chatMessages[index];
           sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);

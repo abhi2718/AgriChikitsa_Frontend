@@ -139,6 +139,7 @@ class EditProfileViewModel with ChangeNotifier {
   }
 
   void disposeValues() {
+    editUserformKey.currentState?.dispose();
     _loading = false;
     userName = '';
     email = '';

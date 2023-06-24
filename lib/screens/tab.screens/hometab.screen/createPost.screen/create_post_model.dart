@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
@@ -13,6 +12,7 @@ class CreatePostModel with ChangeNotifier {
   final captionFocusNode = FocusNode();
   final categoryFocusNode = FocusNode();
   List<dynamic> categoriesList = [];
+  dynamic imagePicked;
   String currentSelectedCategory = "";
   var categoryLoading = true;
 
@@ -23,7 +23,7 @@ class CreatePostModel with ChangeNotifier {
   var caption = '';
   var category = '';
 
-  setActiveState(BuildContext context, Category category, bool value) {
+  setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
     notifyListeners();
   }
@@ -37,7 +37,7 @@ class CreatePostModel with ChangeNotifier {
     try {
       final data = await HomeTabRepository().fetchFeedsCatogory();
       categoriesList = data['categories']
-          .map((data) => Category(
+          .map((data) => CategoryHome(
                 id: data['_id'],
                 name: data['category'],
               ))
@@ -93,11 +93,9 @@ class CreatePostModel with ChangeNotifier {
 
   void pickPostImage(context, AuthService authService) async {
     try {
-      final data = await Utils.pickImage();
-      if (data != null) {
-        imagePath = data.path;
-        var response = Utils.uploadImage(data);
-        response.then((value) => imageUrl = value['imgurl']);
+      imagePicked = await Utils.pickImage();
+      if (imagePicked != null) {
+        imagePath = imagePicked.path;
         notifyListeners();
       }
     } catch (error) {
@@ -113,18 +111,24 @@ class CreatePostModel with ChangeNotifier {
         imagePath.isNotEmpty) {
       setloading(true);
       FocusManager.instance.primaryFocus?.unfocus();
-      final data = await _homeTabViewModel.createPost(
-          context, currentSelectedCategory, caption, imageUrl);
-      if (data) {
-        await Future.delayed(const Duration(seconds: 1), () {
-          goBack(context);
-          setloading(false);
-          Utils.flushBarErrorMessage(
-              "Post Created!",
-              "Your post has been created. Admin will approve in soon.",
-              context);
-          reinitialize();
-        });
+      var response = await Utils.uploadImage(imagePicked);
+      if (response['success']) {
+        imageUrl = response['imgurl'];
+        final data = await _homeTabViewModel.createPost(
+            context, currentSelectedCategory, caption, imageUrl);
+        if (data) {
+          await Future.delayed(const Duration(seconds: 1), () {
+            goBack(context);
+            setloading(false);
+            Utils.flushBarErrorMessage(
+                "Post Created!",
+                "Your post has been created. Admin will approve in soon.",
+                context);
+            reinitialize();
+          });
+        }
+      } else {
+        Utils.flushBarErrorMessage('Snap!', "Something went wrong", context);
       }
     } else {
       setloading(false);

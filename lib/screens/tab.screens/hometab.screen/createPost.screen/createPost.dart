@@ -87,9 +87,13 @@ class CreatePostScreen extends HookWidget {
               ),
               TextField(
                 controller: useViewModel.captionController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.enterCaptionhi,
-                  border: const OutlineInputBorder(),
+                decoration: const InputDecoration(
+                  labelText: "Enter Caption",
+                  border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: AppColor.darkColor, width: 2.0),
+                  ),
                 ),
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
@@ -97,8 +101,11 @@ class CreatePostScreen extends HookWidget {
                 },
                 onTapOutside: (_) =>
                     FocusManager.instance.primaryFocus?.unfocus(),
-                onSubmitted: (_) => useViewModel
-                    .onSavedCaptionField(useViewModel.captionController.text),
+                onSubmitted: (_) {
+                  useViewModel
+                      .onSavedCaptionField(useViewModel.captionController.text);
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 onEditingComplete: () {
                   useViewModel.handleUserInput(context);
                 },

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-
+import '../tab_screen.dart';
 import './profile_view_model.dart';
 import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
@@ -33,8 +33,8 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<HomeTabViewModel>(context, listen: false),
       Provider.of<AuthService>(context, listen: false),
       Provider.of<ChatTabViewModel>(context, listen: false),
-      Provider.of<ChatTabViewModel>(context, listen: false),
-      Provider.of<EditProfileViewModel>(context, listen: false)
+      Provider.of<EditProfileViewModel>(context, listen: false),
+      Provider.of<TabViewModel>(context, listen: false)
     ];
     const defaultImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";

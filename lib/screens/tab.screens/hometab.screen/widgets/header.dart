@@ -18,7 +18,10 @@ class HeaderWidget extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
-        () => Provider.of<NotificationViewModel>(context, listen: true));
+        () => Provider.of<NotificationViewModel>(context, listen: false));
+    useEffect(() {
+      useViewModel.fetchNotifications(context);
+    }, []);
     return Card(
       margin: const EdgeInsets.all(0),
       child: Container(
@@ -42,9 +45,12 @@ class HeaderWidget extends HookWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      NotificationIndicatorButton(
-                        notificationCount: useViewModel.notificationCount,
-                      ),
+                      Consumer<NotificationViewModel>(
+                          builder: (context, provider, child) {
+                        return NotificationIndicatorButton(
+                          notificationCount: provider.notificationCount,
+                        );
+                      }),
                       const SizedBox(
                         width: 10,
                       ),

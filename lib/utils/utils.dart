@@ -141,7 +141,6 @@ class Utils {
       final XFile? photo =
           await ImagePicker().pickImage(source: ImageSource.camera);
       if (photo == null) {
-        print("null");
         return null;
       }
       return photo;

@@ -10,20 +10,18 @@ class MyProfileViewModel with ChangeNotifier {
   List<dynamic> feedList = [];
   List<dynamic> bookMarkFeedList = [];
   var commentLoading = true;
-  var _loading = true;
-  bool bookMarkLoader = true;
+  var _loading = false;
+  bool bookMarkLoader = false;
   bool get loading {
     return _loading;
   }
 
   setloading(bool value) {
     _loading = value;
-    notifyListeners();
   }
 
   setBookMarkLoader(bool value) {
     bookMarkLoader = value;
-    notifyListeners();
   }
 
   void fetchFeeds(BuildContext context) async {
