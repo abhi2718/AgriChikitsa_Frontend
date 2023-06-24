@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/card.widgets/card.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:flutter/material.dart';
 
 class ProfileButton extends StatelessWidget {
   final double width;
   final String title;
   final String leftIcon;
+  final Color iconColor;
   final void Function()? onPress;
 
   const ProfileButton({
@@ -14,6 +16,7 @@ class ProfileButton extends StatelessWidget {
     required this.title,
     required this.leftIcon,
     required this.onPress,
+    required this.iconColor,
   });
 
   @override
@@ -45,6 +48,7 @@ class ProfileButton extends StatelessWidget {
                 "assets/images/arrow.png",
                 height: 16,
                 width: 16,
+                color: AppColor.iconColor,
               )
             ],
           ),

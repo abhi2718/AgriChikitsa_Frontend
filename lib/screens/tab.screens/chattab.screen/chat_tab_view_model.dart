@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 
@@ -109,7 +111,8 @@ class ChatTabViewModel with ChangeNotifier {
       timmerInstances.add(t2);
     } catch (error) {
       showSecondBubbleLoader = false;
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -121,7 +124,8 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showSecondBubbleLoader = false;
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -161,7 +165,8 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showThirdLoader = false;
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -197,7 +202,8 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showFourthLoader = false;
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -247,7 +253,8 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showFifthBubbleLoader = false;
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 

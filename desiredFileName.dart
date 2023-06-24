@@ -45,6 +45,19 @@
     "pleasecheckhi",
     "alerthi",
     "selectyourcrophi",
-    "addAComment"
+    "addACommenthi",
+    "captionRequiredhi",
+    "postCreatedhi",
+    "yourposthasbeencreatedAdminwillapproveinsoonhi",
+    "snaphi",
+    "somethingwentwronghi",
+    "pleasealldetailshi",
+    "pleasedigitnumberhi",
+    "loginsuccessffullyhi",
+    "createAccounthi",
+    "registerhi",
+    "continuewithagrichikitsahi",
+    "taskDetailshi",
+    "welcomeinchat"
   ]
 }

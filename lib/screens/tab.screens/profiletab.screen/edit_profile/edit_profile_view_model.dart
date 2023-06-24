@@ -1,7 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../model/user_model.dart';
 import '../../../../repository/auth.repo/auth_repository.dart';
 import '../../../../services/auth.dart';
@@ -106,7 +109,8 @@ class EditProfileViewModel with ChangeNotifier {
       Utils.toastMessage("Profile updated successfully! .");
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -120,7 +124,8 @@ class EditProfileViewModel with ChangeNotifier {
         updateProfile(userInfo, context, authService);
       }
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -134,7 +139,8 @@ class EditProfileViewModel with ChangeNotifier {
         updateProfile(userInfo, context, authService);
       }
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 

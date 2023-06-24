@@ -118,13 +118,13 @@ class MyProfileFeed extends HookWidget {
                                     onTap: handleLike,
                                     child: Icon(
                                       isLiked.value
-                                          ? Remix.heart_2_fill
+                                          ? Remix.heart_fill
                                           : Remix.heart_line,
                                       color: AppColor.iconHeartColor,
                                     ),
                                   )
                                 : const Icon(
-                                    Remix.heart_2_line,
+                                    Remix.heart_line,
                                     color: AppColor.iconHeartColor,
                                   ),
                             const SizedBox(

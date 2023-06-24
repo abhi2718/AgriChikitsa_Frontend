@@ -123,7 +123,7 @@ class OtpVerification extends HookWidget {
                           builder: (context, provider, child) {
                         return !provider.showResendOTPButton
                             ? ParagraphText(
-                                "Didn't receive the OTP? Retry in 00:"
+                                "ओटीपी प्राप्त नहीं हुआ?पुनः प्रयास करें 00:"
                                 '${useViewModel.countDown}',
                               )
                             : ParagraphText(AppLocalizations.of(context)!

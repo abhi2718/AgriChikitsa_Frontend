@@ -4,7 +4,8 @@ import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
@@ -47,7 +48,8 @@ class CreatePostModel with ChangeNotifier {
       categoryLoading = false;
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -101,7 +103,8 @@ class CreatePostModel with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -123,18 +126,21 @@ class CreatePostModel with ChangeNotifier {
             goBack(context);
             setloading(false);
             Utils.flushBarErrorMessage(
-                "Post Created!",
-                "Your post has been created. Admin will approve in soon.",
+                AppLocalizations.of(context)!.createPosthi,
+                AppLocalizations.of(context)!
+                    .yourposthasbeencreatedAdminwillapproveinsoonhi,
                 context);
             reinitialize();
           });
         }
       } else {
-        Utils.flushBarErrorMessage('Snap!', "Something went wrong", context);
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.snaphi,
+            AppLocalizations.of(context)!.somethingwentwronghi, context);
       }
     } else {
       setloading(false);
-      Utils.flushBarErrorMessage("Snap!", "Please enter all details", context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.settinghi,
+          AppLocalizations.of(context)!.pleasealldetailshi, context);
     }
   }
 }

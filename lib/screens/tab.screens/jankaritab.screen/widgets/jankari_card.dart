@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
-import '../jankari_view_model.dart';
 import './jankari_subcategory.dart';
+import '../jankari_view_model.dart';
 
 class JankariCard extends HookWidget {
   final JankariCategoryModal jankari;
@@ -32,6 +32,7 @@ class JankariCard extends HookWidget {
         clipBehavior: Clip.antiAlias,
         borderRadius: BorderRadius.circular(20),
         child: Card(
+          elevation: 5,
           child: Container(
             height: 110,
             width: dimension['width']! - 20,

@@ -14,4 +14,5 @@ class AppColor {
   static const chatSent = Color(0xFFE8E8EE);
   static const notificationBgColor = Color(0xffE4EFE7);
   static const iconHeartColor = Colors.red;
+  static const iconBookmarkColor = Color(0xFF5f9e29);
 }

@@ -220,7 +220,7 @@ class UserComment extends HookWidget {
                                     contentPadding: const EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 10),
                                     hintText: AppLocalizations.of(context)!
-                                        .addAComment,
+                                        .addACommenthi,
                                     hintStyle: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -284,7 +284,7 @@ class UserComment extends HookWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 16),
                             child: BaseText(
-                              title: AppLocalizations.of(context)!.addAComment,
+                              title: AppLocalizations.of(context)!.addACommenthi,
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w700),
                             ),

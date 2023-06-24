@@ -5,18 +5,12 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../tab_screen.dart';
+
 import './profile_view_model.dart';
 import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
-import '../../../services/socket_io.dart';
-import '../../auth.screen/signin.auth/signin_view_model.dart';
-import '../../auth.screen/signup.auth/signup_view_model.dart';
-import '../chattab.screen/chat_tab_view_model.dart';
-import '../hometab.screen/hometab_view_model.dart';
-import 'edit_profile/edit_profile_view_model.dart';
+import '../tab_screen.dart';
 
 class ProfileTabScreen extends HookWidget {
   const ProfileTabScreen({super.key});
@@ -92,6 +86,7 @@ class ProfileTabScreen extends HookWidget {
                 leftIcon: "assets/images/Profile.png",
                 title: AppLocalizations.of(context)!.editprofilehi,
                 width: dimension["width"]! - 32,
+                iconColor: AppColor.iconColor,
               ),
             ),
             const SizedBox(
@@ -104,6 +99,7 @@ class ProfileTabScreen extends HookWidget {
                 leftIcon: "assets/images/calladd.png",
                 title: AppLocalizations.of(context)!.contactsupporthi,
                 width: dimension["width"]! - 32,
+                iconColor: AppColor.iconColor,
               ),
             ),
             const SizedBox(
@@ -116,6 +112,7 @@ class ProfileTabScreen extends HookWidget {
                 leftIcon: "assets/images/Terms And Condition.png",
                 title: AppLocalizations.of(context)!.termsandConditionhi,
                 width: dimension["width"]! - 32,
+                iconColor: AppColor.iconColor,
               ),
             ),
             const SizedBox(
@@ -128,6 +125,7 @@ class ProfileTabScreen extends HookWidget {
                 leftIcon: "assets/images/lock.png",
                 title: AppLocalizations.of(context)!.privacyPolicyhi,
                 width: dimension["width"]! - 32,
+                iconColor: AppColor.iconColor,
               ),
             ),
             const SizedBox(
@@ -143,6 +141,7 @@ class ProfileTabScreen extends HookWidget {
                 leftIcon: "assets/images/trash.png",
                 title: AppLocalizations.of(context)!.deleteAccounthi,
                 width: dimension["width"]! - 32,
+                iconColor: AppColor.iconColor,
               ),
             ),
             const SizedBox(
@@ -156,6 +155,7 @@ class ProfileTabScreen extends HookWidget {
                 leftIcon: "assets/images/logout.png",
                 title: AppLocalizations.of(context)!.logouthi,
                 width: dimension["width"]! - 32,
+                iconColor: AppColor.iconColor,
               ),
             ),
             const SizedBox(

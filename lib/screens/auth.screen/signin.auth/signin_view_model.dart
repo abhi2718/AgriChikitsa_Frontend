@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../repository/auth.repo/auth_repository.dart';
@@ -94,8 +95,8 @@ class SignInViewModel with ChangeNotifier {
 
   void verifyUserPhoneNumber(BuildContext context) {
     if (!validateMobileNumber('+91${phoneNumberController.text}')) {
-      Utils.flushBarErrorMessage(
-          "Alert!", "Please enter a valid 10 digit mobile number", context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+          AppLocalizations.of(context)!.pleasedigitnumberhi, context);
       return;
     }
     phoneNumber = phoneNumberController.text;
@@ -107,11 +108,13 @@ class SignInViewModel with ChangeNotifier {
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
         await auth.signInWithCredential(credential).then(
-              (value) => print('Logged In Successfully'),
+              (value) =>
+                  print(AppLocalizations.of(context)!.loginsuccessffullyhi),
             );
       },
       verificationFailed: (FirebaseAuthException e) {
-        Utils.flushBarErrorMessage("Alert!", e.message.toString(), context);
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            e.message.toString(), context);
         return;
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -133,7 +136,8 @@ class SignInViewModel with ChangeNotifier {
       final userCredential = await auth.signInWithCredential(credential);
       login(phoneNumber, context, userCredential.user!.uid);
     } catch (e) {
-      Utils.flushBarErrorMessage("Alert", e.toString().split("]")[1], context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+          e.toString().split("]")[1], context);
       setloading(false);
     }
   }
@@ -163,7 +167,8 @@ class SignInViewModel with ChangeNotifier {
               .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         }
       } catch (error) {
-        Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
         setloading(false);
       }
     }

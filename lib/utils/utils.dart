@@ -1,15 +1,16 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/material.dart';
-import 'package:another_flushbar/flushbar.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:another_flushbar/flushbar_route.dart';
-import "package:fluttertoast/fluttertoast.dart";
+
 import 'package:agriChikitsa/data/app_excaptions.dart';
 import 'package:agriChikitsa/res/app_url.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:another_flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar_route.dart';
+import 'package:flutter/material.dart';
+import "package:fluttertoast/fluttertoast.dart";
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
   static void toastMessage(String message) {
@@ -79,11 +80,11 @@ class Utils {
       flushbar: Flushbar(
         title: title,
         message: message,
-        backgroundColor: AppColor.darkBlackColor,
+        backgroundColor: AppColor.darkColor,
         duration: const Duration(seconds: 8),
         icon: const Icon(
           Icons.error,
-          color: Colors.white,
+          color: AppColor.whiteColor,
         ),
         flushbarPosition: FlushbarPosition.TOP,
       )..show(context),
