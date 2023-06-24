@@ -55,7 +55,7 @@ class OtpVerification extends HookWidget {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 32),
+                    padding: const EdgeInsets.only(left: 32),
                     child: Row(
                       children: [
                         SubHeadingText(

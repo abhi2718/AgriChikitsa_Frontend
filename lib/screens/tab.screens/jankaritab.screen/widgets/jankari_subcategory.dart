@@ -56,8 +56,8 @@ class SubCategoryContainer extends HookWidget {
                     ),
                     BaseText(
                       title: AppLocalizations.of(context)!.selectyourcrophi,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.start,
                     ),
                     const SizedBox(

@@ -5,7 +5,6 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../tab_screen.dart';
 import './profile_view_model.dart';
@@ -28,13 +27,13 @@ class ProfileTabScreen extends HookWidget {
     final user = User.fromJson(authService.userInfo["user"]);
     final dimension = Utils.getDimensions(context, true);
     final disposableProvider = [
-      // Provider.of<SignInViewModel>(context, listen: false),
-      // Provider.of<SignUpViewModel>(context, listen: false),
-      // Provider.of<SocketService>(context, listen: false),
-      // Provider.of<HomeTabViewModel>(context, listen: false),
-      // Provider.of<AuthService>(context, listen: false),
-      // Provider.of<ChatTabViewModel>(context, listen: false),
-      // Provider.of<EditProfileViewModel>(context, listen: false),
+      Provider.of<SignInViewModel>(context, listen: false),
+      Provider.of<SignUpViewModel>(context, listen: false),
+      Provider.of<SocketService>(context, listen: false),
+      Provider.of<HomeTabViewModel>(context, listen: false),
+      Provider.of<AuthService>(context, listen: false),
+      Provider.of<ChatTabViewModel>(context, listen: false),
+      Provider.of<EditProfileViewModel>(context, listen: false),
       Provider.of<TabViewModel>(context, listen: false)
     ];
     const defaultImage =

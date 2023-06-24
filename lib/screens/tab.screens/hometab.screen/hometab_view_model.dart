@@ -30,6 +30,16 @@ class HomeTabViewModel with ChangeNotifier {
     return _loading;
   }
 
+  void disposeValues() {
+    feedList = [];
+    categoriesList = [];
+    commentsList = [];
+    currentSelectedCategory = "All";
+    categoryLoading = true;
+    commentLoading = true;
+    _loading = true;
+  }
+
   setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
     notifyListeners();
@@ -77,10 +87,6 @@ class HomeTabViewModel with ChangeNotifier {
 
   void goToProfile(BuildContext context) {
     Navigator.pushNamed(context, RouteName.editProfileRoute);
-  }
-
-  void disposeValues() {
-    _loading = true;
   }
 
   void fetchFeeds(BuildContext context) async {

@@ -47,7 +47,22 @@ class SignInViewModel with ChangeNotifier {
     }
   }
 
+  void disposeValues() {
+    phoneNumberController.clear();
+    phoneNumber = "";
+    errorMessage = "";
+    countDown = 30;
+    showTimmer = false;
+    _loading = false;
+    showResendOTPButton = false;
+    otp = "";
+    verificationIdToken = "";
+    userProfile = null;
+    auth.signOut();
+  }
+
   void resetTimer() {
+    phoneNumberController.clear();
     countDown = 30;
     showResendOTPButton = false;
     showTimmer = true;

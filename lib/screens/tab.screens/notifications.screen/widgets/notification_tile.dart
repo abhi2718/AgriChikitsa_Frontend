@@ -34,12 +34,11 @@ class NotificationTile extends HookWidget {
       padding: const EdgeInsets.only(top: 10, left: 8, right: 8, bottom: 4),
       child: InkWell(
         onTap: () => handleLike(),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(6),
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: ExpansionTile(
             initiallyExpanded: isRead.value ? false : true,
-            // collapsedIconColor: AppColor.whiteColor,
-            // iconColor: AppColor.whiteColor,
             textColor: AppColor.darkBlackColor,
             childrenPadding:
                 const EdgeInsets.only(top: 2, left: 15, right: 15, bottom: 8),
@@ -56,11 +55,14 @@ class NotificationTile extends HookWidget {
                 thickness: 1.2,
                 color: AppColor.notificationBgColor,
               ),
-              BaseText(
-                title: "Reply : ${notificationItem['message']}",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: BaseText(
+                  title: "Reply : ${notificationItem['message']}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const SizedBox(
