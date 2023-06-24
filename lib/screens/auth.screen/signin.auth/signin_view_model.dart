@@ -51,7 +51,6 @@ class SignInViewModel with ChangeNotifier {
     countDown = 30;
     showResendOTPButton = false;
     showTimmer = true;
-    notifyListeners();
   }
 
   void setResendOTPButton() {
@@ -144,7 +143,6 @@ class SignInViewModel with ChangeNotifier {
     void handleLogin(context) async {
       try {
         final data = await _authRepository.login(phoneNumber);
-        Utils.toastMessage(data.toString());
         if (data["newUser"]) {
           setloading(false);
           Navigator.of(context).pushNamed(RouteName.signUpRoute, arguments: {
