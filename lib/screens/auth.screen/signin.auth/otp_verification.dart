@@ -55,7 +55,7 @@ class OtpVerification extends HookWidget {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 32),
+                    padding: const EdgeInsets.only(left: 32),
                     child: Row(
                       children: [
                         SubHeadingText(
@@ -123,7 +123,7 @@ class OtpVerification extends HookWidget {
                           builder: (context, provider, child) {
                         return !provider.showResendOTPButton
                             ? ParagraphText(
-                                "ओटीपी प्राप्त नहीं हुआ?पुनः प्रयास करें 00:"
+                                "ओटीपी प्राप्त नहीं हुआ? पुनः प्रयास करें 00:"
                                 '${useViewModel.countDown}',
                               )
                             : ParagraphText(AppLocalizations.of(context)!
