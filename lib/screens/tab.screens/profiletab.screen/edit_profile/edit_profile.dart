@@ -2,6 +2,7 @@ import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -37,9 +38,9 @@ class EditProfileScreen extends HookWidget {
               Remix.arrow_left_line,
             ),
           ),
-          title: const BaseText(
-              title: "Edit Profile",
-              style: TextStyle(color: AppColor.darkBlackColor)),
+          title: BaseText(
+              title: AppLocalizations.of(context)!.editprofilehi,
+              style: const TextStyle(color: AppColor.darkBlackColor)),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -92,7 +93,7 @@ class EditProfileScreen extends HookWidget {
                     children: [
                       Consumer<EditProfileViewModel>(
                         builder: (context, provider, child) => Input(
-                          labelText: "Name",
+                          labelText: AppLocalizations.of(context)!.namehi,
                           focusNode: useViewModel.nameFocusNode,
                           keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.next,
@@ -113,7 +114,7 @@ class EditProfileScreen extends HookWidget {
                       ),
                       Consumer<EditProfileViewModel>(
                         builder: (context, provider, child) => Input(
-                          labelText: "Email",
+                          labelText: AppLocalizations.of(context)!.emailhi,
                           focusNode: useViewModel.emailFocusNode,
                           suffixIcon: useViewModel.suffixIconForEmail(),
                           keyboardType: TextInputType.emailAddress,
@@ -131,7 +132,7 @@ class EditProfileScreen extends HookWidget {
                       Consumer<EditProfileViewModel>(
                         builder: (context, provider, child) =>
                             CustomElevatedButton(
-                          title: "Update",
+                          title: AppLocalizations.of(context)!.updatehi,
                           loading: provider.loading,
                           width: dimension["width"]! - 32,
                           onPress: () =>

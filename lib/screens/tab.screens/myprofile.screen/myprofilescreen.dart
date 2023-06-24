@@ -5,8 +5,10 @@ import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprof
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/post_pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import '../../../res/color.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/text.widgets/text.dart';
@@ -32,16 +34,15 @@ class MyProfileScreen extends HookWidget {
                 const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
             backgroundColor: AppColor.whiteColor,
             foregroundColor: AppColor.darkBlackColor,
-            flexibleSpace:
-                const TabBar(padding: EdgeInsets.only(top: 10), tabs: [
+            flexibleSpace: TabBar(padding: EdgeInsets.only(top: 10), tabs: [
               Tab(
                   child: BaseText(
-                      title: "My Posts",
-                      style: TextStyle(color: Colors.black))),
+                      title: AppLocalizations.of(context)!.myPosthi,
+                      style: const TextStyle(color: Colors.black))),
               Tab(
                   child: BaseText(
-                      title: "Bookmarks",
-                      style: TextStyle(color: Colors.black))),
+                      title: AppLocalizations.of(context)!.bookmarkhi,
+                      style: const TextStyle(color: Colors.black))),
             ]),
           ),
           body: TabBarView(
@@ -52,9 +53,9 @@ class MyProfileScreen extends HookWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const BaseText(
-                            title: "No posts yet!",
-                            style: TextStyle(),
+                          BaseText(
+                            title: AppLocalizations.of(context)!.nopostYethi,
+                            style: const TextStyle(),
                           ),
                           const SizedBox(
                             height: 10,
@@ -69,10 +70,12 @@ class MyProfileScreen extends HookWidget {
                                   borderRadius: BorderRadius.circular(8),
                                   color: AppColor.darkColor,
                                 ),
-                                child: const Center(
+                                child: Center(
                                     child: BaseText(
-                                  title: "Create one!",
-                                  style: TextStyle(color: AppColor.whiteColor),
+                                  title:
+                                      AppLocalizations.of(context)!.createOnehi,
+                                  style: const TextStyle(
+                                      color: AppColor.whiteColor),
                                 ))),
                           )
                         ],
@@ -93,7 +96,8 @@ class MyProfileScreen extends HookWidget {
               }),
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
                 return provider.bookMarkFeedList.isEmpty
-                    ? const Center(child: Text("No Bookmarks added yet!"))
+                    ? Center(
+                        child: Text(AppLocalizations.of(context)!.noBookMarkAdd))
                     : provider.bookMarkLoader
                         ? const PreLoader()
                         : SizedBox(

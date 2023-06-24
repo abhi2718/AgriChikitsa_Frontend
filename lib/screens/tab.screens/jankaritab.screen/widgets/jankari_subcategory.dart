@@ -3,8 +3,11 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janak
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_subCategory_details.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
 import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 import '../jankari_view_model.dart';
@@ -40,16 +43,19 @@ class SubCategoryContainer extends HookWidget {
                             onTap: () => Navigator.of(context).pop(),
                             child: const Icon(Icons.arrow_back)),
                         InkWell(
-                            onTap: () => Navigator.of(context)
-                                .popUntil((route) => route.isFirst),
-                            child: const Icon(Icons.cancel)),
+                          onTap: () => Navigator.of(context)
+                              .popUntil((route) => route.isFirst),
+                          child: const Icon(
+                            Remix.close_circle_line,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    const BaseText(
-                      title: "Select your crop",
+                    BaseText(
+                      title: AppLocalizations.of(context)!.selectyourcrophi,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.start,

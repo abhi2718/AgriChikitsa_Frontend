@@ -1,8 +1,10 @@
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
@@ -23,17 +25,18 @@ class TabScreen extends HookWidget {
     final tabWidgets = useMemoized(() {
       return [
         BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/Home.png',
-              width: 20,
-              height: 20,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/Home Filled.png',
-              width: 20,
-              height: 20,
-            ),
-            label: 'Home'),
+          icon: Image.asset(
+            'assets/icons/Home.png',
+            width: 20,
+            height: 20,
+          ),
+          activeIcon: Image.asset(
+            'assets/icons/Home Filled.png',
+            width: 20,
+            height: 20,
+          ),
+          label: AppLocalizations.of(context)!.homehi,
+        ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/Jankari Icon.png',
@@ -41,16 +44,16 @@ class TabScreen extends HookWidget {
             height: 20,
           ),
           activeIcon: Image.asset(
-            'assets/icons/Jankari Icon Filled.png',
+            'assets/icons/Jankari Filled.png',
             width: 20,
             height: 20,
           ),
-          label: 'Jankari',
+          label: AppLocalizations.of(context)!.jankarihi,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.view_timeline_outlined),
-          activeIcon: Icon(Icons.view_timeline_rounded),
-          label: 'Timeline',
+          icon: const Icon(Icons.view_timeline_outlined),
+          activeIcon: const Icon(Icons.view_timeline_rounded),
+          label: AppLocalizations.of(context)!.timelinehi,
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
@@ -59,11 +62,11 @@ class TabScreen extends HookWidget {
             height: 20,
           ),
           activeIcon: Image.asset(
-            'assets/icons/Setting Filled.png',
+            'assets/icons/Settings Filled.png',
             width: 20,
             height: 20,
           ),
-          label: 'Setting',
+          label: AppLocalizations.of(context)!.settinghi,
         ),
       ];
     });

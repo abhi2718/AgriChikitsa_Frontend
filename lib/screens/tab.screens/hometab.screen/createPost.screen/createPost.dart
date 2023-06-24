@@ -3,15 +3,16 @@ import 'dart:io';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import './widgets/post_category_button.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
-import './widgets/post_category_button.dart';
 
 class CreatePostScreen extends HookWidget {
   const CreatePostScreen({super.key});
@@ -33,9 +34,9 @@ class CreatePostScreen extends HookWidget {
         leading: InkWell(
             onTap: () => useViewModel.goBack(context),
             child: const Icon(Icons.arrow_back)),
-        title: const BaseText(
-          title: "Create Post",
-          style: TextStyle(
+        title: BaseText(
+          title: AppLocalizations.of(context)!.createPosthi,
+          style: const TextStyle(
               color: AppColor.darkBlackColor,
               fontSize: 20,
               fontWeight: FontWeight.w500),
@@ -67,9 +68,10 @@ class CreatePostScreen extends HookWidget {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                const BaseText(
-                                    title: "Click Here to Upload Image",
-                                    style: TextStyle()),
+                                BaseText(
+                                    title: AppLocalizations.of(context)!
+                                        .clickImageUploadhi,
+                                    style: const TextStyle()),
                               ],
                             ),
                           )
@@ -80,11 +82,14 @@ class CreatePostScreen extends HookWidget {
                   ),
                 );
               }),
+              const SizedBox(
+                height: 10,
+              ),
               TextField(
                 controller: useViewModel.captionController,
-                decoration: const InputDecoration(
-                  labelText: "Enter Caption",
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.enterCaptionhi,
+                  border: const OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
@@ -101,7 +106,9 @@ class CreatePostScreen extends HookWidget {
               const SizedBox(
                 height: 16,
               ),
-              const BaseText(title: "Select Category", style: TextStyle()),
+              BaseText(
+                  title: AppLocalizations.of(context)!.selectCategoeyhi,
+                  style: const TextStyle()),
               const SizedBox(
                 height: 10,
               ),
@@ -151,7 +158,7 @@ class CreatePostScreen extends HookWidget {
               ),
               Consumer<CreatePostModel>(
                 builder: (context, provider, child) => CustomElevatedButton(
-                    title: "Update",
+                    title: AppLocalizations.of(context)!.updatehi,
                     loading: provider.buttonloading,
                     width: dimension["width"]! - 32,
                     onPress: () {
