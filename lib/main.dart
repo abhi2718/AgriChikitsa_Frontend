@@ -3,6 +3,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.scree
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,9 @@ void main() async {
       projectId: "agrichikitsa-8be74",
     ),
   );
-  runApp(const App());
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((value) => runApp(const App()));
 }
 
 class App extends StatelessWidget {
