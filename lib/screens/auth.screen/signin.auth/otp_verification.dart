@@ -22,6 +22,7 @@ class OtpVerification extends HookWidget {
         useMemoized(() => Provider.of<SignInViewModel>(context, listen: false));
     Timer? timer;
     useEffect(() {
+      useViewModel.resetTimer();
       timer = Timer.periodic(const Duration(seconds: 1), (_) {
         if (useViewModel.countDown - 1 >= 0) {
           useViewModel.setCountDown();

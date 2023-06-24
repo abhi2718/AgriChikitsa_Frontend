@@ -44,68 +44,80 @@ class ChatTabScreen extends HookWidget {
               height: 8,
             ),
             Expanded(child: ChatScreen()),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          if (useViewModel.showCameraButton) {
-                            useViewModel.uploadImage(context);
-                          }
-                        },
-                        child: Image.asset('assets/icons/camera.png')),
-                    InkWell(
-                        onTap: () {
-                          if (useViewModel.showCameraButton) {
-                            useViewModel.uploadGallery(context);
-                          }
-                        },
-                        child: Image.asset('assets/icons/gallery.jpg')),
-                    Consumer<ChatTabViewModel>(
-                        builder: (context, provider, chlid) {
-                      return SizedBox(
-                        width: dimension['width']! - 160,
-                        child: TextField(
-                          enabled: provider.enableKeyBoard,
-                          controller: useViewModel.textEditingController,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 10),
-                            hintText: AppLocalizations.of(context)!.typeHerehi,
-                            hintStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(
-                                  8,
+            Consumer<ChatTabViewModel>(builder: (context, provider, chlid) {
+              return provider.enableKeyBoard || provider.showCameraButton
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: SafeArea(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  if (useViewModel.showCameraButton) {
+                                    useViewModel.uploadImage(context);
+                                  }
+                                },
+                                child: Image.asset('assets/icons/camera.png')),
+                            InkWell(
+                                onTap: () {
+                                  if (useViewModel.showCameraButton) {
+                                    useViewModel.uploadGallery(context);
+                                  }
+                                },
+                                child: Image.asset('assets/icons/gallery.jpg')),
+                            SizedBox(
+                              width: dimension['width']! - 160,
+                              child: TextField(
+                                enabled: provider.enableKeyBoard,
+                                controller: useViewModel.textEditingController,
+                                decoration: const InputDecoration(
+                                  disabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: AppColor.iconColor),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                          8,
+                                        ),
+                                      )),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: AppColor.darkColor),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        8,
+                                      ),
+                                    ),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 10),
+                                  hintText: 'Type here...',
+                                  hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            InkWell(
+                              onTap: () {
+                                useViewModel.handleUserInput(context);
+                              },
+                              child: Image.asset(
+                                "assets/icons/send_icon.png",
+                                height: 26,
+                                width: 26,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    }),
-                    InkWell(
-                      onTap: () {
-                        useViewModel.handleUserInput(context);
-                      },
-                      child: Image.asset(
-                        "assets/icons/send_icon.png",
-                        height: 26,
-                        width: 26,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                    )
+                  : Container();
+            }),
           ],
         ),
       ),

@@ -17,7 +17,6 @@ class ChatScreen extends HookWidget {
     useEffect(() {
       useViewModel.initialTask(context);
     }, []);
-
     return Scaffold(
       body: Consumer<ChatTabViewModel>(
         builder: (context, provider, child) {
