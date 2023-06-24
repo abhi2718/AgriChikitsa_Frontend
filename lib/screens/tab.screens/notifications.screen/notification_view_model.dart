@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -47,19 +49,30 @@ class NotificationViewModel with ChangeNotifier {
     }
   }
 
+  void fetchPushNotification() async {
+    try {
+      final data = await _notificationTabRepository.fetchNotifications();
+      notificationsList = data['notifications'];
+      notificationCount++;
+      notifyListeners();
+    } catch (error) {
+      Utils.toastMessage(error.toString());
+    }
+  }
+
   void fetchNotifications(BuildContext context) async {
     setloading(true);
     try {
       final data = await _notificationTabRepository.fetchNotifications();
       notificationsList = data['notifications'];
       notificationCount = 0;
-      notificationsList.forEach((element) {
+      for (var element in notificationsList) {
         if (!element['read']) {
           notificationCount += 1;
         }
-      });
-      setloading(false);
+      }
       notifyListeners();
+      setloading(false);
     } catch (error) {
       setloading(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);

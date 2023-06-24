@@ -5,7 +5,7 @@ import '../../../../model/category_model.dart';
 import '../../../../res/color.dart';
 
 class CategoryButton extends StatelessWidget {
-  final Category category;
+  final CategoryHome category;
   final Function()? onTap;
   const CategoryButton(
       {super.key, required this.category, required this.onTap});

@@ -17,7 +17,7 @@ class NotificationScreen extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
-        () => Provider.of<NotificationViewModel>(context, listen: true));
+        () => Provider.of<NotificationViewModel>(context, listen: false));
     useEffect(() {
       useViewModel.fetchNotifications(context);
     }, []);

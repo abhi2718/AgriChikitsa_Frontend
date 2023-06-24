@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/create_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
+import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +34,11 @@ class HomeTabScreen extends HookWidget {
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
+    final notificationViewModel = useMemoized(
+        () => Provider.of<NotificationViewModel>(context, listen: false));
 
     useEffect(() {
+      useViewModel.getFCM(notificationViewModel);
       useViewModel.getUserProfile(authService);
     }, []);
 
@@ -44,6 +48,7 @@ class HomeTabScreen extends HookWidget {
         appLifecycleState.value = state;
         if (state == AppLifecycleState.resumed) {
           Future.delayed(Duration.zero, () {
+            notificationViewModel.fetchNotifications(context);
             useViewModel.fetchFeeds(context);
           });
         }

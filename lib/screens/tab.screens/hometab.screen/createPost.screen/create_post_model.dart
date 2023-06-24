@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
@@ -25,7 +23,7 @@ class CreatePostModel with ChangeNotifier {
   var caption = '';
   var category = '';
 
-  setActiveState(BuildContext context, Category category, bool value) {
+  setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
     notifyListeners();
   }
@@ -39,7 +37,7 @@ class CreatePostModel with ChangeNotifier {
     try {
       final data = await HomeTabRepository().fetchFeedsCatogory();
       categoriesList = data['categories']
-          .map((data) => Category(
+          .map((data) => CategoryHome(
                 id: data['_id'],
                 name: data['category'],
               ))

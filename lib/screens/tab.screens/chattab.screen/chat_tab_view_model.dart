@@ -93,6 +93,7 @@ class ChatTabViewModel with ChangeNotifier {
     final finalPayload = imgurl == ""
         ? payloadStructure
         : {...payloadStructure, "imageQuestion": imgurl};
+    print(finalPayload);
     await _chatTabRepository.postChatQuestion(finalPayload);
   }
 
@@ -340,10 +341,10 @@ class ChatTabViewModel with ChangeNotifier {
         final index = chatMessages.indexWhere((chatMessage) {
           return chatMessage['id'] == cameraQuestionId;
         });
-        // print(index);
         if (index != -1) {
           final item = chatMessages[index];
           sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
+          print(cameraQuestionId);
         }
 
         showCropImageLoader = false;
