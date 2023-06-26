@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import './base_api_services.dart';
@@ -27,14 +29,13 @@ class NetworkApiService extends BaseApiServices {
   @override
   Future<dynamic> getGetApiResponse(String url) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
+    final response = await retry(
+      () => http
           .get(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 10));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+          .timeout(const Duration(seconds: 2)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
@@ -44,7 +45,7 @@ class NetworkApiService extends BaseApiServices {
     try {
       final response = await http
           .post(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 1000));
       _jsonResponse = returnResponse(response);
     } on SocketException {
       throw FetchDataException("No Internet connection!");
@@ -58,7 +59,7 @@ class NetworkApiService extends BaseApiServices {
     try {
       final response = await http
           .patch(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 1000));
       _jsonResponse = returnResponse(response);
     } on SocketException {
       throw FetchDataException("No Internet connection!");
@@ -72,7 +73,7 @@ class NetworkApiService extends BaseApiServices {
     try {
       final response = await http
           .patch(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 1000));
       _jsonResponse = returnResponse(response);
     } on SocketException {
       throw FetchDataException("No Internet connection!");
@@ -84,6 +85,7 @@ class NetworkApiService extends BaseApiServices {
     final body = jsonDecode(response.body);
     switch (response.statusCode) {
       case 200:
+        print(body);
         return body;
       case 201:
         return body;

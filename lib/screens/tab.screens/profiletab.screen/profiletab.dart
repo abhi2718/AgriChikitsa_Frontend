@@ -10,7 +10,7 @@ import '../tab_screen.dart';
 import './profile_view_model.dart';
 import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
-import '../../../services/socket_io.dart';
+//import '../../../services/socket_io.dart';
 import '../../auth.screen/signin.auth/signin_view_model.dart';
 import '../../auth.screen/signup.auth/signup_view_model.dart';
 import '../chattab.screen/chat_tab_view_model.dart';
@@ -29,7 +29,7 @@ class ProfileTabScreen extends HookWidget {
     final disposableProvider = [
       Provider.of<SignInViewModel>(context, listen: false),
       Provider.of<SignUpViewModel>(context, listen: false),
-      Provider.of<SocketService>(context, listen: false),
+     // Provider.of<SocketService>(context, listen: false),
       Provider.of<HomeTabViewModel>(context, listen: false),
       Provider.of<AuthService>(context, listen: false),
       Provider.of<ChatTabViewModel>(context, listen: false),

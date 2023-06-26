@@ -97,7 +97,8 @@ class MyProfileScreen extends HookWidget {
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
                 return provider.bookMarkFeedList.isEmpty
                     ? Center(
-                        child: Text(AppLocalizations.of(context)!.noBookMarkAdd))
+                        child:
+                            Text(AppLocalizations.of(context)!.noBookMarkAdd))
                     : provider.bookMarkLoader
                         ? const PreLoader()
                         : SizedBox(

@@ -57,6 +57,7 @@ dependencies:
   chat_bubbles: ^1.4.1
   jumping_dot: ^0.0.6
   firebase_messaging: ^14.6.3
+  retry: ^3.1.2
   
 
 
