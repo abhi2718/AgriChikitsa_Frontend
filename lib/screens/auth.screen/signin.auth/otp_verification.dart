@@ -100,7 +100,8 @@ class OtpVerification extends HookWidget {
                   ),
                   OtpTextField(
                     numberOfFields: 6,
-                    borderColor: const Color(0xFF512DA8),
+                    borderColor: AppColor.darkColor,
+                    focusedBorderColor: AppColor.darkColor,
                     //set to true to show as box or false to show as dash
                     showFieldAsBox: !true,
                     //runs when a code is typed in
@@ -123,8 +124,7 @@ class OtpVerification extends HookWidget {
                           builder: (context, provider, child) {
                         return !provider.showResendOTPButton
                             ? ParagraphText(
-                                "Didn't receive the OTP? Retry in 00:"
-                                '${useViewModel.countDown}',
+                                '${AppLocalizations.of(context)!.didnottreceivetheOtphi} ${AppLocalizations.of(context)!.retryIn}${useViewModel.countDown}',
                               )
                             : ParagraphText(AppLocalizations.of(context)!
                                 .didnottreceivetheOtphi);

@@ -41,6 +41,8 @@ class SignInScreen extends HookWidget {
                 autofocus: true,
                 maxLength: 10,
                 onChanged: useViewModel.onPhoneNumberChanged,
+                onSubmitted: (value) =>
+                    useViewModel.verifyUserPhoneNumber(context),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.digitmobilenumberhi,
                   errorText: useViewModel.errorMessage,
@@ -50,11 +52,14 @@ class SignInScreen extends HookWidget {
             const SizedBox(
               height: 16,
             ),
-            CustomElevatedButton(
-              title: AppLocalizations.of(context)!.continueTexthi,
-              onPress: () => useViewModel.verifyUserPhoneNumber(context),
-              width: (dimension["width"]! - 32),
-            )
+            Consumer<SignInViewModel>(builder: (context, provider, child) {
+              return CustomElevatedButton(
+                title: AppLocalizations.of(context)!.continueTexthi,
+                loading: provider.loading,
+                onPress: () => useViewModel.verifyUserPhoneNumber(context),
+                width: (dimension["width"]! - 32),
+              );
+            })
           ],
         ),
       ),

@@ -14,6 +14,7 @@ class EditProfileViewModel with ChangeNotifier {
   var _loading = false;
   var userName = '';
   var email = '';
+  var imageLoading = false;
 
   bool get loading {
     return _loading;
@@ -21,6 +22,11 @@ class EditProfileViewModel with ChangeNotifier {
 
   void setloading(bool value) {
     _loading = value;
+    notifyListeners();
+  }
+
+  void setImageLoading(bool value) {
+    imageLoading = value;
     notifyListeners();
   }
 
@@ -112,6 +118,7 @@ class EditProfileViewModel with ChangeNotifier {
 
   void pickProfileImage(context, AuthService authService) async {
     try {
+      setImageLoading(true);
       final data = await Utils.pickImage();
       if (data != null) {
         final response = await Utils.uploadImage(data);
@@ -119,13 +126,16 @@ class EditProfileViewModel with ChangeNotifier {
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
+      setImageLoading(false);
     } catch (error) {
+      setImageLoading(false);
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
   }
 
   void captureProfileImage(context, AuthService authService) async {
     try {
+      setImageLoading(true);
       final data = await Utils.capturePhoto();
       if (data != null) {
         final response = await Utils.uploadImage(data);
@@ -133,7 +143,9 @@ class EditProfileViewModel with ChangeNotifier {
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
+      setImageLoading(false);
     } catch (error) {
+      setImageLoading(false);
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
   }

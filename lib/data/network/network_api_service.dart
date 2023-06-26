@@ -42,42 +42,39 @@ class NetworkApiService extends BaseApiServices {
   @override
   Future getPostApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
+    final response = await retry(
+      () => http
           .post(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 1000));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+          .timeout(const Duration(seconds: 1000)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
   @override
   Future getPatchApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
+    final response = await retry(
+      () => http
           .patch(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 1000));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+          .timeout(const Duration(seconds: 1000)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
   @override
   Future getDeleteApiResponse(String url) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
+    final response = await retry(
+      () => http
           .patch(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 1000));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+          .timeout(const Duration(seconds: 1000)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
@@ -85,7 +82,6 @@ class NetworkApiService extends BaseApiServices {
     final body = jsonDecode(response.body);
     switch (response.statusCode) {
       case 200:
-        print(body);
         return body;
       case 201:
         return body;

@@ -15,6 +15,7 @@ class CreatePostModel with ChangeNotifier {
   dynamic imagePicked;
   String currentSelectedCategory = "";
   var categoryLoading = true;
+  var imageLoading = false;
 
   Map<String, String> dropdownOptions = {};
   var imagePath = "";
@@ -30,6 +31,11 @@ class CreatePostModel with ChangeNotifier {
 
   setloading(bool value) {
     buttonloading = value;
+    notifyListeners();
+  }
+
+  setImageLoading(bool value) {
+    imageLoading = value;
     notifyListeners();
   }
 
@@ -64,6 +70,9 @@ class CreatePostModel with ChangeNotifier {
       imageUrl = "";
       caption = "";
       currentSelectedCategory = "";
+      buttonloading = false;
+      categoryLoading = true;
+      imageLoading = false;
     });
   }
 
@@ -83,6 +92,7 @@ class CreatePostModel with ChangeNotifier {
   }
 
   void goBack(BuildContext context) {
+    reinitialize();
     Navigator.pop(context);
   }
 
@@ -93,12 +103,15 @@ class CreatePostModel with ChangeNotifier {
 
   void pickPostImage(context, AuthService authService) async {
     try {
+      setImageLoading(true);
       imagePicked = await Utils.pickImage();
       if (imagePicked != null) {
         imagePath = imagePicked.path;
         notifyListeners();
       }
+      setImageLoading(false);
     } catch (error) {
+      setImageLoading(false);
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
   }

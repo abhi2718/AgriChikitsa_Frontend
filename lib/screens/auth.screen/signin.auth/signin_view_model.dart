@@ -62,7 +62,6 @@ class SignInViewModel with ChangeNotifier {
   }
 
   void resetTimer() {
-    phoneNumberController.clear();
     countDown = 30;
     showResendOTPButton = false;
     showTimmer = true;
@@ -118,6 +117,7 @@ class SignInViewModel with ChangeNotifier {
   }
 
   void requestOTP(BuildContext context, phoneNumber) {
+    setloading(true);
     auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
@@ -136,6 +136,7 @@ class SignInViewModel with ChangeNotifier {
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
+    setloading(false);
   }
 
   Future<void> verifyOTPCode(verificationId, otp, BuildContext context) async {
@@ -147,6 +148,7 @@ class SignInViewModel with ChangeNotifier {
       );
       final userCredential = await auth.signInWithCredential(credential);
       login(phoneNumber, context, userCredential.user!.uid);
+      setloading(false);
     } catch (e) {
       Utils.flushBarErrorMessage("Alert", e.toString().split("]")[1], context);
       setloading(false);

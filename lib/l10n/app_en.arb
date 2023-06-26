@@ -15,6 +15,7 @@
 "otpsenttoen":"ओटीपी भेजा गया",
 "enterOTPen":"sओटीपी दर्ज करें",
 "didnottreceivetheotp":"ओटीपी नहीं मिला?",
+"retryIn":"पुनः प्रयास करें :",
 "smsen":"एसएमएस(SMS)",
 "verifyProcessen":"सत्यापित करें और आगे बढ़ें",
 "settingen":"सेटिंग",
