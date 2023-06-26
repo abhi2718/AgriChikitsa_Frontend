@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -29,12 +30,11 @@ class ProfileTabScreen extends HookWidget {
     final disposableProvider = [
       Provider.of<SignInViewModel>(context, listen: false),
       Provider.of<SignUpViewModel>(context, listen: false),
-     // Provider.of<SocketService>(context, listen: false),
       Provider.of<HomeTabViewModel>(context, listen: false),
       Provider.of<AuthService>(context, listen: false),
       Provider.of<ChatTabViewModel>(context, listen: false),
       Provider.of<EditProfileViewModel>(context, listen: false),
-      Provider.of<TabViewModel>(context, listen: false)
+      Provider.of<TabViewModel>(context, listen: false),
     ];
     const defaultImage =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
@@ -160,11 +160,6 @@ class ProfileTabScreen extends HookWidget {
             const SizedBox(
               height: 20,
             ),
-            // CustomElevatedButton(
-            //   onPress: () => useViewModel.handleLocaleChange(),
-            //   title: "Change Local",
-            //   width: dimension["width"]! - 32,
-            // ),
           ],
         ),
       ),

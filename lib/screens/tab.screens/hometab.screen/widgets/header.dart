@@ -21,7 +21,7 @@ class HeaderWidget extends HookWidget {
         () => Provider.of<NotificationViewModel>(context, listen: false));
     useEffect(() {
       useViewModel.fetchNotifications(context);
-    }, []);
+    }, [useViewModel.notificationCount]);
     return Card(
       margin: const EdgeInsets.all(0),
       child: Container(
@@ -74,7 +74,6 @@ class HeaderWidget extends HookWidget {
               width: dimension["width"],
               child: SizedBox(
                 height: 30,
-                // width: dimension["width"],
                 child: Consumer<HomeTabViewModel>(
                   builder: (context, provider, child) {
                     return provider.categoryLoading

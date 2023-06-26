@@ -5,6 +5,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_mod
 import 'package:flutter/material.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreatePostModel with ChangeNotifier {
   final _homeTabViewModel = HomeTabViewModel();
@@ -15,7 +16,6 @@ class CreatePostModel with ChangeNotifier {
   dynamic imagePicked;
   String currentSelectedCategory = "";
   var categoryLoading = true;
-  var imageLoading = false;
 
   Map<String, String> dropdownOptions = {};
   var imagePath = "";
@@ -31,11 +31,6 @@ class CreatePostModel with ChangeNotifier {
 
   setloading(bool value) {
     buttonloading = value;
-    notifyListeners();
-  }
-
-  setImageLoading(bool value) {
-    imageLoading = value;
     notifyListeners();
   }
 
@@ -72,7 +67,6 @@ class CreatePostModel with ChangeNotifier {
       currentSelectedCategory = "";
       buttonloading = false;
       categoryLoading = true;
-      imageLoading = false;
     });
   }
 
@@ -103,15 +97,12 @@ class CreatePostModel with ChangeNotifier {
 
   void pickPostImage(context, AuthService authService) async {
     try {
-      setImageLoading(true);
       imagePicked = await Utils.pickImage();
       if (imagePicked != null) {
         imagePath = imagePicked.path;
         notifyListeners();
       }
-      setImageLoading(false);
     } catch (error) {
-      setImageLoading(false);
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
   }
@@ -134,18 +125,19 @@ class CreatePostModel with ChangeNotifier {
             goBack(context);
             setloading(false);
             Utils.flushBarErrorMessage(
-                "Post Created!",
-                "Your post has been created. Admin will approve in soon.",
+                AppLocalizations.of(context)!.postCreated,
+                AppLocalizations.of(context)!.adminVerify,
                 context);
             reinitialize();
           });
         }
       } else {
-        Utils.flushBarErrorMessage('Snap!', "Something went wrong", context);
+        Utils.flushBarErrorMessage("Alert", "Something went wrong", context);
       }
     } else {
       setloading(false);
-      Utils.flushBarErrorMessage("Snap!", "Please enter all details", context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+          AppLocalizations.of(context)!.fillAllDetails, context);
     }
   }
 }

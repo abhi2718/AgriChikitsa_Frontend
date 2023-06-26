@@ -48,5 +48,8 @@
 "pleasecheckhi":"कृपया नियम एवं शर्तें बॉक्स को जांचें",
 "alerthi":"चेतावनी",
 "selectyourcrophi":"अपनी फसल चुनें",
-"addAComment":"एक टिप्पणी जोड़ें"
+"addAComment":"टिप्पणी जोड़ें",
+"postCreated":"पोस्ट तैयार!",
+"adminVerify":"एडमिन जल्द ही इसका सत्यापन करेगा",
+"fillAllDetails":"कृपया सभी विवरण भरें"
 }

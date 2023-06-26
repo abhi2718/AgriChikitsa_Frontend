@@ -67,7 +67,6 @@ class MyProfileViewModel with ChangeNotifier {
           "likes": isLiked ? oldLikes : [...oldLikes, userId]
         };
         feedList.replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
-
         if (indexBook != -1) {
           bookMarkFeedList
               .replaceRange(indexBook, indexBook + 1, [updatedFeed]);

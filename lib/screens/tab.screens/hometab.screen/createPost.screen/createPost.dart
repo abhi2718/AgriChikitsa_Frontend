@@ -59,28 +59,26 @@ class CreatePostScreen extends HookWidget {
                     decoration: BoxDecoration(
                         border:
                             Border.all(color: AppColor.darkColor, width: 2.0)),
-                    child: provider.imageLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : useViewModel.imagePath.isEmpty
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset('assets/icons/gallery.jpg'),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    BaseText(
-                                        title: AppLocalizations.of(context)!
-                                            .clickImageUploadhi,
-                                        style: const TextStyle()),
-                                  ],
+                    child: useViewModel.imagePath.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset('assets/icons/gallery.jpg'),
+                                const SizedBox(
+                                  height: 10,
                                 ),
-                              )
-                            : Image.file(
-                                File(provider.imagePath),
-                                fit: BoxFit.cover,
-                              ),
+                                BaseText(
+                                    title: AppLocalizations.of(context)!
+                                        .clickImageUploadhi,
+                                    style: const TextStyle()),
+                              ],
+                            ),
+                          )
+                        : Image.file(
+                            File(provider.imagePath),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 );
               }),

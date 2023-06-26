@@ -537,7 +537,10 @@ class ChatScreen extends HookWidget {
                                   isRepeatingAnimation: false,
                                   totalRepeatCount: 1,
                                 )
-                              : Container()
+                              : Container(),
+                          const SizedBox(
+                            height: 4,
+                          )
                         ],
                       );
                     }

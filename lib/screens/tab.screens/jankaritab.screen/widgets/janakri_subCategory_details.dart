@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../utils/utils.dart';
 import '../jankari_view_model.dart';
@@ -54,11 +55,12 @@ class JankariSubCategoryPost extends HookWidget {
               ),
             ),
             useViewModel.jankariSubcategoryPostList.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.only(top: 300),
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 300),
                     child: Center(
-                      child:
-                          BaseText(title: "No Posts Yet", style: TextStyle()),
+                      child: BaseText(
+                          title: AppLocalizations.of(context)!.nopostYethi,
+                          style: const TextStyle()),
                     ),
                   )
                 : Consumer<JankariViewModel>(

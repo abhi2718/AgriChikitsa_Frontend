@@ -21,7 +21,6 @@ class NotificationTile extends HookWidget {
     final useViewModel = useMemoized(
         () => Provider.of<NotificationViewModel>(context, listen: false));
     final isRead = useState(notificationItem['read']);
-    // print(isRead.value);
     void handleLike() {
       useViewModel.toggleNotifications(
           context, notificationItem["_id"], isRead.value);

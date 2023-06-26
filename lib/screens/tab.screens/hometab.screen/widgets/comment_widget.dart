@@ -174,13 +174,13 @@ class UserComment extends HookWidget {
               ),
             ),
             SizedBox(
-              height: (dimension["height"]! - 60) * 0.1,
+              height: (dimension["height"]! - 60) * 0.09,
               child: InkWell(
                 onTap: () {
                   Utils.model(
                     context,
                     SizedBox(
-                      height: dimension['height']! * 0.50,
+                      height: dimension['height']! * 0.60,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -268,29 +268,27 @@ class UserComment extends HookWidget {
                 },
                 child: SizedBox(
                   width: dimension['width'],
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xffd9d9d9),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 26, vertical: 16),
+                    margin:
+                        const EdgeInsets.only(right: 10, left: 10, bottom: 14),
+                    decoration: const BoxDecoration(
+                      color: Color(0xffd9d9d9),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BaseText(
+                          title: AppLocalizations.of(context)!.addAComment,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w700),
                         ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16),
-                            child: BaseText(
-                              title: AppLocalizations.of(context)!.addAComment,
-                              style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w700),
-                            ),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
                 ),

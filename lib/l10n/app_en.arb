@@ -41,5 +41,8 @@
 "createOneen":"एक तैयार करें!",
 "nopostYeten":"अब तक कोई पोस्ट नहीं",
 "chatPanchamen":"चैट पंचम",
-"typeHereen":"यहाँ टाइप करें..."
+"typeHereen":"यहाँ टाइप करें...",
+"postCreated":"पोस्ट तैयार!",
+"adminVerify":"एडमिन जल्द ही इसका सत्यापन करेगा",
+"fillAllDetails":"कृपया सभी विवरण भरें"
 }

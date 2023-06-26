@@ -347,7 +347,6 @@ class ChatTabViewModel with ChangeNotifier {
           final item = chatMessages[index];
           sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
         }
-
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
         notifyListeners();
@@ -365,6 +364,7 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          setShowCameraButton(false);
           showSeventhBubbleLoader = false;
           showLastMessage = true;
           notifyListeners();
@@ -408,6 +408,7 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          setShowCameraButton(false);
           showSeventhBubbleLoader = false;
           showLastMessage = true;
           notifyListeners();
