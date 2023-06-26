@@ -59,10 +59,8 @@ class HomeTabScreen extends HookWidget {
 
     useEffect(() {
       Future.delayed(Duration.zero, () {
-        if (useViewModel.feedList.length == 0) {
-          useViewModel.fetchFeeds(context);
-          useViewModel.fetchFeedsCategory(context);
-        }
+        useViewModel.fetchFeeds(context);
+        useViewModel.fetchFeedsCategory(context);
       });
     }, []);
 

@@ -107,14 +107,15 @@ class SignInViewModel with ChangeNotifier {
   }
 
   void verifyUserPhoneNumber(BuildContext context) {
-    setloading(true);
     if (!validateMobileNumber('+91${phoneNumberController.text}')) {
       Utils.flushBarErrorMessage(
           "Alert!", "Please enter a valid 10 digit mobile number", context);
       return;
+    } else {
+      setloading(true);
+      phoneNumber = phoneNumberController.text;
+      requestOTP(context, '+91${phoneNumberController.text}');
     }
-    phoneNumber = phoneNumberController.text;
-    requestOTP(context, '+91${phoneNumberController.text}');
   }
 
   void requestOTP(BuildContext context, phoneNumber) {
