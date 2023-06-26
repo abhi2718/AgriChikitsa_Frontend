@@ -79,7 +79,7 @@ class Utils {
       flushbar: Flushbar(
         title: title,
         message: message,
-        backgroundColor: AppColor.darkBlackColor,
+        backgroundColor: AppColor.darkColor,
         duration: const Duration(seconds: 8),
         icon: const Icon(
           Icons.error,

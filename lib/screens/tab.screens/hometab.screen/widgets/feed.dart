@@ -120,8 +120,8 @@ class Feed extends HookWidget {
                             onTap: handleLike,
                             child: Icon(
                               isLiked.value
-                                  ? Remix.heart_2_fill
-                                  : Remix.heart_line,
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_outline_rounded,
                               color: AppColor.iconHeartColor,
                             ),
                           ),
@@ -153,9 +153,12 @@ class Feed extends HookWidget {
                       ),
                       InkWell(
                         onTap: handleBookMark,
-                        child: Icon(isBookMarked.value
-                            ? Remix.bookmark_fill
-                            : Remix.bookmark_line),
+                        child: Icon(
+                          isBookMarked.value
+                              ? Remix.bookmark_fill
+                              : Remix.bookmark_line,
+                          color: AppColor.darkColor,
+                        ),
                       )
                     ]),
               ),

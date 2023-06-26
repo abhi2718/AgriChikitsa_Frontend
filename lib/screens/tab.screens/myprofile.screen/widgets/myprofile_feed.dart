@@ -52,7 +52,7 @@ class MyProfileFeed extends HookWidget {
       margin: const EdgeInsets.only(top: 10),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: CustomCard(
+        child: Card(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -118,13 +118,13 @@ class MyProfileFeed extends HookWidget {
                                     onTap: handleLike,
                                     child: Icon(
                                       isLiked.value
-                                          ? Remix.heart_2_fill
-                                          : Remix.heart_line,
+                                          ? Icons.favorite_rounded
+                                          : Icons.favorite_outline_rounded,
                                       color: AppColor.iconHeartColor,
                                     ),
                                   )
                                 : const Icon(
-                                    Remix.heart_2_line,
+                                    Icons.favorite_outline_rounded,
                                     color: AppColor.iconHeartColor,
                                   ),
                             const SizedBox(

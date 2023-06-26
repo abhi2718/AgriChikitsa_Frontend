@@ -57,7 +57,7 @@ class BookmarkFeed extends HookWidget {
       margin: const EdgeInsets.only(top: 10),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: CustomCard(
+        child: Card(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -121,9 +121,9 @@ class BookmarkFeed extends HookWidget {
                             onTap: handleLike,
                             child: Icon(
                               isLiked.value
-                                  ? Remix.heart_2_fill
-                                  : Remix.heart_line,
-                                  color: AppColor.iconHeartColor,
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_outline_rounded,
+                              color: AppColor.iconHeartColor,
                             ),
                           ),
                           const SizedBox(
@@ -154,9 +154,12 @@ class BookmarkFeed extends HookWidget {
                       ),
                       InkWell(
                         onTap: handleBookMark,
-                        child: Icon(isBookMarked.value
-                            ? Remix.bookmark_fill
-                            : Remix.bookmark_line),
+                        child: Icon(
+                          isBookMarked.value
+                              ? Remix.bookmark_fill
+                              : Remix.bookmark_line,
+                          color: AppColor.darkColor,
+                        ),
                       )
                     ]),
               ),

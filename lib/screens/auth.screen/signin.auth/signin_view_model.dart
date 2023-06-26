@@ -107,6 +107,7 @@ class SignInViewModel with ChangeNotifier {
   }
 
   void verifyUserPhoneNumber(BuildContext context) {
+    setloading(true);
     if (!validateMobileNumber('+91${phoneNumberController.text}')) {
       Utils.flushBarErrorMessage(
           "Alert!", "Please enter a valid 10 digit mobile number", context);
@@ -117,13 +118,10 @@ class SignInViewModel with ChangeNotifier {
   }
 
   void requestOTP(BuildContext context, phoneNumber) {
-    setloading(true);
     auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth.signInWithCredential(credential).then(
-              (value) => print('Logged In Successfully'),
-            );
+        await auth.signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException e) {
         Utils.flushBarErrorMessage("Alert!", e.message.toString(), context);
@@ -132,11 +130,11 @@ class SignInViewModel with ChangeNotifier {
       codeSent: (String verificationId, int? resendToken) {
         verificationIdToken = verificationId;
         notifyListeners();
+        setloading(false);
         Navigator.pushNamed(context, RouteName.otpVerificationRoute);
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
-    setloading(false);
   }
 
   Future<void> verifyOTPCode(verificationId, otp, BuildContext context) async {
@@ -148,7 +146,6 @@ class SignInViewModel with ChangeNotifier {
       );
       final userCredential = await auth.signInWithCredential(credential);
       login(phoneNumber, context, userCredential.user!.uid);
-      setloading(false);
     } catch (e) {
       Utils.flushBarErrorMessage("Alert", e.toString().split("]")[1], context);
       setloading(false);

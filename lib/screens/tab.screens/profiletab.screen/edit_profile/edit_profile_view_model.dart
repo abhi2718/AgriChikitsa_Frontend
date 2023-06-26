@@ -108,6 +108,9 @@ class EditProfileViewModel with ChangeNotifier {
       };
       await localStorage.setString("profile", jsonEncode(profile));
       setloading(false);
+      if (imageLoading) {
+        setImageLoading(false);
+      }
       authService.setUser(profile);
       Utils.toastMessage("Profile updated successfully! .");
     } catch (error) {
@@ -118,15 +121,14 @@ class EditProfileViewModel with ChangeNotifier {
 
   void pickProfileImage(context, AuthService authService) async {
     try {
-      setImageLoading(true);
       final data = await Utils.pickImage();
       if (data != null) {
+        setImageLoading(true);
         final response = await Utils.uploadImage(data);
         final user = User.fromJson(authService.userInfo["user"]);
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
-      setImageLoading(false);
     } catch (error) {
       setImageLoading(false);
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
@@ -135,15 +137,14 @@ class EditProfileViewModel with ChangeNotifier {
 
   void captureProfileImage(context, AuthService authService) async {
     try {
-      setImageLoading(true);
       final data = await Utils.capturePhoto();
       if (data != null) {
+        setImageLoading(true);
         final response = await Utils.uploadImage(data);
         final user = User.fromJson(authService.userInfo["user"]);
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
-      setImageLoading(false);
     } catch (error) {
       setImageLoading(false);
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);

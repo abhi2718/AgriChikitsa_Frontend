@@ -24,26 +24,7 @@ class ChatTabViewModel with ChangeNotifier {
   var selectedDisease = '';
   var cameraQuestionId = '';
 
-  void disposeValues() {
-    textEditingController.clear();
-    timmerInstances = null;
-    showFirstBubbleLoader = false;
-    showSecondBubbleLoader = false;
-    showThirdLoader = false;
-    showFourthLoader = false;
-    showFifthBubbleLoader = false;
-    showSixthBubbleLoader = false;
-    showSeventhBubbleLoader = false;
-    showLastMessage = false;
-    showCropImageLoader = false;
-    showCameraButton = false;
-    enableKeyBoard = false;
-    questionAsked = "";
-    cropImage = "";
-    questionIndex = 0;
-    selectedDisease = '';
-    cameraQuestionId = '';
-  }
+  void disposeValues() {}
 
   final dynamic questions = [
     {
