@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
@@ -81,10 +81,10 @@ class SignInViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void onPhoneNumberChanged(String phoneNumber) {
+  void onPhoneNumberChanged(BuildContext context, String phoneNumber) {
     phoneNumber = phoneNumber;
     if (!validateMobileNumber('+91$phoneNumber')) {
-      errorMessage = "Please enter a valid 10 digit mobile number";
+      errorMessage = AppLocalizations.of(context)!.mobileDigitCounthi;
       notifyListeners();
     } else {
       errorMessage = '';
@@ -108,8 +108,8 @@ class SignInViewModel with ChangeNotifier {
 
   void verifyUserPhoneNumber(BuildContext context) {
     if (!validateMobileNumber('+91${phoneNumberController.text}')) {
-      Utils.flushBarErrorMessage(
-          "Alert!", "Please enter a valid 10 digit mobile number", context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+          AppLocalizations.of(context)!.mobileDigitCounthi, context);
       return;
     } else {
       setloading(true);
@@ -148,7 +148,8 @@ class SignInViewModel with ChangeNotifier {
       final userCredential = await auth.signInWithCredential(credential);
       login(phoneNumber, context, userCredential.user!.uid);
     } catch (e) {
-      Utils.flushBarErrorMessage("Alert", e.toString().split("]")[1], context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+          AppLocalizations.of(context)!.otpVerifyhi, context);
       setloading(false);
     }
   }

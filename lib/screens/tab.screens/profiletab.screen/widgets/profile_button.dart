@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/widgets/card.widgets/card.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -41,10 +42,9 @@ class ProfileButton extends StatelessWidget {
                   ParagraphHeadingText(title)
                 ],
               ),
-              Image.asset(
-                "assets/images/arrow.png",
-                height: 16,
-                width: 16,
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: AppColor.extraDark,
               )
             ],
           ),

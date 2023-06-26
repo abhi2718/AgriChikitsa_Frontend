@@ -51,5 +51,7 @@
 "addAComment":"टिप्पणी जोड़ें",
 "postCreated":"पोस्ट तैयार!",
 "adminVerify":"एडमिन जल्द ही इसका सत्यापन करेगा",
-"fillAllDetails":"कृपया सभी विवरण भरें"
+"fillAllDetails":"कृपया सभी विवरण भरें",
+"mobileDigitCounthi":"कृपया वैध 10 अंकीय मोबाइल नंबर दर्ज करें",
+"otpVerifyhi":"कृपया एक वैध ओटीपी दर्ज करें"
 }

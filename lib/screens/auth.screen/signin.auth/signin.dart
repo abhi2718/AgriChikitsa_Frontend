@@ -40,7 +40,8 @@ class SignInScreen extends HookWidget {
                 keyboardType: TextInputType.number,
                 autofocus: true,
                 maxLength: 10,
-                onChanged: useViewModel.onPhoneNumberChanged,
+                onChanged: (value) =>
+                    useViewModel.onPhoneNumberChanged(context, value),
                 onSubmitted: (value) =>
                     useViewModel.verifyUserPhoneNumber(context),
                 decoration: InputDecoration(
