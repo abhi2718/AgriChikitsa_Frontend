@@ -15,7 +15,7 @@ class JankariHomeTab extends HookWidget {
     final useViewModel = useMemoized(
         () => Provider.of<JankariViewModel>(context, listen: false));
     useEffect(() {
-      Future.delayed(Duration.zero, () {
+      Future.delayed(Duration(milliseconds: 500), () {
         useViewModel.getJankariCategory(context);
       });
     }, []);
