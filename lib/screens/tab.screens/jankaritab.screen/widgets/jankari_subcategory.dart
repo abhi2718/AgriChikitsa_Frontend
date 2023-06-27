@@ -128,7 +128,7 @@ class SubCategoryContainer extends HookWidget {
                                 childAspectRatio:
                                     ((dimension['width']! - 10) / 2) / 147,
                               ),
-                              itemCount: provider.jankaricardList.length,
+                              itemCount: 10,
                               itemBuilder: (context, index) {
                                 return Padding(
                                   padding:
