@@ -50,14 +50,6 @@ class CreatePostModel with ChangeNotifier {
     }
   }
 
-  String? nameFieldValidator(caption) {
-    if (caption.isEmpty) {
-      return "Caption is required!";
-    } else {
-      return null;
-    }
-  }
-
   void reinitialize() {
     Timer(const Duration(milliseconds: 500), () {
       captionController.clear();
@@ -110,9 +102,7 @@ class CreatePostModel with ChangeNotifier {
   void createPost(
     BuildContext context,
   ) async {
-    if (currentSelectedCategory.isNotEmpty &&
-        caption.isNotEmpty &&
-        imagePath.isNotEmpty) {
+    if (currentSelectedCategory.isNotEmpty && imagePath.isNotEmpty) {
       setloading(true);
       FocusManager.instance.primaryFocus?.unfocus();
       var response = await Utils.uploadImage(imagePicked);

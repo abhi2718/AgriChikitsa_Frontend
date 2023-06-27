@@ -177,15 +177,17 @@ class MyProfileFeed extends HookWidget {
                       ]),
                 );
               }),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: BaseText(
-                  title: feed["caption"],
-                  style: const TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.start,
-                ),
-              ),
+              feed['caption'] != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: BaseText(
+                        title: feed["caption"],
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.start,
+                      ),
+                    )
+                  : Container(),
               const SizedBox(
                 height: 16,
               ),

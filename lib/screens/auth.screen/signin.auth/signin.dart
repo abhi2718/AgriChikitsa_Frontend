@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../../utils/utils.dart';
 import '../../../widgets/button.widgets/elevated_button.dart';
@@ -35,20 +36,35 @@ class SignInScreen extends HookWidget {
               height: 26,
             ),
             Consumer<SignInViewModel>(builder: (context, provider, child) {
-              return TextField(
-                controller: useViewModel.phoneNumberController,
-                keyboardType: TextInputType.number,
-                autofocus: true,
-                maxLength: 10,
-                onChanged: (value) =>
-                    useViewModel.onPhoneNumberChanged(context, value),
-                onSubmitted: (value) =>
-                    useViewModel.verifyUserPhoneNumber(context),
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.digitmobilenumberhi,
-                  errorText: useViewModel.errorMessage,
-                ),
-              );
+              return PhoneFieldHint(
+                  controller: useViewModel.phoneNumberController,
+                  child: TextField(
+                    controller: useViewModel.phoneNumberController,
+                    keyboardType: TextInputType.number,
+                    autofocus: true,
+                    maxLength: 10,
+                    onChanged: (value) =>
+                        useViewModel.onPhoneNumberChanged(context, value),
+                    onSubmitted: (value) =>
+                        useViewModel.verifyUserPhoneNumber(context),
+                    decoration: InputDecoration(
+                      labelText:
+                          AppLocalizations.of(context)!.digitmobilenumberhi,
+                      errorText: useViewModel.errorMessage,
+                      //   ),
+                    ),
+                  ));
+              // return TextFieldPinAutoFill(
+              //   currentCode: useViewModel.phoneNumberController.text,
+              //   onCodeChanged: (value) =>
+              //       useViewModel.onPhoneNumberChanged(context, value),
+              //   onCodeSubmitted: (value) =>
+              //       useViewModel.verifyUserPhoneNumber(context),
+              //   decoration: InputDecoration(
+              //     labelText: AppLocalizations.of(context)!.digitmobilenumberhi,
+              //     errorText: useViewModel.errorMessage,
+              //   ),
+              // );
             }),
             const SizedBox(
               height: 16,

@@ -162,14 +162,16 @@ class Feed extends HookWidget {
                       )
                     ]),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: BaseText(
-                  title: feed["caption"],
-                  style: const TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.w400),
-                ),
-              ),
+              feed["caption"] != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: BaseText(
+                        title: feed["caption"],
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w400),
+                      ),
+                    )
+                  : Container(),
               const SizedBox(
                 height: 16,
               ),

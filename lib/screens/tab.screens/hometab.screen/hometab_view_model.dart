@@ -198,11 +198,9 @@ class HomeTabViewModel with ChangeNotifier {
   Future<bool> createPost(
       BuildContext context, String id, String caption, String imageUrl) async {
     try {
-      final payload = {
-        "categoryId": id,
-        "caption": caption,
-        "imgurl": imageUrl
-      };
+      final payload = caption == ""
+          ? {"categoryId": id, "imgurl": imageUrl}
+          : {"categoryId": id, "caption": caption, "imgurl": imageUrl};
       await _homeTabRepository.createPost(payload);
       return true;
     } catch (error) {

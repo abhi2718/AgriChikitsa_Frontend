@@ -63,99 +63,110 @@ class HomeTabScreen extends HookWidget {
         useViewModel.fetchFeedsCategory(context);
       });
     }, []);
+    Future refresh() async {
+      useViewModel.fetchFeeds(context);
+    }
 
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
             const HeaderWidget(),
-            Consumer<HomeTabViewModel>(builder: (context, provider, child) {
-              return provider.loading
-                  ? SizedBox(
-                      height: dimension['height']! - 100,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Card(
-                                  child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 8),
-                                height: dimension['height']! * 0.182,
-                                width: dimension['width'],
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: Row(
-                                        children: [
-                                          Skeleton(
-                                            height: 40,
-                                            width: 40,
-                                            radius: 30,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Skeleton(
-                                              height: 13,
-                                              width: dimension['width']! - 250,
+            RefreshIndicator(
+              // onRefresh: useViewModel.refresh(context),
+              onRefresh: refresh,
+              child: Consumer<HomeTabViewModel>(
+                  builder: (context, provider, child) {
+                return provider.loading
+                    ? SizedBox(
+                        height: dimension['height']! - 100,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: Card(
+                                    child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 8),
+                                  height: dimension['height']! * 0.182,
+                                  width: dimension['width'],
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8),
+                                        child: Row(
+                                          children: [
+                                            Skeleton(
+                                              height: 40,
+                                              width: 40,
+                                              radius: 30,
                                             ),
-                                          )
-                                        ],
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              child: Skeleton(
+                                                height: 13,
+                                                width:
+                                                    dimension['width']! - 250,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Skeleton(
-                                          height: 50,
-                                          width: dimension['width']!,
-                                          radius: 6,
-                                        )),
-                                  ],
+                                      Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Skeleton(
+                                            height: 50,
+                                            width: dimension['width']!,
+                                            radius: 6,
+                                          )),
+                                    ],
+                                  ),
+                                )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: 10,
+                                  itemBuilder: (context, index) {
+                                    return const FeedLoader();
+                                  },
                                 ),
-                              )),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 12),
-                              child: ListView.builder(
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : SizedBox(
+                        height: dimension['height']! - 100,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              const CreatePostCard(),
+                              ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: 10,
+                                itemCount: provider.feedList.length,
                                 itemBuilder: (context, index) {
-                                  return const FeedLoader();
+                                  final feed = provider.feedList[index];
+                                  return Feed(
+                                    feed: feed,
+                                  );
                                 },
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  : SizedBox(
-                      height: dimension['height']! - 100,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            const CreatePostCard(),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: provider.feedList.length,
-                              itemBuilder: (context, index) {
-                                final feed = provider.feedList[index];
-                                return Feed(
-                                  feed: feed,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-            }),
+                      );
+              }),
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(

@@ -90,10 +90,6 @@ class UserComment extends HookWidget {
                       : SingleChildScrollView(
                           child: Column(
                             children: [
-                              // Padding(
-                              //   padding:
-                              //       const EdgeInsets.only(top: 8, right: 8),
-                              // ),
                               Container(
                                 margin: const EdgeInsets.only(top: 16),
                                 child: SizedBox(
@@ -121,6 +117,7 @@ class UserComment extends HookWidget {
                                                       comment.user.profileImage,
                                                       width: 40,
                                                       height: 40,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   )
                                                 ],
@@ -178,93 +175,106 @@ class UserComment extends HookWidget {
               child: InkWell(
                 onTap: () {
                   Utils.model(
-                    context,
-                    SizedBox(
-                      height: dimension['height']! * 0.60,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Remix.close_circle_line,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      context,
+                      WillPopScope(
+                        onWillPop: () async {
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                          return false;
+                        },
+                        child: SizedBox(
+                          height: dimension['height']! * 0.60,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Consumer<AuthService>(
-                                  builder: (context, provider, child) {
-                                if (provider.userInfo != null) {
-                                  final user = provider.userInfo["user"];
-                                  return CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(user["profileImage"]),
-                                  );
-                                }
-                                return Container();
-                              }),
-                              SizedBox(
-                                width: dimension['width']! - 150,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 10),
-                                    hintText: AppLocalizations.of(context)!
-                                        .addAComment,
-                                    hintStyle: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: const Icon(
+                                      Remix.close_circle_line,
                                     ),
-                                    border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                          8,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Consumer<AuthService>(
+                                      builder: (context, provider, child) {
+                                    if (provider.userInfo != null) {
+                                      final user = provider.userInfo["user"];
+                                      return CircleAvatar(
+                                        // backgroundImage: NetworkImage(user["profileImage"]),
+                                        child: ClipOval(
+                                          child: Image.network(
+                                            user['profileImage'],
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return Container();
+                                  }),
+                                  SizedBox(
+                                    width: dimension['width']! - 150,
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 8, horizontal: 10),
+                                        hintText: AppLocalizations.of(context)!
+                                            .addAComment,
+                                        hintStyle: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(
+                                              8,
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                      controller: textEditingController,
+                                      autofocus: true,
                                     ),
                                   ),
-                                  controller: textEditingController,
-                                  autofocus: true,
-                                ),
-                              ),
-                              Consumer<HomeTabViewModel>(
-                                  builder: (context, provider, child) {
-                                return InkWell(
-                                  onTap: () {
-                                    useViewModel.addComment(
-                                      context,
-                                      feedId,
-                                      textEditingController.text,
-                                      User.fromJson(
-                                          authService.userInfo["user"]),
+                                  Consumer<HomeTabViewModel>(
+                                      builder: (context, provider, child) {
+                                    return InkWell(
+                                      onTap: () {
+                                        useViewModel.addComment(
+                                          context,
+                                          feedId,
+                                          textEditingController.text,
+                                          User.fromJson(
+                                              authService.userInfo["user"]),
+                                        );
+                                        setNumberOfComment(
+                                            provider.commentsList.length);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Image.asset(
+                                        "assets/icons/send_icon.png",
+                                        height: 30,
+                                        width: 30,
+                                      ),
                                     );
-                                    setNumberOfComment(
-                                        provider.commentsList.length);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Image.asset(
-                                    "assets/icons/send_icon.png",
-                                    height: 30,
-                                    width: 30,
-                                  ),
-                                );
-                              }),
+                                  }),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  );
+                        ),
+                      ));
                 },
                 child: SizedBox(
                   width: dimension['width'],

@@ -109,22 +109,34 @@ class JankariPost extends HookWidget {
                                       ? ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(16),
-                                          child: YoutubePlayer(
-                                            controller: YoutubePlayerController(
-                                              initialVideoId: YoutubePlayer
-                                                      .convertUrlToId(provider
-                                                          .jankariSubcategoryPostList[
-                                                              index]
-                                                          .youtubeUrl) ??
-                                                  '',
-                                              flags: const YoutubePlayerFlags(
-                                                autoPlay: false,
-                                                mute: false,
+                                          child: YoutubePlayerBuilder(
+                                            player: YoutubePlayer(
+                                              controller:
+                                                  YoutubePlayerController(
+                                                initialVideoId: YoutubePlayer
+                                                        .convertUrlToId(provider
+                                                            .jankariSubcategoryPostList[
+                                                                index]
+                                                            .youtubeUrl) ??
+                                                    '',
+                                                flags: const YoutubePlayerFlags(
+                                                  autoPlay: false,
+                                                  mute: false,
+                                                ),
                                               ),
+                                              showVideoProgressIndicator: true,
+                                              progressIndicatorColor:
+                                                  Colors.amber,
                                             ),
-                                            showVideoProgressIndicator: true,
-                                            progressIndicatorColor:
-                                                Colors.amber,
+                                            builder: (context, player) {
+                                              return Column(
+                                                children: [
+                                                  Scaffold(
+                                                    body: player,
+                                                  )
+                                                ],
+                                              );
+                                            },
                                           ),
                                         )
                                       : ClipRRect(

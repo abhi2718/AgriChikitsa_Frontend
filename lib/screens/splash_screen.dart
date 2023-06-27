@@ -25,6 +25,7 @@ class SplashScreen extends HookWidget {
       authService.setUser(profile);
       return true;
     }
+
     useEffect(() {
       const duration = Duration(milliseconds: 2000);
       final timmer = Timer(duration, () {
@@ -40,7 +41,7 @@ class SplashScreen extends HookWidget {
       });
       return () => timmer.cancel();
     }, []);
-    
+
     return Scaffold(
       body: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         const SizedBox(
@@ -73,6 +74,7 @@ class SplashScreen extends HookWidget {
           animatedTexts: [
             TyperAnimatedText(
               'AGRICHIKITSA',
+              speed: const Duration(milliseconds: 100),
               textStyle: const TextStyle(
                   fontSize: 40,
                   color: AppColor.extraDark,
