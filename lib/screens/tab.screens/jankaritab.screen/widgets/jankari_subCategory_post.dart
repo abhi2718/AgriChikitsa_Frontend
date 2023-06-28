@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
 import '../jankari_view_model.dart';
@@ -70,114 +71,125 @@ class JankariPost extends HookWidget {
                       ),
                     ),
                   )
-                : SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 20,
+                : provider.jankariSubcategoryPostList.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 300),
+                        child: Center(
+                          child: BaseText(
+                              title: AppLocalizations.of(context)!.nopostYethi,
+                              style: const TextStyle()),
                         ),
-                        BaseText(
-                            title: subCategoryTitle,
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w300)),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: dimension['height']! * 0.40,
-                                  width: dimension['width'],
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(12),
-                                    ),
-                                  ),
-                                  child: provider
-                                          .jankariSubcategoryPostList[index]
-                                          .youtubeUrl
-                                          .isNotEmpty
-                                      ? ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          child: YoutubePlayerBuilder(
-                                            player: YoutubePlayer(
-                                              controller:
-                                                  YoutubePlayerController(
-                                                initialVideoId: YoutubePlayer
-                                                        .convertUrlToId(provider
-                                                            .jankariSubcategoryPostList[
-                                                                index]
-                                                            .youtubeUrl) ??
-                                                    '',
-                                                flags: const YoutubePlayerFlags(
-                                                  autoPlay: false,
-                                                  mute: false,
-                                                ),
-                                              ),
-                                              showVideoProgressIndicator: true,
-                                              progressIndicatorColor:
-                                                  Colors.amber,
-                                            ),
-                                            builder: (context, player) {
-                                              return Column(
-                                                children: [
-                                                  Scaffold(
-                                                    body: player,
-                                                  )
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        )
-                                      : ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          child: Image.network(
-                                            provider
-                                                .jankariSubcategoryPostList[
-                                                    index]
-                                                .imageUrl,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                ),
-                                const SizedBox(
-                                  height: 23,
-                                ),
-                                BaseText(
-                                    title: provider
-                                        .jankariSubcategoryPostList[index]
-                                        .title,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold)),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                BaseText(
-                                    title: provider
-                                        .jankariSubcategoryPostList[index]
-                                        .description,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w300)),
-                              ],
+                      )
+                    : SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 20,
                             ),
-                          ),
+                            BaseText(
+                                title: subCategoryTitle,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w300)),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      height: dimension['height']! * 0.40,
+                                      width: dimension['width'],
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(12),
+                                        ),
+                                      ),
+                                      child: provider
+                                              .jankariSubcategoryPostList[index]
+                                              .youtubeUrl
+                                              .isNotEmpty
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              child: YoutubePlayerBuilder(
+                                                player: YoutubePlayer(
+                                                  controller:
+                                                      YoutubePlayerController(
+                                                    initialVideoId: YoutubePlayer
+                                                            .convertUrlToId(provider
+                                                                .jankariSubcategoryPostList[
+                                                                    index]
+                                                                .youtubeUrl) ??
+                                                        '',
+                                                    flags:
+                                                        const YoutubePlayerFlags(
+                                                      autoPlay: false,
+                                                      mute: false,
+                                                    ),
+                                                  ),
+                                                  showVideoProgressIndicator:
+                                                      true,
+                                                  progressIndicatorColor:
+                                                      Colors.amber,
+                                                ),
+                                                builder: (context, player) {
+                                                  return Column(
+                                                    children: [
+                                                      Scaffold(
+                                                        body: player,
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              ),
+                                            )
+                                          : ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              child: Image.network(
+                                                provider
+                                                    .jankariSubcategoryPostList[
+                                                        index]
+                                                    .imageUrl,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                    ),
+                                    const SizedBox(
+                                      height: 23,
+                                    ),
+                                    BaseText(
+                                        title: provider
+                                            .jankariSubcategoryPostList[index]
+                                            .title,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    BaseText(
+                                        title: provider
+                                            .jankariSubcategoryPostList[index]
+                                            .description,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w300)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
+                      );
           },
         ),
       ),

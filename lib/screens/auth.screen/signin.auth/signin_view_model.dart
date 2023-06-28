@@ -125,6 +125,7 @@ class SignInViewModel with ChangeNotifier {
         await auth.signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException e) {
+        setloading(false);
         Utils.flushBarErrorMessage("Alert!", e.message.toString(), context);
         return;
       },

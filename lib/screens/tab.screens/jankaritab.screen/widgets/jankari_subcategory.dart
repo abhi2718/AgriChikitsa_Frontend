@@ -65,45 +65,44 @@ class SubCategoryContainer extends HookWidget {
                     ),
                     Consumer<JankariViewModel>(
                       builder: (context, provider, child) {
-                        return provider.loading
-                            ? SizedBox(
-                                height: 30,
-                                width: dimension['width']!,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: 8,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        margin: const EdgeInsets.only(right: 8),
-                                        width: 80,
-                                        child: Skeleton(
-                                          height: 10,
-                                          width: 40,
-                                          radius: 8,
-                                        ),
-                                      );
-                                    }),
-                              )
-                            : SizedBox(
-                                height: 30,
-                                width: dimension["width"],
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount:
-                                        provider.jankariSubcategoryList.length,
-                                    itemBuilder: (context, index) {
-                                      return JankariSubCategoryButton(
-                                        category:
-                                            provider.jankaricardList[index],
-                                        onTap: () {
-                                          provider.setActiveState(
-                                            context,
-                                            provider.jankaricardList[index],
-                                          );
-                                        },
-                                      );
-                                    }),
-                              );
+                        return
+                            // ? SizedBox(
+                            //     height: 30,
+                            //     width: dimension['width']!,
+                            //     child: ListView.builder(
+                            //         scrollDirection: Axis.horizontal,
+                            //         itemCount: 8,
+                            //         itemBuilder: (context, index) {
+                            //           return Container(
+                            //             margin: const EdgeInsets.only(right: 8),
+                            //             width: 80,
+                            //             child: Skeleton(
+                            //               height: 10,
+                            //               width: 40,
+                            //               radius: 8,
+                            //             ),
+                            //           );
+                            //         }),
+                            //   )
+                            // :
+                            SizedBox(
+                          height: 30,
+                          width: dimension["width"],
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: provider.jankariSubcategoryList.length,
+                              itemBuilder: (context, index) {
+                                return JankariSubCategoryButton(
+                                  category: provider.jankaricardList[index],
+                                  onTap: () {
+                                    provider.setActiveState(
+                                      context,
+                                      provider.jankaricardList[index],
+                                    );
+                                  },
+                                );
+                              }),
+                        );
                       },
                     ),
                   ],

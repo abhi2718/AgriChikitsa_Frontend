@@ -454,6 +454,11 @@ class ChatScreen extends HookWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Container(
+                                      margin: const EdgeInsets.only(
+                                          right: 20, bottom: 10),
+                                      padding: const EdgeInsets.only(
+                                        top: 14,
+                                      ),
                                       height: dimension['height']! * 0.05,
                                       width: dimension['width']! * 0.15,
                                       decoration: BoxDecoration(
@@ -472,30 +477,26 @@ class ChatScreen extends HookWidget {
                                     ),
                                   ],
                                 )
-                              // ? BubbleSpecialThree(
-                              //     text: message["question_hi"],
-                              //     color: AppColor.chatBubbleColor,
-                              //     tail: true,
-                              //     isSender: message["isMe"],
-                              //     textStyle: const TextStyle(
-                              //         color: AppColor.whiteColor, fontSize: 16),
-                              //   )
                               : Container(),
                           provider.cropImage != ""
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Container(
+                                      margin: const EdgeInsets.only(
+                                          right: 16, bottom: 10),
                                       height: dimension['height']! * 0.40,
                                       width: dimension['width']! * 0.6,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.network(
-                                              provider.cropImage)),
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          provider.cropImage,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 )

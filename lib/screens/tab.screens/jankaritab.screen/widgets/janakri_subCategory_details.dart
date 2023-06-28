@@ -54,96 +54,83 @@ class JankariSubCategoryPost extends HookWidget {
                 ],
               ),
             ),
-            useViewModel.jankariSubcategoryPostList.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 300),
-                    child: Center(
-                      child: BaseText(
-                          title: AppLocalizations.of(context)!.nopostYethi,
-                          style: const TextStyle()),
+            Consumer<JankariViewModel>(builder: (context, provider, child) {
+              return InkWell(
+                onTap: () {
+                  provider.changeActiveButtonState(!provider.showActiveButton);
+                },
+                child: Stack(
+                  children: [
+                    JankariPost(
+                      subCategoryTitle: subCategoryTitle,
+                      index: provider.currentPostIndex,
                     ),
-                  )
-                : Consumer<JankariViewModel>(
-                    builder: (context, provider, child) {
-                    return InkWell(
-                      onTap: () {
-                        provider.changeActiveButtonState(
-                            !provider.showActiveButton);
-                      },
-                      child: Stack(
-                        children: [
-                          JankariPost(
-                            subCategoryTitle: subCategoryTitle,
-                            index: provider.currentPostIndex,
-                          ),
-                          if (provider.currentPostIndex != 0 &&
-                              provider.showActiveButton)
-                            Positioned(
-                                bottom: 0,
-                                left: 0,
-                                child: InkWell(
-                                  onTap: () => provider.updateCurrentPostIndex(
-                                      provider.currentPostIndex - 1),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      color: AppColor.whiteColor,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppColor.darkBlackColor
-                                              .withOpacity(0.4),
-                                          blurRadius: 5,
-                                          spreadRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                                    height: 40,
-                                    width: 40,
-                                    child: const Icon(
-                                      Icons.arrow_back,
-                                      size: 30,
-                                      color: AppColor.iconColor,
-                                    ),
+                    if (provider.currentPostIndex != 0 &&
+                        provider.showActiveButton)
+                      Positioned(
+                          bottom: 0,
+                          left: 0,
+                          child: InkWell(
+                            onTap: () => provider.updateCurrentPostIndex(
+                                provider.currentPostIndex - 1),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: AppColor.whiteColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColor.darkBlackColor
+                                        .withOpacity(0.4),
+                                    blurRadius: 5,
+                                    spreadRadius: 2,
                                   ),
-                                )),
-                          if (provider.currentPostIndex !=
-                                  provider.jankariSubcategoryPostList.length -
-                                      1 &&
-                              provider.showActiveButton)
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: InkWell(
-                                onTap: () =>
-                                    useViewModel.updateCurrentPostIndex(
-                                        provider.currentPostIndex + 1),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: AppColor.whiteColor,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColor.darkBlackColor
-                                            .withOpacity(0.4),
-                                        blurRadius: 5,
-                                        spreadRadius: 2,
-                                      ),
-                                    ],
-                                  ),
-                                  height: 40,
-                                  width: 40,
-                                  child: const Icon(
-                                    Icons.arrow_forward,
-                                    size: 30,
-                                    color: AppColor.iconColor,
-                                  ),
-                                ),
+                                ],
+                              ),
+                              height: 40,
+                              width: 40,
+                              child: const Icon(
+                                Icons.arrow_back,
+                                size: 30,
+                                color: AppColor.iconColor,
                               ),
                             ),
-                        ],
+                          )),
+                    if (provider.currentPostIndex !=
+                            provider.jankariSubcategoryPostList.length - 1 &&
+                        provider.showActiveButton)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () => useViewModel.updateCurrentPostIndex(
+                              provider.currentPostIndex + 1),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: AppColor.whiteColor,
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      AppColor.darkBlackColor.withOpacity(0.4),
+                                  blurRadius: 5,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+                            height: 40,
+                            width: 40,
+                            child: const Icon(
+                              Icons.arrow_forward,
+                              size: 30,
+                              color: AppColor.iconColor,
+                            ),
+                          ),
+                        ),
                       ),
-                    );
-                  })
+                  ],
+                ),
+              );
+            })
           ],
         ),
       ),
