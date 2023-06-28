@@ -40,11 +40,17 @@ class JankariSubCategoryPost extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                          onTap: () => Navigator.of(context).pop(),
+                          onTap: () {
+                            useViewModel.showActiveButton = true;
+                            Navigator.of(context).pop();
+                          },
                           child: const Icon(Icons.arrow_back)),
                       InkWell(
-                        onTap: () => Navigator.of(context)
-                            .popUntil((route) => route.isFirst),
+                        onTap: () {
+                          useViewModel.showActiveButton = true;
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                        },
                         child: const Icon(
                           Remix.close_circle_line,
                         ),

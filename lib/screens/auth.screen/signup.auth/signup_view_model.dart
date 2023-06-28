@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../repository/auth.repo/auth_repository.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
 
@@ -55,13 +56,22 @@ class SignUpViewModel with ChangeNotifier {
       return;
     }
     registerUserformKey.currentState?.save();
-    final userInfo = {
-      "roles": "User",
-      "name": userName,
-      "email": email,
-      "phoneNumber": mobileNumber,
-      "firebaseId": firebaseId
-    };
+
+    final userInfo = email.isEmpty
+        ? {
+            "roles": "User",
+            "name": userName,
+            "phoneNumber": mobileNumber,
+            "firebaseId": firebaseId
+          }
+        : {
+            "roles": "User",
+            "name": userName,
+            "email": email,
+            "phoneNumber": mobileNumber,
+            "firebaseId": firebaseId
+          };
+    FocusManager.instance.primaryFocus!.unfocus();
     register(userInfo, context);
   }
 
@@ -69,9 +79,9 @@ class SignUpViewModel with ChangeNotifier {
     return const Icon(Icons.person);
   }
 
-  String? nameFieldValidator(value) {
+  String? nameFieldValidator(BuildContext context, value) {
     if (value!.isEmpty) {
-      return "Name is required!";
+      return AppLocalizations.of(context)!.validateName;
     }
     return null;
   }
@@ -80,7 +90,6 @@ class SignUpViewModel with ChangeNotifier {
     userName = value;
   }
 
-  // Email TextField
   Widget suffixIconForEmail() {
     return const Icon(Icons.email);
   }
@@ -91,10 +100,12 @@ class SignUpViewModel with ChangeNotifier {
     return regExp.hasMatch(email);
   }
 
-  String? emailFieldValidator(value) {
-    bool isValid = validateEmail(value);
-    if (!isValid) {
-      return "Please enter a valid email";
+  String? emailFieldValidator(BuildContext context, value) {
+    if (value != null && value.isNotEmpty) {
+      bool isValid = validateEmail(value);
+      if (!isValid) {
+        return AppLocalizations.of(context)!.validateEmail;
+      }
     }
     return null;
   }
@@ -108,7 +119,6 @@ class SignUpViewModel with ChangeNotifier {
   }
 
   void register(dynamic payload, BuildContext context) {
-    Utils.toastMessage(payload.toString());
     final localContext = context;
     setloading(true);
     void handleRegister(context) async {
@@ -124,6 +134,7 @@ class SignUpViewModel with ChangeNotifier {
         setloading(false);
         Navigator.of(context)
             .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+        disposeValues();
       } catch (error) {
         Utils.flushBarErrorMessage("Alert!", error.toString(), context);
         setloading(false);

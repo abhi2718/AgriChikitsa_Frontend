@@ -1,6 +1,6 @@
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
-import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
+import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,6 @@ import '../tab_screen.dart';
 import './profile_view_model.dart';
 import './widgets/profile_button.dart';
 import '../../../services/auth.dart';
-//import '../../../services/socket_io.dart';
 import '../../auth.screen/signin.auth/signin_view_model.dart';
 import '../../auth.screen/signup.auth/signup_view_model.dart';
 import '../chattab.screen/chat_tab_view_model.dart';
