@@ -82,15 +82,7 @@ class MyProfileViewModel with ChangeNotifier {
     setBookMarkLoader(true);
     try {
       await HomeTabRepository().toggleTimeline(id);
-      int indexBook = bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
-      if (indexBook != -1) {
-        final item = bookMarkFeedList[indexBook];
-        final oldBookmarks = item['bookmarks'];
-        oldBookmarks.removeWhere((item) => item == userId);
-        dynamic updatedBookMarkList = {...item, "bookmarks": oldBookmarks};
-        bookMarkFeedList
-            .replaceRange(indexBook, indexBook + 1, [updatedBookMarkList]);
-      }
+      bookMarkFeedList.removeWhere((element) => element["_id"] == id);
       setBookMarkLoader(false);
       notifyListeners();
     } catch (error) {

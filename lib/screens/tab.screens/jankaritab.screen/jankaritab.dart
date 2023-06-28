@@ -16,7 +16,9 @@ class JankariHomeTab extends HookWidget {
         () => Provider.of<JankariViewModel>(context, listen: false));
     useEffect(() {
       Future.delayed(Duration(milliseconds: 500), () {
-        useViewModel.getJankariCategory(context);
+        if (useViewModel.jankaricardList.isEmpty) {
+          useViewModel.getJankariCategory(context);
+        }
       });
     }, []);
 

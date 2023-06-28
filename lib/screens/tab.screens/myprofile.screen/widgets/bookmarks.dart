@@ -166,7 +166,7 @@ class BookmarkFeed extends HookWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: BaseText(
-                  title: feed["caption"],
+                  title: feed["caption"] == null ? "" : feed["caption"],
                   style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w400),
                 ),
