@@ -22,6 +22,7 @@ class MyProfileViewModel with ChangeNotifier {
 
   setBookMarkLoader(bool value) {
     bookMarkLoader = value;
+    notifyListeners();
   }
 
   void fetchFeeds(BuildContext context) async {
