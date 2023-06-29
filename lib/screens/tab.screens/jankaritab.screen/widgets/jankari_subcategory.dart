@@ -2,6 +2,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_category_button.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_subCategory_details.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -197,9 +198,9 @@ class SubCategoryContainer extends HookWidget {
                                               alignment: Alignment.center,
                                               decoration: BoxDecoration(
                                                 image: DecorationImage(
-                                                  image: NetworkImage(
+                                                  image: CachedNetworkImageProvider(
                                                       'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage'),
-                                                  fit: BoxFit.fill,
+                                                  fit: BoxFit.cover,
                                                 ),
                                                 borderRadius:
                                                     const BorderRadius.all(

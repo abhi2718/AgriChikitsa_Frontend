@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:agriChikitsa/model/user_model.dart';
@@ -68,9 +69,10 @@ class ProfilePicture extends HookWidget {
                 shape: BoxShape.circle,
                 color: Colors.grey[300],
                 image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(
-                        'https://d336izsd4bfvcs.cloudfront.net/$profileImage')),
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(
+                      'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
+                ),
               ),
               child: Container(
                 margin: const EdgeInsets.only(bottom: 10, right: 4),

@@ -36,7 +36,7 @@ class NotificationScreen extends HookWidget {
               },
               icon: const Icon(
                 Remix.arrow_left_line,
-                color: Colors.black,
+                color: AppColor.darkBlackColor,
               )),
         ),
         body: Consumer<NotificationViewModel>(

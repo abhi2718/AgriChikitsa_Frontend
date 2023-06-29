@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_loader.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:jumping_dot/jumping_dot.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import '../../../../../utils/utils.dart';
+import '../../../../../widgets/skeleton/skeleton.dart';
 import '../../chat_tab_view_model.dart';
 
 class ChatScreen extends HookWidget {
@@ -492,9 +494,21 @@ class ChatScreen extends HookWidget {
                                       ),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          provider.cropImage,
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              'https://d336izsd4bfvcs.cloudfront.net/${provider.cropImage.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}',
+                                          progressIndicatorBuilder: (context,
+                                                  url, downloadProgress) =>
+                                              Skeleton(
+                                            height: dimension['height']! * 0.40,
+                                            width: dimension['width']! * 0.6,
+                                            radius: 8,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
                                           fit: BoxFit.cover,
+                                          height: dimension['height']! * 0.40,
+                                          width: dimension['width']! * 0.6,
                                         ),
                                       ),
                                     ),

@@ -4,6 +4,7 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -68,9 +69,10 @@ class ProfileTabScreen extends HookWidget {
                     shape: BoxShape.circle,
                     color: Colors.grey[300],
                     image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(
-                            'https://d336izsd4bfvcs.cloudfront.net/$profileImage')),
+                      fit: BoxFit.cover,
+                      image: CachedNetworkImageProvider(
+                          'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
+                    ),
                   ),
                   child: Container(),
                 ),

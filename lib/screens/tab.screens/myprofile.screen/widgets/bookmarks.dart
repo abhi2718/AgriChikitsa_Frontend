@@ -79,7 +79,8 @@ class BookmarkFeed extends HookWidget {
                             CircleAvatar(
                               backgroundImage:
                                   NetworkImage(user['profileImage']),
-                              // NetworkImage('https://d336izsd4bfvcs.cloudfront.net/$profileImage',),
+                              // backgroundImage: CachedNetworkImageProvider(
+                              //     'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
                             ),
                           ],
                         ),
@@ -179,7 +180,7 @@ class BookmarkFeed extends HookWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: BaseText(
-                  title: feed["caption"] == null ? "" : feed["caption"],
+                  title: feed["caption"] ?? "",
                   style: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w400),
                 ),

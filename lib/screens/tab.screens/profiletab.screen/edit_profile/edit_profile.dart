@@ -53,31 +53,11 @@ class EditProfileScreen extends HookWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SizedBox(
                   width: dimension["width"]! - 32,
-                  // child: Row(
-                  //   children: [
-                  //     BackIconButton(onTap: () => useViewModel.goBack(context)),
-                  //   ],
-                  // ),
                 ),
               ),
-              // const SizedBox(
-              //   height: 16,
-              // ),
-              // const Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [SubHeadingText("Edit Profile")],
-              // ),
               const SizedBox(
                 height: 16,
               ),
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(40),
-              //   child: Image.network(
-              //     "https://cdn.imgbin.com/6/25/24/imgbin-user-profile-computer-icons-user-interface-mystique-aBhn3R8cmqmP4ECky4DA3V88y.jpg",
-              //     width: 80,
-              //     height: 80,
-              //   ),
-              // ),
               ProfilePicture(
                 picImage: useViewModel.pickProfileImage,
                 captureImage: useViewModel.captureProfileImage,

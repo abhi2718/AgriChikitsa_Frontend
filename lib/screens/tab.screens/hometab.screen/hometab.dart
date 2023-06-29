@@ -73,7 +73,6 @@ class HomeTabScreen extends HookWidget {
           children: [
             const HeaderWidget(),
             RefreshIndicator(
-              // onRefresh: useViewModel.refresh(context),
               onRefresh: refresh,
               child: Consumer<HomeTabViewModel>(
                   builder: (context, provider, child) {

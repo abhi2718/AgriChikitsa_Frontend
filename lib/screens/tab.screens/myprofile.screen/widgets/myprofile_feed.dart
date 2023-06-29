@@ -72,9 +72,8 @@ class MyProfileFeed extends HookWidget {
                         Column(
                           children: [
                             CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
-                              ),
+                              backgroundImage: CachedNetworkImageProvider(
+                                  'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
                             ),
                           ],
                         ),

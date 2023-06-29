@@ -42,9 +42,9 @@ class JankariCard extends HookWidget {
             width: dimension['width']! - 20,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
+                image: CachedNetworkImageProvider(
                     'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage'),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
             child: Row(
@@ -64,7 +64,7 @@ class JankariCard extends HookWidget {
                   ),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                   width: 50,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   height: 50,
                 ),
                 const SizedBox(

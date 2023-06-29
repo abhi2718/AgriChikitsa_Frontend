@@ -1,4 +1,6 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -99,7 +101,9 @@ class UserComment extends HookWidget {
                                     itemBuilder: (context, index) {
                                       final comment =
                                           provider.commentsList[index];
-                                      // final profileImage = comment.user.profileImage.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                      final profileImage =
+                                          comment.user.profileImage.split(
+                                              'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
                                       return Column(
                                         children: [
                                           Row(
@@ -114,14 +118,26 @@ class UserComment extends HookWidget {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             20),
-                                                    child: Image.network(
-                                                      // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
-                                                      comment.user.profileImage,
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                                      progressIndicatorBuilder:
+                                                          (context, url,
+                                                                  downloadProgress) =>
+                                                              Skeleton(
+                                                        height: 40,
+                                                        width: 40,
+                                                        radius: 0,
+                                                      ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          const Icon(
+                                                              Icons.error),
                                                       width: 40,
-                                                      height: 40,
                                                       fit: BoxFit.cover,
+                                                      height: 40,
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                               const SizedBox(
@@ -212,11 +228,23 @@ class UserComment extends HookWidget {
                                       builder: (context, provider, child) {
                                     if (provider.userInfo != null) {
                                       final user = provider.userInfo["user"];
+                                      final userImage = user['profileImage'].split(
+                                          'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
                                       return CircleAvatar(
-                                        // backgroundImage: NetworkImage(user["profileImage"]),
                                         child: ClipOval(
-                                          child: Image.network(
-                                            user['profileImage'],
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                'https://d336izsd4bfvcs.cloudfront.net/$userImage',
+                                            progressIndicatorBuilder: (context,
+                                                    url, downloadProgress) =>
+                                                Skeleton(
+                                              height: 40,
+                                              width: 40,
+                                              radius: 0,
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -286,7 +314,7 @@ class UserComment extends HookWidget {
                     margin:
                         const EdgeInsets.only(right: 10, left: 10, bottom: 14),
                     decoration: const BoxDecoration(
-                      color: Color(0xffd9d9d9),
+                      color: AppColor.notificationBgColor,
                       borderRadius: BorderRadius.all(
                         Radius.circular(20.0),
                       ),

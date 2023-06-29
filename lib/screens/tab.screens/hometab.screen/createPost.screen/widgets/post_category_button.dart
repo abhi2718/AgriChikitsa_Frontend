@@ -39,8 +39,8 @@ class CategoryButton extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                   color: provider.currentSelectedCategory == category.id
-                      ? Colors.white
-                      : Colors.black,
+                      ? AppColor.whiteColor
+                      : AppColor.darkBlackColor,
                 ),
               ),
             ),

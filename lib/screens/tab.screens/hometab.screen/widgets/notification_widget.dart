@@ -1,7 +1,6 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
-import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class NotificationIndicatorButton extends StatelessWidget {
   final notificationCount;
@@ -27,7 +26,7 @@ class NotificationIndicatorButton extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(2),
                 decoration: const BoxDecoration(
-                  color: Colors.red,
+                  color: AppColor.errorColor,
                   shape: BoxShape.circle,
                 ),
                 constraints: const BoxConstraints(
@@ -37,7 +36,7 @@ class NotificationIndicatorButton extends StatelessWidget {
                 child: Text(
                   notificationCount.toString(),
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColor.whiteColor,
                     fontSize: 10,
                   ),
                   textAlign: TextAlign.center,

@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -151,8 +152,21 @@ class JankariPost extends HookWidget {
                                           : ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(16),
-                                              child: Image.network(
-                                                'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}',
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}',
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        Skeleton(
+                                                  height: dimension['height']! *
+                                                      0.40,
+                                                  width: dimension['width']!,
+                                                  radius: 16,
+                                                ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
                                                 fit: BoxFit.cover,
                                               ),
                                             ),

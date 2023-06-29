@@ -34,7 +34,8 @@ class MyProfileScreen extends HookWidget {
                 const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
             backgroundColor: AppColor.whiteColor,
             foregroundColor: AppColor.darkBlackColor,
-            flexibleSpace: TabBar(padding: EdgeInsets.only(top: 10), tabs: [
+            flexibleSpace:
+                TabBar(padding: const EdgeInsets.only(top: 10), tabs: [
               Tab(
                   child: BaseText(
                       title: AppLocalizations.of(context)!.myPosthi,
@@ -48,40 +49,41 @@ class MyProfileScreen extends HookWidget {
           body: TabBarView(
             children: [
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.feedList == []
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          BaseText(
-                            title: AppLocalizations.of(context)!.nopostYethi,
-                            style: const TextStyle(),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          InkWell(
-                            onTap: () => Navigator.pushNamed(
-                                context, RouteName.createPostRoute),
-                            child: Container(
-                                height: dimension['height']! * 0.07,
-                                width: dimension['width']! * 0.30,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: AppColor.darkColor,
-                                ),
-                                child: Center(
-                                    child: BaseText(
-                                  title:
-                                      AppLocalizations.of(context)!.createOnehi,
-                                  style: const TextStyle(
-                                      color: AppColor.whiteColor),
-                                ))),
+                return provider.loading
+                    ? const PreLoader()
+                    : provider.feedList == []
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              BaseText(
+                                title:
+                                    AppLocalizations.of(context)!.nopostYethi,
+                                style: const TextStyle(),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.pushNamed(
+                                    context, RouteName.createPostRoute),
+                                child: Container(
+                                    height: dimension['height']! * 0.07,
+                                    width: dimension['width']! * 0.30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: AppColor.darkColor,
+                                    ),
+                                    child: Center(
+                                        child: BaseText(
+                                      title: AppLocalizations.of(context)!
+                                          .createOnehi,
+                                      style: const TextStyle(
+                                          color: AppColor.whiteColor),
+                                    ))),
+                              )
+                            ],
                           )
-                        ],
-                      )
-                    : provider.loading
-                        ? const PreLoader()
                         : SizedBox(
                             height: dimension['height']! - 100,
                             child: ListView.builder(

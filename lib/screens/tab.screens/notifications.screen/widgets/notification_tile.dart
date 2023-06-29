@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';
+import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
 import '../notification_view_model.dart';
 
@@ -121,11 +123,21 @@ class NotificationTile extends HookWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10)),
                       child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            'https://d336izsd4bfvcs.cloudfront.net/$notificationImage',
-                            fit: BoxFit.cover,
-                          )),
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              'https://d336izsd4bfvcs.cloudfront.net/$notificationImage',
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Skeleton(
+                            height: dimension['height']! * 0.30,
+                            width: dimension['width']!,
+                            radius: 10,
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     )
                   : Container(),
             ],

@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -93,7 +94,9 @@ class TimelineUserComment extends HookWidget {
                                     itemBuilder: (context, index) {
                                       final comment =
                                           provider.commentsList[index];
-                                      // final profileImage = comment.user.profileImage.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                      final profileImage =
+                                          comment.user.profileImage.split(
+                                              'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
                                       return Column(
                                         children: [
                                           Row(
@@ -108,11 +111,24 @@ class TimelineUserComment extends HookWidget {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             20),
-                                                    child: Image.network(
-                                                      // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
-                                                      comment.user.profileImage,
-                                                      width: 40,
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                                      progressIndicatorBuilder:
+                                                          (context, url,
+                                                                  downloadProgress) =>
+                                                              Skeleton(
+                                                        height: 40,
+                                                        width: 40,
+                                                        radius: 0,
+                                                      ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          const Icon(
+                                                              Icons.error),
+                                                      fit: BoxFit.cover,
                                                       height: 40,
+                                                      width: 40,
                                                     ),
                                                   )
                                                 ],
