@@ -11,8 +11,7 @@ class ProfilePicture extends HookWidget {
   final Function picImage;
   final Function captureImage;
   final AuthService authService;
-  final defaultImage =
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
+  // final profileImage = authService.userInfo[''user]['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
   const ProfilePicture({
     super.key,
     required this.picImage,
@@ -68,13 +67,9 @@ class ProfilePicture extends HookWidget {
                 shape: BoxShape.circle,
                 color: Colors.grey[300],
                 image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: user.profileImage != null
-                      ? NetworkImage(user.profileImage!)
-                      : NetworkImage(
-                          defaultImage,
-                        ),
-                ),
+                    // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
+                    fit: BoxFit.fill,
+                    image: NetworkImage(user.profileImage!)),
               ),
               child: Container(
                 margin: const EdgeInsets.only(bottom: 10, right: 4),

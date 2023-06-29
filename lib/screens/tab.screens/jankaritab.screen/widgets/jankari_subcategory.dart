@@ -65,44 +65,44 @@ class SubCategoryContainer extends HookWidget {
                     ),
                     Consumer<JankariViewModel>(
                       builder: (context, provider, child) {
-                        return
-                            // ? SizedBox(
-                            //     height: 30,
-                            //     width: dimension['width']!,
-                            //     child: ListView.builder(
-                            //         scrollDirection: Axis.horizontal,
-                            //         itemCount: 8,
-                            //         itemBuilder: (context, index) {
-                            //           return Container(
-                            //             margin: const EdgeInsets.only(right: 8),
-                            //             width: 80,
-                            //             child: Skeleton(
-                            //               height: 10,
-                            //               width: 40,
-                            //               radius: 8,
-                            //             ),
-                            //           );
-                            //         }),
-                            //   )
-                            // :
-                            SizedBox(
-                          height: 30,
-                          width: dimension["width"],
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: provider.jankariSubcategoryList.length,
-                              itemBuilder: (context, index) {
-                                return JankariSubCategoryButton(
-                                  category: provider.jankaricardList[index],
-                                  onTap: () {
-                                    provider.setActiveState(
-                                      context,
-                                      provider.jankaricardList[index],
-                                    );
-                                  },
-                                );
-                              }),
-                        );
+                        return provider.loading
+                            ? SizedBox(
+                                height: 30,
+                                width: dimension['width']!,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: 8,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: const EdgeInsets.only(right: 8),
+                                        width: 80,
+                                        child: Skeleton(
+                                          height: 10,
+                                          width: 40,
+                                          radius: 8,
+                                        ),
+                                      );
+                                    }),
+                              )
+                            : SizedBox(
+                                height: 30,
+                                width: dimension["width"],
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: provider.jankaricardList.length,
+                                    itemBuilder: (context, index) {
+                                      return JankariSubCategoryButton(
+                                        category:
+                                            provider.jankaricardList[index],
+                                        onTap: () {
+                                          provider.setActiveState(
+                                            context,
+                                            provider.jankaricardList[index],
+                                          );
+                                        },
+                                      );
+                                    }),
+                              );
                       },
                     ),
                   ],
@@ -141,103 +141,125 @@ class SubCategoryContainer extends HookWidget {
                               },
                             ),
                           )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: GridView.builder(
-                              itemCount: provider.jankariSubcategoryList.length,
-                              padding: const EdgeInsets.only(top: 27),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                childAspectRatio:
-                                    ((dimension['width']! - 8) / 2) / 143,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                final subCategory =
-                                    provider.jankariSubcategoryList[index];
-                                return InkWell(
-                                  onTap: () {
-                                    provider.setSelectedSubCategory(provider
-                                        .jankariSubcategoryList[index].id);
-                                    provider.getJankariSubCategoryPost(context);
-                                    Utils.model(
-                                        context,
-                                        JankariSubCategoryPost(
-                                          subCategoryTitle: provider
-                                              .jankariSubcategoryList[index]
-                                              .name,
-                                        ));
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(
-                                        left: 6, right: 6),
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                  subCategory.backgroundImage),
-                                              fit: BoxFit.fill,
-                                            ),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(12),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned.fill(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Colors.black.withOpacity(0.3),
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(12),
+                        : provider.jankariSubcategoryList.isEmpty
+                            ? Container(
+                                padding: const EdgeInsets.only(bottom: 100),
+                                child: Center(
+                                  child: BaseText(
+                                      title: AppLocalizations.of(context)!
+                                          .nopostYethi,
+                                      style: const TextStyle(fontSize: 15)),
+                                ),
+                              )
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: GridView.builder(
+                                  itemCount:
+                                      provider.jankariSubcategoryList.length,
+                                  padding: const EdgeInsets.only(top: 27),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 10.0,
+                                    mainAxisSpacing: 10.0,
+                                    childAspectRatio:
+                                        ((dimension['width']! - 8) / 2) / 143,
+                                  ),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final subCategory =
+                                        provider.jankariSubcategoryList[index];
+                                    final backgroundImage =
+                                        subCategory.backgroundImage.split(
+                                            'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                    return InkWell(
+                                      onTap: () {
+                                        provider.setSelectedSubCategory(provider
+                                            .jankariSubcategoryList[index].id);
+                                        provider
+                                            .getJankariSubCategoryPost(context);
+                                        Utils.model(
+                                            context,
+                                            JankariSubCategoryPost(
+                                              subCategoryTitle: provider
+                                                  .jankariSubcategoryList[index]
+                                                  .name,
+                                            ));
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 6, right: 6),
+                                        child: Stack(
+                                          fit: StackFit.expand,
+                                          children: [
+                                            Container(
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage'),
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(12),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                        Container(
-                                          alignment: Alignment.center,
-                                          child: Center(
-                                            child: subCategory.name.length > 8
-                                                ? Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 20),
-                                                    child: BaseText(
-                                                      title: subCategory.name,
-                                                      style: const TextStyle(
-                                                          color: AppColor
-                                                              .whiteColor,
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  )
-                                                : BaseText(
-                                                    title: subCategory.name,
-                                                    style: const TextStyle(
-                                                        color:
-                                                            AppColor.whiteColor,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600),
+                                            Positioned.fill(
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black
+                                                      .withOpacity(0.3),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(12),
                                                   ),
-                                          ),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              alignment: Alignment.center,
+                                              child: Center(
+                                                child: subCategory.name.length >
+                                                        8
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal: 20),
+                                                        child: BaseText(
+                                                          title:
+                                                              subCategory.name,
+                                                          style: const TextStyle(
+                                                              color: AppColor
+                                                                  .whiteColor,
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        ),
+                                                      )
+                                                    : BaseText(
+                                                        title: subCategory.name,
+                                                        style: const TextStyle(
+                                                            color: AppColor
+                                                                .whiteColor,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                      ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
                   },
                 ),
               ),

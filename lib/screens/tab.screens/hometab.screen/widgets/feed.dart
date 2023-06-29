@@ -29,6 +29,8 @@ class Feed extends HookWidget {
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
     var isBookMarked = useState(feed['bookmarks'].contains(userInfo.sId));
     final numberOfComments = useState(feed['comments'].length);
+    final imageName = feed['imgurl'].split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     void setNumberOfComment(int count) {
       numberOfComments.value = count;
     }
@@ -51,6 +53,7 @@ class Feed extends HookWidget {
     }
 
     final user = feed['user'];
+    // final profileImage = user['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -73,7 +76,11 @@ class Feed extends HookWidget {
                             CircleAvatar(
                               backgroundImage:
                                   NetworkImage(user['profileImage']),
-                            ),
+                            )
+                            // CircleAvatar(
+                            //   backgroundImage: NetworkImage(
+                            //       'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
+                            // ),
                           ],
                         ),
                         const SizedBox(
@@ -87,9 +94,9 @@ class Feed extends HookWidget {
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w700),
                             ),
-                            const BaseText(
-                              title: '@atin',
-                              style: TextStyle(
+                            BaseText(
+                              title: user['userHandler'] ?? "@username",
+                              style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w400),
                             ),
                           ],
@@ -103,7 +110,7 @@ class Feed extends HookWidget {
                 ),
               ),
               Image.network(
-                feed['imgurl'],
+                'https://d336izsd4bfvcs.cloudfront.net/$imageName',
                 width: dimension["width"]! - 16,
                 fit: BoxFit.fill,
                 height: 240,

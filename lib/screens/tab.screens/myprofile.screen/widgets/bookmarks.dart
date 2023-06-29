@@ -52,6 +52,10 @@ class BookmarkFeed extends HookWidget {
     }
 
     final user = feed['user'];
+    final imageName = feed['imgurl'].split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    // final profileImage = user['profileImage'].split(
+    //     'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -74,6 +78,7 @@ class BookmarkFeed extends HookWidget {
                             CircleAvatar(
                               backgroundImage:
                                   NetworkImage(user['profileImage']),
+                              // NetworkImage('https://d336izsd4bfvcs.cloudfront.net/$profileImage',),
                             ),
                           ],
                         ),
@@ -88,9 +93,9 @@ class BookmarkFeed extends HookWidget {
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w700),
                             ),
-                            const BaseText(
-                              title: '@atin',
-                              style: TextStyle(
+                            BaseText(
+                              title: user['userHandler'] ?? "username",
+                              style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w400),
                             ),
                           ],
@@ -105,6 +110,7 @@ class BookmarkFeed extends HookWidget {
               ),
               Image.network(
                 feed['imgurl'],
+                // 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
                 width: dimension["width"]! - 16,
                 fit: BoxFit.fill,
                 height: 240,

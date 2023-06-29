@@ -10,14 +10,14 @@ class JankariViewModel with ChangeNotifier {
   List<JankariCategoryModal> jankaricardList = [];
   List<JankariSubCategoryModel> jankariSubcategoryList = [];
   List<JankariSubCategoryPostModel> jankariSubcategoryPostList = [];
-  var _loading = true;
+  var _loading = false;
   var jankariSubCategoryLoader = false;
   var jankariSubCategoryPostLoader = false;
   var selectedCategory = "";
   var selectedSubCategory = "";
   var showSubCategoryModal = false;
   int currentPostIndex = 0;
-  bool showActiveButton = true;
+  bool showActiveButton = false;
   bool get loading {
     return _loading;
   }
@@ -57,7 +57,22 @@ class JankariViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void reinitalize() {
+    showActiveButton = false;
+    currentPostIndex = 0;
+  }
+
   void disposeValues() {
+    jankaricardList = [];
+    jankariSubcategoryList = [];
+    jankariSubcategoryPostList = [];
+    jankariSubCategoryLoader = false;
+    jankariSubCategoryPostLoader = false;
+    selectedCategory = "";
+    selectedSubCategory = "";
+    showSubCategoryModal = false;
+    currentPostIndex = 0;
+    showActiveButton = true;
     _loading = false;
   }
 
@@ -119,6 +134,9 @@ class JankariViewModel with ChangeNotifier {
       final data = await _jankariRepository
           .getJankariSubCategoryPost(selectedSubCategory);
       jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
+      if (jankariSubcategoryPostList.length > 1) {
+        changeActiveButtonState(true);
+      }
       setJankariSubCategoryLoaderPost(false);
       notifyListeners();
     } catch (error) {

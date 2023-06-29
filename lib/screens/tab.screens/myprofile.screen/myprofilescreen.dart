@@ -95,12 +95,12 @@ class MyProfileScreen extends HookWidget {
                           );
               }),
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.bookMarkFeedList.isEmpty
-                    ? Center(
-                        child:
-                            Text(AppLocalizations.of(context)!.noBookMarkAdd))
-                    : provider.bookMarkLoader
-                        ? const PreLoader()
+                return provider.bookMarkLoader
+                    ? const PreLoader()
+                    : provider.bookMarkFeedList.isEmpty
+                        ? Center(
+                            child: Text(
+                                AppLocalizations.of(context)!.noBookMarkAdd))
                         : SizedBox(
                             height: dimension['height']! - 100,
                             child: ListView.builder(

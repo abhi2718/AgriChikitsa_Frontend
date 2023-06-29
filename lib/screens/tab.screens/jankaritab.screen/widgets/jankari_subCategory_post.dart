@@ -72,13 +72,10 @@ class JankariPost extends HookWidget {
                     ),
                   )
                 : provider.jankariSubcategoryPostList.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 300),
-                        child: Center(
-                          child: BaseText(
-                              title: AppLocalizations.of(context)!.nopostYethi,
-                              style: const TextStyle()),
-                        ),
+                    ? Center(
+                        child: BaseText(
+                            title: AppLocalizations.of(context)!.nopostYethi,
+                            style: const TextStyle()),
                       )
                     : SizedBox(
                         height: 100,
@@ -155,10 +152,7 @@ class JankariPost extends HookWidget {
                                               borderRadius:
                                                   BorderRadius.circular(16),
                                               child: Image.network(
-                                                provider
-                                                    .jankariSubcategoryPostList[
-                                                        index]
-                                                    .imageUrl,
+                                                'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}',
                                                 fit: BoxFit.cover,
                                               ),
                                             ),

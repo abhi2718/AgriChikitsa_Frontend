@@ -21,6 +21,7 @@ class JankariSubCategoryPost extends HookWidget {
         useMemoized(() => Provider.of<JankariViewModel>(context, listen: true));
     useEffect(() {
       Future.delayed(Duration.zero, () {
+        useViewModel.reinitalize();
         useViewModel.getJankariSubCategoryPost(context);
       });
     }, []);
@@ -41,13 +42,11 @@ class JankariSubCategoryPost extends HookWidget {
                     children: [
                       InkWell(
                           onTap: () {
-                            useViewModel.showActiveButton = true;
                             Navigator.of(context).pop();
                           },
                           child: const Icon(Icons.arrow_back)),
                       InkWell(
                         onTap: () {
-                          useViewModel.showActiveButton = true;
                           Navigator.of(context)
                               .popUntil((route) => route.isFirst);
                         },

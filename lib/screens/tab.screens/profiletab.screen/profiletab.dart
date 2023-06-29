@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,9 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<ChatTabViewModel>(context, listen: false),
       Provider.of<EditProfileViewModel>(context, listen: false),
       Provider.of<TabViewModel>(context, listen: false),
+      Provider.of<JankariViewModel>(context, listen: false),
     ];
-    const defaultImage =
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png";
+    // final profileImage = user['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
@@ -67,13 +68,9 @@ class ProfileTabScreen extends HookWidget {
                     shape: BoxShape.circle,
                     color: Colors.grey[300],
                     image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: user.profileImage != null
-                          ? NetworkImage(user.profileImage!)
-                          : const NetworkImage(
-                              defaultImage,
-                            ),
-                    ),
+                        // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
+                        fit: BoxFit.fill,
+                        image: NetworkImage(user.profileImage!)),
                   ),
                   child: Container(),
                 ),

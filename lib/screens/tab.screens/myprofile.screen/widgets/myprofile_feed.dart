@@ -47,6 +47,10 @@ class MyProfileFeed extends HookWidget {
     }
 
     final user = feed['user'];
+    final imageName = feed['imgurl'].split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = user['profileImage'].split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -67,8 +71,9 @@ class MyProfileFeed extends HookWidget {
                         Column(
                           children: [
                             CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(user['profileImage']),
+                              backgroundImage: NetworkImage(
+                                'https://d336izsd4bfvcs.cloudfront.net/$imageName',
+                              ),
                             ),
                           ],
                         ),
@@ -99,7 +104,7 @@ class MyProfileFeed extends HookWidget {
                 ),
               ),
               Image.network(
-                feed['imgurl'],
+                'https://d336izsd4bfvcs.cloudfront.net/$imageName',
                 width: dimension["width"]! - 16,
                 fit: BoxFit.fill,
                 height: 240,

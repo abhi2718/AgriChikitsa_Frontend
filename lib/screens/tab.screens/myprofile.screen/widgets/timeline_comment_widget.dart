@@ -93,6 +93,7 @@ class TimelineUserComment extends HookWidget {
                                     itemBuilder: (context, index) {
                                       final comment =
                                           provider.commentsList[index];
+                                      // final profileImage = comment.user.profileImage.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
                                       return Column(
                                         children: [
                                           Row(
@@ -108,6 +109,7 @@ class TimelineUserComment extends HookWidget {
                                                         BorderRadius.circular(
                                                             20),
                                                     child: Image.network(
+                                                      // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
                                                       comment.user.profileImage,
                                                       width: 40,
                                                       height: 40,

@@ -29,6 +29,10 @@ class NotificationTile extends HookWidget {
       }
     }
 
+    final notificationImage = notificationItem['imageurl'] == null
+        ? null
+        : notificationItem['imageurl'].split(
+            'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 8, right: 8, bottom: 4),
       child: InkWell(
@@ -110,7 +114,7 @@ class NotificationTile extends HookWidget {
               const SizedBox(
                 height: 4,
               ),
-              notificationItem['imgurl'] != null
+              notificationImage != null
                   ? Container(
                       height: dimension['height']! * 0.30,
                       width: dimension['width']!,
@@ -119,7 +123,7 @@ class NotificationTile extends HookWidget {
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            notificationItem['imgurl'],
+                            'https://d336izsd4bfvcs.cloudfront.net/$notificationImage',
                             fit: BoxFit.cover,
                           )),
                     )

@@ -58,7 +58,9 @@ class HeaderWidget extends HookWidget {
                           builder: (context, provider, child) {
                         if (provider.userInfo != null) {
                           final user = provider.userInfo["user"];
+                          // final profileImage = user['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
                           return CircleAvatar(
+                            // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
                             backgroundImage: NetworkImage(user["profileImage"]),
                           );
                         }

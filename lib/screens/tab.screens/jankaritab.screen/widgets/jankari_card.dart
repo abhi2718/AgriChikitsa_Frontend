@@ -21,7 +21,10 @@ class JankariCard extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
         () => Provider.of<JankariViewModel>(context, listen: false));
-
+    final backgroundImage = jankari.backgroundImage.split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final iconImage = jankari.icon.split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     return InkWell(
       onTap: () {
         useViewModel.setCategory(jankari.id);
@@ -37,7 +40,8 @@ class JankariCard extends HookWidget {
             width: dimension['width']! - 20,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(jankari.backgroundImage),
+                image: NetworkImage(
+                    'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage'),
                 fit: BoxFit.fill,
               ),
               // borderRadius: const BorderRadius.all(
@@ -54,7 +58,8 @@ class JankariCard extends HookWidget {
                 Image(
                   height: 50,
                   width: 50,
-                  image: NetworkImage(jankari.icon),
+                  image: NetworkImage(
+                      'https://d336izsd4bfvcs.cloudfront.net/$iconImage'),
                 ),
                 const SizedBox(
                   width: 20,
