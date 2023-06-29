@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/utils.dart';
 
 class NotificationViewModel with ChangeNotifier {
@@ -23,7 +23,8 @@ class NotificationViewModel with ChangeNotifier {
       final Uri toLaunch = Uri(scheme: scheme, host: host, path: '/$path');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -45,7 +46,8 @@ class NotificationViewModel with ChangeNotifier {
       }
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -75,7 +77,7 @@ class NotificationViewModel with ChangeNotifier {
       setloading(false);
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 }

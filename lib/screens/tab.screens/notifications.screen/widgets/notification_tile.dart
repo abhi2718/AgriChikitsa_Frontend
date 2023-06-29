@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +58,7 @@ class NotificationTile extends HookWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: BaseText(
-                  title: "Reply : ${notificationItem['message']}",
+                  title: "जवाब : ${notificationItem['message']}",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -71,8 +72,8 @@ class NotificationTile extends HookWidget {
                   ? notificationItem != ""
                       ? Row(
                           children: [
-                            const Text("Link : ",
-                                style: TextStyle(
+                            Text(AppLocalizations.of(context)!.linkhi,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 )),

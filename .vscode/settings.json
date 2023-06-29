@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/Users/avinashmagar/Documents/GitHub/AgriChikitsa_Frontend/linux"
+    "cmake.sourceDirectory": "/Users/avinashmagar/Documents/GitHub/AgriChikitsa_Frontend/linux",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

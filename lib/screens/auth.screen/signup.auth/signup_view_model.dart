@@ -1,6 +1,9 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
@@ -71,7 +74,7 @@ class SignUpViewModel with ChangeNotifier {
 
   String? nameFieldValidator(value) {
     if (value!.isEmpty) {
-      return "Name is required!";
+      return "नाम आवश्यक है!";
     }
     return null;
   }
@@ -94,7 +97,7 @@ class SignUpViewModel with ChangeNotifier {
   String? emailFieldValidator(value) {
     bool isValid = validateEmail(value);
     if (!isValid) {
-      return "Please enter a valid email";
+      return "कृपया ईमेल दर्ज करें";
     }
     return null;
   }
@@ -125,7 +128,8 @@ class SignUpViewModel with ChangeNotifier {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
       } catch (error) {
-        Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
         setloading(false);
       }
     }

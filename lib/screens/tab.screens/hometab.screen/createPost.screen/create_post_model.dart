@@ -1,28 +1,30 @@
 import 'dart:async';
+
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
-import '../../../../services/auth.dart';
-import '../../../../utils/utils.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CreatePostModel with ChangeNotifier {
-  final _homeTabViewModel = HomeTabViewModel();
-  var captionController = TextEditingController();
-  final captionFocusNode = FocusNode();
-  final categoryFocusNode = FocusNode();
-  List<dynamic> categoriesList = [];
-  dynamic imagePicked;
-  String currentSelectedCategory = "";
-  var categoryLoading = true;
+import '../../../../services/auth.dart';
+import '../../../../utils/utils.dart';
 
-  Map<String, String> dropdownOptions = {};
-  var imagePath = "";
-  var imageUrl = "";
+class CreatePostModel with ChangeNotifier {
   var buttonloading = false;
   var caption = '';
+  var captionController = TextEditingController();
+  final captionFocusNode = FocusNode();
+  List<dynamic> categoriesList = [];
   var category = '';
+  final categoryFocusNode = FocusNode();
+  var categoryLoading = true;
+  String currentSelectedCategory = "";
+  Map<String, String> dropdownOptions = {};
+  var imagePath = "";
+  dynamic imagePicked;
+  var imageUrl = "";
+
+  final _homeTabViewModel = HomeTabViewModel();
 
   setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
@@ -46,13 +48,14 @@ class CreatePostModel with ChangeNotifier {
       categoryLoading = false;
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
   String? nameFieldValidator(caption) {
     if (caption.isEmpty) {
-      return "Caption is required!";
+      return "कैप्शन आवश्यक है!";
     } else {
       return null;
     }
@@ -103,7 +106,8 @@ class CreatePostModel with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -132,7 +136,8 @@ class CreatePostModel with ChangeNotifier {
           });
         }
       } else {
-        Utils.flushBarErrorMessage("Alert", "Something went wrong", context);
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.somethingWentwronghi, context);
       }
     } else {
       setloading(false);

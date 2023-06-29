@@ -45,6 +45,17 @@
     "pleasecheckhi",
     "alerthi",
     "selectyourcrophi",
-    "addAComment"
+    "addAComment",
+    "noCommentshi",
+    "somethingWentwronghi",
+    "createAccounthi",
+    "enteryourDetailshi",
+    "registerhi",
+    "linkhi",
+    "notificationNotAvailablehi",
+    "profileUpdatehi",
+    "welecomeChathi",
+    "taskDetailshi",
+    "nameRequiredhi"
   ]
 }

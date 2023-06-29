@@ -1,12 +1,13 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import '../../../../widgets/Input.widgets/input.dart';
+
 import '../../../../utils/utils.dart';
+import '../../../../widgets/Input.widgets/input.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/text.widgets/text.dart';
-import '../../../../widgets/tools.widgets/tools.dart';
 import '../signup_view_model.dart';
 
 class RegisterUser extends HookWidget {
@@ -43,20 +44,23 @@ class RegisterUser extends HookWidget {
                         ),
                       ],
                     ),
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(left: 32),
                       child: Row(
-                        children: [SubHeadingText("CREATE ACCOUNT")],
+                        children: [
+                          SubHeadingText(
+                              AppLocalizations.of(context)!.createAccounthi)
+                        ],
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 32),
                       child: Container(
                         margin: const EdgeInsets.only(top: 12),
-                        child: const Row(
+                        child: Row(
                           children: [
                             ParagraphText(
-                              'Enter your details to continue with AGRICHIKITSA',
+                              AppLocalizations.of(context)!.enteryourDetailshi,
                             )
                           ],
                         ),
@@ -79,7 +83,7 @@ class RegisterUser extends HookWidget {
                         children: [
                           Consumer<SignUpViewModel>(
                             builder: (context, provider, child) => Input(
-                              labelText: "Name",
+                              labelText: AppLocalizations.of(context)!.namehi,
                               focusNode: useViewModel.nameFocusNode,
                               keyboardType: TextInputType.name,
                               textInputAction: TextInputAction.next,
@@ -99,7 +103,7 @@ class RegisterUser extends HookWidget {
                             height: 20,
                           ),
                           Input(
-                            labelText: "Email",
+                            labelText: AppLocalizations.of(context)!.emailhi,
                             focusNode: useViewModel.emailFocusNode,
                             suffixIcon: useViewModel.suffixIconForEmail(),
                             keyboardType: TextInputType.emailAddress,
@@ -114,8 +118,8 @@ class RegisterUser extends HookWidget {
                           Consumer<SignUpViewModel>(
                             builder: (context, provider, child) =>
                                 CustomElevatedButton(
-                              title: "Register",
-                              width: dimension["width"]!-32,
+                              title: AppLocalizations.of(context)!.registerhi,
+                              width: dimension["width"]! - 32,
                               loading: provider.loading,
                               onPress: () =>
                                   provider.saveRegisterUserForm(context),

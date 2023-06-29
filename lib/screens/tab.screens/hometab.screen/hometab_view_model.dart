@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
@@ -9,7 +10,9 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../model/comment.dart';
 
 Future<void> handleBackgorundMessage(RemoteMessage message) async {}
@@ -98,7 +101,8 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -117,7 +121,8 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -144,7 +149,8 @@ class HomeTabViewModel with ChangeNotifier {
       }
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -171,7 +177,8 @@ class HomeTabViewModel with ChangeNotifier {
       }
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -185,7 +192,8 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -207,7 +215,7 @@ class HomeTabViewModel with ChangeNotifier {
       return true;
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi, error.toString(), context);
       return false;
     }
   }
@@ -231,7 +239,7 @@ class HomeTabViewModel with ChangeNotifier {
       }
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 

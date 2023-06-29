@@ -2,6 +2,7 @@ import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/repository/myprofile.repo/myprofile_tab_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../utils/utils.dart';
 
@@ -33,7 +34,8 @@ class MyProfileViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -74,7 +76,8 @@ class MyProfileViewModel with ChangeNotifier {
       }
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -87,7 +90,8 @@ class MyProfileViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setBookMarkLoader(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 }

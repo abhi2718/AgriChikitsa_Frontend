@@ -1,7 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../model/user_model.dart';
 import '../../../../repository/auth.repo/auth_repository.dart';
 import '../../../../services/auth.dart';
@@ -51,7 +54,7 @@ class EditProfileViewModel with ChangeNotifier {
 
   String? nameFieldValidator(value) {
     if (value!.isEmpty) {
-      return "Name is required!";
+      return "नाम आवश्यक है!";
     }
     return null;
   }
@@ -73,11 +76,11 @@ class EditProfileViewModel with ChangeNotifier {
 
   String? emailFieldValidator(value) {
     if (value!.isEmpty) {
-      return "Email is required!";
+      return "ईमेल की जरूरत है!";
     }
     bool isValid = validateEmail(value);
     if (!isValid) {
-      return "Please enter a valid email";
+      return "कृपया ईमेल दर्ज करें";
     }
     return null;
   }
@@ -112,10 +115,11 @@ class EditProfileViewModel with ChangeNotifier {
         setImageLoading(false);
       }
       authService.setUser(profile);
-      Utils.toastMessage("Profile updated successfully! .");
+      Utils.toastMessage(AppLocalizations.of(context)!.profileUpdatehi);
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -131,7 +135,8 @@ class EditProfileViewModel with ChangeNotifier {
       }
     } catch (error) {
       setImageLoading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -147,7 +152,8 @@ class EditProfileViewModel with ChangeNotifier {
       }
     } catch (error) {
       setImageLoading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 

@@ -87,89 +87,103 @@ class UserComment extends HookWidget {
                                 );
                               }),
                         )
-                      : SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              // Padding(
-                              //   padding:
-                              //       const EdgeInsets.only(top: 8, right: 8),
-                              // ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 16),
-                                child: SizedBox(
-                                  height: (dimension["height"]! - 100) * 0.9,
-                                  child: ListView.builder(
-                                    itemCount: provider.commentsList.length,
-                                    itemBuilder: (context, index) {
-                                      final comment =
-                                          provider.commentsList[index];
-                                      return Column(
-                                        children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                      : provider.commentsList.isEmpty
+                          ? Center(
+                              child: Text(
+                                  AppLocalizations.of(context)!.noCommentshi),
+                            )
+                          : SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  // Padding(
+                                  //   padding:
+                                  //       const EdgeInsets.only(top: 8, right: 8),
+                                  // ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 16),
+                                    child: SizedBox(
+                                      height:
+                                          (dimension["height"]! - 100) * 0.9,
+                                      child: ListView.builder(
+                                        itemCount: provider.commentsList.length,
+                                        itemBuilder: (context, index) {
+                                          final comment =
+                                              provider.commentsList[index];
+                                          return Column(
                                             children: [
-                                              Column(
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    child: Image.network(
-                                                      comment.user.profileImage,
-                                                      width: 40,
-                                                      height: 40,
+                                                  Column(
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        child: Image.network(
+                                                          comment.user
+                                                              .profileImage,
+                                                          width: 40,
+                                                          height: 40,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  SizedBox(
+                                                    width: dimension['width']! -
+                                                        98,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        BaseText(
+                                                          title:
+                                                              comment.user.name,
+                                                          style: const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 4,
+                                                        ),
+                                                        BaseText(
+                                                          title:
+                                                              comment.comment,
+                                                          style: const TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                        ),
+                                                      ],
                                                     ),
                                                   )
                                                 ],
                                               ),
                                               const SizedBox(
-                                                width: 10,
-                                              ),
-                                              SizedBox(
-                                                width: dimension['width']! - 98,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    BaseText(
-                                                      title: comment.user.name,
-                                                      style: const TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.w700),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    BaseText(
-                                                      title: comment.comment,
-                                                      style: const TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ],
-                                                ),
+                                                height: 16,
                                               )
                                             ],
-                                          ),
-                                          const SizedBox(
-                                            height: 16,
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        );
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
                 },
               ),
             ),
@@ -270,9 +284,9 @@ class UserComment extends HookWidget {
                   width: dimension['width'],
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 26, vertical: 16),
+                        horizontal: 25, vertical: 10),
                     margin:
-                        const EdgeInsets.only(right: 10, left: 10, bottom: 14),
+                        const EdgeInsets.only(right: 10, left: 10, bottom: 11),
                     decoration: const BoxDecoration(
                       color: Color(0xffd9d9d9),
                       borderRadius: BorderRadius.all(
