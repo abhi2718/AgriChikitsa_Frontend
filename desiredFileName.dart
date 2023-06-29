@@ -56,6 +56,7 @@
     "profileUpdatehi",
     "welecomeChathi",
     "taskDetailshi",
-    "nameRequiredhi"
+    "nameRequiredhi",
+    "createpostherehi"
   ]
 }

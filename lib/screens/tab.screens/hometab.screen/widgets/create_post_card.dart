@@ -40,7 +40,7 @@ class CreatePostCard extends HookWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: BaseText(
-                        title: AppLocalizations.of(context)!.whatsHappeninghi,
+                        title: AppLocalizations.of(context)!.createpostherehi,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             color: AppColor.darkBlackColor)),
