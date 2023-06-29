@@ -92,6 +92,15 @@ class ChatTabScreen extends HookWidget {
                                       ),
                                     ),
                                   ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: AppColor.darkColor),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        8,
+                                      ),
+                                    ),
+                                  ),
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 10),
                                   hintText: 'Type here...',

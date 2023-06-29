@@ -65,12 +65,7 @@ class NotificationViewModel with ChangeNotifier {
     try {
       final data = await _notificationTabRepository.fetchNotifications();
       notificationsList = data['notifications'];
-      notificationCount = 0;
-      for (var element in notificationsList) {
-        if (!element['read']) {
-          notificationCount += 1;
-        }
-      }
+      notificationCount = data['unReadNotificationsCount'] ?? 0;
       notifyListeners();
       setloading(false);
     } catch (error) {

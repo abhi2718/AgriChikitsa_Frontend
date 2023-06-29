@@ -33,4 +33,14 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> deleteUser() async {
+    const url = '${AppUrl.userEndPoint}/';
+    try {
+      final response = await _apiServices.getDeleteApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

@@ -54,10 +54,9 @@ class ProfileViewModel with ChangeNotifier {
     }
   }
 
-  void handleDelete(context, String companyId, disposableProvider) async {
+  void handleDelete(context, disposableProvider) async {
     try {
-      final payload = {"companyId": companyId, "isDeleted": true};
-      await authRepository.register(payload);
+      await authRepository.deleteUser();
       handleLogOut(context, disposableProvider);
     } catch (error) {
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);

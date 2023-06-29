@@ -87,7 +87,7 @@ class App extends StatelessWidget {
       child: Consumer<ProfileViewModel>(
         builder: (context, provider, child) {
           return MaterialApp(
-            title: 'Aluma',
+            title: 'Agrichikitsa',
             theme: ThemeData(primarySwatch: primaryswatch),
             routes: Routes().routes,
             locale: Locale(

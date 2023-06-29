@@ -24,6 +24,7 @@ class EditProfileScreen extends HookWidget {
         () => Provider.of<EditProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     final user = User.fromJson(authService.userInfo["user"]);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

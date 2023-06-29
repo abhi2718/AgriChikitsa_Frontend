@@ -1,4 +1,3 @@
-import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/repository/myprofile.repo/myprofile_tab_repository.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +17,14 @@ class MyProfileViewModel with ChangeNotifier {
 
   setloading(bool value) {
     _loading = value;
+  }
+
+  void disposeValues() {
+    feedList = [];
+    bookMarkFeedList = [];
+    commentLoading = true;
+    _loading = false;
+    bookMarkLoader = false;
   }
 
   setBookMarkLoader(bool value) {

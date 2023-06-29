@@ -29,9 +29,9 @@ class NotificationTile extends HookWidget {
       }
     }
 
-    final notificationImage = notificationItem['imageurl'] == null
+    final notificationImage = notificationItem['imgurl'] == null
         ? null
-        : notificationItem['imageurl'].split(
+        : notificationItem['imgurl'].split(
             'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 8, right: 8, bottom: 4),

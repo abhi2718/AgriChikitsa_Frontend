@@ -2,10 +2,12 @@ import 'package:agriChikitsa/model/jankari_card_modal.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../widgets/skeleton/skeleton.dart';
 import '../jankari_view_model.dart';
 import './jankari_subcategory.dart';
 
@@ -44,9 +46,6 @@ class JankariCard extends HookWidget {
                     'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage'),
                 fit: BoxFit.fill,
               ),
-              // borderRadius: const BorderRadius.all(
-              //   Radius.circular(12),
-              // ),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,11 +54,18 @@ class JankariCard extends HookWidget {
                 const SizedBox(
                   width: 2,
                 ),
-                Image(
-                  height: 50,
+                CachedNetworkImage(
+                  imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$iconImage',
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Skeleton(
+                    height: 50,
+                    width: 50,
+                    radius: 0,
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                   width: 50,
-                  image: NetworkImage(
-                      'https://d336izsd4bfvcs.cloudfront.net/$iconImage'),
+                  fit: BoxFit.fill,
+                  height: 50,
                 ),
                 const SizedBox(
                   width: 20,

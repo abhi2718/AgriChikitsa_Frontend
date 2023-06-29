@@ -24,8 +24,6 @@ class ChatTabViewModel with ChangeNotifier {
   var selectedDisease = '';
   var cameraQuestionId = '';
 
-  void disposeValues() {}
-
   final dynamic questions = [
     {
       "id": "1",
@@ -295,8 +293,8 @@ class ChatTabViewModel with ChangeNotifier {
       enableKeyboard(false);
       var updatedChatMessages = chatMessages.map((item) {
         if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
-          sendQuestion("sendToAdmin", item['question_hi'],
-              textEditingController.text, "");
+          sendQuestion(
+              'अन्य', item['question_hi'], textEditingController.text, "");
           return {
             ...item,
             "isAnswerSelected": true,

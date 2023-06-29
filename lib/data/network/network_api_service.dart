@@ -70,7 +70,7 @@ class NetworkApiService extends BaseApiServices {
     final headers = await getHeaders();
     final response = await retry(
       () => http
-          .patch(Uri.parse(url), headers: headers)
+          .delete(Uri.parse(url), headers: headers)
           .timeout(const Duration(seconds: 2)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
