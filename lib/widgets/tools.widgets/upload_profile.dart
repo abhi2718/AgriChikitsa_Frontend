@@ -11,7 +11,6 @@ class ProfilePicture extends HookWidget {
   final Function picImage;
   final Function captureImage;
   final AuthService authService;
-  // final profileImage = authService.userInfo[''user]['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
   const ProfilePicture({
     super.key,
     required this.picImage,
@@ -21,6 +20,8 @@ class ProfilePicture extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final user = User.fromJson(authService.userInfo["user"]);
+    final profileImage = user.profileImage!.split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     return GestureDetector(onTap: () {
       showModalBottomSheet(
         context: context,
@@ -67,9 +68,9 @@ class ProfilePicture extends HookWidget {
                 shape: BoxShape.circle,
                 color: Colors.grey[300],
                 image: DecorationImage(
-                    // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
                     fit: BoxFit.fill,
-                    image: NetworkImage(user.profileImage!)),
+                    image: NetworkImage(
+                        'https://d336izsd4bfvcs.cloudfront.net/$profileImage')),
               ),
               child: Container(
                 margin: const EdgeInsets.only(bottom: 10, right: 4),

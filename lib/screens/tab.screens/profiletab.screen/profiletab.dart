@@ -37,7 +37,8 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<TabViewModel>(context, listen: false),
       Provider.of<JankariViewModel>(context, listen: false),
     ];
-    // final profileImage = user['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = user.profileImage!.split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
@@ -68,9 +69,9 @@ class ProfileTabScreen extends HookWidget {
                     shape: BoxShape.circle,
                     color: Colors.grey[300],
                     image: DecorationImage(
-                        // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
                         fit: BoxFit.fill,
-                        image: NetworkImage(user.profileImage!)),
+                        image: NetworkImage(
+                            'https://d336izsd4bfvcs.cloudfront.net/$profileImage')),
                   ),
                   child: Container(),
                 ),

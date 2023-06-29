@@ -18,7 +18,8 @@ class CreatePostCard extends HookWidget {
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
-    // final profileImage = authService.userInfo[''user]['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = authService.userInfo['user']['profileImage'].split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
@@ -34,10 +35,8 @@ class CreatePostCard extends HookWidget {
               child: Row(
                 children: [
                   CircleAvatar(
-                    // 'https://d336izsd4bfvcs.cloudfront.net/$profileImage'
-                    backgroundImage: NetworkImage(authService.userInfo['user']
-                            ['profileImage']
-                        .toString()),
+                    backgroundImage: NetworkImage(
+                        'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
