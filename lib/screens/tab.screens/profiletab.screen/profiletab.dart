@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import '../../../widgets/skeleton/skeleton.dart';
 import '../tab_screen.dart';
 import './profile_view_model.dart';
 import './widgets/profile_button.dart';
@@ -62,20 +63,25 @@ class ProfileTabScreen extends HookWidget {
             SizedBox(
               height: 180,
               child: Column(children: [
-                Container(
-                  alignment: Alignment.bottomRight,
+                SizedBox(
                   width: 120,
                   height: 120,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[300],
-                    image: DecorationImage(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(60),
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => Skeleton(
+                        height: 40,
+                        width: 40,
+                        radius: 0,
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                       fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(
-                          'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
                     ),
                   ),
-                  child: Container(),
                 ),
                 const SizedBox(
                   height: 10,

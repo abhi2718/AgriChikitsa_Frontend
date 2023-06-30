@@ -10,14 +10,13 @@ class MyProfileViewModel with ChangeNotifier {
   List<dynamic> bookMarkFeedList = [];
   var commentLoading = true;
   var _loading = false;
-  bool bookMarkLoader = true;
+  bool bookMarkLoader = false;
   bool get loading {
     return _loading;
   }
 
   setloading(bool value) {
     _loading = value;
-    notifyListeners();
   }
 
   void disposeValues() {
@@ -47,14 +46,11 @@ class MyProfileViewModel with ChangeNotifier {
   }
 
   void fetchTimeline(BuildContext context) async {
-    setBookMarkLoader(true);
     try {
       final data = await _myProfileTabRepository.fetchTimeLine();
       bookMarkFeedList = data['timelineFeeds'];
-      setBookMarkLoader(false);
       notifyListeners();
     } catch (error) {
-      setBookMarkLoader(false);
       Utils.flushBarErrorMessage('Alert', error.toString(), context);
     }
   }

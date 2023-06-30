@@ -194,18 +194,26 @@ class SubCategoryContainer extends HookWidget {
                                         child: Stack(
                                           fit: StackFit.expand,
                                           children: [
-                                            Container(
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: CachedNetworkImageProvider(
-                                                      'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage'),
-                                                  fit: BoxFit.cover,
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: CachedNetworkImage(
+                                                imageUrl:
+                                                    'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage',
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        Skeleton(
+                                                  height: 40,
+                                                  width: 40,
+                                                  radius: 0,
                                                 ),
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                                width: 40,
+                                                fit: BoxFit.cover,
+                                                height: 40,
                                               ),
                                             ),
                                             Positioned.fill(

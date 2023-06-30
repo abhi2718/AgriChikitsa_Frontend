@@ -43,49 +43,49 @@ class SplashScreen extends HookWidget {
     }, []);
 
     return Scaffold(
-      body: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        const SizedBox(
-          height: 300,
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(80.0),
-            child: Image.asset(
-              "assets/images/logoagrichikitsa.png",
-              height: 160,
-              width: 160,
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(80.0),
+                child: Image.asset(
+                  "assets/images/logoagrichikitsa.png",
+                  height: 160,
+                  width: 160,
+                ),
+              ),
             ),
-          ),
-        ),
-        AnimatedTextKit(
-          animatedTexts: [
-            TyperAnimatedText(
-              'फसलो की सुरक्षा',
-              textStyle:
-                  const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+            AnimatedTextKit(
+              animatedTexts: [
+                TyperAnimatedText(
+                  'फसलो की सुरक्षा',
+                  textStyle: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.w500),
+                ),
+              ],
+              onTap: null,
+              isRepeatingAnimation: false,
+              totalRepeatCount: 1,
             ),
-          ],
-          onTap: null,
-          isRepeatingAnimation: false,
-          totalRepeatCount: 1,
-        ),
-        AnimatedTextKit(
-          animatedTexts: [
-            TyperAnimatedText(
-              'AGRICHIKITSA',
-              speed: const Duration(milliseconds: 100),
-              textStyle: const TextStyle(
-                  fontSize: 40,
-                  color: AppColor.extraDark,
-                  fontWeight: FontWeight.w800),
-            ),
-          ],
-          onTap: null,
-          isRepeatingAnimation: false,
-          totalRepeatCount: 1,
-        )
-      ]),
+            AnimatedTextKit(
+              animatedTexts: [
+                TyperAnimatedText(
+                  'AGRICHIKITSA',
+                  speed: const Duration(milliseconds: 100),
+                  textStyle: const TextStyle(
+                      fontSize: 40,
+                      color: AppColor.extraDark,
+                      fontWeight: FontWeight.w800),
+                ),
+              ],
+              onTap: null,
+              isRepeatingAnimation: false,
+              totalRepeatCount: 1,
+            )
+          ]),
     );
   }
 }
