@@ -50,8 +50,12 @@ class NotificationViewModel with ChangeNotifier {
   void fetchPushNotification() async {
     try {
       final data = await _notificationTabRepository.fetchNotifications();
+      print("Listen Notification function called");
       notificationsList = data['notifications'];
-      notificationCount++;
+      print("Notification count Push called : $notificationCount");
+      // notificationCount++;
+      notificationCount = data['unReadNotificationsCount'] ?? 0;
+      print("Notification count after increment : $notificationCount");
       notifyListeners();
     } catch (error) {
       Utils.toastMessage(error.toString());
@@ -62,6 +66,7 @@ class NotificationViewModel with ChangeNotifier {
     setloading(true);
     try {
       final data = await _notificationTabRepository.fetchNotifications();
+      print("Main notification function called");
       notificationsList = data['notifications'];
       notificationCount = data['unReadNotificationsCount'] ?? 0;
       notifyListeners();

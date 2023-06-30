@@ -126,7 +126,7 @@ class MyProfileFeed extends HookWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             feed['approved']
-                                ? GestureDetector(
+                                ? InkWell(
                                     onTap: handleLike,
                                     child: Icon(
                                       isLiked.value
@@ -149,7 +149,7 @@ class MyProfileFeed extends HookWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             feed['approved']
-                                ? GestureDetector(
+                                ? InkWell(
                                     onTap: () {
                                       Utils.model(
                                           context,

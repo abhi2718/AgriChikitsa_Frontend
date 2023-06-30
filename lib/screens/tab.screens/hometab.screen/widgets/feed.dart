@@ -129,7 +129,7 @@ class Feed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          GestureDetector(
+                          InkWell(
                             onTap: handleLike,
                             child: Icon(
                               isLiked.value
@@ -147,7 +147,7 @@ class Feed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
                               Utils.model(
                                   context,
@@ -164,7 +164,7 @@ class Feed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      GestureDetector(
+                      InkWell(
                         onTap: handleBookMark,
                         child: Icon(
                           isBookMarked.value
@@ -191,7 +191,7 @@ class Feed extends HookWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: 40,
-                child: GestureDetector(
+                child: InkWell(
                   onTap: () {
                     Utils.model(
                         context,

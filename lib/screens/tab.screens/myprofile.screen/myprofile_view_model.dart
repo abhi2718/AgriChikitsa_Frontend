@@ -10,13 +10,14 @@ class MyProfileViewModel with ChangeNotifier {
   List<dynamic> bookMarkFeedList = [];
   var commentLoading = true;
   var _loading = false;
-  bool bookMarkLoader = false;
+  bool bookMarkLoader = true;
   bool get loading {
     return _loading;
   }
 
   setloading(bool value) {
     _loading = value;
+    notifyListeners();
   }
 
   void disposeValues() {

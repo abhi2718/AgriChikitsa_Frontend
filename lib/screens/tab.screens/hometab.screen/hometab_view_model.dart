@@ -69,8 +69,11 @@ class HomeTabViewModel with ChangeNotifier {
         print(fcmToken);
       }
       if (fcmToken != null) {
+        print("Before Update");
         updateProfile(fcmToken);
+        print("After Update");
         FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+          print("Notification called homeTab");
           notificationViewModel.fetchPushNotification();
         });
         FirebaseMessaging.onBackgroundMessage(handleBackgorundMessage);

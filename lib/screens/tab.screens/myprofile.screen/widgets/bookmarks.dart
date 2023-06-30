@@ -129,7 +129,7 @@ class BookmarkFeed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          GestureDetector(
+                          InkWell(
                             onTap: handleLike,
                             child: Icon(
                               isLiked.value
@@ -147,7 +147,7 @@ class BookmarkFeed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
                               Utils.model(
                                   context,
@@ -164,7 +164,7 @@ class BookmarkFeed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      GestureDetector(
+                      InkWell(
                         onTap: handleBookMark,
                         child: Icon(
                           isBookMarked.value
