@@ -159,7 +159,7 @@ class Feed extends HookWidget {
                               : Remix.bookmark_line,
                           color: AppColor.darkColor,
                         ),
-                      )
+                      ),
                     ]),
               ),
               Padding(
