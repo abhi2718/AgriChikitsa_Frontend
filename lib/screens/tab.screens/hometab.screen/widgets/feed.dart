@@ -55,7 +55,8 @@ class Feed extends HookWidget {
     }
 
     final user = feed['user'];
-    // final profileImage = user['profileImage'].split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = user['profileImage'].split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -76,13 +77,9 @@ class Feed extends HookWidget {
                         Column(
                           children: [
                             CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(user['profileImage']),
-                            )
-                            // CircleAvatar(
-                            //   backgroundImage: NetworkImage(
-                            //       'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
-                            // ),
+                              backgroundImage: CachedNetworkImageProvider(
+                                  'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -132,7 +129,7 @@ class Feed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          InkWell(
+                          GestureDetector(
                             onTap: handleLike,
                             child: Icon(
                               isLiked.value
@@ -150,7 +147,7 @@ class Feed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               Utils.model(
                                   context,
@@ -167,7 +164,7 @@ class Feed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      InkWell(
+                      GestureDetector(
                         onTap: handleBookMark,
                         child: Icon(
                           isBookMarked.value
@@ -194,7 +191,7 @@ class Feed extends HookWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: 40,
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () {
                     Utils.model(
                         context,

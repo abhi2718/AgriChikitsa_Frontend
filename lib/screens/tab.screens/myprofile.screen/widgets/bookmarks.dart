@@ -55,8 +55,8 @@ class BookmarkFeed extends HookWidget {
     final user = feed['user'];
     final imageName = feed['imgurl'].split(
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-    // final profileImage = user['profileImage'].split(
-    //     'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = user['profileImage'].split(
+        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -77,10 +77,8 @@ class BookmarkFeed extends HookWidget {
                         Column(
                           children: [
                             CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(user['profileImage']),
-                              // backgroundImage: CachedNetworkImageProvider(
-                              //     'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
+                              backgroundImage: CachedNetworkImageProvider(
+                                  'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
                             ),
                           ],
                         ),
@@ -131,7 +129,7 @@ class BookmarkFeed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          InkWell(
+                          GestureDetector(
                             onTap: handleLike,
                             child: Icon(
                               isLiked.value
@@ -149,7 +147,7 @@ class BookmarkFeed extends HookWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               Utils.model(
                                   context,
@@ -166,7 +164,7 @@ class BookmarkFeed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
-                      InkWell(
+                      GestureDetector(
                         onTap: handleBookMark,
                         child: Icon(
                           isBookMarked.value

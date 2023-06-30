@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'routes/routes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import './screens/auth.screen/signin.auth/signin_view_model.dart';
-//import './services/socket_io.dart';
 import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import './res/primary_swatch.dart';
 import './screens/auth.screen/signup.auth/signup_view_model.dart';
@@ -48,9 +47,6 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<SignUpViewModel>(
           create: (_) => SignUpViewModel(),
         ),
-        // ChangeNotifierProvider<SocketService>(
-        //   create: (_) => SocketService(),
-        // ),
         ChangeNotifierProvider<HomeTabViewModel>(
           create: (_) => HomeTabViewModel(),
         ),

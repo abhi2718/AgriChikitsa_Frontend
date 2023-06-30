@@ -2,6 +2,7 @@ import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,8 @@ class EditProfileScreen extends HookWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          systemOverlayStyle:
+              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
           backgroundColor: AppColor.whiteColor,
           foregroundColor: AppColor.darkBlackColor,
           centerTitle: true,
