@@ -9,7 +9,6 @@ class NotificationIndicatorButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Notification Widegt Count $notificationCount");
     return InkWell(
       onTap: () =>
           Navigator.pushNamed(context, RouteName.notificationScreenRoute),

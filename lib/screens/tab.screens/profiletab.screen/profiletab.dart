@@ -2,6 +2,7 @@ import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/widgets/delete_alert.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -134,7 +135,8 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () {
-                  useViewModel.handleDelete(context, disposableProvider);
+                  showDeleteAccountDialog(
+                      context, useViewModel, disposableProvider);
                 },
                 leftIcon: "assets/images/trash.png",
                 title: AppLocalizations.of(context)!.deleteAccounthi,

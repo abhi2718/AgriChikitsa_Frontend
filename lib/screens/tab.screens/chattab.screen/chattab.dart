@@ -74,8 +74,8 @@ class ChatTabScreen extends HookWidget {
                               child: TextField(
                                 enabled: provider.enableKeyBoard,
                                 controller: useViewModel.textEditingController,
-                                decoration: const InputDecoration(
-                                  disabledBorder: OutlineInputBorder(
+                                decoration: InputDecoration(
+                                  disabledBorder: const OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: AppColor.iconColor),
                                       borderRadius: BorderRadius.all(
@@ -83,7 +83,7 @@ class ChatTabScreen extends HookWidget {
                                           8,
                                         ),
                                       )),
-                                  enabledBorder: OutlineInputBorder(
+                                  enabledBorder: const OutlineInputBorder(
                                     borderSide:
                                         BorderSide(color: AppColor.darkColor),
                                     borderRadius: BorderRadius.all(
@@ -92,7 +92,7 @@ class ChatTabScreen extends HookWidget {
                                       ),
                                     ),
                                   ),
-                                  focusedBorder: OutlineInputBorder(
+                                  focusedBorder: const OutlineInputBorder(
                                     borderSide:
                                         BorderSide(color: AppColor.darkColor),
                                     borderRadius: BorderRadius.all(
@@ -101,10 +101,11 @@ class ChatTabScreen extends HookWidget {
                                       ),
                                     ),
                                   ),
-                                  contentPadding: EdgeInsets.symmetric(
+                                  contentPadding: const EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 10),
-                                  hintText: 'Type here...',
-                                  hintStyle: TextStyle(
+                                  hintText:
+                                      AppLocalizations.of(context)!.typeHerehi,
+                                  hintStyle: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),

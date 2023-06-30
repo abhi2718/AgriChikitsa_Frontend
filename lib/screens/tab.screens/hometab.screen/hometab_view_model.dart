@@ -25,7 +25,7 @@ class HomeTabViewModel with ChangeNotifier {
   var categoryLoading = true;
   var commentLoading = true;
   var _loading = true;
-
+  bool isNotificationInitialized = false;
   bool get loading {
     return _loading;
   }
@@ -38,6 +38,7 @@ class HomeTabViewModel with ChangeNotifier {
     categoryLoading = true;
     commentLoading = true;
     _loading = true;
+    isNotificationInitialized = false;
   }
 
   setActiveState(BuildContext context, CategoryHome category, bool value) {
@@ -69,14 +70,14 @@ class HomeTabViewModel with ChangeNotifier {
         print(fcmToken);
       }
       if (fcmToken != null) {
-        print("Before Update");
         updateProfile(fcmToken);
-        print("After Update");
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-          print("Notification called homeTab");
-          notificationViewModel.fetchPushNotification();
-        });
-        FirebaseMessaging.onBackgroundMessage(handleBackgorundMessage);
+        if (!isNotificationInitialized) {
+          FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+            notificationViewModel.fetchPushNotification();
+          });
+          FirebaseMessaging.onBackgroundMessage(handleBackgorundMessage);
+          isNotificationInitialized = true;
+        }
       }
     });
   }

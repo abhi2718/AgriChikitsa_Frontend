@@ -57,5 +57,10 @@
 "validateEmail":"कृपया अपना वैध ईमेल दर्ज करें",
 "otpVerifyhi":"कृपया एक वैध ओटीपी दर्ज करें",
 "createAccounthi":"खाता बनाये",
+"registerhi":"रजिस्टर करें",
+"accountDeletehi":"खाता डिलीट",
+"confirmDeletehi":"क्या आप अपना खाता डिलीट करना चाहते है?",
+"yeshi":"हाँ",
+"nohi":"नहीं",
 "joinAgrichikitsahi": "अग्रिचिकित्सा के साथ जूडने के लिए अपना विवरण दर्ज करें"
 }

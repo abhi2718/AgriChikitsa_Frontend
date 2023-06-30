@@ -231,23 +231,8 @@ class UserComment extends HookWidget {
                                       final userImage = user['profileImage'].split(
                                           'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
                                       return CircleAvatar(
-                                        child: ClipOval(
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                                'https://d336izsd4bfvcs.cloudfront.net/$userImage',
-                                            progressIndicatorBuilder: (context,
-                                                    url, downloadProgress) =>
-                                                Skeleton(
-                                              height: 40,
-                                              width: 40,
-                                              radius: 0,
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(Icons.error),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
+                                        backgroundImage: CachedNetworkImageProvider(
+                                            'https://d336izsd4bfvcs.cloudfront.net/$userImage'),
                                       );
                                     }
                                     return Container();

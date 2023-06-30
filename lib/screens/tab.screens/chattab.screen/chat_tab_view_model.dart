@@ -273,60 +273,62 @@ class ChatTabViewModel with ChangeNotifier {
   }
 
   void handleUserInput(context) {
-    unfocusKeyboard();
-    if (questionIndex == 3) {
-      final currentQuestion = chatMessages[questionIndex];
-      handleSelctCrop(
-          context, textEditingController.text, currentQuestion["id"]);
-      textEditingController.clear();
-      questionIndex = 4;
-      showFourthLoader = true;
-      notifyListeners();
-      final t5 = Timer(const Duration(seconds: 2), () {
-        questionIndex = 5;
+    if (textEditingController.text.isNotEmpty) {
+      unfocusKeyboard();
+      if (questionIndex == 3) {
+        final currentQuestion = chatMessages[questionIndex];
+        handleSelctCrop(
+            context, textEditingController.text, currentQuestion["id"]);
+        textEditingController.clear();
+        questionIndex = 4;
+        showFourthLoader = true;
         notifyListeners();
-      });
-      timmerInstances.add(t5);
-    }
-    final selectedDiseaseList = ['अन्य', 'Other'];
-    if (selectedDiseaseList.contains(selectedDisease)) {
-      enableKeyboard(false);
-      var updatedChatMessages = chatMessages.map((item) {
-        if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
-          sendQuestion(
-              'अन्य', item['question_hi'], textEditingController.text, "");
-          return {
-            ...item,
-            "isAnswerSelected": true,
-            "answer": textEditingController.text,
-          };
-        }
-        return item;
-      });
-      chatMessages = updatedChatMessages.toList();
-      selectedDisease = '';
-      textEditingController.clear();
-      showSixthBubbleLoader = true;
-      showLastMessage = true;
-      notifyListeners();
-      final t7 = Timer(const Duration(seconds: 2), () {
-        chatMessages.add(
-          {
-            "id": "7",
-            "question_hi":
-                "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
-            "question_en": "Know about your crop with Agrichikitsa",
-            "options_hi": [],
-            "options_en": [],
-            "isAnswerSelected": false,
-            "answer": "",
-            "isMe": false,
-          },
-        );
-        showSixthBubbleLoader = false;
+        final t5 = Timer(const Duration(seconds: 2), () {
+          questionIndex = 5;
+          notifyListeners();
+        });
+        timmerInstances.add(t5);
+      }
+      final selectedDiseaseList = ['अन्य', 'Other'];
+      if (selectedDiseaseList.contains(selectedDisease)) {
+        enableKeyboard(false);
+        var updatedChatMessages = chatMessages.map((item) {
+          if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
+            sendQuestion(
+                'अन्य', item['question_hi'], textEditingController.text, "");
+            return {
+              ...item,
+              "isAnswerSelected": true,
+              "answer": textEditingController.text,
+            };
+          }
+          return item;
+        });
+        chatMessages = updatedChatMessages.toList();
+        selectedDisease = '';
+        textEditingController.clear();
+        showSixthBubbleLoader = true;
+        showLastMessage = true;
         notifyListeners();
-      });
-      timmerInstances.add(t7);
+        final t7 = Timer(const Duration(seconds: 2), () {
+          chatMessages.add(
+            {
+              "id": "7",
+              "question_hi":
+                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_en": "Know about your crop with Agrichikitsa",
+              "options_hi": [],
+              "options_en": [],
+              "isAnswerSelected": false,
+              "answer": "",
+              "isMe": false,
+            },
+          );
+          showSixthBubbleLoader = false;
+          notifyListeners();
+        });
+        timmerInstances.add(t7);
+      }
     }
   }
 

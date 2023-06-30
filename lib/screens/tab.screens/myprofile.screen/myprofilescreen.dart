@@ -51,7 +51,7 @@ class MyProfileScreen extends HookWidget {
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
                 return provider.loading
                     ? const PreLoader()
-                    : provider.feedList == []
+                    : provider.feedList.isEmpty
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
