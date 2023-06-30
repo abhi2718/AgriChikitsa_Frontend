@@ -129,8 +129,8 @@ class CreatePostModel with ChangeNotifier {
             goBack(context);
             setloading(false);
             Utils.flushBarErrorMessage(
-                AppLocalizations.of(context)!.postCreated,
-                AppLocalizations.of(context)!.adminVerify,
+                AppLocalizations.of(context)!.postCreatedhi,
+                AppLocalizations.of(context)!.adminVerifyhi,
                 context);
             reinitialize();
           });
@@ -142,7 +142,7 @@ class CreatePostModel with ChangeNotifier {
     } else {
       setloading(false);
       Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
-          AppLocalizations.of(context)!.fillAllDetails, context);
+          AppLocalizations.of(context)!.fillAllDetailshi, context);
     }
   }
 }

@@ -201,7 +201,7 @@ class Feed extends HookWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 16),
                           child: BaseText(
-                            title: AppLocalizations.of(context)!.addAComment,
+                            title: AppLocalizations.of(context)!.addACommenthi,
                             style: const TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w700),
                           ),
