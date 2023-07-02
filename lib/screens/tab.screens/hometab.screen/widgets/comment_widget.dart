@@ -6,11 +6,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
-
 import '../../../../model/comment.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
+import '../../myprofile.screen/myprofile_view_model.dart';
 import '../hometab_view_model.dart';
 
 class UserComment extends HookWidget {
@@ -29,6 +29,8 @@ class UserComment extends HookWidget {
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
+    final myProfileViewModel =
+        Provider.of<MyProfileViewModel>(context, listen: false);
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.fetchComments(context, feedId);
@@ -290,7 +292,8 @@ class UserComment extends HookWidget {
                                           feedId,
                                           textEditingController.text,
                                           User.fromJson(
-                                              authService.userInfo["user"]),
+                                              authService.userInfo["user"],),
+                                              myProfileViewModel
                                         );
                                         setNumberOfComment(
                                             provider.commentsList.length);

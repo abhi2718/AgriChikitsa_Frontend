@@ -29,6 +29,16 @@ class HomeTabScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeTab = useRef(const HomeTabScreen1());
+    return homeTab.value;
+  }
+}
+
+class HomeTabScreen1 extends HookWidget {
+  const HomeTabScreen1({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final appLifecycleState = useState(AppLifecycleState.resumed);
     final useViewModel = useMemoized(
@@ -36,7 +46,7 @@ class HomeTabScreen extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final notificationViewModel = useMemoized(
         () => Provider.of<NotificationViewModel>(context, listen: false));
-
+         
     useEffect(() {
       useViewModel.getFCM(notificationViewModel);
       useViewModel.getUserProfile(authService);
@@ -63,6 +73,7 @@ class HomeTabScreen extends HookWidget {
         useViewModel.fetchFeedsCategory(context);
       });
     }, []);
+
     Future refresh() async {
       useViewModel.fetchFeeds(context);
     }

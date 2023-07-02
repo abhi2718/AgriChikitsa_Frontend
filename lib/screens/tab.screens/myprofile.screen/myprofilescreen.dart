@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprofile_feed.dart';
@@ -8,10 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-
 import '../../../res/color.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/text.widgets/text.dart';
+import '../hometab.screen/createPost.screen/create_post_model.dart';
 
 class MyProfileScreen extends HookWidget {
   const MyProfileScreen({super.key});
@@ -21,10 +22,21 @@ class MyProfileScreen extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
         () => Provider.of<MyProfileViewModel>(context, listen: true));
+    final createPostModel =
+        useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
+
     useEffect(() {
       useViewModel.fetchFeeds(context);
       useViewModel.fetchTimeline(context);
     }, []);
+    useEffect(() {
+      if (createPostModel.fetchMyPost) {
+        useViewModel.fetchFeeds(context);
+        Future.delayed(Duration.zero, () {
+          createPostModel.setfetchMyPost(false);
+        });
+      }
+    }, [createPostModel.fetchMyPost]);
     return DefaultTabController(
       length: 2,
       child: SafeArea(
@@ -34,17 +46,21 @@ class MyProfileScreen extends HookWidget {
                 const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
             backgroundColor: AppColor.whiteColor,
             foregroundColor: AppColor.darkBlackColor,
-            flexibleSpace:
-                TabBar(padding: const EdgeInsets.only(top: 10), tabs: [
-              Tab(
-                  child: BaseText(
-                      title: AppLocalizations.of(context)!.myPosthi,
-                      style: const TextStyle(color: Colors.black))),
-              Tab(
-                  child: BaseText(
-                      title: AppLocalizations.of(context)!.bookmarkhi,
-                      style: const TextStyle(color: Colors.black))),
-            ]),
+            flexibleSpace: TabBar(
+                onTap: (index) {
+                  useViewModel.setActiveTabIndex(true);
+                },
+                padding: const EdgeInsets.only(top: 10),
+                tabs: [
+                  Tab(
+                      child: BaseText(
+                          title: AppLocalizations.of(context)!.myPosthi,
+                          style: const TextStyle(color: Colors.black))),
+                  Tab(
+                      child: BaseText(
+                          title: AppLocalizations.of(context)!.bookmarkhi,
+                          style: const TextStyle(color: Colors.black))),
+                ]),
           ),
           body: TabBarView(
             children: [
@@ -105,15 +121,15 @@ class MyProfileScreen extends HookWidget {
                                 AppLocalizations.of(context)!.noBookMarkAdd))
                         : SizedBox(
                             height: dimension['height']! - 100,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: provider.bookMarkFeedList.length,
-                              itemBuilder: (context, index) {
-                                final feed = provider.bookMarkFeedList[index];
-                                return BookmarkFeed(
-                                  feed: feed,
-                                );
-                              },
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: provider.bookMarkFeedList.map((feed) {
+                                  return BookmarkFeed(
+                                    key: ObjectKey(feed["_id"]),
+                                    feed: feed,
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           );
               })

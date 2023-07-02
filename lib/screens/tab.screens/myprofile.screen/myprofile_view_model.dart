@@ -1,8 +1,10 @@
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/repository/myprofile.repo/myprofile_tab_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/utils.dart';
+import '../hometab.screen/hometab_view_model.dart';
 
 class MyProfileViewModel with ChangeNotifier {
   final _myProfileTabRepository = MyProfileTabRepository();
@@ -11,12 +13,40 @@ class MyProfileViewModel with ChangeNotifier {
   var commentLoading = true;
   var _loading = false;
   bool bookMarkLoader = false;
+  var unBookMarkedFeedData = {"unBookMarked": false, "id": ""};
+  var isUserSwitchTheTab = false;
+  var toogleHomeFeed = {"isLiked": false, "id": ""};
   bool get loading {
     return _loading;
   }
 
   setloading(bool value) {
     _loading = value;
+  }
+
+  void setToogleHomeFeed(bool flag, String id) {
+    toogleHomeFeed = {"id": id, "isLiked": flag};
+    notifyListeners();
+  }
+
+  void setActiveTabIndex(bool value) {
+    isUserSwitchTheTab = value;
+    notifyListeners();
+  }
+
+  void setRemoveFeedFromHome(bool flag, String id) {
+    unBookMarkedFeedData = {"id": id, "unBookMarked": flag};
+    notifyListeners();
+  }
+
+  void setbookMarkFeedList(dynamic bookMark) {
+    bookMarkFeedList.add(bookMark);
+    notifyListeners();
+  }
+
+  void setUnBookMarkedFeedList(String id) {
+    bookMarkFeedList.removeWhere((element) => element["_id"] == id);
+    notifyListeners();
   }
 
   void disposeValues() {
@@ -55,10 +85,9 @@ class MyProfileViewModel with ChangeNotifier {
     }
   }
 
-  void toggleLike(
-      BuildContext context, String id, bool isLiked, String userId) async {
+  void toggleLike(BuildContext context, String id, bool isLiked, String userId,
+      HomeTabViewModel homeTabViewModel) async {
     try {
-      await HomeTabRepository().toggleLike(id);
       int indexFeed = feedList.indexWhere((feed) => feed['_id'] == id);
       int indexBook = bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
       if (indexFeed != -1) {
@@ -76,23 +105,44 @@ class MyProfileViewModel with ChangeNotifier {
           bookMarkFeedList
               .replaceRange(indexBook, indexBook + 1, [updatedFeed]);
         }
+        int indexHomeFeed =
+            homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+        if (indexHomeFeed != -1) {
+          setToogleHomeFeed(!isLiked, id);
+          homeTabViewModel.setUpdatedFeedList(indexHomeFeed, updatedFeed);
+        }
       }
       notifyListeners();
+      await HomeTabRepository().toggleLike(id);
     } catch (error) {
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
     }
   }
 
-  void toggleTimeline(BuildContext context, String id, String userId) async {
-    setBookMarkLoader(true);
+  void toggleTimeline(BuildContext context, String id, String userId,
+      HomeTabViewModel homeTabViewModel) async {
     try {
-      await HomeTabRepository().toggleTimeline(id);
       bookMarkFeedList.removeWhere((element) => element["_id"] == id);
-      setBookMarkLoader(false);
       notifyListeners();
+      int indexFeed =
+          homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+      if (indexFeed != -1) {
+        setRemoveFeedFromHome(true, id);
+        final feedItem = homeTabViewModel.feedList[indexFeed];
+        final oldBookmarks = feedItem['bookmarks'];
+        oldBookmarks.removeWhere((item) => item == userId);
+        dynamic updatedFeed = {...feedItem, "bookmarks": oldBookmarks};
+        homeTabViewModel.feedList
+            .replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
+      }
+      await HomeTabRepository().toggleTimeline(id);
     } catch (error) {
       setBookMarkLoader(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
     }
   }
 }

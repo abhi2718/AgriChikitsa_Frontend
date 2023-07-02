@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../model/comment.dart';
+import '../myprofile.screen/myprofile_view_model.dart';
 
 Future<void> handleBackgorundMessage(RemoteMessage message) async {}
 
@@ -26,8 +27,30 @@ class HomeTabViewModel with ChangeNotifier {
   var commentLoading = true;
   var _loading = true;
   bool isNotificationInitialized = false;
+  var toogleLikeBookMarkedFeed = {"isLiked": false, "id": ""};
+  var toogleMyPostFeed = {"isLiked": false, "id": ""};
+  var increaseCommentNumber = {'count': 0, "id": ""};
   bool get loading {
     return _loading;
+  }
+
+  void setIncreaseCommentNumber(int count, String id) {
+    increaseCommentNumber = {'count': count, "id": id};
+    notifyListeners();
+  }
+
+  void setUpdatedFeedList(int indexFeed, dynamic updatedFeed) {
+    feedList.replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
+  }
+
+  void setToogleLikeBookMarkedFeed(bool flag, String id) {
+    toogleLikeBookMarkedFeed = {"id": id, "isLiked": flag};
+    notifyListeners();
+  }
+
+  void setToogleMyPostFeed(bool flag, String id) {
+    toogleMyPostFeed = {"id": id, "isLiked": flag};
+    notifyListeners();
   }
 
   void disposeValues() {
@@ -135,31 +158,53 @@ class HomeTabViewModel with ChangeNotifier {
     }));
   }
 
-  void toggleLike(BuildContext context, String id) async {
+  void toggleLike(
+      BuildContext context,
+      String id,
+      MyProfileViewModel myProfileViewModel,
+      bool isLiked,
+      String userId) async {
     try {
-      final data = await _homeTabRepository.toggleLike(id);
       int index = feedList.indexWhere((feed) => feed['_id'] == id);
       if (index != -1) {
+        final feedItem = feedList[index];
+        final oldLikes = feedItem['likes'];
+        if (isLiked) {
+          oldLikes.removeWhere((item) => item == userId);
+        }
         dynamic updatedFeed = {
-          ...feedList[index],
-          "likes": data["likes"],
+          ...feedItem,
+          "likes": isLiked ? oldLikes : [...oldLikes, userId]
         };
         feedList.replaceRange(index, index + 1, [updatedFeed]);
+
+        int indexMyPost =
+            myProfileViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+        if (indexMyPost != -1) {
+          setToogleMyPostFeed(!isLiked, id);
+          myProfileViewModel.feedList
+              .replaceRange(indexMyPost, indexMyPost + 1, [updatedFeed]);
+        }
+        int indexMyBookMarked = myProfileViewModel.bookMarkFeedList
+            .indexWhere((feed) => feed['_id'] == id);
+        if (indexMyBookMarked != -1) {
+          setToogleLikeBookMarkedFeed(!isLiked, id);
+          myProfileViewModel.bookMarkFeedList.replaceRange(
+              indexMyBookMarked, indexMyBookMarked + 1, [updatedFeed]);
+        }
       }
+      await _homeTabRepository.toggleLike(id);
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
     }
   }
 
-  void toggleTimeline(
-    BuildContext context,
-    String id,
-    String userId,
-    bool isbookmarked,
-  ) async {
+  void toggleTimeline(BuildContext context, String id, String userId,
+      bool isbookmarked, MyProfileViewModel myProfileViewModel) async {
     try {
-      await _homeTabRepository.toggleTimeline(id);
       int index = feedList.indexWhere((feed) => feed['_id'] == id);
       if (index != -1) {
         final feedItem = feedList[index];
@@ -172,10 +217,18 @@ class HomeTabViewModel with ChangeNotifier {
           "bookmarks": isbookmarked ? oldBookmarks : [...oldBookmarks, userId]
         };
         feedList.replaceRange(index, index + 1, [updatedFeed]);
+        if (!isbookmarked) {
+          myProfileViewModel.setbookMarkFeedList(updatedFeed);
+        } else {
+          myProfileViewModel.setUnBookMarkedFeedList(id);
+        }
       }
+      await _homeTabRepository.toggleTimeline(id);
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
     }
   }
 
@@ -214,8 +267,8 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  void addComment(
-      BuildContext context, String id, String comment, User user) async {
+  void addComment(BuildContext context, String id, String comment, User user,
+      MyProfileViewModel myProfileViewModel) async {
     final newComment = Comment(id: "newComment", user: user, comment: comment);
     commentsList = [...commentsList, newComment];
     notifyListeners();
@@ -230,10 +283,22 @@ class HomeTabViewModel with ChangeNotifier {
           "comments": updatedFeed["comments"],
         };
         feedList.replaceRange(index, index + 1, [update]);
+        final myPostIndex =
+            myProfileViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+        if (myPostIndex != -1) {
+          setIncreaseCommentNumber(commentsList.length, id);
+        }
+        final myBookMarkedIndex = myProfileViewModel.bookMarkFeedList
+            .indexWhere((feed) => feed['_id'] == id);
+        if (myBookMarkedIndex != -1) {
+          setIncreaseCommentNumber(commentsList.length, id);
+        }
       }
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
     }
   }
 

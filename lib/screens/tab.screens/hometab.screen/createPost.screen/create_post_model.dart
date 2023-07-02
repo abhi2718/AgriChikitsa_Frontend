@@ -13,6 +13,7 @@ class CreatePostModel with ChangeNotifier {
   final captionFocusNode = FocusNode();
   final categoryFocusNode = FocusNode();
   List<dynamic> categoriesList = [];
+  var fetchMyPost = false;
   dynamic imagePicked;
   String currentSelectedCategory = "";
   var categoryLoading = true;
@@ -23,6 +24,11 @@ class CreatePostModel with ChangeNotifier {
   var buttonloading = false;
   var caption = '';
   var category = '';
+
+  void setfetchMyPost(bool val) {
+    fetchMyPost = true;
+    notifyListeners();
+  }
 
   setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
@@ -110,6 +116,7 @@ class CreatePostModel with ChangeNotifier {
         imageUrl = response['imgurl'];
         final data = await _homeTabViewModel.createPost(
             context, currentSelectedCategory, caption, imageUrl);
+        setfetchMyPost(true);
         if (data) {
           await Future.delayed(const Duration(seconds: 1), () {
             goBack(context);

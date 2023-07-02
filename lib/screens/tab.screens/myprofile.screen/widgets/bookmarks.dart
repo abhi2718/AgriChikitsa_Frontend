@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
-
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
+import '../../hometab.screen/hometab_view_model.dart';
 import 'timeline_comment_widget.dart';
 
 class BookmarkFeed extends HookWidget {
@@ -26,6 +26,8 @@ class BookmarkFeed extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final useViewModel =
         Provider.of<MyProfileViewModel>(context, listen: false);
+    final homeViewModel =
+        useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: true));
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
@@ -37,7 +39,7 @@ class BookmarkFeed extends HookWidget {
 
     void handleLike() {
       useViewModel.toggleLike(
-          context, feed["_id"], isLiked.value, userInfo.sId!);
+          context, feed["_id"], isLiked.value, userInfo.sId!, homeViewModel);
       if (isLiked.value) {
         isLiked.value = false;
         numberOfLikes.value = numberOfLikes.value - 1;
@@ -48,7 +50,8 @@ class BookmarkFeed extends HookWidget {
     }
 
     void handleBookMark() {
-      useViewModel.toggleTimeline(context, feed['_id'], userInfo.sId!);
+      useViewModel.toggleTimeline(
+          context, feed['_id'], userInfo.sId!, homeViewModel);
       isBookMarked.value = !isBookMarked.value;
     }
 
@@ -58,6 +61,33 @@ class BookmarkFeed extends HookWidget {
     final profileImage = user['profileImage'].split(
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
+    useEffect(() {
+      if (homeViewModel.toogleLikeBookMarkedFeed["id"] == feed['_id'] &&
+          !useViewModel.isUserSwitchTheTab) {
+        isLiked.value = homeViewModel.toogleLikeBookMarkedFeed["isLiked"];
+        if (homeViewModel.toogleLikeBookMarkedFeed["isLiked"] == true) {
+          numberOfLikes.value = numberOfLikes.value + 1;
+        } else {
+          numberOfLikes.value = numberOfLikes.value - 1;
+        }
+        Future.delayed(Duration.zero, () {
+          homeViewModel.setToogleLikeBookMarkedFeed(false, "");
+        });
+      }
+    }, [homeViewModel.toogleLikeBookMarkedFeed]);
+    useEffect(() {
+      if (useViewModel.isUserSwitchTheTab) {
+        Future.delayed(const Duration(seconds: 2), () {
+          useViewModel.setActiveTabIndex(false);
+        });
+      }
+    }, []);
+    useEffect(() {
+      if (homeViewModel.increaseCommentNumber["id"] == feed['_id']) {
+        final count = homeViewModel.increaseCommentNumber["count"];
+        numberOfComments.value = count;
+      }
+    }, [homeViewModel.increaseCommentNumber]);
     return Container(
       margin: const EdgeInsets.only(top: 10),
       child: Padding(
