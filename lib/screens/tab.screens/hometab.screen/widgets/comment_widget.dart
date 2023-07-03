@@ -25,7 +25,6 @@ class UserComment extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
-    final textEditingController = TextEditingController();
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -279,7 +278,8 @@ class UserComment extends HookWidget {
                                           ),
                                         ),
                                       ),
-                                      controller: textEditingController,
+                                      controller:
+                                          useViewModel.textEditingController,
                                       autofocus: true,
                                     ),
                                   ),
@@ -288,13 +288,14 @@ class UserComment extends HookWidget {
                                     return InkWell(
                                       onTap: () {
                                         useViewModel.addComment(
-                                          context,
-                                          feedId,
-                                          textEditingController.text,
-                                          User.fromJson(
-                                              authService.userInfo["user"],),
-                                              myProfileViewModel
-                                        );
+                                            context,
+                                            feedId,
+                                            useViewModel
+                                                .textEditingController.text,
+                                            User.fromJson(
+                                              authService.userInfo["user"],
+                                            ),
+                                            myProfileViewModel);
                                         setNumberOfComment(
                                             provider.commentsList.length);
                                         Navigator.pop(context);

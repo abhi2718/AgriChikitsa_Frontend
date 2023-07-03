@@ -85,26 +85,40 @@ class MyProfileViewModel with ChangeNotifier {
     }
   }
 
+  dynamic generateUpdatedFeed(
+      int index, dynamic feedList, bool isLiked, String userId) {
+    final feedItem = feedList[index];
+    final oldLikes = feedItem['likes'];
+    if (isLiked) {
+      oldLikes.removeWhere((item) => item == userId);
+    }
+    dynamic updatedFeed = {
+      ...feedItem,
+      "likes": isLiked ? oldLikes : [...oldLikes, userId]
+    };
+    return updatedFeed;
+  }
+
   void toggleLike(BuildContext context, String id, bool isLiked, String userId,
       HomeTabViewModel homeTabViewModel) async {
     try {
       int indexFeed = feedList.indexWhere((feed) => feed['_id'] == id);
       int indexBook = bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
       if (indexFeed != -1) {
-        final feedItem = feedList[indexFeed];
-        final oldLikes = feedItem['likes'];
-        if (isLiked) {
-          oldLikes.removeWhere((item) => item == userId);
-        }
-        dynamic updatedFeed = {
-          ...feedItem,
-          "likes": isLiked ? oldLikes : [...oldLikes, userId]
-        };
+        final updatedFeed =
+            generateUpdatedFeed(indexFeed, feedList, isLiked, userId);
         feedList.replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
-        if (indexBook != -1) {
-          bookMarkFeedList
-              .replaceRange(indexBook, indexBook + 1, [updatedFeed]);
+        int indexHomeFeed =
+            homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+        if (indexHomeFeed != -1) {
+          setToogleHomeFeed(!isLiked, id);
+          homeTabViewModel.setUpdatedFeedList(indexHomeFeed, updatedFeed);
         }
+      }
+      if (indexBook != -1) {
+        final updatedFeed =
+            generateUpdatedFeed(indexBook, bookMarkFeedList, isLiked, userId);
+        bookMarkFeedList.replaceRange(indexBook, indexBook + 1, [updatedFeed]);
         int indexHomeFeed =
             homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
         if (indexHomeFeed != -1) {

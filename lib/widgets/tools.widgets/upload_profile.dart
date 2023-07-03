@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth.dart';
 
@@ -32,7 +33,11 @@ class ProfilePicture extends HookWidget {
               children: <Widget>[
                 ListTile(
                   leading: const Icon(Icons.camera_alt),
-                  title: const ParagraphText('Take a photo'),
+                  title: BaseText(
+                      title: AppLocalizations.of(context)!.takeAPhoto,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      )),
                   onTap: () {
                     captureImage(context, authService);
                     Navigator.of(context).pop();
@@ -40,7 +45,11 @@ class ProfilePicture extends HookWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library),
-                  title: const ParagraphText("Choose from gallery"),
+                  title: BaseText(
+                      title: AppLocalizations.of(context)!.uploadAPhoto,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      )),
                   onTap: () {
                     picImage(context, authService);
                     Navigator.of(context).pop();

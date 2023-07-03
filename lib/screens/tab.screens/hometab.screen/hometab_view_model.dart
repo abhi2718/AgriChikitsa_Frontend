@@ -18,6 +18,8 @@ Future<void> handleBackgorundMessage(RemoteMessage message) async {}
 class HomeTabViewModel with ChangeNotifier {
   final _authTabRepo = AuthRepository();
   final _homeTabRepository = HomeTabRepository();
+
+  final textEditingController = TextEditingController();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   dynamic feedList = [];
   List<CategoryHome> categoriesList = [];
@@ -62,6 +64,7 @@ class HomeTabViewModel with ChangeNotifier {
     commentLoading = true;
     _loading = true;
     isNotificationInitialized = false;
+    textEditingController.clear();
   }
 
   setActiveState(BuildContext context, CategoryHome category, bool value) {
@@ -269,35 +272,43 @@ class HomeTabViewModel with ChangeNotifier {
 
   void addComment(BuildContext context, String id, String comment, User user,
       MyProfileViewModel myProfileViewModel) async {
-    final newComment = Comment(id: "newComment", user: user, comment: comment);
-    commentsList = [...commentsList, newComment];
-    notifyListeners();
-    try {
-      final payload = {"comment": comment};
-      final data = await _homeTabRepository.addComments(id, payload);
-      int index = feedList.indexWhere((feed) => feed['_id'] == id);
-      if (index != -1) {
-        final updatedFeed = data["updatedFeed"];
-        dynamic update = {
-          ...feedList[index],
-          "comments": updatedFeed["comments"],
-        };
-        feedList.replaceRange(index, index + 1, [update]);
-        final myPostIndex =
-            myProfileViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
-        if (myPostIndex != -1) {
-          setIncreaseCommentNumber(commentsList.length, id);
+    if (comment.isNotEmpty) {
+      final newComment =
+          Comment(id: "newComment", user: user, comment: comment);
+      commentsList = [...commentsList, newComment];
+      notifyListeners();
+      try {
+        final payload = {"comment": comment};
+        final data = await _homeTabRepository.addComments(id, payload);
+        int index = feedList.indexWhere((feed) => feed['_id'] == id);
+        if (index != -1) {
+          final updatedFeed = data["updatedFeed"];
+          dynamic update = {
+            ...feedList[index],
+            "comments": updatedFeed["comments"],
+          };
+          feedList.replaceRange(index, index + 1, [update]);
+          final myPostIndex = myProfileViewModel.feedList
+              .indexWhere((feed) => feed['_id'] == id);
+          if (myPostIndex != -1) {
+            setIncreaseCommentNumber(commentsList.length, id);
+            myProfileViewModel.feedList
+                .replaceRange(myPostIndex, myPostIndex + 1, [update]);
+          }
+          final myBookMarkedIndex = myProfileViewModel.bookMarkFeedList
+              .indexWhere((feed) => feed['_id'] == id);
+          if (myBookMarkedIndex != -1) {
+            setIncreaseCommentNumber(commentsList.length, id);
+            myProfileViewModel.bookMarkFeedList.replaceRange(
+                myBookMarkedIndex, myBookMarkedIndex + 1, [update]);
+          }
         }
-        final myBookMarkedIndex = myProfileViewModel.bookMarkFeedList
-            .indexWhere((feed) => feed['_id'] == id);
-        if (myBookMarkedIndex != -1) {
-          setIncreaseCommentNumber(commentsList.length, id);
+        textEditingController.clear();
+      } catch (error) {
+        setloading(false);
+        if (kDebugMode) {
+          Utils.flushBarErrorMessage('Alert', error.toString(), context);
         }
-      }
-    } catch (error) {
-      setloading(false);
-      if (kDebugMode) {
-        Utils.flushBarErrorMessage('Alert', error.toString(), context);
       }
     }
   }

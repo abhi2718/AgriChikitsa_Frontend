@@ -61,14 +61,19 @@ class ChatTabScreen extends HookWidget {
                                     useViewModel.uploadImage(context);
                                   }
                                 },
-                                child: Image.asset('assets/icons/camera.png')),
+                                child: Image.asset(
+                                  'assets/icons/camera.png',
+                                  width: 26,
+                                  height: 26,
+                                )),
                             InkWell(
                                 onTap: () {
                                   if (useViewModel.showCameraButton) {
                                     useViewModel.uploadGallery(context);
                                   }
                                 },
-                                child: Image.asset('assets/icons/gallery.jpg')),
+                                child: Image.asset('assets/icons/gallery.png',
+                                    width: 24, height: 24)),
                             SizedBox(
                               width: dimension['width']! - 160,
                               child: TextField(
