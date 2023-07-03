@@ -25,6 +25,7 @@ class UserComment extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
+    final textEditingController = TextEditingController();
     final useViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -265,7 +266,7 @@ class UserComment extends HookWidget {
                                             const EdgeInsets.symmetric(
                                                 vertical: 8, horizontal: 10),
                                         hintText: AppLocalizations.of(context)!
-                                            .addAComment,
+                                            .addACommenthi,
                                         hintStyle: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
@@ -278,8 +279,7 @@ class UserComment extends HookWidget {
                                           ),
                                         ),
                                       ),
-                                      controller:
-                                          useViewModel.textEditingController,
+                                      controller: textEditingController,
                                       autofocus: true,
                                     ),
                                   ),
@@ -288,14 +288,13 @@ class UserComment extends HookWidget {
                                     return InkWell(
                                       onTap: () {
                                         useViewModel.addComment(
-                                            context,
-                                            feedId,
-                                            useViewModel
-                                                .textEditingController.text,
-                                            User.fromJson(
-                                              authService.userInfo["user"],
-                                            ),
-                                            myProfileViewModel);
+                                          context,
+                                          feedId,
+                                          textEditingController.text,
+                                          User.fromJson(
+                                              authService.userInfo["user"],),
+                                              myProfileViewModel
+                                        );
                                         setNumberOfComment(
                                             provider.commentsList.length);
                                         Navigator.pop(context);
@@ -332,7 +331,7 @@ class UserComment extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BaseText(
-                          title: AppLocalizations.of(context)!.addAComment,
+                          title: AppLocalizations.of(context)!.addACommenthi,
                           style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w700),
                         ),

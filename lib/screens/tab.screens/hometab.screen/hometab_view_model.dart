@@ -10,6 +10,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../model/comment.dart';
 import '../myprofile.screen/myprofile_view_model.dart';
 
@@ -128,7 +129,8 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -147,7 +149,8 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -200,7 +203,8 @@ class HomeTabViewModel with ChangeNotifier {
     } catch (error) {
       setloading(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
       }
     }
   }
@@ -230,7 +234,8 @@ class HomeTabViewModel with ChangeNotifier {
     } catch (error) {
       setloading(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
       }
     }
   }
@@ -245,7 +250,8 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -265,7 +271,8 @@ class HomeTabViewModel with ChangeNotifier {
       return true;
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
       return false;
     }
   }

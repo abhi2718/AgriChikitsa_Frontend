@@ -29,7 +29,7 @@ class CreatePostCard extends HookWidget {
       child: Card(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-          height: dimension['height']! * 0.16,
+          height: dimension['height']! * 0.17,
           width: dimension['width'],
           child: Column(children: [
             Padding(
@@ -59,7 +59,7 @@ class CreatePostCard extends HookWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: BaseText(
-                        title: AppLocalizations.of(context)!.whatsHappeninghi,
+                        title: AppLocalizations.of(context)!.createPosthi,
                         style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             color: AppColor.darkBlackColor)),

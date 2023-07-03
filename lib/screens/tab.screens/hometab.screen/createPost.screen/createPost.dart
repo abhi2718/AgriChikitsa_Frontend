@@ -64,7 +64,10 @@ class CreatePostScreen extends HookWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset('assets/icons/gallery.jpg'),
+                                Image.asset('assets/icons/gallery.png',
+                                width: 26,
+                                height: 26,
+                                ),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -87,10 +90,10 @@ class CreatePostScreen extends HookWidget {
               ),
               TextField(
                 controller: useViewModel.captionController,
-                decoration: const InputDecoration(
-                  labelText: "Enter Caption",
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.enterCaptionhi,
+                  border: const OutlineInputBorder(),
+                  enabledBorder: const OutlineInputBorder(
                     borderSide:
                         BorderSide(color: AppColor.darkColor, width: 2.0),
                   ),

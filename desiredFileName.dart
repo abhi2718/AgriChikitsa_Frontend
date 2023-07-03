@@ -35,7 +35,7 @@
     "whatsHappeninghi",
     "iagreewithi",
     "timelinehi",
-    "noBookMarkAdd",
+    "noBookMarkAddhi",
     "createOnehi",
     "nopostYethi",
     "chatPanchamhi",
@@ -45,6 +45,21 @@
     "pleasecheckhi",
     "alerthi",
     "selectyourcrophi",
-    "addAComment"
+    "addACommenthi",
+    "postCreatedhi",
+    "adminVerifyhi",
+    "fillAllDetailshi",
+    "validateNamehi",
+    "validateEmailhi",
+    "notificationhi",
+    "linkhi",
+    "profileUpdateSuccesfulhi",
+    "chooseFromGalleryhi",
+    "takePhotohi",
+    "notificationNotAvaiablehi",
+    "somethingWentWronghi",
+    "noCommenthi",
+    "nameReuiredhi",
+    "emailRequiredhi"
   ]
 }

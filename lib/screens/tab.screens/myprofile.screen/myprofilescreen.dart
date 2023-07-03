@@ -1,5 +1,4 @@
 import 'package:agriChikitsa/routes/routes_name.dart';
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprofile_feed.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
 import '../../../res/color.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/text.widgets/text.dart';
@@ -65,52 +65,57 @@ class MyProfileScreen extends HookWidget {
           body: TabBarView(
             children: [
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.loading
-                    ? const PreLoader()
-                    : provider.feedList.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              BaseText(
-                                title:
-                                    AppLocalizations.of(context)!.nopostYethi,
-                                style: const TextStyle(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              InkWell(
-                                onTap: () => Navigator.pushNamed(
-                                    context, RouteName.createPostRoute),
-                                child: Container(
-                                    height: dimension['height']! * 0.07,
-                                    width: dimension['width']! * 0.30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: AppColor.darkColor,
-                                    ),
-                                    child: Center(
-                                        child: BaseText(
-                                      title: AppLocalizations.of(context)!
-                                          .createOnehi,
-                                      style: const TextStyle(
-                                          color: AppColor.whiteColor),
-                                    ))),
+                return provider.feedList.isEmpty
+                    ? Center(
+                        child: Text(AppLocalizations.of(context)!.nopostYethi),
+                      )
+                    : provider.loading
+                        ? const PreLoader()
+                        : provider.feedList.isEmpty
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  BaseText(
+                                    title: AppLocalizations.of(context)!
+                                        .nopostYethi,
+                                    style: const TextStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  InkWell(
+                                    onTap: () => Navigator.pushNamed(
+                                        context, RouteName.createPostRoute),
+                                    child: Container(
+                                        height: dimension['height']! * 0.07,
+                                        width: dimension['width']! * 0.30,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: AppColor.darkColor,
+                                        ),
+                                        child: Center(
+                                            child: BaseText(
+                                          title: AppLocalizations.of(context)!
+                                              .createOnehi,
+                                          style: const TextStyle(
+                                              color: AppColor.whiteColor),
+                                        ))),
+                                  )
+                                ],
                               )
-                            ],
-                          )
-                        : SizedBox(
-                            height: dimension['height']! - 100,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: provider.feedList.length,
-                              itemBuilder: (context, index) {
-                                final feed = provider.feedList[index];
-                                return MyProfileFeed(feed: feed);
-                              },
-                            ),
-                          );
+                            : SizedBox(
+                                height: dimension['height']! - 100,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: provider.feedList.length,
+                                  itemBuilder: (context, index) {
+                                    final feed = provider.feedList[index];
+                                    return MyProfileFeed(feed: feed);
+                                  },
+                                ),
+                              );
               }),
               Consumer<MyProfileViewModel>(builder: (context, provider, child) {
                 return provider.bookMarkLoader
@@ -118,7 +123,7 @@ class MyProfileScreen extends HookWidget {
                     : provider.bookMarkFeedList.isEmpty
                         ? Center(
                             child: Text(
-                                AppLocalizations.of(context)!.noBookMarkAdd))
+                                AppLocalizations.of(context)!.noBookMarkAddhi))
                         : SizedBox(
                             height: dimension['height']! - 100,
                             child: SingleChildScrollView(

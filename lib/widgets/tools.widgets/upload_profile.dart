@@ -1,11 +1,11 @@
-import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth.dart';
 
@@ -33,11 +33,8 @@ class ProfilePicture extends HookWidget {
               children: <Widget>[
                 ListTile(
                   leading: const Icon(Icons.camera_alt),
-                  title: BaseText(
-                      title: AppLocalizations.of(context)!.takeAPhoto,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      )),
+                  title:
+                      ParagraphText(AppLocalizations.of(context)!.takePhotohi),
                   onTap: () {
                     captureImage(context, authService);
                     Navigator.of(context).pop();
@@ -45,11 +42,8 @@ class ProfilePicture extends HookWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library),
-                  title: BaseText(
-                      title: AppLocalizations.of(context)!.uploadAPhoto,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      )),
+                  title: ParagraphText(
+                      AppLocalizations.of(context)!.chooseFromGalleryhi),
                   onTap: () {
                     picImage(context, authService);
                     Navigator.of(context).pop();
