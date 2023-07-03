@@ -87,10 +87,10 @@ class CreatePostScreen extends HookWidget {
               ),
               TextField(
                 controller: useViewModel.captionController,
-                decoration: const InputDecoration(
-                  labelText: "Enter Caption",
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.enterCaptionhi,
+                  border: const OutlineInputBorder(),
+                  enabledBorder: const OutlineInputBorder(
                     borderSide:
                         BorderSide(color: AppColor.darkColor, width: 2.0),
                   ),

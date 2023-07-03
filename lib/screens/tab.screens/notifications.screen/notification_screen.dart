@@ -2,6 +2,7 @@ import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notificati
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/notification_tile.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -24,8 +25,8 @@ class NotificationScreen extends HookWidget {
     return Scaffold(
         backgroundColor: AppColor.notificationBgColor,
         appBar: AppBar(
-          title: const BaseText(
-            title: 'Notification',
+          title: BaseText(
+            title: AppLocalizations.of(context)!.notificationhi,
             style: TextStyle(color: Colors.black),
           ),
           centerTitle: true,
@@ -42,28 +43,34 @@ class NotificationScreen extends HookWidget {
         body: Consumer<NotificationViewModel>(
             builder: (context, provider, child) {
           final notificationList = provider.notificationsList;
-          return useViewModel.loading
-              ? ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(top: 20, left: 10, right: 10),
-                      child: Skeleton(
-                          height: dimension['height']! * 0.11,
-                          width: dimension['width']!),
-                    );
-                  },
+          return provider.notificationsList.isEmpty
+              ? Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.notificationNotAvaiablehi,
+                  ),
                 )
-              : ListView.builder(
-                  itemCount: notificationList.length,
-                  itemBuilder: (context, index) {
-                    final notificationItem =
-                        useViewModel.notificationsList[index];
-                    return NotificationTile(
-                      notificationItem: notificationItem,
-                    );
-                  });
+              : useViewModel.loading
+                  ? ListView.builder(
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 10, right: 10),
+                          child: Skeleton(
+                              height: dimension['height']! * 0.11,
+                              width: dimension['width']!),
+                        );
+                      },
+                    )
+                  : ListView.builder(
+                      itemCount: notificationList.length,
+                      itemBuilder: (context, index) {
+                        final notificationItem =
+                            useViewModel.notificationsList[index];
+                        return NotificationTile(
+                          notificationItem: notificationItem,
+                        );
+                      });
         }));
   }
 }

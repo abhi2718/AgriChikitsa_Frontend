@@ -83,7 +83,8 @@ class EditProfileScreen extends HookWidget {
                           textInputAction: TextInputAction.next,
                           suffixIcon: useViewModel.suffixIconForName(),
                           initialValue: user.name!,
-                          validator: useViewModel.nameFieldValidator,
+                          validator: (value) =>
+                              useViewModel.nameFieldValidator(context, value),
                           onSaved: useViewModel.onSavedNameField,
                           onFieldSubmitted: (_) {
                             Utils.fieldFocusChange(
@@ -104,7 +105,8 @@ class EditProfileScreen extends HookWidget {
                           keyboardType: TextInputType.emailAddress,
                           initialValue: user.email ?? "",
                           textInputAction: TextInputAction.done,
-                          validator: useViewModel.emailFieldValidator,
+                          validator: (value) =>
+                              useViewModel.emailFieldValidator(context, value),
                           onSaved: useViewModel.onSavedEmailField,
                           onFieldSubmitted: (_) =>
                               provider.saveForm(context, user, authService),

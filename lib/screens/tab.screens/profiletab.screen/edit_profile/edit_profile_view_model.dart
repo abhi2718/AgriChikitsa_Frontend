@@ -1,7 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../model/user_model.dart';
 import '../../../../repository/auth.repo/auth_repository.dart';
 import '../../../../services/auth.dart';
@@ -49,9 +52,9 @@ class EditProfileViewModel with ChangeNotifier {
     return const Icon(Icons.person);
   }
 
-  String? nameFieldValidator(value) {
+  String? nameFieldValidator(BuildContext context, value) {
     if (value!.isEmpty) {
-      return "Name is required!";
+      return AppLocalizations.of(context)!.nameReuiredhi;
     }
     return null;
   }
@@ -71,13 +74,13 @@ class EditProfileViewModel with ChangeNotifier {
     return regExp.hasMatch(email);
   }
 
-  String? emailFieldValidator(value) {
+  String? emailFieldValidator(BuildContext context, String? value) {
     if (value!.isEmpty) {
-      return "Email is required!";
+      return AppLocalizations.of(context)!.emailRequiredhi;
     }
     bool isValid = validateEmail(value);
     if (!isValid) {
-      return "Please enter a valid email";
+      return AppLocalizations.of(context)!.emailRequiredhi;
     }
     return null;
   }
@@ -112,10 +115,12 @@ class EditProfileViewModel with ChangeNotifier {
         setImageLoading(false);
       }
       authService.setUser(profile);
-      Utils.toastMessage("Profile updated successfully! .");
+      Utils.toastMessage(
+          AppLocalizations.of(context)!.profileUpdateSuccesfulhi);
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -131,7 +136,8 @@ class EditProfileViewModel with ChangeNotifier {
       }
     } catch (error) {
       setImageLoading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -147,7 +153,8 @@ class EditProfileViewModel with ChangeNotifier {
       }
     } catch (error) {
       setImageLoading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 

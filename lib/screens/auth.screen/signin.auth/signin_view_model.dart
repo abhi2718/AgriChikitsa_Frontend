@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
@@ -125,7 +127,8 @@ class SignInViewModel with ChangeNotifier {
       },
       verificationFailed: (FirebaseAuthException e) {
         setloading(false);
-        Utils.flushBarErrorMessage("Alert!", e.message.toString(), context);
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            e.message.toString(), context);
         return;
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -179,7 +182,8 @@ class SignInViewModel with ChangeNotifier {
               .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         }
       } catch (error) {
-        Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
         setloading(false);
       }
     }

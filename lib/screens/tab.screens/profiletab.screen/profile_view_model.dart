@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../routes/routes_name.dart';
 
 class ProfileViewModel with ChangeNotifier {
@@ -40,7 +42,8 @@ class ProfileViewModel with ChangeNotifier {
           Uri(scheme: 'https', host: 'www.cylog.org', path: 'headers/');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -50,7 +53,8 @@ class ProfileViewModel with ChangeNotifier {
           Uri(scheme: 'https', host: 'www.cylog.org', path: 'headers/');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -59,7 +63,8 @@ class ProfileViewModel with ChangeNotifier {
       await authRepository.deleteUser();
       handleLogOut(context, disposableProvider);
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 }

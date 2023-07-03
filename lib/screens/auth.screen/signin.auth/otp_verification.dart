@@ -59,7 +59,8 @@ class OtpVerification extends HookWidget {
                     child: Row(
                       children: [
                         SubHeadingText(
-                            AppLocalizations.of(context)!.verifyDetailshi)
+                          AppLocalizations.of(context)!.verifyDetailshi,
+                        ),
                       ],
                     ),
                   ),
@@ -126,8 +127,10 @@ class OtpVerification extends HookWidget {
                             ? ParagraphText(
                                 '${AppLocalizations.of(context)!.didnottreceivetheOtphi} ${AppLocalizations.of(context)!.retryIn}${useViewModel.countDown}',
                               )
-                            : ParagraphText(AppLocalizations.of(context)!
-                                .didnottreceivetheOtphi);
+                            : ParagraphText(
+                                AppLocalizations.of(context)!
+                                    .didnottreceivetheOtphi,
+                              );
                       }),
                     ],
                   ),
@@ -158,7 +161,7 @@ class OtpVerification extends HookWidget {
                       builder: (context, provider, child) {
                     return CustomElevatedButton(
                       loading: provider.loading,
-                      title: AppLocalizations.of(context)!.verifyProcesshi,
+                      title: AppLocalizations.of(context)!.continueTexthi,
                       width: dimension["width"]! - 32,
                       onPress: () => provider.verifyOTPCode(
                           provider.verificationIdToken, provider.otp, context),

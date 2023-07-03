@@ -1,11 +1,13 @@
 import 'dart:async';
+
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreatePostModel with ChangeNotifier {
   final _homeTabViewModel = HomeTabViewModel();
@@ -52,7 +54,8 @@ class CreatePostModel with ChangeNotifier {
       categoryLoading = false;
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -101,7 +104,8 @@ class CreatePostModel with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -122,19 +126,20 @@ class CreatePostModel with ChangeNotifier {
             goBack(context);
             setloading(false);
             Utils.flushBarErrorMessage(
-                AppLocalizations.of(context)!.postCreated,
-                AppLocalizations.of(context)!.adminVerify,
+                AppLocalizations.of(context)!.postCreatedhi,
+                AppLocalizations.of(context)!.adminVerifyhi,
                 context);
             reinitialize();
           });
         }
       } else {
-        Utils.flushBarErrorMessage("Alert", "Something went wrong", context);
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.somethingWentWronghi, context);
       }
     } else {
       setloading(false);
       Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
-          AppLocalizations.of(context)!.fillAllDetails, context);
+          AppLocalizations.of(context)!.fillAllDetailshi, context);
     }
   }
 }

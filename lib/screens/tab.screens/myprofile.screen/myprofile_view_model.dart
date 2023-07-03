@@ -2,7 +2,7 @@ import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/repository/myprofile.repo/myprofile_tab_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/utils.dart';
 import '../hometab.screen/hometab_view_model.dart';
 
@@ -71,7 +71,8 @@ class MyProfileViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -81,7 +82,8 @@ class MyProfileViewModel with ChangeNotifier {
       bookMarkFeedList = data['timelineFeeds'];
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -116,7 +118,8 @@ class MyProfileViewModel with ChangeNotifier {
       await HomeTabRepository().toggleLike(id);
     } catch (error) {
       if (kDebugMode) {
-        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
       }
     }
   }
@@ -141,7 +144,8 @@ class MyProfileViewModel with ChangeNotifier {
     } catch (error) {
       setBookMarkLoader(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
       }
     }
   }
