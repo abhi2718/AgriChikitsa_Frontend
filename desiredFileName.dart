@@ -60,6 +60,7 @@
     "somethingWentWronghi",
     "noCommenthi",
     "nameReuiredhi",
-    "emailRequiredhi"
+    "emailRequiredhi",
+    "noJankariAddhi"
   ]
 }
