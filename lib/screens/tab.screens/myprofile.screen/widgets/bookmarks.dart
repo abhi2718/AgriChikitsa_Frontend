@@ -86,6 +86,9 @@ class BookmarkFeed extends HookWidget {
       if (homeViewModel.increaseCommentNumber["id"] == feed['_id']) {
         final count = homeViewModel.increaseCommentNumber["count"];
         numberOfComments.value = count;
+        Future.delayed(Duration.zero, () {
+          homeViewModel.setIncreaseCommentNumber(0, "");
+        });
       }
     }, [homeViewModel.increaseCommentNumber]);
     return Container(

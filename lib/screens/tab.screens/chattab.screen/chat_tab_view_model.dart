@@ -77,7 +77,7 @@ class ChatTabViewModel with ChangeNotifier {
     if (chatMessages.isEmpty) {
       chatMessages.add(questions[0]);
       showFirstBubbleLoader = true;
-      final t1 = Timer(const Duration(seconds: 2), () {
+      final t1 = Timer(const Duration(seconds: 1), () {
         fetchFirstQuestion(context, "1");
       });
       timmerInstances.add(t1);
@@ -104,7 +104,7 @@ class ChatTabViewModel with ChangeNotifier {
       showFirstBubbleLoader = false;
       showSecondBubbleLoader = true;
       notifyListeners();
-      final t2 = Timer(const Duration(seconds: 2), () {
+      final t2 = Timer(const Duration(seconds: 1), () {
         fetchSecondQuestion(context, "2");
       });
       timmerInstances.add(t2);
@@ -146,7 +146,7 @@ class ChatTabViewModel with ChangeNotifier {
   void loadQuestionFour(context) {
     showThirdLoader = true;
     notifyListeners();
-    final t4 = Timer(const Duration(seconds: 2), () {
+    final t4 = Timer(const Duration(seconds: 1), () {
       fetchThirdQuestion(context, "3");
       questionIndex = 3;
       notifyListeners();
@@ -182,7 +182,7 @@ class ChatTabViewModel with ChangeNotifier {
     chatMessages = updatedChatMessages.toList();
     showFourthLoader = true;
     notifyListeners();
-    final t5 = Timer(const Duration(seconds: 2), () {
+    final t5 = Timer(const Duration(seconds: 1), () {
       fetchFouthQuestion(context, "4");
       questionIndex = 5;
       notifyListeners();
@@ -219,7 +219,7 @@ class ChatTabViewModel with ChangeNotifier {
     chatMessages = updatedChatMessages.toList();
     showFifthBubbleLoader = true;
     notifyListeners();
-    final t6 = Timer(const Duration(seconds: 2), () {
+    final t6 = Timer(const Duration(seconds: 1), () {
       fetchFifthQuestion(context, disease);
     });
     timmerInstances.add(t6);
@@ -237,7 +237,7 @@ class ChatTabViewModel with ChangeNotifier {
             question["showCameraIcon"] == null ? false : true;
         if (!isToShowCameraIcon) {
           showSixthBubbleLoader = true;
-          final t7 = Timer(const Duration(seconds: 2), () {
+          final t7 = Timer(const Duration(seconds: 1), () {
             fetchSixthQuestion(context, '6${question["id"]}');
           });
           timmerInstances.add(t7);
@@ -283,7 +283,7 @@ class ChatTabViewModel with ChangeNotifier {
         questionIndex = 4;
         showFourthLoader = true;
         notifyListeners();
-        final t5 = Timer(const Duration(seconds: 2), () {
+        final t5 = Timer(const Duration(seconds: 1), () {
           questionIndex = 5;
           notifyListeners();
         });
@@ -310,7 +310,7 @@ class ChatTabViewModel with ChangeNotifier {
         showSixthBubbleLoader = true;
         showLastMessage = true;
         notifyListeners();
-        final t7 = Timer(const Duration(seconds: 2), () {
+        final t7 = Timer(const Duration(seconds: 1), () {
           chatMessages.add(
             {
               "id": "7",
@@ -350,7 +350,7 @@ class ChatTabViewModel with ChangeNotifier {
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
         notifyListeners();
-        final t8 = Timer(const Duration(seconds: 2), () {
+        final t8 = Timer(const Duration(seconds: 1), () {
           chatMessages.add(
             {
               "id": "8",
@@ -394,7 +394,7 @@ class ChatTabViewModel with ChangeNotifier {
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
         notifyListeners();
-        final t8 = Timer(const Duration(seconds: 2), () {
+        final t8 = Timer(const Duration(seconds: 1), () {
           chatMessages.add(
             {
               "id": "8",
