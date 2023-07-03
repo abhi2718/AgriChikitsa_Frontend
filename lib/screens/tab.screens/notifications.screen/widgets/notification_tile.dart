@@ -84,14 +84,19 @@ class NotificationTile extends HookWidget {
                                 )),
                             InkWell(
                               onTap: () {
-                                final splitUrl =
-                                    notificationItem['url'].split('//');
-                                final protocol = splitUrl[0].split(':')[0];
-                                final domainSplit = splitUrl[1].split('/');
-                                final path =
-                                    splitUrl[1].split('${domainSplit[0]}/')[1];
-                                useViewModel.openLink(
-                                    context, protocol, domainSplit[0], path);
+                                // final splitUrl =
+                                //     notificationItem['url'].split('//');
+                                // final protocol = splitUrl[0].split(':')[0];
+                                // final domainSplit = splitUrl[1].split('/');
+                                // final path =
+                                //     splitUrl[1].split('${domainSplit[0]}/')[1];
+                                // useViewModel.openLink(
+                                //     context,
+                                //     protocol,
+                                //     domainSplit[0],
+                                //     path,);
+                                useViewModel.openURL(
+                                    context, notificationItem['url']);
                               },
                               child: Container(
                                 padding:

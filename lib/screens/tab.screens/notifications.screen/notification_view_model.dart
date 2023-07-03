@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/utils.dart';
 
@@ -20,6 +21,15 @@ class NotificationViewModel with ChangeNotifier {
     try {
       final Uri toLaunch = Uri(scheme: scheme, host: host, path: '/$path');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
+    } catch (error) {
+      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+    }
+  }
+
+  void openURL(BuildContext context, String link) {
+    try {
+      final Uri pathToLaunch = Uri.parse(link);
+      launchUrl(pathToLaunch);
     } catch (error) {
       Utils.flushBarErrorMessage("Alert!", error.toString(), context);
     }
