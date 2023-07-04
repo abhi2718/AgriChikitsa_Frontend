@@ -85,6 +85,14 @@ class EditProfileScreen extends HookWidget {
                           initialValue: user.name!,
                           validator: (value) =>
                               useViewModel.nameFieldValidator(context, value),
+                          onChanged: (value) {
+                            useViewModel.onSavedNameField(value);
+                          },
+                          onEditingComplete: () {
+                            useViewModel.onSavedNameField;
+                          },
+                          onTapOutside: (_) =>
+                              FocusManager.instance.primaryFocus?.unfocus(),
                           onSaved: useViewModel.onSavedNameField,
                           onFieldSubmitted: (_) {
                             Utils.fieldFocusChange(

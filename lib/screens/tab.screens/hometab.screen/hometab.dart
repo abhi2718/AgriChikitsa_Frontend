@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/create_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
@@ -46,7 +47,7 @@ class HomeTabScreen1 extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final notificationViewModel = useMemoized(
         () => Provider.of<NotificationViewModel>(context, listen: false));
-         
+
     useEffect(() {
       useViewModel.getFCM(notificationViewModel);
       useViewModel.getUserProfile(authService);
@@ -80,6 +81,7 @@ class HomeTabScreen1 extends HookWidget {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: AppColor.notificationBgColor,
         body: Column(
           children: [
             const HeaderWidget(),

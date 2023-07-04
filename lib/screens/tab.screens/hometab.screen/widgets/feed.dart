@@ -89,6 +89,7 @@ class Feed extends HookWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Card(
+          elevation: 3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -162,7 +163,7 @@ class Feed extends HookWidget {
                 errorWidget: (context, url, error) => const Icon(Icons.error),
                 width: dimension["width"]! - 16,
                 fit: BoxFit.fill,
-                height: 240,
+                height: 300,
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -231,47 +232,47 @@ class Feed extends HookWidget {
               const SizedBox(
                 height: 16,
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 40,
-                child: InkWell(
-                  onTap: () {
-                    Utils.model(
-                        context,
-                        UserComment(
-                          feedId: feed["_id"],
-                          setNumberOfComment: setNumberOfComment,
-                        ));
-                  },
-                  child: Container(
-                    height: 40,
-                    width: dimension['width']! - 52,
-                    decoration: const BoxDecoration(
-                      color: Color(0xffd9d9d9),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20.0),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16),
-                          child: BaseText(
-                            title: AppLocalizations.of(context)!.addACommenthi,
-                            style: const TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
+              // Container(
+              //   padding: const EdgeInsets.symmetric(horizontal: 16),
+              //   height: 40,
+              //   child: InkWell(
+              //     onTap: () {
+              //       Utils.model(
+              //           context,
+              //           UserComment(
+              //             feedId: feed["_id"],
+              //             setNumberOfComment: setNumberOfComment,
+              //           ));
+              //     },
+              //     child: Container(
+              //       height: 40,
+              //       width: dimension['width']! - 52,
+              //       decoration: const BoxDecoration(
+              //         color: Color(0xffd9d9d9),
+              //         borderRadius: BorderRadius.all(
+              //           Radius.circular(20.0),
+              //         ),
+              //       ),
+              //       child: Column(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           Padding(
+              //             padding: const EdgeInsets.only(left: 16),
+              //             child: BaseText(
+              //               title: AppLocalizations.of(context)!.addACommenthi,
+              //               style: const TextStyle(
+              //                   fontSize: 12, fontWeight: FontWeight.w700),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 16,
+              // ),
             ],
           ),
         ),

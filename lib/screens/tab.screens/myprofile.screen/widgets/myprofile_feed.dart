@@ -13,7 +13,6 @@ import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 
-
 class MyProfileFeed extends HookWidget {
   final feed;
 
@@ -21,7 +20,6 @@ class MyProfileFeed extends HookWidget {
     super.key,
     required this.feed,
   });
-
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -83,7 +81,6 @@ class MyProfileFeed extends HookWidget {
       }
     }, [homeViewModel.increaseCommentNumber]);
 
-   
     return Container(
       margin: const EdgeInsets.only(top: 10),
       child: Padding(

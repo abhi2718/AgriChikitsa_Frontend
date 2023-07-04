@@ -18,7 +18,7 @@ class CreatePostModel with ChangeNotifier {
   var fetchMyPost = false;
   dynamic imagePicked;
   String currentSelectedCategory = "";
-  var categoryLoading = true;
+  // var categoryLoading = true;
 
   Map<String, String> dropdownOptions = {};
   var imagePath = "";
@@ -42,17 +42,11 @@ class CreatePostModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void fetchFeedsCategory(BuildContext context) async {
+  void fetchFeedsCategory(
+      BuildContext context, HomeTabViewModel homeTabViewModel) async {
     try {
-      final data = await HomeTabRepository().fetchFeedsCatogory();
-      categoriesList = data['categories']
-          .map((data) => CategoryHome(
-                id: data['_id'],
-                name: data['category'],
-              ))
-          .toList();
-      categoryLoading = false;
-      notifyListeners();
+      categoriesList = List.from(homeTabViewModel.categoriesList);
+      categoriesList.removeWhere((item) => item.name == "All");
     } catch (error) {
       Utils.flushBarErrorMessage(
           AppLocalizations.of(context)!.alerthi, error.toString(), context);
@@ -67,7 +61,6 @@ class CreatePostModel with ChangeNotifier {
       caption = "";
       currentSelectedCategory = "";
       buttonloading = false;
-      categoryLoading = true;
     });
   }
 

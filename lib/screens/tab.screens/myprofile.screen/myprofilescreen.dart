@@ -37,6 +37,10 @@ class MyProfileScreen extends HookWidget {
         });
       }
     }, [createPostModel.fetchMyPost]);
+    Future refresh() async {
+      useViewModel.fetchFeeds(context);
+    }
+
     return DefaultTabController(
       length: 2,
       child: SafeArea(
@@ -105,15 +109,18 @@ class MyProfileScreen extends HookWidget {
                                   )
                                 ],
                               )
-                            : SizedBox(
-                                height: dimension['height']! - 100,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: provider.feedList.length,
-                                  itemBuilder: (context, index) {
-                                    final feed = provider.feedList[index];
-                                    return MyProfileFeed(feed: feed);
-                                  },
+                            : RefreshIndicator(
+                                onRefresh: refresh,
+                                child: SizedBox(
+                                  height: dimension['height']! - 100,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: provider.feedList.length,
+                                    itemBuilder: (context, index) {
+                                      final feed = provider.feedList[index];
+                                      return MyProfileFeed(feed: feed);
+                                    },
+                                  ),
                                 ),
                               );
               }),
@@ -128,7 +135,8 @@ class MyProfileScreen extends HookWidget {
                             height: dimension['height']! - 100,
                             child: SingleChildScrollView(
                               child: Column(
-                                children: provider.bookMarkFeedList.map((feed) {
+                                children: provider.bookMarkFeedList.reversed
+                                    .map((feed) {
                                   return BookmarkFeed(
                                     key: ObjectKey(feed["_id"]),
                                     feed: feed,

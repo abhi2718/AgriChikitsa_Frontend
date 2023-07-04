@@ -34,7 +34,7 @@ class CategoryButton extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                category.name,
+                category.nameHi,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,

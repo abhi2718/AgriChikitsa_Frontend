@@ -140,6 +140,7 @@ class HomeTabViewModel with ChangeNotifier {
       categoriesList = [
         CategoryHome(
           name: "All",
+          nameHi: "सभी",
           id: "All",
           isActive: false,
         ),
@@ -158,6 +159,7 @@ class HomeTabViewModel with ChangeNotifier {
     return List<CategoryHome>.from(categories.map((category) {
       return CategoryHome(
         name: category['category'],
+        nameHi: category['categoryInHindi'],
         id: category['_id'],
         isActive: false,
       );

@@ -11,6 +11,9 @@ class Input extends StatelessWidget {
   final Widget suffixIcon;
   final TextInputAction textInputAction;
   final void Function(String)? onFieldSubmitted;
+  final void Function(String)? onChanged;
+  final void Function()? onEditingComplete;
+  final void Function(PointerDownEvent)? onTapOutside;
   final String initialValue;
   final bool autoFocus;
   final FocusNode? focusNode;
@@ -24,6 +27,9 @@ class Input extends StatelessWidget {
       this.suffixIcon = const SizedBox(),
       this.textInputAction = TextInputAction.done,
       this.onFieldSubmitted,
+      this.onChanged,
+      this.onEditingComplete,
+      this.onTapOutside,
       this.autoFocus = false,
       this.initialValue = '',
       this.focusNode});
@@ -40,6 +46,9 @@ class Input extends StatelessWidget {
       obscureText: obscureText,
       textInputAction: textInputAction,
       onFieldSubmitted: onFieldSubmitted,
+      onEditingComplete: onEditingComplete,
+      onChanged: onChanged,
+      onTapOutside: onTapOutside,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         suffixIconColor: AppColor.darkColor,

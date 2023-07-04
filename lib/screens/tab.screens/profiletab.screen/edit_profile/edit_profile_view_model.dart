@@ -90,12 +90,16 @@ class EditProfileViewModel with ChangeNotifier {
   }
 
   void saveForm(BuildContext context, User user, AuthService authService) {
-    final isValid = editUserformKey.currentState?.validate();
-    if (!isValid!) {
-      return;
-    }
-    editUserformKey.currentState?.save();
-    final userInfo = {"name": userName, "email": email, "_id": user.sId};
+    // final isValid = editUserformKey.currentState?.validate();
+    // if (!isValid!) {
+    //   return;
+    // }
+    // editUserformKey.currentState?.save();
+    final userInfo = {
+      "name": userName,
+      "email": email.isEmpty ? "" : email,
+      "_id": user.sId
+    };
     updateProfile(userInfo, context, authService);
   }
 

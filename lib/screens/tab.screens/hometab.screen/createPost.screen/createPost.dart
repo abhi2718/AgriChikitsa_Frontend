@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,9 +22,11 @@ class CreatePostScreen extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel =
         useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
+    final hometabViewModel = useMemoized(
+        () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
-      useViewModel.fetchFeedsCategory(context);
+      useViewModel.fetchFeedsCategory(context, hometabViewModel);
     }, []);
 
     return Scaffold(
@@ -64,9 +67,10 @@ class CreatePostScreen extends HookWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset('assets/icons/gallery.png',
-                                width: 26,
-                                height: 26,
+                                Image.asset(
+                                  'assets/icons/gallery.png',
+                                  width: 26,
+                                  height: 26,
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -89,6 +93,7 @@ class CreatePostScreen extends HookWidget {
                 height: 10,
               ),
               TextField(
+                maxLength: 225,
                 controller: useViewModel.captionController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.enterCaptionhi,
@@ -128,37 +133,21 @@ class CreatePostScreen extends HookWidget {
                   height: 30,
                   child: Consumer<CreatePostModel>(
                     builder: (context, provider, child) {
-                      return provider.categoryLoading
-                          ? ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 10,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  width: 100,
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  child: Skeleton(
-                                    height: 10,
-                                    width: 100,
-                                    radius: 10,
-                                  ),
+                      return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: provider.categoriesList.length,
+                          itemBuilder: (context, index) {
+                            return CategoryButton(
+                              category: provider.categoriesList[index],
+                              onTap: () {
+                                provider.setActiveState(
+                                  context,
+                                  provider.categoriesList[index],
+                                  provider.categoriesList[index].isActive,
                                 );
-                              })
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: provider.categoriesList.length,
-                              itemBuilder: (context, index) {
-                                return CategoryButton(
-                                  category: provider.categoriesList[index],
-                                  onTap: () {
-                                    provider.setActiveState(
-                                      context,
-                                      provider.categoriesList[index],
-                                      provider.categoriesList[index].isActive,
-                                    );
-                                  },
-                                );
-                              });
+                              },
+                            );
+                          });
                     },
                   ),
                 ),

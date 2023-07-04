@@ -61,19 +61,31 @@ class ChatTabScreen extends HookWidget {
                                     useViewModel.uploadImage(context);
                                   }
                                 },
-                                child: Image.asset(
-                                  'assets/icons/camera.png',
-                                  width: 26,
-                                  height: 26,
-                                )),
+                                child: provider.showCameraButton
+                                    ? Image.asset(
+                                        'assets/icons/camera.png',
+                                        width: 26,
+                                        height: 26,
+                                      )
+                                    : const Icon(
+                                        Icons.no_photography_rounded,
+                                        color: AppColor.iconColor,
+                                        size: 30,
+                                      )),
                             InkWell(
                                 onTap: () {
                                   if (useViewModel.showCameraButton) {
                                     useViewModel.uploadGallery(context);
                                   }
                                 },
-                                child: Image.asset('assets/icons/gallery.png',
-                                    width: 24, height: 24)),
+                                child: provider.showCameraButton
+                                    ? Image.asset('assets/icons/gallery.png',
+                                        width: 24, height: 24)
+                                    : const Icon(
+                                        Icons.hide_image,
+                                        color: AppColor.iconColor,
+                                        size: 30,
+                                      )),
                             SizedBox(
                               width: dimension['width']! - 160,
                               child: TextField(
