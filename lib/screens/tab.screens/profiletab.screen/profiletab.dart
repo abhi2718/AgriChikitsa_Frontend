@@ -104,7 +104,7 @@ class ProfileTabScreen extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
-                onPress: () => Utils.launchDialer('8318064327'),
+                onPress: () => Utils.launchDialer('7879810802'),
                 leftIcon: "assets/images/calladd.png",
                 title: AppLocalizations.of(context)!.contactsupporthi,
                 width: dimension["width"]! - 32,

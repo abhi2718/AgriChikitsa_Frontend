@@ -38,8 +38,10 @@ class ProfileViewModel with ChangeNotifier {
 
   void openTermsAndConditions(BuildContext context) {
     try {
-      final Uri toLaunch =
-          Uri(scheme: 'https', host: 'www.cylog.org', path: 'headers/');
+      final Uri toLaunch = Uri(
+          scheme: 'https',
+          host: 'agrichikitsa.org',
+          path: '/termsAndCondition');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
       Utils.flushBarErrorMessage(
@@ -49,8 +51,8 @@ class ProfileViewModel with ChangeNotifier {
 
   void openPrivacyPolicy(BuildContext context) {
     try {
-      final Uri toLaunch =
-          Uri(scheme: 'https', host: 'www.cylog.org', path: 'headers/');
+      final Uri toLaunch = Uri(
+          scheme: 'https', host: 'agrichikitsa.org', path: '/privicyPolicy');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
       Utils.flushBarErrorMessage(

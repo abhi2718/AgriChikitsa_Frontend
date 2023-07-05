@@ -94,6 +94,21 @@ class LandingAuthScreen extends HookWidget {
                               width: 5,
                             ),
                             InkWell(
+                              onTap: () {
+                                try {
+                                  final Uri toLaunch = Uri(
+                                      scheme: 'https',
+                                      host: 'agrichikitsa.org',
+                                      path: '/termsAndCondition');
+                                  Utils.launchInWebViewWithoutJavaScript(
+                                      toLaunch);
+                                } catch (error) {
+                                  Utils.flushBarErrorMessage(
+                                      AppLocalizations.of(context)!.alerthi,
+                                      error.toString(),
+                                      context);
+                                }
+                              },
                               child: ParagraphHeadingText(
                                   AppLocalizations.of(context)!
                                       .termsandConditionhi),
