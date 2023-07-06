@@ -192,7 +192,7 @@ class SubCategoryContainer extends HookWidget {
                                                     (context, url, error) =>
                                                         const Icon(Icons.error),
                                                 width: 40,
-                                                fit: BoxFit.cover,
+                                                fit: BoxFit.fill,
                                                 height: 40,
                                               ),
                                             ),

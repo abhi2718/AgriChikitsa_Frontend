@@ -48,7 +48,7 @@ class JankariCard extends HookWidget {
                 CachedNetworkImage(
                   imageUrl:
                       'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage',
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                   placeholder: (context, url) => Skeleton(
                     height: dimension['height']! * 0.16,
                     width: dimension['width']!,

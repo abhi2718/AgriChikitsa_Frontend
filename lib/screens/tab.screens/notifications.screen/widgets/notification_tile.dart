@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';
@@ -85,14 +86,15 @@ class NotificationTile extends HookWidget {
                                 )),
                             InkWell(
                               onTap: () {
-                                final splitUrl =
-                                    notificationItem['url'].split('//');
-                                final protocol = splitUrl[0].split(':')[0];
-                                final domainSplit = splitUrl[1].split('/');
-                                final path =
-                                    splitUrl[1].split('${domainSplit[0]}/')[1];
-                                useViewModel.openLink(
-                                    context, protocol, domainSplit[0], path);
+                                // final splitUrl =
+                                //     notificationItem['url'].split('//');
+                                // final protocol = splitUrl[0].split(':')[0];
+                                // final domainSplit = splitUrl[1].split('/');
+                                // final path =
+                                //     splitUrl[1].split('${domainSplit[0]}/')[1];
+                                // useViewModel.openLink(
+                                //     context, protocol, domainSplit[0], path);
+                                launchUrl(Uri.parse(notificationItem['url']));
                               },
                               child: Container(
                                 padding:
