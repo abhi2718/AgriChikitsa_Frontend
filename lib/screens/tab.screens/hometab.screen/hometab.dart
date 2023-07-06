@@ -5,6 +5,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dar
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -156,27 +157,36 @@ class HomeTabScreen1 extends HookWidget {
                           ),
                         ),
                       )
-                    : SizedBox(
-                        height: dimension['height']! - 100,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              const CreatePostCard(),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: provider.feedList.length,
-                                itemBuilder: (context, index) {
-                                  final feed = provider.feedList[index];
-                                  return Feed(
-                                    feed: feed,
-                                  );
-                                },
+                    : provider.feedList.isEmpty
+                        ? SizedBox(
+                            height: dimension['height']! - 100,
+                            child: Center(
+                              child: Text(
+                                  AppLocalizations.of(context)!.nopostYethi),
+                            ),
+                          )
+                        : SizedBox(
+                            height: dimension['height']! - 100,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  const CreatePostCard(),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: provider.feedList.length,
+                                    itemBuilder: (context, index) {
+                                      final feed = provider.feedList[index];
+                                      return Feed(
+                                        feed: feed,
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      );
+                            ),
+                          );
               }),
             ),
           ],

@@ -152,14 +152,14 @@ class MyProfileFeed extends HookWidget {
                 imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
                 progressIndicatorBuilder: (context, url, downloadProgress) =>
                     Skeleton(
-                  height: 240,
+                  height: 300,
                   width: dimension["width"]! - 16,
                   radius: 0,
                 ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
                 width: dimension["width"]! - 16,
                 fit: BoxFit.fill,
-                height: 240,
+                height: 300,
               ),
               Consumer<HomeTabViewModel>(builder: (context, provider, child) {
                 return Padding(

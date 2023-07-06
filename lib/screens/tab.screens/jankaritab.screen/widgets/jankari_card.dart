@@ -85,7 +85,7 @@ class JankariCard extends HookWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             BaseText(
-                              title: jankari.name,
+                              title: jankari.hindiName,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -94,7 +94,7 @@ class JankariCard extends HookWidget {
                             ),
                             const SizedBox(height: 5),
                             BaseText(
-                              title: jankari.description,
+                              title: jankari.hindiDescription,
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,

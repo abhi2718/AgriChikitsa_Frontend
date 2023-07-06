@@ -156,7 +156,7 @@ class Feed extends HookWidget {
                 imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
                 progressIndicatorBuilder: (context, url, downloadProgress) =>
                     Skeleton(
-                  height: 240,
+                  height: 300,
                   width: dimension["width"]! - 16,
                   radius: 0,
                 ),
@@ -232,47 +232,6 @@ class Feed extends HookWidget {
               const SizedBox(
                 height: 16,
               ),
-              // Container(
-              //   padding: const EdgeInsets.symmetric(horizontal: 16),
-              //   height: 40,
-              //   child: InkWell(
-              //     onTap: () {
-              //       Utils.model(
-              //           context,
-              //           UserComment(
-              //             feedId: feed["_id"],
-              //             setNumberOfComment: setNumberOfComment,
-              //           ));
-              //     },
-              //     child: Container(
-              //       height: 40,
-              //       width: dimension['width']! - 52,
-              //       decoration: const BoxDecoration(
-              //         color: Color(0xffd9d9d9),
-              //         borderRadius: BorderRadius.all(
-              //           Radius.circular(20.0),
-              //         ),
-              //       ),
-              //       child: Column(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           Padding(
-              //             padding: const EdgeInsets.only(left: 16),
-              //             child: BaseText(
-              //               title: AppLocalizations.of(context)!.addACommenthi,
-              //               style: const TextStyle(
-              //                   fontSize: 12, fontWeight: FontWeight.w700),
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 16,
-              // ),
             ],
           ),
         ),

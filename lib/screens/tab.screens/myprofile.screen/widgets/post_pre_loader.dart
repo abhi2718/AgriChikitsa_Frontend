@@ -54,7 +54,7 @@ class PreLoader extends StatelessWidget {
                     ),
                   ),
                   Skeleton(
-                    height: 240,
+                    height: 300,
                     width: dimension['width']! - 16,
                     radius: 0,
                   ),

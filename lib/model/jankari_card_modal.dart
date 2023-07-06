@@ -1,7 +1,9 @@
 class JankariCategoryModal {
   final String id;
   final String name;
+  final String hindiName;
   final String description;
+  final String hindiDescription;
   final String backgroundImage;
   final String icon;
   final String createdAt;
@@ -11,7 +13,9 @@ class JankariCategoryModal {
   JankariCategoryModal({
     required this.id,
     required this.name,
+    required this.hindiName,
     required this.description,
+    required this.hindiDescription,
     required this.backgroundImage,
     required this.icon,
     required this.createdAt,
@@ -23,7 +27,9 @@ class JankariCategoryModal {
     return JankariCategoryModal(
       id: json['_id'],
       name: json['name'],
+      hindiName: json['hindiName'],
       description: json['description'],
+      hindiDescription: json['hindiDescription'],
       backgroundImage: json['backgroundImage'],
       icon: json['icon'],
       createdAt: json['createdAt'],

@@ -34,7 +34,7 @@ class JankariSubCategoryButton extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                category.name,
+                category.hindiName,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,

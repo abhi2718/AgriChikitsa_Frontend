@@ -29,7 +29,7 @@ class CreatePostCard extends HookWidget {
       child: Card(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-          height: dimension['height']! * 0.15,
+          height: dimension['height']! * 0.16,
           width: dimension['width'],
           child: Column(children: [
             Padding(
@@ -68,10 +68,7 @@ class CreatePostCard extends HookWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                top: 10,
-                right: 5,
-              ),
+              padding: const EdgeInsets.only(top: 10, right: 5, bottom: 2),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,

@@ -177,7 +177,7 @@ class JankariPost extends HookWidget {
                                     BaseText(
                                         title: provider
                                             .jankariSubcategoryPostList[index]
-                                            .title,
+                                            .hindiTitle,
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold)),
@@ -187,7 +187,7 @@ class JankariPost extends HookWidget {
                                     BaseText(
                                         title: provider
                                             .jankariSubcategoryPostList[index]
-                                            .description,
+                                            .hindiDescription,
                                         style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w300)),

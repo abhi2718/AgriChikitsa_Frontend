@@ -87,17 +87,6 @@ class FeedLoader extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: Skeleton(
-                height: 40,
-                width: dimension['width']!,
-                radius: 20,
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
           ],
         ),
       ),

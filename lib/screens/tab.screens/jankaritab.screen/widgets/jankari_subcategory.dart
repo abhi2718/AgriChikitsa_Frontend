@@ -66,44 +66,24 @@ class SubCategoryContainer extends HookWidget {
                     ),
                     Consumer<JankariViewModel>(
                       builder: (context, provider, child) {
-                        return provider.loading
-                            ? SizedBox(
-                                height: 30,
-                                width: dimension['width']!,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: 8,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        margin: const EdgeInsets.only(right: 8),
-                                        width: 80,
-                                        child: Skeleton(
-                                          height: 10,
-                                          width: 40,
-                                          radius: 8,
-                                        ),
-                                      );
-                                    }),
-                              )
-                            : SizedBox(
-                                height: 30,
-                                width: dimension["width"],
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: provider.jankaricardList.length,
-                                    itemBuilder: (context, index) {
-                                      return JankariSubCategoryButton(
-                                        category:
-                                            provider.jankaricardList[index],
-                                        onTap: () {
-                                          provider.setActiveState(
-                                            context,
-                                            provider.jankaricardList[index],
-                                          );
-                                        },
-                                      );
-                                    }),
-                              );
+                        return SizedBox(
+                          height: 30,
+                          width: dimension["width"],
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: provider.jankaricardList.length,
+                              itemBuilder: (context, index) {
+                                return JankariSubCategoryButton(
+                                  category: provider.jankaricardList[index],
+                                  onTap: () {
+                                    provider.setActiveState(
+                                      context,
+                                      provider.jankaricardList[index],
+                                    );
+                                  },
+                                );
+                              }),
+                        );
                       },
                     ),
                   ],
@@ -185,7 +165,7 @@ class SubCategoryContainer extends HookWidget {
                                             JankariSubCategoryPost(
                                               subCategoryTitle: provider
                                                   .jankariSubcategoryList[index]
-                                                  .name,
+                                                  .hindiName,
                                             ));
                                       },
                                       child: Container(
@@ -231,7 +211,8 @@ class SubCategoryContainer extends HookWidget {
                                             Container(
                                               alignment: Alignment.center,
                                               child: Center(
-                                                child: subCategory.name.length >
+                                                child: subCategory
+                                                            .hindiName.length >
                                                         8
                                                     ? Padding(
                                                         padding:
@@ -239,8 +220,8 @@ class SubCategoryContainer extends HookWidget {
                                                                     .symmetric(
                                                                 horizontal: 20),
                                                         child: BaseText(
-                                                          title:
-                                                              subCategory.name,
+                                                          title: subCategory
+                                                              .hindiName,
                                                           style: const TextStyle(
                                                               color: AppColor
                                                                   .whiteColor,
@@ -251,7 +232,8 @@ class SubCategoryContainer extends HookWidget {
                                                         ),
                                                       )
                                                     : BaseText(
-                                                        title: subCategory.name,
+                                                        title: subCategory
+                                                            .hindiName,
                                                         style: const TextStyle(
                                                             color: AppColor
                                                                 .whiteColor,
