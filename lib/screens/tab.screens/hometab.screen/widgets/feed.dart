@@ -9,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
-
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
 import '../../myprofile.screen/myprofile_view_model.dart';
@@ -80,6 +79,7 @@ class Feed extends HookWidget {
         });
       }
     }, [myProfileViewModel.toogleHomeFeed]);
+
     final user = feed['user'];
     final profileImage = user['profileImage'].split(
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
@@ -152,18 +152,20 @@ class Feed extends HookWidget {
                   ],
                 ),
               ),
-              CachedNetworkImage(
-                imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    Skeleton(
-                  height: 300,
-                  width: dimension["width"]! - 16,
-                  radius: 0,
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+              SizedBox(
+                height: dimension["width"]! - 16,
                 width: dimension["width"]! - 16,
-                fit: BoxFit.fill,
-                height: 300,
+                child: CachedNetworkImage(
+                  imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Skeleton(
+                    height: dimension["width"]! - 16,
+                    width: dimension["width"]! - 16,
+                    radius: 0,
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  fit: BoxFit.fill,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
