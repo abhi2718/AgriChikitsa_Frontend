@@ -236,14 +236,35 @@ class MyProfileFeed extends HookWidget {
                       ]),
                 );
               }),
-              feed['caption'] != null
+              feed["hindiCaption"] != null
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: BaseText(
-                        title: feed["caption"],
-                        style: const TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
-                        textAlign: TextAlign.start,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            feed["hindiCaption"],
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            maxLines: useViewModel.isExpandedMyPost(feed['_id'])
+                                ? null
+                                : 2,
+                          ),
+                          if (feed["hindiCaption"].length > 140)
+                            InkWell(
+                              onTap: () =>
+                                  useViewModel.toggleExpandMyPosts(feed['_id']),
+                              child: useViewModel.isExpandedMyPost(feed['_id'])
+                                  ? Container()
+                                  : const BaseText(
+                                      title: "Read More",
+                                      style: TextStyle(
+                                          color: AppColor.hyperlinkColor),
+                                    ),
+                            ),
+                        ],
                       ),
                     )
                   : Container(),

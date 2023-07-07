@@ -35,7 +35,6 @@ class Feed extends HookWidget {
     final numberOfComments = useState(feed['comments'].length);
     final imageName = feed['imgurl'].split(
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-
     useEffect(() {
       if (myProfileViewModel.unBookMarkedFeedData["id"] == feed["_id"]) {
         isBookMarked.value = false;
@@ -79,7 +78,6 @@ class Feed extends HookWidget {
         });
       }
     }, [myProfileViewModel.toogleHomeFeed]);
-
     final user = feed['user'];
     final profileImage = user['profileImage'].split(
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
@@ -221,13 +219,34 @@ class Feed extends HookWidget {
                       )
                     ]),
               ),
-              feed["caption"] != null
+              feed["hindiCaption"] != null
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: BaseText(
-                        title: feed["caption"],
-                        style: const TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            feed["hindiCaption"],
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            maxLines:
+                                useViewModel.isExpanded(feed['_id']) ? null : 2,
+                          ),
+                          if (feed["hindiCaption"].length > 140)
+                            InkWell(
+                              onTap: () =>
+                                  useViewModel.toggleExpand(feed['_id']),
+                              child: useViewModel.isExpanded(feed['_id'])
+                                  ? Container()
+                                  : const BaseText(
+                                      title: "Read More",
+                                      style: TextStyle(
+                                          color: AppColor.hyperlinkColor),
+                                    ),
+                            ),
+                        ],
                       ),
                     )
                   : Container(),

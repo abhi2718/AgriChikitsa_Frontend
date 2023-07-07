@@ -16,12 +16,32 @@ class MyProfileViewModel with ChangeNotifier {
   var unBookMarkedFeedData = {"unBookMarked": false, "id": ""};
   var isUserSwitchTheTab = false;
   var toogleHomeFeed = {"isLiked": false, "id": ""};
+  List<String> expandedBookMarkFeeds = [];
+  List<String> expandedMyPosts = [];
   bool get loading {
     return _loading;
   }
 
   setloading(bool value) {
     _loading = value;
+  }
+
+  bool isExpandedBookMarkFeed(String id) {
+    return expandedBookMarkFeeds.contains(id);
+  }
+
+  void toggleExpandBookMarkFeed(String id) {
+    expandedBookMarkFeeds.add(id);
+    notifyListeners();
+  }
+
+  bool isExpandedMyPost(String id) {
+    return expandedMyPosts.contains(id);
+  }
+
+  void toggleExpandMyPosts(String id) {
+    expandedMyPosts.add(id);
+    notifyListeners();
   }
 
   void setToogleHomeFeed(bool flag, String id) {
@@ -52,6 +72,8 @@ class MyProfileViewModel with ChangeNotifier {
   void disposeValues() {
     feedList = [];
     bookMarkFeedList = [];
+    expandedBookMarkFeeds.clear();
+    expandedMyPosts.clear();
     commentLoading = true;
     _loading = false;
     bookMarkLoader = false;
@@ -65,6 +87,7 @@ class MyProfileViewModel with ChangeNotifier {
   void fetchFeeds(BuildContext context) async {
     setloading(true);
     try {
+      expandedMyPosts.clear();
       final data = await _myProfileTabRepository.fetchFeeds();
       feedList = data['feeds'];
       setloading(false);
@@ -80,6 +103,7 @@ class MyProfileViewModel with ChangeNotifier {
 
   void fetchTimeline(BuildContext context) async {
     try {
+      expandedBookMarkFeeds.clear();
       final data = await _myProfileTabRepository.fetchTimeLine();
       bookMarkFeedList = data['timelineFeeds'];
       notifyListeners();
@@ -151,6 +175,7 @@ class MyProfileViewModel with ChangeNotifier {
           homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
       if (indexFeed != -1) {
         setRemoveFeedFromHome(true, id);
+        expandedBookMarkFeeds.remove(id);
         final feedItem = homeTabViewModel.feedList[indexFeed];
         final oldBookmarks = feedItem['bookmarks'];
         oldBookmarks.removeWhere((item) => item == userId);

@@ -15,4 +15,5 @@ class AppColor {
   static const notificationBgColor = Color(0xffE4EFE7);
   static const iconHeartColor = Colors.red;
   static const tabIconColor = Color(0xff138808);
+  static const hyperlinkColor = Colors.blue;
 }

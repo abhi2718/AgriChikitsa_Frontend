@@ -105,7 +105,7 @@ class NotificationTile extends HookWidget {
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.blue),
+                                      color: AppColor.hyperlinkColor),
                                   textWidthBasis: TextWidthBasis.parent,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,

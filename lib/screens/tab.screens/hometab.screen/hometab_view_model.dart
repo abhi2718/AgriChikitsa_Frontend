@@ -33,8 +33,18 @@ class HomeTabViewModel with ChangeNotifier {
   var toogleLikeBookMarkedFeed = {"isLiked": false, "id": ""};
   var toogleMyPostFeed = {"isLiked": false, "id": ""};
   var increaseCommentNumber = {'count': 0, "id": ""};
+  List<String> expandedPosts = [];
   bool get loading {
     return _loading;
+  }
+
+  bool isExpanded(String id) {
+    return expandedPosts.contains(id);
+  }
+
+  void toggleExpand(String id) {
+    expandedPosts.add(id);
+    notifyListeners();
   }
 
   void setIncreaseCommentNumber(int count, String id) {
@@ -61,6 +71,7 @@ class HomeTabViewModel with ChangeNotifier {
     categoriesList = [];
     commentsList = [];
     currentSelectedCategory = "All";
+    expandedPosts.clear();
     categoryLoading = true;
     commentLoading = true;
     _loading = true;
@@ -123,6 +134,7 @@ class HomeTabViewModel with ChangeNotifier {
   void fetchFeeds(BuildContext context) async {
     setloading(true);
     try {
+      expandedPosts.clear();
       final data = await _homeTabRepository.fetchFeeds(currentSelectedCategory);
       feedList = data['feeds'];
       setloading(false);
@@ -274,7 +286,7 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final payload = caption == ""
           ? {"categoryId": id, "imgurl": imageUrl}
-          : {"categoryId": id, "caption": caption, "imgurl": imageUrl};
+          : {"categoryId": id, "hindiCaption": caption, "imgurl": imageUrl};
       await _homeTabRepository.createPost(payload);
       return true;
     } catch (error) {
