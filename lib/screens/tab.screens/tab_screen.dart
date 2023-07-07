@@ -86,10 +86,15 @@ class TabScreen extends HookWidget {
             label: AppLocalizations.of(context)!.jankarihi,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.view_timeline_outlined),
-            activeIcon: const Icon(
-              Icons.view_timeline_rounded,
-              color: Color(0xff138808),
+            icon: Image.asset(
+              'assets/icons/timeline.png',
+              width: 23,
+              height: 22,
+            ),
+            activeIcon: Image.asset(
+              'assets/icons/timeline_filled.png',
+              width: 23,
+              height: 22,
             ),
             label: AppLocalizations.of(context)!.timelinehi,
           ),

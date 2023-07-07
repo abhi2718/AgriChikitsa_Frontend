@@ -158,18 +158,20 @@ class BookmarkFeed extends HookWidget {
                   ],
                 ),
               ),
-              CachedNetworkImage(
-                imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    Skeleton(
-                  height: 300,
-                  width: dimension["width"]! - 16,
-                  radius: 0,
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+              SizedBox(
+                height: dimension["width"]! - 16,
                 width: dimension["width"]! - 16,
-                fit: BoxFit.fill,
-                height: 300,
+                child: CachedNetworkImage(
+                  imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Skeleton(
+                    height: dimension["width"]! - 16,
+                    width: dimension["width"]! - 16,
+                    radius: 0,
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  fit: BoxFit.fill,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16),

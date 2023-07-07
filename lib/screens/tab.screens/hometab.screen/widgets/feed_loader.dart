@@ -49,7 +49,7 @@ class FeedLoader extends StatelessWidget {
               ),
             ),
             Skeleton(
-              height: 240,
+              height: dimension['width']! - 16,
               width: dimension['width']! - 16,
               radius: 0,
             ),

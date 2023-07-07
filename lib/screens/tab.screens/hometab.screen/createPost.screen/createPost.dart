@@ -57,8 +57,8 @@ class CreatePostScreen extends HookWidget {
                   onTap: () => provider.pickPostImage(context, authService),
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    height: dimension['height']! * 0.45,
-                    width: dimension['width'],
+                    height: dimension['width']! - 16,
+                    width: dimension['width']! - 16,
                     decoration: BoxDecoration(
                         border:
                             Border.all(color: AppColor.darkColor, width: 2.0)),
@@ -119,7 +119,7 @@ class CreatePostScreen extends HookWidget {
                 },
               ),
               const SizedBox(
-                height: 16,
+                height: 8,
               ),
               BaseText(
                   title: AppLocalizations.of(context)!.selectCategoeyhi,

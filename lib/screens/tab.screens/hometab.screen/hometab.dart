@@ -103,7 +103,7 @@ class HomeTabScreen1 extends HookWidget {
                                     child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 8),
-                                  height: dimension['height']! * 0.182,
+                                  height: dimension['height']! * 0.16,
                                   width: dimension['width'],
                                   child: Column(
                                     children: [
@@ -130,14 +130,22 @@ class HomeTabScreen1 extends HookWidget {
                                           ],
                                         ),
                                       ),
-                                      Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Skeleton(
-                                            height: 50,
-                                            width: dimension['width']!,
-                                            radius: 6,
-                                          )),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10, right: 5, bottom: 2),
+                                              child: Skeleton(
+                                                width:
+                                                    dimension['width']! * 0.30,
+                                                height: dimension['height']! *
+                                                    0.055,
+                                                radius: 10,
+                                              )),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 )),
