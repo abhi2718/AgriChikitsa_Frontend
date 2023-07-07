@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -22,8 +23,10 @@ class NotificationViewModel with ChangeNotifier {
       final Uri toLaunch = Uri(scheme: scheme, host: host, path: '/$path');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -45,8 +48,10 @@ class NotificationViewModel with ChangeNotifier {
       }
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -57,7 +62,9 @@ class NotificationViewModel with ChangeNotifier {
       notificationCount = data['unReadNotificationsCount'] ?? 0;
       notifyListeners();
     } catch (error) {
-      Utils.toastMessage(error.toString());
+      if (kDebugMode) {
+        Utils.toastMessage(error.toString());
+      }
     }
   }
 
@@ -71,8 +78,10 @@ class NotificationViewModel with ChangeNotifier {
       setloading(false);
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 }

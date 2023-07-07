@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,8 +45,10 @@ class ProfileViewModel with ChangeNotifier {
           path: '/termsAndCondition');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -55,8 +58,10 @@ class ProfileViewModel with ChangeNotifier {
           scheme: 'https', host: 'agrichikitsa.org', path: '/privicyPolicy');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -66,8 +71,10 @@ class ProfileViewModel with ChangeNotifier {
           .deleteUser()
           .then((value) => handleLogOut(context, disposableProvider));
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 }

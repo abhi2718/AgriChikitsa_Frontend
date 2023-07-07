@@ -93,7 +93,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.goToEditProfileScreen(context),
-                leftIcon: "assets/images/Profile.png",
+                leftIcon: "assets/icons/profile.png",
                 title: AppLocalizations.of(context)!.editprofilehi,
                 width: dimension["width"]! - 32,
               ),
@@ -117,7 +117,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
-                leftIcon: "assets/images/Terms And Condition.png",
+                leftIcon: "assets/icons/terms.png",
                 title: AppLocalizations.of(context)!.termsandConditionhi,
                 width: dimension["width"]! - 32,
               ),

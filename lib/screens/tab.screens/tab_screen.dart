@@ -51,7 +51,7 @@ class TabScreen extends HookWidget {
         showUnselectedLabels: true,
         backgroundColor: AppColor.lightColor,
         showSelectedLabels: true,
-        selectedItemColor: AppColor.darkColor,
+        selectedItemColor: AppColor.tabIconColor,
         unselectedItemColor: AppColor.extraDark,
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex.value,
@@ -61,9 +61,9 @@ class TabScreen extends HookWidget {
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/Home.png',
-              width: 20,
-              height: 20,
+              'assets/icons/home-2.png',
+              width: 23,
+              height: 22,
             ),
             activeIcon: Image.asset(
               'assets/icons/Home Filled.png',
@@ -74,32 +74,35 @@ class TabScreen extends HookWidget {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/Jankari Icon.png',
-              width: 20,
-              height: 20,
+              'assets/icons/jankari_new.png',
+              width: 23,
+              height: 22,
             ),
             activeIcon: Image.asset(
               'assets/icons/Jankari Filled.png',
-              width: 20,
-              height: 20,
+              width: 23,
+              height: 22,
             ),
             label: AppLocalizations.of(context)!.jankarihi,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.view_timeline_outlined),
-            activeIcon: const Icon(Icons.view_timeline_rounded),
+            activeIcon: const Icon(
+              Icons.view_timeline_rounded,
+              color: Color(0xff138808),
+            ),
             label: AppLocalizations.of(context)!.timelinehi,
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/Settings.png',
-              width: 20,
-              height: 20,
+              'assets/icons/settings_new.png',
+              width: 23,
+              height: 22,
             ),
             activeIcon: Image.asset(
               'assets/icons/Settings Filled.png',
-              width: 20,
-              height: 20,
+              width: 23,
+              height: 22,
             ),
             label: AppLocalizations.of(context)!.settinghi,
           ),

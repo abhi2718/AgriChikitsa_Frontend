@@ -71,8 +71,10 @@ class MyProfileViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -82,8 +84,10 @@ class MyProfileViewModel with ChangeNotifier {
       bookMarkFeedList = data['timelineFeeds'];
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 

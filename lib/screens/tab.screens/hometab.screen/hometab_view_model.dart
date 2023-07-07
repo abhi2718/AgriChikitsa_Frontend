@@ -129,8 +129,10 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -150,8 +152,10 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -252,8 +256,10 @@ class HomeTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -273,8 +279,10 @@ class HomeTabViewModel with ChangeNotifier {
       return true;
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
       return false;
     }
   }

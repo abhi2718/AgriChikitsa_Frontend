@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/model/jankari_subcategory_post_model.dart';
 import 'package:agriChikitsa/repository/jankari.repo/jankari_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../model/jankari_card_modal.dart';
 import '../../../model/jankari_subcategory_model.dart';
@@ -99,8 +100,10 @@ class JankariViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -120,8 +123,10 @@ class JankariViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setJankariSubCategoryLoader(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -144,8 +149,10 @@ class JankariViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setJankariSubCategoryLoaderPost(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 

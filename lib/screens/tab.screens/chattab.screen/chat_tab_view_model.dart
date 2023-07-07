@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -113,8 +114,10 @@ class ChatTabViewModel with ChangeNotifier {
       timmerInstances.add(t2);
     } catch (error) {
       showSecondBubbleLoader = false;
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -126,8 +129,10 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showSecondBubbleLoader = false;
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -167,8 +172,10 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showThirdLoader = false;
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -204,8 +211,10 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showFourthLoader = false;
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -255,8 +264,10 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showFifthBubbleLoader = false;
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -276,8 +287,10 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       showSixthBubbleLoader = false;
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -381,8 +394,10 @@ class ChatTabViewModel with ChangeNotifier {
         timmerInstances.add(t8);
       }
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 
@@ -426,8 +441,10 @@ class ChatTabViewModel with ChangeNotifier {
         timmerInstances.add(t8);
       }
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
     }
   }
 }
