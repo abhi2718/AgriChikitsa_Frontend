@@ -134,7 +134,7 @@ class HomeTabViewModel with ChangeNotifier {
   void fetchFeeds(BuildContext context) async {
     setloading(true);
     try {
-      expandedPosts.clear();
+      expandedPosts = [];
       final data = await _homeTabRepository.fetchFeeds(currentSelectedCategory);
       feedList = data['feeds'];
       setloading(false);

@@ -67,9 +67,8 @@ class ProfileViewModel with ChangeNotifier {
 
   void handleDelete(context, disposableProvider) async {
     try {
-      await authRepository
-          .deleteUser()
-          .then((value) => handleLogOut(context, disposableProvider));
+      await authRepository.deleteUser();
+      handleLogOut(context, disposableProvider);
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
