@@ -312,14 +312,16 @@ class ChatScreen extends HookWidget {
                     if (index == 5) {
                       return Column(
                         children: [
-                          BubbleSpecialThree(
-                            text: message["question_hi"],
-                            color: AppColor.chatBubbleColor,
-                            tail: true,
-                            isSender: message["isMe"],
-                            textStyle: const TextStyle(
-                                color: AppColor.whiteColor, fontSize: 16),
-                          ),
+                          message["question_hi"] == ""
+                              ? Container()
+                              : BubbleSpecialThree(
+                                  text: message["question_hi"],
+                                  color: AppColor.chatBubbleColor,
+                                  tail: true,
+                                  isSender: message["isMe"],
+                                  textStyle: const TextStyle(
+                                      color: AppColor.whiteColor, fontSize: 16),
+                                ),
                           const SizedBox(
                             height: 16,
                           ),
@@ -373,16 +375,6 @@ class ChatScreen extends HookWidget {
                           provider.showSixthBubbleLoader
                               ? const ChatLoader()
                               : Container(),
-                          message["showCameraIcon"] == null
-                              ? Container()
-                              : Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.camera),
-                                      onPressed: () {},
-                                    )
-                                  ],
-                                ),
                         ],
                       );
                     }

@@ -37,6 +37,7 @@ class Input extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: keyboardType,
       focusNode: focusNode,
       autofocus: autoFocus,

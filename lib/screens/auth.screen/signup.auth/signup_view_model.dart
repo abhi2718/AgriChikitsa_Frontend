@@ -131,14 +131,11 @@ class SignUpViewModel with ChangeNotifier {
           'user': data["newUser"],
           'token': data["token"],
         };
-        await localStorage
-            .setString("profile", jsonEncode(profile))
-            .then((value) {
-          setUserProfile(data);
-          setloading(false);
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
-        });
+        await localStorage.setString("profile", jsonEncode(profile));
+        setUserProfile(data);
+        setloading(false);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         disposeValues();
       } catch (error) {
         Utils.flushBarErrorMessage(
