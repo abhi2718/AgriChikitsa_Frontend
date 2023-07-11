@@ -1,3 +1,5 @@
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/checkPrices.screen/checkprices.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/checkPrices.screen/widgets/pricesScreen.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,8 @@ class Routes {
     RouteName.signUpRoute: (context) => const SignUpScreen(),
     RouteName.editProfileRoute: (context) => const EditProfileScreen(),
     RouteName.createPostRoute: (context) => const CreatePostScreen(),
+    RouteName.checkPricesRoute: (context) => const CheckPricesScreen(),
+    RouteName.pricesScreenRoute: (context) => const PricesScreen(),
     RouteName.chatBotRoute: (context) => const ChatTabScreen(),
     RouteName.myProfileScreenRoute: (context) => const MyProfileScreen(),
     RouteName.notificationScreenRoute: (context) => const NotificationScreen(),

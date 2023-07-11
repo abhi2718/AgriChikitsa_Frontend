@@ -345,4 +345,8 @@ class HomeTabViewModel with ChangeNotifier {
   void goToCreatePostScreen(BuildContext context) {
     Navigator.of(context).pushNamed(RouteName.createPostRoute);
   }
+
+  void goToCheckPricesScreen(BuildContext context) {
+    Navigator.of(context).pushNamed(RouteName.checkPricesRoute);
+  }
 }

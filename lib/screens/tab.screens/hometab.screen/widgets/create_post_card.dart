@@ -68,13 +68,12 @@ class CreatePostCard extends HookWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, right: 5, bottom: 2),
+              padding: const EdgeInsets.only(top: 10, bottom: 2),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    width: dimension['width']! * 0.30,
+                    width: dimension['width']! * 0.40,
                     height: dimension['height']! * 0.055,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
@@ -92,6 +91,31 @@ class CreatePostCard extends HookWidget {
                       child: BaseText(
                         title: AppLocalizations.of(context)!.posthi,
                         style: const TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: dimension['width']! * 0.40,
+                    height: dimension['height']! * 0.055,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        16.0,
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () {
+                        useViewModel.goToCheckPricesScreen(context);
+                      },
+                      child: const BaseText(
+                        // title: AppLocalizations.of(context)!.posthi,
+                        title: "Check Prices",
+                        style: TextStyle(
                           fontSize: 15,
                         ),
                       ),
