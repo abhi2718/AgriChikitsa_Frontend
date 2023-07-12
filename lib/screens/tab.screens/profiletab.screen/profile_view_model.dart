@@ -9,10 +9,16 @@ import '../../../routes/routes_name.dart';
 
 class ProfileViewModel with ChangeNotifier {
   final authRepository = AuthRepository();
+  bool deleteLoader = false;
   var locale = {"language": 'en', "country": "US"};
   Future<void> clearLocalStorage() async {
     final localStorage = await SharedPreferences.getInstance();
     await localStorage.clear();
+  }
+
+  void setDeleteLoader(value) {
+    deleteLoader = value;
+    notifyListeners();
   }
 
   void handleLocaleChange() {
@@ -66,10 +72,13 @@ class ProfileViewModel with ChangeNotifier {
   }
 
   void handleDelete(context, disposableProvider) async {
+    setDeleteLoader(true);
     try {
       await authRepository.deleteUser();
       handleLogOut(context, disposableProvider);
+      setDeleteLoader(false);
     } catch (error) {
+      setDeleteLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);

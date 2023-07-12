@@ -71,7 +71,7 @@ class NetworkApiService extends BaseApiServices {
     final response = await retry(
       () => http
           .delete(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 2)),
+          .timeout(const Duration(seconds: 5)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);
