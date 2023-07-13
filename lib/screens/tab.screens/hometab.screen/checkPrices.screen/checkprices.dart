@@ -38,7 +38,7 @@ class CheckPricesScreen extends HookWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const BaseText(
                   title: "Enter the following details",
@@ -46,24 +46,58 @@ class CheckPricesScreen extends HookWidget {
               const SizedBox(
                 height: 20,
               ),
-              TextField(
-                decoration: const InputDecoration(
-                  hoverColor: Colors.black,
-                  labelText: "Select State",
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: AppColor.darkColor, width: 2.0),
+              Consumer<CheckPricesModel>(builder: (context, provider, child) {
+                return Container(
+                  width: dimension['width']! * 0.90,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey[400]!,
+                            blurRadius: 1.0,
+                            spreadRadius: 1,
+                            offset: Offset(0, 3))
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30, right: 30),
+                      child: DropdownButton(
+                          hint: Text("Select State"),
+                          value: provider.selectedState.isEmpty
+                              ? null
+                              : useViewModel.selectedState,
+                          alignment: AlignmentDirectional.center,
+                          items: provider.stateList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            provider.setSelectedState(value!);
+                          }),
+                    ),
                   ),
-                ),
-                keyboardType: TextInputType.name,
-                onChanged: (value) {},
-                onTapOutside: (_) =>
-                    FocusManager.instance.primaryFocus?.unfocus(),
-                onSubmitted: (_) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                onEditingComplete: () {},
+                );
+              }),
+              const SizedBox(
+                height: 20,
+              ),
+              const ExpansionTile(
+                initiallyExpanded: false,
+                title: Text("Choose District"),
+                collapsedBackgroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                children: [
+                  ListTile(
+                    title: Text("Aya Nagar"),
+                  )
+                ],
               ),
               const SizedBox(
                 height: 20,

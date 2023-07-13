@@ -6,12 +6,34 @@ import '../../../../utils/utils.dart';
 
 class CheckPricesModel with ChangeNotifier {
   final _checkPricesRepository = CheckPricesRepository();
+  dynamic stateList = [
+    "Punjab",
+    "Himachal Pradesh",
+    "Uttar Pradesh",
+    "Kerala",
+    "Rajasthan",
+    "Nagaland",
+    "Odisha",
+    "Uttrakhand",
+    "Telangana",
+    "Gujarat",
+    "Tripura",
+    "Haryana",
+    "Meghalaya"
+  ];
+
+  var selectedState = "";
   void goToPricesScreen(BuildContext context) {
     Navigator.of(context).pushNamed(RouteName.pricesScreenRoute);
   }
 
   void goBack(BuildContext context) {
     Navigator.pop(context);
+  }
+
+  void setSelectedState(String value) {
+    selectedState = value;
+    notifyListeners();
   }
 
   void fetchPrices(BuildContext context) async {
