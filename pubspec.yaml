@@ -59,7 +59,6 @@ dependencies:
   firebase_messaging: ^14.6.3
   retry: ^3.1.2
   cached_network_image: ^3.2.3
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

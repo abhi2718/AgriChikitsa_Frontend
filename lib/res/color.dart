@@ -16,4 +16,5 @@ class AppColor {
   static const iconHeartColor = Colors.red;
   static const tabIconColor = Color(0xff138808);
   static const hyperlinkColor = Colors.blue;
+  static const statusBarColor = Color(0xff325F23);
 }
