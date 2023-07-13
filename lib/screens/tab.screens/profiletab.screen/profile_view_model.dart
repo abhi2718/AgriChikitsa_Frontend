@@ -34,8 +34,9 @@ class ProfileViewModel with ChangeNotifier {
       disposableProvider.disposeValues();
     });
     clearLocalStorage().then((_) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          RouteName.authLandingRoute, (route) => false);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(RouteName.authLandingRoute, (route) => false)
+          .then((_) => setDeleteLoader(false));
     });
   }
 
@@ -76,7 +77,6 @@ class ProfileViewModel with ChangeNotifier {
     try {
       await authRepository.deleteUser();
       handleLogOut(context, disposableProvider);
-      setDeleteLoader(false);
     } catch (error) {
       setDeleteLoader(false);
       if (kDebugMode) {
