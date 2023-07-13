@@ -8,33 +8,42 @@ void showDeleteAccountDialog(BuildContext context,
   showDialog(
     context: context,
     builder: (BuildContext dialogContext) {
-      return AlertDialog(
-        title: BaseText(
-            title: AppLocalizations.of(context)!.deleteAccounthi,
-            style: const TextStyle()),
-        content: BaseText(
-            title: AppLocalizations.of(context)!.confirmDeletehi,
-            style: const TextStyle()),
-        actions: <Widget>[
-          TextButton(
-            child: BaseText(
-                title: AppLocalizations.of(context)!.yeshi,
-                style: const TextStyle(fontSize: 16)),
-            onPressed: () {
-              useViewModel.handleDelete(context, disposableProvider);
-              Navigator.of(dialogContext).pop();
-            },
-          ),
-          TextButton(
-            child: BaseText(
-                title: AppLocalizations.of(context)!.nohi,
-                style: const TextStyle(fontSize: 16)),
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-            },
-          ),
-        ],
-      );
+      return useViewModel.deleteLoader
+          ? const AlertDialog(
+              content: SizedBox(
+                height: 100,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            )
+          : AlertDialog(
+              title: BaseText(
+                  title: AppLocalizations.of(context)!.deleteAccounthi,
+                  style: const TextStyle()),
+              content: BaseText(
+                  title: AppLocalizations.of(context)!.confirmDeletehi,
+                  style: const TextStyle()),
+              actions: <Widget>[
+                TextButton(
+                  child: BaseText(
+                      title: AppLocalizations.of(context)!.yeshi,
+                      style: const TextStyle(fontSize: 16)),
+                  onPressed: () {
+                    useViewModel.handleDelete(context, disposableProvider);
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+                TextButton(
+                  child: BaseText(
+                      title: AppLocalizations.of(context)!.nohi,
+                      style: const TextStyle(fontSize: 16)),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+              ],
+            );
     },
   );
 }
