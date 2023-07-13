@@ -21,8 +21,21 @@ class CheckPricesModel with ChangeNotifier {
     "Haryana",
     "Meghalaya"
   ];
-
+  dynamic districtList = ['Ghaziabad', 'Alipur'];
+  dynamic mandiList = ['Ghazipur Mandi', 'Alipur Mandi'];
+  dynamic cropList = ['Rice', 'Wheat'];
   var selectedState = "";
+  var selectedDistrict = "";
+  var selectedMandi = "";
+  var selectedCrop = "";
+
+  void reinitalize() {
+    selectedState = "";
+    selectedMandi = "";
+    selectedDistrict = "";
+    selectedCrop = "";
+  }
+
   void goToPricesScreen(BuildContext context) {
     Navigator.of(context).pushNamed(RouteName.pricesScreenRoute);
   }
@@ -33,6 +46,21 @@ class CheckPricesModel with ChangeNotifier {
 
   void setSelectedState(String value) {
     selectedState = value;
+    notifyListeners();
+  }
+
+  void setSelectedDistrict(String value) {
+    selectedDistrict = value;
+    notifyListeners();
+  }
+
+  void setSelectedMandi(String value) {
+    selectedMandi = value;
+    notifyListeners();
+  }
+
+  void setSelectedCrop(String value) {
+    selectedCrop = value;
     notifyListeners();
   }
 

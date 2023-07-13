@@ -14,7 +14,9 @@ class CheckPricesScreen extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
         () => Provider.of<CheckPricesModel>(context, listen: false));
-
+    useEffect(() {
+      useViewModel.reinitalize();
+    }, []);
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
       appBar: AppBar(
@@ -63,7 +65,10 @@ class CheckPricesScreen extends HookWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),
                       child: DropdownButton(
-                          hint: Text("Select State"),
+                          hint: const BaseText(
+                            title: "Select State",
+                            style: TextStyle(),
+                          ),
                           value: provider.selectedState.isEmpty
                               ? null
                               : useViewModel.selectedState,
@@ -72,9 +77,9 @@ class CheckPricesScreen extends HookWidget {
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
-                              child: Text(
-                                value,
-                                style: TextStyle(fontSize: 14),
+                              child: BaseText(
+                                title: value,
+                                style: const TextStyle(fontSize: 14),
                               ),
                             );
                           }).toList(),
@@ -88,80 +93,138 @@ class CheckPricesScreen extends HookWidget {
               const SizedBox(
                 height: 20,
               ),
-              const ExpansionTile(
-                initiallyExpanded: false,
-                title: Text("Choose District"),
-                collapsedBackgroundColor: Colors.white,
-                backgroundColor: Colors.white,
-                children: [
-                  ListTile(
-                    title: Text("Aya Nagar"),
-                  )
-                ],
-              ),
+              Consumer<CheckPricesModel>(builder: (context, provider, child) {
+                return Container(
+                  width: dimension['width']! * 0.90,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey[400]!,
+                            blurRadius: 1.0,
+                            spreadRadius: 1,
+                            offset: Offset(0, 3))
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30, right: 30),
+                      child: DropdownButton(
+                          hint: const BaseText(
+                            title: "Choose District",
+                            style: TextStyle(),
+                          ),
+                          value: provider.selectedDistrict.isEmpty
+                              ? null
+                              : useViewModel.selectedDistrict,
+                          alignment: AlignmentDirectional.center,
+                          items: provider.districtList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: BaseText(
+                                title: value,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            provider.setSelectedDistrict(value!);
+                          }),
+                    ),
+                  ),
+                );
+              }),
               const SizedBox(
                 height: 20,
               ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: "Choose District",
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: AppColor.darkColor, width: 2.0),
+              Consumer<CheckPricesModel>(builder: (context, provider, child) {
+                return Container(
+                  width: dimension['width']! * 0.90,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey[400]!,
+                            blurRadius: 1.0,
+                            spreadRadius: 1,
+                            offset: Offset(0, 3))
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30, right: 30),
+                      child: DropdownButton(
+                          hint: const BaseText(
+                            title: "Choose Mandi/District",
+                            style: TextStyle(),
+                          ),
+                          value: provider.selectedMandi.isEmpty
+                              ? null
+                              : useViewModel.selectedMandi,
+                          alignment: AlignmentDirectional.center,
+                          items: provider.mandiList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: BaseText(
+                                title: value,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            provider.setSelectedMandi(value!);
+                          }),
+                    ),
                   ),
-                ),
-                keyboardType: TextInputType.name,
-                onChanged: (value) {},
-                onTapOutside: (_) =>
-                    FocusManager.instance.primaryFocus?.unfocus(),
-                onSubmitted: (_) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                onEditingComplete: () {},
-              ),
+                );
+              }),
               const SizedBox(
                 height: 20,
               ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: "Choose Mandi/District",
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: AppColor.darkColor, width: 2.0),
+              Consumer<CheckPricesModel>(builder: (context, provider, child) {
+                return Container(
+                  width: dimension['width']! * 0.90,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey[400]!,
+                            blurRadius: 1.0,
+                            spreadRadius: 1,
+                            offset: Offset(0, 3))
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 30, right: 30),
+                      child: DropdownButton(
+                          hint: const BaseText(
+                            title: "Select Crop",
+                            style: TextStyle(),
+                          ),
+                          value: provider.selectedCrop.isEmpty
+                              ? null
+                              : useViewModel.selectedCrop,
+                          alignment: AlignmentDirectional.center,
+                          items: provider.cropList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: BaseText(
+                                title: value,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            provider.setSelectedCrop(value!);
+                          }),
+                    ),
                   ),
-                ),
-                keyboardType: TextInputType.name,
-                onChanged: (value) {},
-                onTapOutside: (_) =>
-                    FocusManager.instance.primaryFocus?.unfocus(),
-                onSubmitted: (_) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                onEditingComplete: () {},
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: "Select Crop",
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: AppColor.darkColor, width: 2.0),
-                  ),
-                ),
-                keyboardType: TextInputType.name,
-                onChanged: (value) {},
-                onTapOutside: (_) =>
-                    FocusManager.instance.primaryFocus?.unfocus(),
-                onSubmitted: (_) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                onEditingComplete: () {},
-              ),
+                );
+              }),
               const SizedBox(
                 height: 20,
               ),

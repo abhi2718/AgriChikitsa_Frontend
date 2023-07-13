@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/l10n/l10n.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/checkPrices.screen/checkPricesViewModel.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/weather.screen/weatherScreenViewModel.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:flutter/material.dart';
@@ -82,6 +83,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<CheckPricesModel>(
           create: (_) => CheckPricesModel(),
+        ),
+        ChangeNotifierProvider<WeatherViewModel>(
+          create: (_) => WeatherViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(

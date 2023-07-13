@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../routes/routes_name.dart';
 import '../../notifications.screen/notification_view_model.dart';
 import './category_button.dart';
 import './notification_widget.dart';
@@ -46,6 +47,16 @@ class HeaderWidget extends HookWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteName.weatherScreenRoute);
+                        },
+                        child: const Icon(Icons.thunderstorm_outlined),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Consumer<NotificationViewModel>(
                           builder: (context, provider, child) {
                         return NotificationIndicatorButton(
