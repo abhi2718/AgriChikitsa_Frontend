@@ -25,7 +25,6 @@ class EditProfileScreen extends HookWidget {
         () => Provider.of<EditProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     final user = User.fromJson(authService.userInfo["user"]);
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -94,7 +93,8 @@ class EditProfileScreen extends HookWidget {
                           onTapOutside: (_) =>
                               FocusManager.instance.primaryFocus?.unfocus(),
                           onSaved: useViewModel.onSavedNameField,
-                          onFieldSubmitted: (_) {
+                          onFieldSubmitted: (value) {
+                            useViewModel.onSavedNameField(value);
                             Utils.fieldFocusChange(
                                 context,
                                 useViewModel.nameFocusNode,
@@ -116,8 +116,7 @@ class EditProfileScreen extends HookWidget {
                           validator: (value) =>
                               useViewModel.emailFieldValidator(context, value),
                           onSaved: useViewModel.onSavedEmailField,
-                          onFieldSubmitted: (_) =>
-                              provider.saveForm(context, user, authService),
+                          onFieldSubmitted: (_) {},
                         ),
                       ),
                       const SizedBox(
@@ -126,17 +125,17 @@ class EditProfileScreen extends HookWidget {
                       Consumer<EditProfileViewModel>(
                         builder: (context, provider, child) =>
                             CustomElevatedButton(
-                          title: AppLocalizations.of(context)!.updatehi,
-                          loading: provider.loading,
-                          width: dimension["width"]! - 32,
-                          onPress: () =>
-                              provider.saveForm(context, user, authService),
-                        ),
-                      )
+                                title: AppLocalizations.of(context)!.updatehi,
+                                loading: provider.loading,
+                                width: dimension["width"]! - 32,
+                                onPress: () {
+                                  provider.saveForm(context, user, authService);
+                                }),
+                      ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
