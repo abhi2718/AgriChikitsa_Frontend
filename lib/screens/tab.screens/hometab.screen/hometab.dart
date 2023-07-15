@@ -61,7 +61,7 @@ class HomeTabScreen1 extends HookWidget {
         if (state == AppLifecycleState.resumed) {
           Future.delayed(Duration.zero, () {
             notificationViewModel.fetchNotifications(context);
-            useViewModel.fetchFeeds(context);
+            //useViewModel.fetchFeeds(context);
           });
         }
       });
@@ -71,8 +71,10 @@ class HomeTabScreen1 extends HookWidget {
 
     useEffect(() {
       Future.delayed(Duration.zero, () {
+        if (useViewModel.categoriesList.isEmpty) {
+          useViewModel.fetchFeedsCategory(context);
+        }
         useViewModel.fetchFeeds(context);
-        useViewModel.fetchFeedsCategory(context);
       });
     }, []);
 

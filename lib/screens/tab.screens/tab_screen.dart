@@ -13,40 +13,14 @@ class TabScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentIndex = useState(0);
-    final homeTabKey = useMemoized(() => UniqueKey());
-    final jankariHomeTabKey = useMemoized(() => UniqueKey());
-    final myProfileScreenKey = useMemoized(() => UniqueKey());
-    final profileTabScreenKey = useMemoized(() => UniqueKey());
+    List<Widget> tabs = [
+      const HomeTabScreen(),
+      const JankariHomeTab(),
+      const MyProfileScreen(),
+      const ProfileTabScreen()
+    ];
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex.value,
-        children: [
-          HookBuilder(
-            key: homeTabKey,
-            builder: (context) {
-              return const HomeTabScreen();
-            },
-          ),
-          HookBuilder(
-            key: jankariHomeTabKey,
-            builder: (context) {
-              return const JankariHomeTab();
-            },
-          ),
-          HookBuilder(
-            key: myProfileScreenKey,
-            builder: (context) {
-              return const MyProfileScreen();
-            },
-          ),
-          HookBuilder(
-            key: profileTabScreenKey,
-            builder: (context) {
-              return const ProfileTabScreen();
-            },
-          ),
-        ],
-      ),
+      body: tabs[currentIndex.value],
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: true,
         backgroundColor: AppColor.lightColor,
