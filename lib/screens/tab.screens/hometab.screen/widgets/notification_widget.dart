@@ -14,10 +14,9 @@ class NotificationIndicatorButton extends StatelessWidget {
           Navigator.pushNamed(context, RouteName.notificationScreenRoute),
       child: Stack(
         children: [
-          Image.asset(
-            "assets/images/bell.png",
-            height: 30,
-            width: 30,
+          const Icon(
+            Icons.notifications_outlined,
+            size: 32,
           ),
           if (notificationCount > 0)
             Positioned(

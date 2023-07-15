@@ -179,18 +179,9 @@ class HomeTabScreen1 extends HookWidget {
                               child: Column(
                                 children: [
                                   const CreatePostCard(),
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: provider.feedList.length,
-                                    itemBuilder: (context, index) {
-                                      final feed = provider.feedList[index];
-                                      return Feed(
-                                        feed: feed,
-                                      );
-                                    },
-                                  ),
+                                  ...provider.feedList.map((feed) {
+                                    return Feed(feed: feed);
+                                  }).toList(),
                                 ],
                               ),
                             ),
