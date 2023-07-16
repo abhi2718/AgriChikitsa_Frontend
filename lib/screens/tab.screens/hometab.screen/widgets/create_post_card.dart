@@ -9,6 +9,7 @@ import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
+import '../createPost.screen/createPost.dart';
 import '../hometab_view_model.dart';
 
 class CreatePostCard extends HookWidget {
@@ -87,7 +88,8 @@ class CreatePostCard extends HookWidget {
                             borderRadius: BorderRadius.circular(10)),
                       ),
                       onPressed: () {
-                        useViewModel.goToCreatePostScreen(context);
+                        //useViewModel.goToCreatePostScreen(context);
+                        Utils.model(context, const CreatePostScreen());
                       },
                       child: BaseText(
                         title: AppLocalizations.of(context)!.posthi,

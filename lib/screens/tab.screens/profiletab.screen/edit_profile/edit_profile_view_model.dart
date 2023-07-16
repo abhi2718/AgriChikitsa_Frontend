@@ -113,8 +113,9 @@ class EditProfileViewModel with ChangeNotifier {
   void updateProfile(userInfo, context, AuthService authService) async {
     try {
       setloading(true);
+      final user = User.fromJson(authService.userInfo["user"]);
       final data =
-          await _authRepository.updateProfile(userInfo["_id"], userInfo);
+          await _authRepository.updateProfile(user.sId!, userInfo);
       final localStorage = await SharedPreferences.getInstance();
       final profile = {
         'user': data["user"],

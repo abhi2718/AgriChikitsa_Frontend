@@ -27,7 +27,7 @@ class Feed extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final useViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
     final myProfileViewModel = useMemoized(
-        () => Provider.of<MyProfileViewModel>(context, listen: true));
+        () => Provider.of<MyProfileViewModel>(context, listen: false));
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
@@ -35,14 +35,14 @@ class Feed extends HookWidget {
     final numberOfComments = useState(feed['comments'].length);
     final imageName = feed['imgurl'].split(
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-    useEffect(() {
-      if (myProfileViewModel.unBookMarkedFeedData["id"] == feed["_id"]) {
-        isBookMarked.value = false;
-        Future.delayed(Duration.zero, () {
-          myProfileViewModel.setRemoveFeedFromHome(false, "");
-        });
-      }
-    }, [myProfileViewModel.unBookMarkedFeedData]);
+    // useEffect(() {
+    //   if (myProfileViewModel.unBookMarkedFeedData["id"] == feed["_id"]) {
+    //     isBookMarked.value = false;
+    //     Future.delayed(Duration.zero, () {
+    //       myProfileViewModel.setRemoveFeedFromHome(false, "");
+    //     });
+    //   }
+    // }, [myProfileViewModel.unBookMarkedFeedData]);
     void setNumberOfComment(int count) {
       numberOfComments.value = count;
     }
@@ -65,19 +65,19 @@ class Feed extends HookWidget {
       isBookMarked.value = !isBookMarked.value;
     }
 
-    useEffect(() {
-      if (myProfileViewModel.toogleHomeFeed["id"] == feed['_id']) {
-        isLiked.value = myProfileViewModel.toogleHomeFeed["isLiked"];
-        if (myProfileViewModel.toogleHomeFeed["isLiked"] == true) {
-          numberOfLikes.value = numberOfLikes.value + 1;
-        } else {
-          numberOfLikes.value = numberOfLikes.value - 1;
-        }
-        Future.delayed(Duration.zero, () {
-          myProfileViewModel.setToogleHomeFeed(false, "");
-        });
-      }
-    }, [myProfileViewModel.toogleHomeFeed]);
+    // useEffect(() {
+    //   if (myProfileViewModel.toogleHomeFeed["id"] == feed['_id']) {
+    //     isLiked.value = myProfileViewModel.toogleHomeFeed["isLiked"];
+    //     if (myProfileViewModel.toogleHomeFeed["isLiked"] == true) {
+    //       numberOfLikes.value = numberOfLikes.value + 1;
+    //     } else {
+    //       numberOfLikes.value = numberOfLikes.value - 1;
+    //     }
+    //     Future.delayed(Duration.zero, () {
+    //       myProfileViewModel.setToogleHomeFeed(false, "");
+    //     });
+    //   }
+    // }, [myProfileViewModel.toogleHomeFeed]);
     final user = feed['user'];
     final profileImage = user['profileImage'].split(
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];

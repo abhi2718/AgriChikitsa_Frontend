@@ -25,26 +25,25 @@ class EditProfileScreen extends HookWidget {
         () => Provider.of<EditProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     final user = User.fromJson(authService.userInfo["user"]);
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          systemOverlayStyle:
-              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-          backgroundColor: AppColor.whiteColor,
-          foregroundColor: AppColor.darkBlackColor,
-          centerTitle: true,
-          leading: IconButton(
+    return 
+       Scaffold(
+        backgroundColor: AppColor.notificationBgColor,
+         appBar: AppBar(
+        title: BaseText(
+          title: AppLocalizations.of(context)!.notificationhi,
+          style: const TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColor.whiteColor,
+        leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
             icon: const Icon(
               Remix.arrow_left_line,
-            ),
-          ),
-          title: BaseText(
-              title: AppLocalizations.of(context)!.editprofilehi,
-              style: const TextStyle(color: AppColor.darkBlackColor)),
-        ),
+              color: AppColor.darkBlackColor,
+            )),
+      ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -139,7 +138,6 @@ class EditProfileScreen extends HookWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

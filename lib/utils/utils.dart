@@ -31,6 +31,8 @@ class Utils {
   static void model(BuildContext context, Widget widgetContainer) {
     showModalBottomSheet(
       context: context,
+      useSafeArea: true,
+      enableDrag: false,
       builder: (BuildContext context) => widgetContainer,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(

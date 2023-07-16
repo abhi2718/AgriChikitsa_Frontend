@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import '../chattab.screen/chattab.dart';
 import './hometab_view_model.dart';
 import '../../../services/auth.dart';
 import 'widgets/feed_loader.dart';
@@ -74,7 +75,9 @@ class HomeTabScreen1 extends HookWidget {
         if (useViewModel.categoriesList.isEmpty) {
           useViewModel.fetchFeedsCategory(context);
         }
-        useViewModel.fetchFeeds(context);
+        if (useViewModel.feedList.isEmpty) {
+          useViewModel.fetchFeeds(context);
+        }
       });
     }, []);
 
@@ -181,18 +184,9 @@ class HomeTabScreen1 extends HookWidget {
                               child: Column(
                                 children: [
                                   const CreatePostCard(),
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: provider.feedList.length,
-                                    itemBuilder: (context, index) {
-                                      final feed = provider.feedList[index];
-                                      return Feed(
-                                        feed: feed,
-                                      );
-                                    },
-                                  ),
+                                  ...provider.feedList.map((feed) {
+                                    return Feed(feed: feed);
+                                  }).toList(),
                                 ],
                               ),
                             ),
@@ -207,7 +201,21 @@ class HomeTabScreen1 extends HookWidget {
               size: 30.0,
             ),
             onPressed: () {
-              Navigator.pushNamed(context, RouteName.chatBotRoute);
+              // Navigator.pushNamed(context, RouteName.chatBotRoute);
+              Utils.model(context, ChatTabScreen());
+              // showModalBottomSheet(
+              //   useSafeArea: true,
+              //   enableDrag: false,
+              //   builder: (BuildContext context) {
+              //     return SizedBox(
+              //         height: MediaQuery.of(context).size.height * 1,
+              //         child: Container(
+              //           height: MediaQuery.of(context).size.height * 1,
+              //           child: Text("Text"),
+              //         ));
+              //   },
+              //   context: context,
+              // );
             }),
       ),
     );

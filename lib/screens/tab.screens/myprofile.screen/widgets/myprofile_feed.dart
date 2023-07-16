@@ -54,20 +54,6 @@ class MyProfileFeed extends HookWidget {
         'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
-      if (homeViewModel.toogleMyPostFeed["id"] == feed['_id'] &&
-          !useViewModel.isUserSwitchTheTab) {
-        isLiked.value = homeViewModel.toogleMyPostFeed["isLiked"];
-        if (homeViewModel.toogleMyPostFeed["isLiked"] == true) {
-          numberOfLikes.value = numberOfLikes.value + 1;
-        } else {
-          numberOfLikes.value = numberOfLikes.value - 1;
-        }
-        Future.delayed(Duration.zero, () {
-          homeViewModel.setToogleMyPostFeed(false, "");
-        });
-      }
-    }, [homeViewModel.toogleMyPostFeed]);
-    useEffect(() {
       if (useViewModel.isUserSwitchTheTab) {
         Future.delayed(const Duration(seconds: 2), () {
           useViewModel.setActiveTabIndex(false);

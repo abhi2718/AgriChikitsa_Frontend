@@ -343,6 +343,6 @@ class HomeTabViewModel with ChangeNotifier {
   }
 
   void goToCreatePostScreen(BuildContext context) {
-    Navigator.of(context).pushNamed(RouteName.createPostRoute);
+    //Navigator.of(context).pushNamed(RouteName.createPostRoute);
   }
 }

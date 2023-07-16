@@ -3,6 +3,7 @@ import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescree
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
@@ -34,52 +35,52 @@ class TabScreen extends HookWidget {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/home-2.png',
+            icon: SvgPicture.asset(
+              'assets/svg/home-2.svg',
               width: 23,
               height: 22,
             ),
-            activeIcon: Image.asset(
-              'assets/icons/Home Filled.png',
-              width: 20,
-              height: 20,
+            activeIcon: SvgPicture.asset(
+              'assets/svg/home-filled.svg',
+              width: 23,
+              height: 22,
             ),
             label: AppLocalizations.of(context)!.homehi,
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/jankari_new.png',
+            icon: SvgPicture.asset(
+              'assets/svg/jankari.svg',
               width: 23,
               height: 22,
             ),
-            activeIcon: Image.asset(
-              'assets/icons/Jankari Filled.png',
+            activeIcon: SvgPicture.asset(
+              'assets/svg/jankari-filled.svg',
               width: 23,
               height: 22,
             ),
             label: AppLocalizations.of(context)!.jankarihi,
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/timeline.png',
+            icon: SvgPicture.asset(
+              'assets/svg/timeline.svg',
               width: 23,
               height: 22,
             ),
-            activeIcon: Image.asset(
-              'assets/icons/timeline_filled.png',
+            activeIcon: SvgPicture.asset(
+              'assets/svg/timeline-filled.svg',
               width: 23,
               height: 22,
             ),
             label: AppLocalizations.of(context)!.timelinehi,
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/settings_new.png',
+            icon: SvgPicture.asset(
+              'assets/svg/settings.svg',
               width: 23,
               height: 22,
             ),
-            activeIcon: Image.asset(
-              'assets/icons/Settings Filled.png',
+            activeIcon: SvgPicture.asset(
+              'assets/svg/settings-filled.svg',
               width: 23,
               height: 22,
             ),

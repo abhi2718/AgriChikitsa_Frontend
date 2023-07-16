@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/skeleton/skeleton.dart';
 import '../tab_screen.dart';
@@ -18,6 +19,7 @@ import '../../../services/auth.dart';
 import '../../auth.screen/signin.auth/signin_view_model.dart';
 import '../../auth.screen/signup.auth/signup_view_model.dart';
 import '../hometab.screen/hometab_view_model.dart';
+import 'edit_profile/edit_profile.dart';
 import 'edit_profile/edit_profile_view_model.dart';
 
 class ProfileTabScreen extends HookWidget {
@@ -92,8 +94,10 @@ class ProfileTabScreen extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
-                onPress: () => useViewModel.goToEditProfileScreen(context),
-                leftIcon: "assets/icons/profile.png",
+                onPress: () {
+                  Utils.model(context, const EditProfileScreen());
+                },
+                leftIcon: SvgPicture.asset('assets/svg/profile.svg'),
                 title: AppLocalizations.of(context)!.editprofilehi,
                 width: dimension["width"]! - 32,
               ),
@@ -105,7 +109,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => Utils.launchDialer('7879810802'),
-                leftIcon: "assets/images/calladd.png",
+                leftIcon: SvgPicture.asset('assets/svg/call.svg'),
                 title: AppLocalizations.of(context)!.contactsupporthi,
                 width: dimension["width"]! - 32,
               ),
@@ -117,7 +121,8 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
-                leftIcon: "assets/icons/terms.png",
+                leftIcon:
+                    SvgPicture.asset('assets/svg/terms-and-conditions.svg'),
                 title: AppLocalizations.of(context)!.termsandConditionhi,
                 width: dimension["width"]! - 32,
               ),
@@ -129,7 +134,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openPrivacyPolicy(context),
-                leftIcon: "assets/images/lock.png",
+                leftIcon: SvgPicture.asset('assets/svg/lock.svg'),
                 title: AppLocalizations.of(context)!.privacyPolicyhi,
                 width: dimension["width"]! - 32,
               ),
@@ -144,7 +149,7 @@ class ProfileTabScreen extends HookWidget {
                   showDeleteAccountDialog(
                       context, useViewModel, disposableProvider);
                 },
-                leftIcon: "assets/images/trash.png",
+                leftIcon: SvgPicture.asset('assets/svg/trash.svg'),
                 title: AppLocalizations.of(context)!.deleteAccounthi,
                 width: dimension["width"]! - 32,
               ),
@@ -157,7 +162,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () =>
                     useViewModel.handleLogOut(context, disposableProvider),
-                leftIcon: "assets/images/logout.png",
+                leftIcon: SvgPicture.asset('assets/svg/logout.svg'),
                 title: AppLocalizations.of(context)!.logouthi,
                 width: dimension["width"]! - 32,
               ),

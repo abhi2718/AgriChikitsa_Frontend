@@ -12,7 +12,7 @@ class JankariViewModel with ChangeNotifier {
   List<JankariCategoryModal> jankaricardList = [];
   List<JankariSubCategoryModel> jankariSubcategoryList = [];
   List<JankariSubCategoryPostModel> jankariSubcategoryPostList = [];
-  var _loading = false;
+  var _loading = true;
   var jankariSubCategoryLoader = false;
   var jankariSubCategoryPostLoader = false;
   var selectedCategory = "";

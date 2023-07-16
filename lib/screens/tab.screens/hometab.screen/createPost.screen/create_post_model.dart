@@ -28,7 +28,7 @@ class CreatePostModel with ChangeNotifier {
   var category = '';
 
   void setfetchMyPost(bool val) {
-    fetchMyPost = true;
+    fetchMyPost = val;
     notifyListeners();
   }
 

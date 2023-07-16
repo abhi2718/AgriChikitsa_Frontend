@@ -20,14 +20,23 @@ class MyProfileScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    double screenHeight = MediaQuery.of(context).size.height;
+    double appBarHeight = AppBar().preferredSize.height;
+    double statusBarHeight = MediaQuery.of(context).padding.top;
+
+    double availableHeight = screenHeight - (2 * appBarHeight + statusBarHeight);
     final useViewModel = useMemoized(
         () => Provider.of<MyProfileViewModel>(context, listen: true));
     final createPostModel =
         useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
 
     useEffect(() {
-      useViewModel.fetchFeeds(context);
-      useViewModel.fetchTimeline(context);
+      if (useViewModel.feedList.isEmpty) {
+        useViewModel.fetchFeeds(context);
+      }
+      if (useViewModel.bookMarkFeedList.isEmpty) {
+        useViewModel.fetchTimeline(context);
+      }
     }, []);
     useEffect(() {
       if (createPostModel.fetchMyPost) {
@@ -107,7 +116,7 @@ class MyProfileScreen extends HookWidget {
                         : RefreshIndicator(
                             onRefresh: refresh,
                             child: SizedBox(
-                              height: dimension['height']! - 100,
+                              height: availableHeight,
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: provider.feedList.length,
@@ -127,7 +136,7 @@ class MyProfileScreen extends HookWidget {
                             child: Text(
                                 AppLocalizations.of(context)!.noBookMarkAddhi))
                         : SizedBox(
-                            height: dimension['height']! - 100,
+                            height: availableHeight,
                             child: SingleChildScrollView(
                               child: Column(
                                 children: provider.bookMarkFeedList.reversed
