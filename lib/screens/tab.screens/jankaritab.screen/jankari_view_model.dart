@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:agriChikitsa/model/jankari_subcategory_post_model.dart';
 import 'package:agriChikitsa/repository/jankari.repo/jankari_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 import '../../../model/jankari_card_modal.dart';
 import '../../../model/jankari_subcategory_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -161,5 +166,16 @@ class JankariViewModel with ChangeNotifier {
     return List<JankariSubCategoryPostModel>.from(categories.map((category) {
       return JankariSubCategoryPostModel.fromJson(category);
     }));
+  }
+
+  dynamic shareFiles(String imagePath) async {
+    final uri = Uri.parse(imagePath);
+    final res = await http.get(uri);
+    final bytes = res.bodyBytes;
+    final temp = await getTemporaryDirectory();
+    final path = '${temp.path}/image.jpg';
+    File(path).writeAsBytesSync(bytes);
+    final xfile = XFile(path);
+    return xfile;
   }
 }
