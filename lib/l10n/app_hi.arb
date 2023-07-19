@@ -72,6 +72,9 @@
 "somethingWentWronghi":"कुछ गलत हो गया",
 "noCommenthi":"कोई टिप्पणी नहीं जोड़ी गई",
 "nameReuiredhi":"नाम आवश्यक है !",
+"selectState":"राज्य चुनें",
+"selectDistrict":"जिला चुनें",
+"warningSelectState":"कृपया पहले राज्य चुनें",
 "emailRequiredhi":"ईमेल आवश्यक है !"
 
 

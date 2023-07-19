@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
@@ -8,7 +9,9 @@ import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../model/comment.dart';
@@ -342,7 +345,21 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  void goToCreatePostScreen(BuildContext context) {
-    //Navigator.of(context).pushNamed(RouteName.createPostRoute);
+  dynamic openWeatherPDF(BuildContext context, String pdfUrl) async {
+    try {
+      final filename = pdfUrl.substring(pdfUrl.lastIndexOf("/") + 1);
+      final uri = Uri.parse(pdfUrl);
+      final res = await http.get(uri);
+      final bytes = res.bodyBytes;
+      final temp = await getApplicationDocumentsDirectory();
+      final path = '${temp.path}/$filename';
+      File(path).writeAsBytesSync(bytes, flush: true);
+      return [path, filename];
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
   }
 }

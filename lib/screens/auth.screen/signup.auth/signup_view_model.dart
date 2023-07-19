@@ -1,15 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../model/states_model.dart';
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
 
 class SignUpViewModel with ChangeNotifier {
   final _authRepository = AuthRepository();
+  StateData? stateData;
   final registerUserformKey = GlobalKey<FormState>();
   final nameFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
@@ -19,7 +22,21 @@ class SignUpViewModel with ChangeNotifier {
   var email = '';
   var mobileNumber = '';
   var firebaseId = '';
+  List<String> stateList = [];
+  List<String> districtList = [];
+  var selectedState = '';
+  var selectedDistrict = '';
   dynamic userProfile;
+
+  void setSelectedState(String value) {
+    selectedState = value;
+    getDistrict(selectedState);
+  }
+
+  void setSelectedDistrict(String value) {
+    selectedDistrict = value;
+    notifyListeners();
+  }
 
   bool get loading {
     return _loading;
@@ -50,6 +67,24 @@ class SignUpViewModel with ChangeNotifier {
 
   void goBack(BuildContext context) {
     Navigator.pop(context);
+  }
+
+  void getStates(BuildContext context) async {
+    try {
+      String jsonString =
+          await rootBundle.loadString('assets/states-and-districts.json');
+      List<dynamic> jsonData = json.decode(jsonString);
+      stateData = StateData(List<Map<String, dynamic>>.from(jsonData));
+      stateList = stateData!.stateList;
+    } catch (error) {
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+    }
+  }
+
+  void getDistrict(String state) {
+    districtList = stateData!.getDistrict(state);
+    notifyListeners();
   }
 
   void saveRegisterUserForm(BuildContext context) {
@@ -156,6 +191,9 @@ class SignUpViewModel with ChangeNotifier {
     userName = '';
     email = '';
     mobileNumber = '';
+    districtList = [];
+    selectedState = '';
+    selectedDistrict = '';
     userProfile = null;
     registerUserformKey.currentState?.dispose();
   }

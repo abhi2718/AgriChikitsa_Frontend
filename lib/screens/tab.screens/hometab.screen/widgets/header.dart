@@ -1,9 +1,11 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/pdfScree.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
 
 import '../../notifications.screen/notification_view_model.dart';
 import './category_button.dart';
@@ -18,6 +20,8 @@ class HeaderWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final homeUseViewModel = useMemoized(
+        () => Provider.of<HomeTabViewModel>(context, listen: false));
     final useViewModel = useMemoized(
         () => Provider.of<NotificationViewModel>(context, listen: false));
     useEffect(() {
@@ -46,6 +50,23 @@ class HeaderWidget extends HookWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      InkWell(
+                          onTap: () async {
+                            const url =
+                                "https://mausam.imd.gov.in/imd_latest/contents/agromet/agromet-data/district/current/local-pdf/Amethi.pdf";
+                            final data = await homeUseViewModel.openWeatherPDF(
+                                context, url);
+                            Utils.model(
+                                context,
+                                PDFScreen(
+                                  path: data[0],
+                                  filename: data[1],
+                                ));
+                          },
+                          child: Icon(Remix.cloud_windy_line)),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Consumer<NotificationViewModel>(
                           builder: (context, provider, child) {
                         return NotificationIndicatorButton(
@@ -82,10 +103,6 @@ class HeaderWidget extends HookWidget {
                               ),
                             ),
                           );
-                          // return CircleAvatar(
-                          //   backgroundImage: NetworkImage(
-                          //       'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
-                          // );
                         }
                         return Container();
                       }),

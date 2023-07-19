@@ -22,6 +22,7 @@ class RegisterUser extends HookWidget {
       useViewModel.disposeValues();
       useViewModel.setPhoneNumber(phoneNumber);
       useViewModel.setFirebaseId(uid);
+      useViewModel.getStates(context);
       return () => useViewModel.disposeRegisterUserformKey();
     }, []);
 
@@ -129,6 +130,125 @@ class RegisterUser extends HookWidget {
                               onFieldSubmitted: (_) {},
                             ),
                             const SizedBox(
+                              height: 20,
+                            ),
+                            Consumer<SignUpViewModel>(
+                                builder: (context, provider, child) {
+                              return Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                width: dimension['width']! * 0.90,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: AppColor.extraDark, width: 2.0),
+                                  color: Colors.white,
+                                ),
+                                child: DropdownButton(
+                                    underline: Container(),
+                                    isExpanded: true,
+                                    hint: BaseText(
+                                      title: AppLocalizations.of(context)!
+                                          .selectState,
+                                      style: const TextStyle(),
+                                    ),
+                                    value: provider.selectedState.isEmpty
+                                        ? null
+                                        : provider.selectedState,
+                                    alignment: AlignmentDirectional.centerStart,
+                                    items: provider.stateList
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: BaseText(
+                                          title: value,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (value) {
+                                      provider.setSelectedState(value!);
+                                    }),
+                              );
+                            }),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            useViewModel.districtList.isEmpty
+                                ? InkWell(
+                                    onTap: () => Utils.snackbar(
+                                        AppLocalizations.of(context)!
+                                            .warningSelectState,
+                                        context),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      width: dimension['width']! * 0.90,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: AppColor.extraDark,
+                                            width: 2.0),
+                                        color: Colors.white,
+                                      ),
+                                      child: DropdownButton(
+                                          underline: Container(),
+                                          isExpanded: true,
+                                          hint: BaseText(
+                                            title: AppLocalizations.of(context)!
+                                                .selectDistrict,
+                                            style: const TextStyle(),
+                                          ),
+                                          value: null,
+                                          alignment:
+                                              AlignmentDirectional.centerStart,
+                                          items: [],
+                                          onChanged: (_) {}),
+                                    ),
+                                  )
+                                : Consumer<SignUpViewModel>(
+                                    builder: (context, provider, child) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      width: dimension['width']! * 0.90,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: AppColor.extraDark,
+                                            width: 2.0),
+                                        color: Colors.white,
+                                      ),
+                                      child: DropdownButton(
+                                          underline: Container(),
+                                          isExpanded: true,
+                                          hint: const BaseText(
+                                            title: "Select District",
+                                            style: TextStyle(),
+                                          ),
+                                          value:
+                                              provider.selectedDistrict.isEmpty
+                                                  ? null
+                                                  : provider.selectedDistrict,
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          items: provider.districtList
+                                              .map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: BaseText(
+                                                title: value,
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            provider
+                                                .setSelectedDistrict(value!);
+                                          }),
+                                    );
+                                  }),
+                            const SizedBox(
                               height: 40,
                             ),
                             Consumer<SignUpViewModel>(
@@ -143,7 +263,7 @@ class RegisterUser extends HookWidget {
                             )
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
