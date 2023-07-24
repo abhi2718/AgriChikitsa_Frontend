@@ -43,6 +43,7 @@
 "chatPanchamhi":"चैट पंचम",
 "typeHerehi":"यहाँ टाइप करें ...",
 "namehi":"नाम",
+"villagehi":"गाँव",
 "emailhi":"ईमेल",
 "createhi":"बनाएं",
 "pleasecheckhi":"कृपया नियम एवं शर्तें बॉक्स को जांचें",
@@ -54,6 +55,7 @@
 "fillAllDetailshi":"कृपया सभी डिटेल्स भरें",
 "mobileDigitCounthi":"कृपया वैध 10 अंकीय मोबाइल नंबर दर्ज करें",
 "validateNamehi":"कृपया अपना नाम दर्ज करें",
+"validateVillagehi":"कृपया अपना गाँव दर्ज करें",
 "validateEmailhi":"कृपया अपना वैध ईमेल दर्ज करें",
 "otpVerifyhi":"कृपया वैध ओटीपी दर्ज करें",
 "createAccounthi":"खाता बनाये",
@@ -75,7 +77,6 @@
 "selectState":"राज्य चुनें",
 "selectDistrict":"जिला चुनें",
 "warningSelectState":"कृपया पहले राज्य चुनें",
+"warningSelectDistrict":"कृपया पहले जिला चुनें",
 "emailRequiredhi":"ईमेल आवश्यक है !"
-
-
 }

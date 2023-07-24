@@ -20,8 +20,6 @@ class HeaderWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final homeUseViewModel = useMemoized(
-        () => Provider.of<HomeTabViewModel>(context, listen: false));
     final useViewModel = useMemoized(
         () => Provider.of<NotificationViewModel>(context, listen: false));
     useEffect(() {
@@ -50,23 +48,6 @@ class HeaderWidget extends HookWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      InkWell(
-                          onTap: () async {
-                            const url =
-                                "https://mausam.imd.gov.in/imd_latest/contents/agromet/agromet-data/district/current/local-pdf/Amethi.pdf";
-                            final data = await homeUseViewModel.openWeatherPDF(
-                                context, url);
-                            Utils.model(
-                                context,
-                                PDFScreen(
-                                  path: data[0],
-                                  filename: data[1],
-                                ));
-                          },
-                          child: Icon(Remix.cloud_windy_line)),
-                      const SizedBox(
-                        width: 10,
-                      ),
                       Consumer<NotificationViewModel>(
                           builder: (context, provider, child) {
                         return NotificationIndicatorButton(

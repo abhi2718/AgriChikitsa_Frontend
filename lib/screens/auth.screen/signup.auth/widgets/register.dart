@@ -220,16 +220,17 @@ class RegisterUser extends HookWidget {
                                       child: DropdownButton(
                                           underline: Container(),
                                           isExpanded: true,
-                                          hint: const BaseText(
-                                            title: "Select District",
-                                            style: TextStyle(),
+                                          hint: BaseText(
+                                            title: AppLocalizations.of(context)!
+                                                .selectDistrict,
+                                            style: const TextStyle(),
                                           ),
                                           value:
                                               provider.selectedDistrict.isEmpty
                                                   ? null
                                                   : provider.selectedDistrict,
                                           alignment:
-                                              AlignmentDirectional.center,
+                                              AlignmentDirectional.centerStart,
                                           items: provider.districtList
                                               .map<DropdownMenuItem<String>>(
                                                   (String value) {
@@ -248,6 +249,22 @@ class RegisterUser extends HookWidget {
                                           }),
                                     );
                                   }),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Consumer<SignUpViewModel>(
+                              builder: (context, provider, child) => Input(
+                                labelText:
+                                    AppLocalizations.of(context)!.villagehi,
+                                keyboardType: TextInputType.name,
+                                textInputAction: TextInputAction.done,
+                                suffixIcon: useViewModel.suffixIconForVillage(),
+                                validator: (value) => useViewModel
+                                    .villageFieldValidator(context, value),
+                                onSaved: useViewModel.onSavedvillageField,
+                                onFieldSubmitted: (_) {},
+                              ),
+                            ),
                             const SizedBox(
                               height: 40,
                             ),

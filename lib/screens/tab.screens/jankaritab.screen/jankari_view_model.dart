@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:agriChikitsa/model/jankari_subcategory_post_model.dart';
 import 'package:agriChikitsa/repository/jankari.repo/jankari_repository.dart';
+import 'package:agriChikitsa/repository/stats.repo/stats_tab_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class JankariViewModel with ChangeNotifier {
   final _jankariRepository = JankariRepository();
+  final _statsRepository = StatsTabRepository();
   List<JankariCategoryModal> jankaricardList = [];
   List<JankariSubCategoryModel> jankariSubcategoryList = [];
   List<JankariSubCategoryPostModel> jankariSubcategoryPostList = [];
@@ -96,6 +98,17 @@ class JankariViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateStats(BuildContext context, String type, String id) async {
+    try {
+      await _statsRepository.updateStats(type, id);
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
+  }
+
   void getJankariCategory(BuildContext context) async {
     setloading(true);
     try {
@@ -144,6 +157,7 @@ class JankariViewModel with ChangeNotifier {
   void getJankariSubCategoryPost(BuildContext context) async {
     setJankariSubCategoryLoaderPost(true);
     try {
+      jankariSubcategoryPostList.clear();
       final data = await _jankariRepository
           .getJankariSubCategoryPost(selectedSubCategory);
       jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
@@ -152,6 +166,7 @@ class JankariViewModel with ChangeNotifier {
       }
       setJankariSubCategoryLoaderPost(false);
       notifyListeners();
+      updateStats(context, 'post', jankariSubcategoryPostList[0].id);
     } catch (error) {
       setJankariSubCategoryLoaderPost(false);
       if (kDebugMode) {

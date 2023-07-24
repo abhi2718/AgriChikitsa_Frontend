@@ -4,14 +4,14 @@ class StateData {
   StateData(this.jsonData);
 
   List<String> get stateList {
-    return jsonData.map((stateData) => stateData['state'] as String).toList();
+    return jsonData.map((stateData) => stateData['stateHi'] as String).toList();
   }
 
   List<String> getDistrict(String stateName) {
     for (final stateData in jsonData) {
-      final state = stateData['state'];
+      final state = stateData['stateHi'];
       if (state == stateName) {
-        final districts = stateData['districts'];
+        final districts = stateData['districtsHi'];
         return List<String>.from(districts);
       }
     }

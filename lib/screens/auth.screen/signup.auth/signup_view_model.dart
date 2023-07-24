@@ -22,6 +22,7 @@ class SignUpViewModel with ChangeNotifier {
   var email = '';
   var mobileNumber = '';
   var firebaseId = '';
+  var village = '';
   List<String> stateList = [];
   List<String> districtList = [];
   var selectedState = '';
@@ -60,6 +61,11 @@ class SignUpViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setVillage(value) {
+    village = value;
+    notifyListeners();
+  }
+
   void setUserInfo(String name, String companyId) {
     userName = name;
     notifyListeners();
@@ -92,6 +98,16 @@ class SignUpViewModel with ChangeNotifier {
     if (!isValid!) {
       return;
     }
+    if (selectedState.isEmpty || selectedDistrict.isEmpty) {
+      if (selectedState.isEmpty) {
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.warningSelectState, context);
+      } else {
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.warningSelectDistrict, context);
+      }
+      return;
+    }
     registerUserformKey.currentState?.save();
 
     final userInfo = email.isEmpty
@@ -99,14 +115,20 @@ class SignUpViewModel with ChangeNotifier {
             "roles": "User",
             "name": userName,
             "phoneNumber": mobileNumber,
-            "firebaseId": firebaseId
+            "firebaseId": firebaseId,
+            "state": selectedState,
+            "district": selectedDistrict,
+            "village": village
           }
         : {
             "roles": "User",
             "name": userName,
             "email": email,
             "phoneNumber": mobileNumber,
-            "firebaseId": firebaseId
+            "firebaseId": firebaseId,
+            "state": selectedState,
+            "district": selectedDistrict,
+            "village": village
           };
     FocusManager.instance.primaryFocus!.unfocus();
     register(userInfo, context);
@@ -123,12 +145,27 @@ class SignUpViewModel with ChangeNotifier {
     return null;
   }
 
+  String? villageFieldValidator(BuildContext context, value) {
+    if (value!.isEmpty) {
+      return AppLocalizations.of(context)!.validateVillagehi;
+    }
+    return null;
+  }
+
   void onSavedNameField(value) {
     userName = value;
   }
 
+  void onSavedvillageField(value) {
+    village = value;
+  }
+
   Widget suffixIconForEmail() {
     return const Icon(Icons.email);
+  }
+
+  Widget suffixIconForVillage() {
+    return const Icon(Icons.cottage);
   }
 
   bool validateEmail(String email) {
@@ -173,6 +210,7 @@ class SignUpViewModel with ChangeNotifier {
             .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         disposeValues();
       } catch (error) {
+        print(error.toString());
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);
         setloading(false);
@@ -194,6 +232,7 @@ class SignUpViewModel with ChangeNotifier {
     districtList = [];
     selectedState = '';
     selectedDistrict = '';
+    village = '';
     userProfile = null;
     registerUserformKey.currentState?.dispose();
   }

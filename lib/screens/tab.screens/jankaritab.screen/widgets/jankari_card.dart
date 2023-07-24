@@ -31,6 +31,7 @@ class JankariCard extends HookWidget {
 
     return InkWell(
       onTap: () {
+        useViewModel.updateStats(context, 'category', jankari.id);
         useViewModel.setCategory(jankari.id);
         useViewModel.getJankariSubCategory(context, jankari.id);
         Utils.model(context, const SubCategoryContainer());

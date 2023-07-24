@@ -1,7 +1,9 @@
 class AppUrl {
   static const String baseUrl = "https://agrichikitsa.org/api/v1";
+  static const String baseUrl1 = "http://192.168.1.105:9090/api/v1";
+  static const String statsEndpoint = '$baseUrl1/stats';
   static const String loginEndPoint = '$baseUrl/auth/checkuser';
-  static const String registerEndPoint = '$baseUrl/auth/signup';
+  static const String registerEndPoint = '$baseUrl1/auth/signup';
   static const String userEndPoint = '$baseUrl/users';
   static const String updateProfileEndPoint = '$baseUrl/auth/update';
   static const String uploadImageEndPoint = '$baseUrl/upload';

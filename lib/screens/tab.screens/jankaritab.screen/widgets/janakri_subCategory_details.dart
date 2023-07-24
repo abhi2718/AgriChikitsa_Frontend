@@ -74,8 +74,10 @@ class JankariSubCategoryPost extends HookWidget {
                           bottom: 0,
                           left: 0,
                           child: InkWell(
-                            onTap: () => provider.updateCurrentPostIndex(
-                                provider.currentPostIndex - 1),
+                            onTap: () {
+                              provider.updateCurrentPostIndex(
+                                  provider.currentPostIndex - 1);
+                            },
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25),
@@ -105,8 +107,10 @@ class JankariSubCategoryPost extends HookWidget {
                         bottom: 0,
                         right: 0,
                         child: InkWell(
-                          onTap: () => useViewModel.updateCurrentPostIndex(
-                              provider.currentPostIndex + 1),
+                          onTap: () {
+                            useViewModel.updateCurrentPostIndex(
+                                provider.currentPostIndex + 1);
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),

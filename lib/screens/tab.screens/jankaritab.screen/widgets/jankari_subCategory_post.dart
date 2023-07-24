@@ -31,6 +31,14 @@ class JankariPost extends HookWidget {
         useViewModel.getJankariSubCategoryPost(context);
       });
     }, []);
+    useEffect(() {
+      if (useViewModel.jankariSubcategoryPostList.isEmpty) {
+      } else {
+        // print("This ${useViewModel.jankariSubcategoryPostList[index].id}");
+        useViewModel.updateStats(
+            context, 'post', useViewModel.jankariSubcategoryPostList[index].id);
+      }
+    }, [index]);
     return WillPopScope(
       onWillPop: () async {
         SystemChrome.setPreferredOrientations(
