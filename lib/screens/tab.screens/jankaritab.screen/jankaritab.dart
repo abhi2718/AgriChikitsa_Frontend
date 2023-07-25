@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_card.dart';
+import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -18,6 +19,8 @@ class JankariHomeTab extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
         () => Provider.of<JankariViewModel>(context, listen: false));
+    final authService = Provider.of<AuthService>(context, listen: true);
+    final district = authService.userInfo["user"]["district_en"];
     final homeUseViewModel = useMemoized(
         () => Provider.of<HomeTabViewModel>(context, listen: false));
     useEffect(() {
@@ -27,7 +30,8 @@ class JankariHomeTab extends HookWidget {
         }
       });
     }, []);
-
+    final url =
+        "https://mausam.imd.gov.in/imd_latest/contents/agromet/agromet-data/district/current/local-pdf/$district.pdf";
     return SafeArea(
       child: Scaffold(
         body: SizedBox(
@@ -45,8 +49,6 @@ class JankariHomeTab extends HookWidget {
                   children: [
                     InkWell(
                       onTap: () async {
-                        const url =
-                            "https://mausam.imd.gov.in/imd_latest/contents/agromet/agromet-data/district/current/local-pdf/Amethi.pdf";
                         final data =
                             await homeUseViewModel.openWeatherPDF(context, url);
                         Utils.model(

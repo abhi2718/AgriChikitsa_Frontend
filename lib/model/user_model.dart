@@ -31,6 +31,10 @@ class User {
   int? iV;
   String? email;
   int? phoneNumber;
+  String? state;
+  String? district_en;
+  String? district_hi;
+  String? village;
   String? profileImage;
   List? timeline;
 
@@ -45,6 +49,10 @@ class User {
     this.updatedAt,
     this.iV,
     this.email,
+    this.state,
+    this.district_en,
+    this.district_hi,
+    this.village,
     this.phoneNumber,
     this.profileImage,
     this.timeline,
@@ -61,6 +69,10 @@ class User {
     updatedAt = json['updatedAt'];
     iV = json['__v'];
     email = json['email'];
+    state = json['state'];
+    district_en = json['district_en'];
+    district_hi = json['district_hi'];
+    village = json['village'];
     phoneNumber = json['phoneNumber'];
     profileImage = json['profileImage'];
     timeline = json['timeLine'];
@@ -78,6 +90,10 @@ class User {
     data['updatedAt'] = updatedAt;
     data['__v'] = iV;
     data['email'] = email;
+    data['state'] = state;
+    data['district_en'] = district_en;
+    data['district_hi'] = district_hi;
+    data['village'] = village;
     data['phoneNumber'] = phoneNumber;
     data['profileImage'] = profileImage;
     data['timeLine'] = timeline;

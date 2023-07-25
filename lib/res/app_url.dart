@@ -9,7 +9,7 @@ class AppUrl {
   static const String uploadImageEndPoint = '$baseUrl/upload';
   static const String feedEndPoint = '$baseUrl/feed';
   static const String jankariEndPoint = '$baseUrl/jankari';
-  static const String botQquestionsEndPoint = '$baseUrl/chat/script';
-  static const String notificationsEndPoint = '$baseUrl/notification';
-  static const String chatEndPoint = '$baseUrl/chat';
+  static const String botQquestionsEndPoint = '$baseUrl1/chat/script';
+  static const String notificationsEndPoint = '$baseUrl1/notification';
+  static const String chatEndPoint = '$baseUrl1/chat';
 }

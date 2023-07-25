@@ -225,25 +225,30 @@ class RegisterUser extends HookWidget {
                                                 .selectDistrict,
                                             style: const TextStyle(),
                                           ),
-                                          value:
-                                              provider.selectedDistrict.isEmpty
-                                                  ? null
-                                                  : provider.selectedDistrict,
+                                          value: provider
+                                                  .selectedDistrictHi.isEmpty
+                                              ? null
+                                              : provider.selectedDistrictHi,
                                           alignment:
                                               AlignmentDirectional.centerStart,
                                           items: provider.districtList
                                               .map<DropdownMenuItem<String>>(
-                                                  (String value) {
+                                                  (value) {
                                             return DropdownMenuItem<String>(
-                                              value: value,
+                                              onTap: () {
+                                                provider.setSelectedDistrictEn(
+                                                    value);
+                                              },
+                                              value: value['nameHi'],
                                               child: BaseText(
-                                                title: value,
+                                                title: value['nameHi'],
                                                 style: const TextStyle(
                                                     fontSize: 14),
                                               ),
                                             );
                                           }).toList(),
                                           onChanged: (value) {
+                                            // print(value);
                                             provider
                                                 .setSelectedDistrict(value!);
                                           }),

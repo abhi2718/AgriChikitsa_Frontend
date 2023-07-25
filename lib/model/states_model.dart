@@ -7,12 +7,12 @@ class StateData {
     return jsonData.map((stateData) => stateData['stateHi'] as String).toList();
   }
 
-  List<String> getDistrict(String stateName) {
+  dynamic getDistrict(String stateName) {
     for (final stateData in jsonData) {
       final state = stateData['stateHi'];
       if (state == stateName) {
-        final districts = stateData['districtsHi'];
-        return List<String>.from(districts);
+        final districts = stateData['districts'] as dynamic;
+        return districts;
       }
     }
     return [];

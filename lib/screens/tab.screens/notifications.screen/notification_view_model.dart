@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
+import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/chat_history.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,6 +9,7 @@ import '../../../utils/utils.dart';
 class NotificationViewModel with ChangeNotifier {
   final _notificationTabRepository = NotificationTabRepository();
   List<dynamic> notificationsList = [];
+  dynamic chatHistoryList = [];
   var notificationCount = 0;
   var _loading = false;
   bool get loading {
@@ -78,6 +80,19 @@ class NotificationViewModel with ChangeNotifier {
       setloading(false);
     } catch (error) {
       setloading(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
+  }
+
+  void fetchChatHistory(BuildContext context, String id) async {
+    try {
+      final data = await NotificationTabRepository().fetchChatScript(id);
+      chatHistoryList = data;
+      notifyListeners();
+    } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);

@@ -1,3 +1,5 @@
+import 'package:agriChikitsa/model/user_model.dart';
+import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/chat_history.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -155,10 +157,15 @@ class NotificationTile extends HookWidget {
               Center(
                 child: IconButton(
                   onPressed: () {
-                    Utils.model(context, ChatHistory());
+                    print(notificationItem);
+                    Utils.model(
+                        context,
+                        ChatHistory(
+                          notificationItem: notificationItem,
+                        ));
                   },
-                  icon:
-                      Icon(Icons.description), // Replace with the desired icon
+                  icon: const Icon(
+                      Icons.description), // Replace with the desired icon
                 ),
               ),
             ],

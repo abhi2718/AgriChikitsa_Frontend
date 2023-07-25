@@ -24,9 +24,10 @@ class SignUpViewModel with ChangeNotifier {
   var firebaseId = '';
   var village = '';
   List<String> stateList = [];
-  List<String> districtList = [];
+  dynamic districtList = [];
   var selectedState = '';
-  var selectedDistrict = '';
+  var selectedDistrictHi = '';
+  var selectedDistrictEn = '';
   dynamic userProfile;
 
   void setSelectedState(String value) {
@@ -34,9 +35,13 @@ class SignUpViewModel with ChangeNotifier {
     getDistrict(selectedState);
   }
 
-  void setSelectedDistrict(String value) {
-    selectedDistrict = value;
+  void setSelectedDistrict(value) {
+    selectedDistrictHi = value;
     notifyListeners();
+  }
+
+  void setSelectedDistrictEn(value) {
+    selectedDistrictEn = value['name'];
   }
 
   bool get loading {
@@ -82,6 +87,7 @@ class SignUpViewModel with ChangeNotifier {
       List<dynamic> jsonData = json.decode(jsonString);
       stateData = StateData(List<Map<String, dynamic>>.from(jsonData));
       stateList = stateData!.stateList;
+      notifyListeners();
     } catch (error) {
       Utils.flushBarErrorMessage(
           AppLocalizations.of(context)!.alerthi, error.toString(), context);
@@ -98,7 +104,7 @@ class SignUpViewModel with ChangeNotifier {
     if (!isValid!) {
       return;
     }
-    if (selectedState.isEmpty || selectedDistrict.isEmpty) {
+    if (selectedState.isEmpty || selectedDistrictHi.isEmpty) {
       if (selectedState.isEmpty) {
         Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
             AppLocalizations.of(context)!.warningSelectState, context);
@@ -117,7 +123,8 @@ class SignUpViewModel with ChangeNotifier {
             "phoneNumber": mobileNumber,
             "firebaseId": firebaseId,
             "state": selectedState,
-            "district": selectedDistrict,
+            "district_en": selectedDistrictEn,
+            "district_hi": selectedDistrictHi,
             "village": village
           }
         : {
@@ -127,7 +134,8 @@ class SignUpViewModel with ChangeNotifier {
             "phoneNumber": mobileNumber,
             "firebaseId": firebaseId,
             "state": selectedState,
-            "district": selectedDistrict,
+            "district_en": selectedDistrictEn,
+            "district_hi": selectedDistrictHi,
             "village": village
           };
     FocusManager.instance.primaryFocus!.unfocus();
@@ -210,7 +218,6 @@ class SignUpViewModel with ChangeNotifier {
             .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         disposeValues();
       } catch (error) {
-        print(error.toString());
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);
         setloading(false);
@@ -231,7 +238,8 @@ class SignUpViewModel with ChangeNotifier {
     mobileNumber = '';
     districtList = [];
     selectedState = '';
-    selectedDistrict = '';
+    selectedDistrictHi = '';
+    selectedDistrictEn = '';
     village = '';
     userProfile = null;
     registerUserformKey.currentState?.dispose();

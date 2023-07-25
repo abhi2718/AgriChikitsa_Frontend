@@ -20,6 +20,7 @@ class AuthRepository {
       final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (error) {
+      print(error.toString());
       rethrow;
     }
   }
