@@ -32,6 +32,7 @@ class HomeTabViewModel with ChangeNotifier {
   var categoryLoading = true;
   var commentLoading = true;
   var _loading = true;
+  bool weatherPDFloader = false;
   bool isNotificationInitialized = false;
   var toogleLikeBookMarkedFeed = {"isLiked": false, "id": ""};
   var toogleMyPostFeed = {"isLiked": false, "id": ""};
@@ -43,6 +44,11 @@ class HomeTabViewModel with ChangeNotifier {
 
   bool isExpanded(String id) {
     return expandedPosts.contains(id);
+  }
+
+  setWeatherPDFLoader(value) {
+    weatherPDFloader = value;
+    notifyListeners();
   }
 
   void toggleExpand(String id) {
@@ -345,7 +351,8 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  dynamic openWeatherPDF(BuildContext context, String pdfUrl) async {
+  Future<dynamic> openWeatherPDF(BuildContext context, String pdfUrl) async {
+    setWeatherPDFLoader(true);
     try {
       final filename = pdfUrl.substring(pdfUrl.lastIndexOf("/") + 1);
       final uri = Uri.parse(pdfUrl);
@@ -354,8 +361,10 @@ class HomeTabViewModel with ChangeNotifier {
       final temp = await getApplicationDocumentsDirectory();
       final path = '${temp.path}/$filename';
       File(path).writeAsBytesSync(bytes, flush: true);
+      setWeatherPDFLoader(false);
       return [path, filename];
     } catch (error) {
+      setWeatherPDFLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);

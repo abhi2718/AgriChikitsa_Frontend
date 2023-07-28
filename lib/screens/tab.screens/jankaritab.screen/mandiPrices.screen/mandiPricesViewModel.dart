@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../repository/mandiPrices.repo/mandiPrices_tab_repository.dart';
-import '../../../../routes/routes_name.dart';
 import '../../../../utils/utils.dart';
 
 class MandiPricesModel with ChangeNotifier {
@@ -12,6 +11,8 @@ class MandiPricesModel with ChangeNotifier {
   dynamic marketList = [];
   dynamic cropList = [];
   bool stateLoading = false;
+  bool loader = false;
+  bool priceLoader = false;
   var selectedState = "";
   var selectedDistrict = "";
   var selectedMarket = "";
@@ -19,6 +20,16 @@ class MandiPricesModel with ChangeNotifier {
 
   setStateLoading(value) {
     stateLoading = value;
+  }
+
+  setLoader(value) {
+    loader = value;
+    notifyListeners();
+  }
+
+  setPriceLoader(value) {
+    priceLoader = value;
+    notifyListeners();
   }
 
   void reinitalize() {
@@ -118,12 +129,17 @@ class MandiPricesModel with ChangeNotifier {
   }
 
   Future<dynamic> fetchPrices(BuildContext context) async {
+    setPriceLoader(true);
     try {
       final data = await _mandiPricesRepository.fetchPrices(
           selectedState, selectedDistrict, selectedMarket, selectedCommodity);
+      setPriceLoader(false);
       return data;
     } catch (error) {
-      Utils.flushBarErrorMessage("Error", error.toString(), context);
+      setPriceLoader(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage("Error", error.toString(), context);
+      }
     }
   }
 }

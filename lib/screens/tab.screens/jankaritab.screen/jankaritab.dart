@@ -51,37 +51,50 @@ class JankariHomeTab extends HookWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    InkWell(
-                      onTap: () async {
-                        final data =
-                            await homeUseViewModel.openWeatherPDF(context, url);
-                        Utils.model(
-                            context,
-                            PDFScreen(
-                              path: data[0],
-                              filename: data[1],
-                            ));
-                      },
-                      child: Container(
-                        height: dimension['height']! * 0.15,
-                        width: dimension['width']! * 0.45,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColor.darkColor)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Icon(Remix.cloud_windy_line),
-                            BaseText(
-                              title:
-                                  AppLocalizations.of(context)!.checkWeatherhi,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w500),
-                            )
-                          ],
+                    Consumer<HomeTabViewModel>(
+                        builder: (context, provider, child) {
+                      return InkWell(
+                        onTap: provider.weatherPDFloader
+                            ? () {}
+                            : () async {
+                                await homeUseViewModel
+                                    .openWeatherPDF(context, url)
+                                    .then((value) {
+                                  Utils.model(
+                                      context,
+                                      PDFScreen(
+                                        path: value[0],
+                                        filename: value[1],
+                                      ));
+                                });
+                              },
+                        child: Container(
+                          height: dimension['height']! * 0.15,
+                          width: dimension['width']! * 0.45,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColor.darkColor)),
+                          child: provider.weatherPDFloader
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    const Icon(Remix.cloud_windy_line),
+                                    BaseText(
+                                      title: AppLocalizations.of(context)!
+                                          .checkWeatherhi,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                     InkWell(
                       onTap: () =>
                           Utils.model(context, const MandiPricesScreen()),

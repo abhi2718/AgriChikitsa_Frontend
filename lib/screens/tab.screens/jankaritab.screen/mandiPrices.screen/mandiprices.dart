@@ -267,6 +267,7 @@ class MandiPricesScreen extends HookWidget {
                             child: DropdownButton(
                                 alignment: AlignmentDirectional.centerStart,
                                 isExpanded: true,
+                                underline: Container(),
                                 hint: BaseText(
                                   title: AppLocalizations.of(context)!
                                       .selectMandihi,
@@ -399,9 +400,14 @@ class MandiPricesScreen extends HookWidget {
                                   context);
                             }
                           },
-                          child: BaseText(
-                              title: AppLocalizations.of(context)!.knowPricehi,
-                              style: const TextStyle(fontSize: 16))),
+                          child: provider.priceLoader
+                              ? const CircularProgressIndicator(
+                                  color: AppColor.whiteColor,
+                                )
+                              : BaseText(
+                                  title:
+                                      AppLocalizations.of(context)!.knowPricehi,
+                                  style: const TextStyle(fontSize: 16))),
                     ),
                   )
                 ],
