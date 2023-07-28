@@ -157,7 +157,6 @@ class NotificationTile extends HookWidget {
               Center(
                 child: IconButton(
                   onPressed: () {
-                    print(notificationItem);
                     Utils.model(
                         context,
                         ChatHistory(
