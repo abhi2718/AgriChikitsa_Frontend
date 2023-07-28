@@ -8,6 +8,7 @@ import 'package:remixicon/remixicon.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../res/app_url.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
 import '../jankari_view_model.dart';
@@ -34,7 +35,6 @@ class JankariPost extends HookWidget {
     useEffect(() {
       if (useViewModel.jankariSubcategoryPostList.isEmpty) {
       } else {
-        // print("This ${useViewModel.jankariSubcategoryPostList[index].id}");
         useViewModel.updateStats(
             context, 'post', useViewModel.jankariSubcategoryPostList[index].id);
       }
@@ -109,39 +109,9 @@ class JankariPost extends HookWidget {
                                     onTap: () async {
                                       final xfile = await provider.shareFiles(
                                           'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}');
-                                      if (provider
-                                              .jankariSubcategoryPostList[index]
-                                              .hindiTitle
-                                              .isNotEmpty &&
-                                          provider
-                                              .jankariSubcategoryPostList[index]
-                                              .youtubeUrl
-                                              .isNotEmpty) {
-                                        await Share.shareXFiles([xfile],
-                                            text:
-                                                "${provider.jankariSubcategoryPostList[index].hindiTitle}\nLink - ${provider.jankariSubcategoryPostList[index].youtubeUrl}");
-                                      } else {
-                                        await Share.shareXFiles([xfile],
-                                            text: provider
-                                                .jankariSubcategoryPostList[
-                                                    index]
-                                                .hindiTitle);
-                                      }
-                                      // if (provider
-                                      //         .jankariSubcategoryPostList[index]
-                                      //         .hindiTitle
-                                      //         .isNotEmpty &&
-                                      //     provider
-                                      //         .jankariSubcategoryPostList[index]
-                                      //         .youtubeUrl
-                                      //         .isNotEmpty) {
-                                      //   await Share.share(
-                                      // '${provider.jankariSubcategoryPostList[index].hindiTitle}\nLink - ${provider.jankariSubcategoryPostList[index].youtubeUrl}');
-                                      // } else {
-                                      // await Share.share(provider
-                                      //     .jankariSubcategoryPostList[index]
-                                      //     .hindiTitle);
-                                      // }
+                                      await Share.shareXFiles([xfile],
+                                          text:
+                                              "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
                                     },
                                     child: const Icon(Remix.share_line)),
                               ],

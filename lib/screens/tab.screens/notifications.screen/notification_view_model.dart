@@ -10,10 +10,15 @@ class NotificationViewModel with ChangeNotifier {
   final _notificationTabRepository = NotificationTabRepository();
   List<dynamic> notificationsList = [];
   dynamic chatHistoryList = [];
+  bool chatLoader = false;
   var notificationCount = 0;
   var _loading = false;
   bool get loading {
     return _loading;
+  }
+
+  setChatLoader(bool value) {
+    chatLoader = value;
   }
 
   setloading(bool value) {
@@ -88,11 +93,14 @@ class NotificationViewModel with ChangeNotifier {
   }
 
   void fetchChatHistory(BuildContext context, String id) async {
+    setChatLoader(true);
     try {
       final data = await NotificationTabRepository().fetchChatScript(id);
       chatHistoryList = data;
+      setChatLoader(false);
       notifyListeners();
     } catch (error) {
+      setChatLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);

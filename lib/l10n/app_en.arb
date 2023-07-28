@@ -65,5 +65,18 @@
 "warningSelectDistrict":"कृपया पहले जिला चुनें",
 "villagehi":"गाँव",
 "chatHistory":"चैट हिस्ट्री",
+"noChatHistoryhi":"कोई चैट उपलब्ध नहीं है",
+"checkWeatherhi":"मौसम की जाँच करें",
+"checkPriceshi":"मंडी भाव जांचें",
+"enterDetailshi":"निम्नलिखित विवरण दर्ज करें",
+"knowPricehi":"कीमत जाँचे",
+"fillMandihi":"कृपा पहले मंडी चूने",
+"pricehi":"कीमत जानकारी",
+"cropPricehi":"फसल की कीमत",
+"maxPricehi":"अधिकतम कीमत",
+"minPricehi":"न्यूनतम कीमत",
+"otherInfohi":"अन्य जानकारी",
+"selectMandihi":"मंडी चूने",
+"selectCrophi":"फसल चूने",
 "joinAgrichikitsahi": "एग्रीचिकित्सा के साथ जूडने के लिए अपना विवरण दर्ज करें"
 }

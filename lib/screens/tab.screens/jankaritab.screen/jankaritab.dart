@@ -1,13 +1,17 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandiprices.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_card.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import '../../../widgets/skeleton/skeleton.dart';
+import '../../../widgets/text.widgets/text.dart';
 import '../hometab.screen/hometab_view_model.dart';
 import '../hometab.screen/widgets/pdfScree.dart';
 
@@ -64,46 +68,53 @@ class JankariHomeTab extends HookWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(color: AppColor.darkColor)),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Icon(Remix.cloud_windy_line),
-                            Text(
-                              "Check Weather",
-                              style: TextStyle(
+                            const Icon(Remix.cloud_windy_line),
+                            BaseText(
+                              title:
+                                  AppLocalizations.of(context)!.checkWeatherhi,
+                              style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w500),
                             )
                           ],
                         ),
                       ),
                     ),
-                    Container(
-                      height: dimension['height']! * 0.15,
-                      width: dimension['width']! * 0.45,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColor.darkColor)),
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.currency_rupee),
-                          Text(
-                            "Check Prices",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
-                          )
-                        ],
+                    InkWell(
+                      onTap: () =>
+                          Utils.model(context, const MandiPricesScreen()),
+                      child: Container(
+                        height: dimension['height']! * 0.15,
+                        width: dimension['width']! * 0.45,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppColor.darkColor)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Icon(Icons.currency_rupee),
+                            BaseText(
+                              title:
+                                  AppLocalizations.of(context)!.checkPriceshi,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
               // const Divider(),
-              const Padding(
-                padding: EdgeInsets.only(left: 12, right: 12, top: 6),
-                child: Text(
-                  "Other Info",
-                  style: TextStyle(fontSize: 24),
+              Padding(
+                padding: const EdgeInsets.only(left: 12, right: 12, top: 6),
+                child: BaseText(
+                  title: AppLocalizations.of(context)!.otherInfohi,
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.w500),
                 ),
               ),
               const SizedBox(
