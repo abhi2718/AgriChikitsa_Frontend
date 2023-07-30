@@ -82,6 +82,7 @@ class MandiPricesModel with ChangeNotifier {
   }
 
   void fetchDistrict(BuildContext context) async {
+    setLoader(true);
     try {
       selectedDistrict = "";
       selectedMarket = "";
@@ -91,8 +92,9 @@ class MandiPricesModel with ChangeNotifier {
       cropList.clear();
       final data = await _mandiPricesRepository.fetchDistricts(selectedState);
       districtList = data["districts"].cast<String>();
-      notifyListeners();
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage("Error", error.toString(), context);
       }
@@ -100,6 +102,7 @@ class MandiPricesModel with ChangeNotifier {
   }
 
   void fetchMarket(BuildContext context) async {
+    setLoader(true);
     try {
       selectedMarket = "";
       selectedCommodity = "";
@@ -107,8 +110,9 @@ class MandiPricesModel with ChangeNotifier {
       cropList.clear();
       final data = await _mandiPricesRepository.fetchMarkets(selectedDistrict);
       marketList = data["markets"].cast<String>();
-      notifyListeners();
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage("Error", error.toString(), context);
       }
@@ -116,12 +120,14 @@ class MandiPricesModel with ChangeNotifier {
   }
 
   void fetchCommodities(BuildContext context) async {
+    setLoader(true);
     try {
       final data =
           await _mandiPricesRepository.fetchCommodities(selectedMarket);
       cropList = data["comodities"].cast<String>();
-      notifyListeners();
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage("Error", error.toString(), context);
       }

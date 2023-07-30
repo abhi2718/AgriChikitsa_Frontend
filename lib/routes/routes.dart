@@ -7,7 +7,6 @@ import '../screens/auth.screen/signin.auth/signin.dart';
 import '../screens/auth.screen/signup.auth/signup.dart';
 import '../screens/splash_screen.dart';
 import '../screens/tab.screens/chattab.screen/chattab.dart';
-import '../screens/tab.screens/jankaritab.screen/mandiPrices.screen/widgets/pricesScreen.dart';
 import '../screens/tab.screens/notifications.screen/notification_screen.dart';
 import '../screens/tab.screens/profiletab.screen/edit_profile/edit_profile.dart';
 import '../screens/tab.screens/tab_screen.dart';

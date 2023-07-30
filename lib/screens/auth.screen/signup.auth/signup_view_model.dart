@@ -104,10 +104,15 @@ class SignUpViewModel with ChangeNotifier {
     if (!isValid!) {
       return;
     }
-    if (selectedState.isEmpty || selectedDistrictHi.isEmpty) {
+    if (selectedState.isEmpty ||
+        selectedDistrictHi.isEmpty ||
+        village.isEmpty) {
       if (selectedState.isEmpty) {
         Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
             AppLocalizations.of(context)!.warningSelectState, context);
+      } else if (village.isEmpty) {
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.selectVillagehi, context);
       } else {
         Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
             AppLocalizations.of(context)!.warningSelectDistrict, context);

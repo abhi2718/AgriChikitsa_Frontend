@@ -248,7 +248,6 @@ class RegisterUser extends HookWidget {
                                             );
                                           }).toList(),
                                           onChanged: (value) {
-                                            // print(value);
                                             provider
                                                 .setSelectedDistrict(value!);
                                           }),
@@ -267,7 +266,11 @@ class RegisterUser extends HookWidget {
                                 validator: (value) => useViewModel
                                     .villageFieldValidator(context, value),
                                 onSaved: useViewModel.onSavedvillageField,
-                                onFieldSubmitted: (_) {},
+                                onChanged: (value) =>
+                                    useViewModel.onSavedvillageField(value),
+                                onFieldSubmitted: (value) {
+                                  useViewModel.setVillage(value);
+                                },
                               ),
                             ),
                             const SizedBox(
