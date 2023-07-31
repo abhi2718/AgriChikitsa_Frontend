@@ -101,6 +101,7 @@ class PricesScreen extends HookWidget {
                 ),
               ),
               Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 width: dimension['width']! * 0.40,
                 height: dimension['height']! * 0.08,
                 decoration: BoxDecoration(

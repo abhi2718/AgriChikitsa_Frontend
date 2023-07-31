@@ -26,7 +26,7 @@ class ChatHistory extends HookWidget {
     }, []);
     return Container(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 25.5),
-        height: dimension['height']! - 120,
+        height: dimension['height']! - 220,
         child: Column(
           children: [
             Row(
@@ -51,7 +51,7 @@ class ChatHistory extends HookWidget {
                 builder: (context, provider, child) {
               return provider.chatLoader
                   ? SizedBox(
-                      height: dimension['height']! - 180,
+                      height: dimension['height']! - 300,
                       child: const Center(child: CircularProgressIndicator()))
                   : useViewModel.chatHistoryList.isEmpty
                       ? SizedBox(

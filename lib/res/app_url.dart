@@ -10,6 +10,8 @@ class AppUrl {
   static const String feedEndPoint = '$baseUrl/feed';
   static const String jankariEndPoint = '$baseUrl/jankari';
   static const String mandiStatesEndPoint = '$baseUrl/mandi/states';
+  static const String registerStatesEndPoint = '$baseUrl/auth/states';
+  static const String registerDistrictEndPoint = '$baseUrl/auth/districts';
   static const String mandiDistrictEndPoint = '$baseUrl/mandi/districts';
   static const String mandiMarketEndPoint = '$baseUrl/mandi/markets';
   static const String mandiCommoditiesEndPoint = '$baseUrl/mandi/commodities';

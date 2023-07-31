@@ -1,18 +1,17 @@
 import 'dart:convert';
 
+import 'package:agriChikitsa/model/states_district_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../model/states_model.dart';
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
 
 class SignUpViewModel with ChangeNotifier {
   final _authRepository = AuthRepository();
-  StateData? stateData;
   final registerUserformKey = GlobalKey<FormState>();
   final nameFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
@@ -23,16 +22,17 @@ class SignUpViewModel with ChangeNotifier {
   var mobileNumber = '';
   var firebaseId = '';
   var village = '';
-  List<String> stateList = [];
+  dynamic stateList = [];
   dynamic districtList = [];
   var selectedState = '';
   var selectedDistrictHi = '';
   var selectedDistrictEn = '';
   dynamic userProfile;
 
-  void setSelectedState(String value) {
+  void setSelectedState(BuildContext context, dynamic value) {
     selectedState = value;
-    getDistrict(selectedState);
+    notifyListeners();
+    fetchDistrict(context, selectedState);
   }
 
   void setSelectedDistrict(value) {
@@ -41,7 +41,7 @@ class SignUpViewModel with ChangeNotifier {
   }
 
   void setSelectedDistrictEn(value) {
-    selectedDistrictEn = value['name'];
+    selectedDistrictEn = value.name;
   }
 
   bool get loading {
@@ -80,13 +80,10 @@ class SignUpViewModel with ChangeNotifier {
     Navigator.pop(context);
   }
 
-  void getStates(BuildContext context) async {
+  void fetchStates(BuildContext context) async {
     try {
-      String jsonString =
-          await rootBundle.loadString('assets/states-and-districts.json');
-      List<dynamic> jsonData = json.decode(jsonString);
-      stateData = StateData(List<Map<String, dynamic>>.from(jsonData));
-      stateList = stateData!.stateList;
+      final data = await _authRepository.fetchStates();
+      stateList = mapStates(data['states']);
       notifyListeners();
     } catch (error) {
       Utils.flushBarErrorMessage(
@@ -94,9 +91,32 @@ class SignUpViewModel with ChangeNotifier {
     }
   }
 
-  void getDistrict(String state) {
-    districtList = stateData!.getDistrict(state);
-    notifyListeners();
+  List<StateModel> mapStates(dynamic states) {
+    return List<StateModel>.from(states.map((state) {
+      return StateModel.fromJson(state);
+    }));
+  }
+
+  void fetchDistrict(BuildContext context, String selectedDistrict) async {
+    try {
+      districtList.clear();
+      selectedDistrictEn = "";
+      selectedDistrictHi = "";
+      final data = await _authRepository.fetchDistricts(selectedDistrict);
+      districtList = mapDistricts(data['districts']);
+      notifyListeners();
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
+  }
+
+  List<DistrictModel> mapDistricts(dynamic districts) {
+    return List<DistrictModel>.from(districts.map((district) {
+      return DistrictModel.fromJson(district);
+    }));
   }
 
   void saveRegisterUserForm(BuildContext context) {

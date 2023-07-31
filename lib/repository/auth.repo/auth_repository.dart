@@ -44,4 +44,24 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> fetchStates() async {
+    const url = AppUrl.registerStatesEndPoint;
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchDistricts(String state) async {
+    final url = '${AppUrl.registerDistrictEndPoint}/$state';
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

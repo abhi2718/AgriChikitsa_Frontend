@@ -22,7 +22,7 @@ class RegisterUser extends HookWidget {
       useViewModel.disposeValues();
       useViewModel.setPhoneNumber(phoneNumber);
       useViewModel.setFirebaseId(uid);
-      useViewModel.getStates(context);
+      useViewModel.fetchStates(context);
       return () => useViewModel.disposeRegisterUserformKey();
     }, []);
 
@@ -157,17 +157,18 @@ class RegisterUser extends HookWidget {
                                     alignment: AlignmentDirectional.centerStart,
                                     items: provider.stateList
                                         .map<DropdownMenuItem<String>>(
-                                            (String value) {
+                                            (dynamic value) {
                                       return DropdownMenuItem<String>(
-                                        value: value,
+                                        value: value.state,
                                         child: BaseText(
-                                          title: value,
+                                          title: value.stateHi,
                                           style: const TextStyle(fontSize: 14),
                                         ),
                                       );
                                     }).toList(),
                                     onChanged: (value) {
-                                      provider.setSelectedState(value!);
+                                      provider.setSelectedState(
+                                          context, value!);
                                     }),
                               );
                             }),
@@ -239,9 +240,9 @@ class RegisterUser extends HookWidget {
                                                 provider.setSelectedDistrictEn(
                                                     value);
                                               },
-                                              value: value['nameHi'],
+                                              value: value.nameHi,
                                               child: BaseText(
-                                                title: value['nameHi'],
+                                                title: value.nameHi,
                                                 style: const TextStyle(
                                                     fontSize: 14),
                                               ),

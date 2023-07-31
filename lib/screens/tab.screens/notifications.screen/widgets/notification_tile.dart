@@ -104,7 +104,7 @@ class NotificationTile extends HookWidget {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5),
-                                      width: dimension['width']! * 0.75,
+                                      width: dimension['width']! * 0.65,
                                       child: Text(
                                         "${notificationItem['url']}",
                                         style: const TextStyle(
