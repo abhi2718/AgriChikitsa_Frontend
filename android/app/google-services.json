@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "137132429712-3j9jenlccvl7nv9bofsc43l00vvbht13.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.agriChikitsa",
+            "certificate_hash": "7703f13229d2920b3daa61b5986140cf48c76407"
+          }
+        },
+        {
           "client_id": "137132429712-dn2esn6f8dsptebtk8dbflsedpbaa06c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,6 +37,35 @@
             "certificate_hash": "91bb1b037dc733e56f370e95ac3b9ca6e15b48a7"
           }
         },
+        {
+          "client_id": "137132429712-v5cjsadekelegh4m3k8es5lprom90fsm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGfebkdT45UkYPIZZL4EA3rAQDMfpHaCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "137132429712-v5cjsadekelegh4m3k8es5lprom90fsm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137132429712:android:3b1c3eabfc4909714c6315",
+        "android_client_info": {
+          "package_name": "com.freshnic.agriChikitsa"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "137132429712-v5cjsadekelegh4m3k8es5lprom90fsm.apps.googleusercontent.com",
           "client_type": 3
