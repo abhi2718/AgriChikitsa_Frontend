@@ -37,7 +37,7 @@ void showDeleteAccountDialog(BuildContext context,
                     Input(
                       labelText: AppLocalizations.of(context)!.validReasonhi,
                       keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
+                      textInputAction: TextInputAction.done,
                       validator: (value) =>
                           useViewModel.nameFieldValidator(context, value),
                       onChanged: (value) {
