@@ -10,10 +10,15 @@ import '../../../routes/routes_name.dart';
 class ProfileViewModel with ChangeNotifier {
   final authRepository = AuthRepository();
   bool deleteLoader = false;
+  String deleteReason = '';
   var locale = {"language": 'en', "country": "US"};
   Future<void> clearLocalStorage() async {
     final localStorage = await SharedPreferences.getInstance();
     await localStorage.clear();
+  }
+
+  void onSavedReasonField(value) {
+    deleteReason = value;
   }
 
   void setDeleteLoader(value) {
@@ -72,10 +77,18 @@ class ProfileViewModel with ChangeNotifier {
     }
   }
 
+  String? nameFieldValidator(BuildContext context, value) {
+    if (value!.isEmpty || value.trim().isEmpty) {
+      return AppLocalizations.of(context)!.nameReuiredhi;
+    }
+    return null;
+  }
+
   void handleDelete(context, disposableProvider) async {
     setDeleteLoader(true);
     try {
-      await authRepository.deleteUser();
+      deleteReason = Uri.encodeComponent(deleteReason);
+      await authRepository.deleteUser(deleteReason);
       handleLogOut(context, disposableProvider);
     } catch (error) {
       setDeleteLoader(false);

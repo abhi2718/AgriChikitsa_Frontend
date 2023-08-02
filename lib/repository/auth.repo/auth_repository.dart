@@ -35,8 +35,8 @@ class AuthRepository {
     }
   }
 
-  Future<dynamic> deleteUser() async {
-    const url = '${AppUrl.userEndPoint}/';
+  Future<dynamic> deleteUser(String reason) async {
+    final url = '${AppUrl.userEndPoint}/?reason=$reason';
     try {
       final response = await _apiServices.getDeleteApiResponse(url);
       return response;
