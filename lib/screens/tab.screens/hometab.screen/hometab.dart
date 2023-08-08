@@ -195,28 +195,15 @@ class HomeTabScreen1 extends HookWidget {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(
-              Icons.chat_bubble_outline,
-              size: 30.0,
-            ),
-            onPressed: () {
-              // Navigator.pushNamed(context, RouteName.chatBotRoute);
-              Utils.model(context, ChatTabScreen());
-              // showModalBottomSheet(
-              //   useSafeArea: true,
-              //   enableDrag: false,
-              //   builder: (BuildContext context) {
-              //     return SizedBox(
-              //         height: MediaQuery.of(context).size.height * 1,
-              //         child: Container(
-              //           height: MediaQuery.of(context).size.height * 1,
-              //           child: Text("Text"),
-              //         ));
-              //   },
-              //   context: context,
-              // );
-            }),
+        // floatingActionButton: FloatingActionButton(
+        //     child: const Icon(
+        //       Icons.chat_bubble_outline,
+        //       size: 30.0,
+        //     ),
+        //     onPressed: () {
+        //       Utils.model(context, ChatTabScreen());
+        //     }),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../utils/utils.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
+import 'chattab.screen/chattab.dart';
 
 class TabScreen extends HookWidget {
   const TabScreen({super.key});
@@ -14,6 +16,10 @@ class TabScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentIndex = useState(0);
+    // var currentIndex = 0;
+    // useEffect(() {
+    //   print("Here");
+    // }, [currentIndex]);
     List<Widget> tabs = [
       const HomeTabScreen(),
       const JankariHomeTab(),
@@ -22,6 +28,7 @@ class TabScreen extends HookWidget {
     ];
     return Scaffold(
       body: tabs[currentIndex.value],
+      // body: tabs[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: true,
         backgroundColor: AppColor.lightColor,
@@ -88,6 +95,57 @@ class TabScreen extends HookWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+          elevation: 10.0,
+          child: const Icon(
+            Icons.chat_bubble_outline,
+            size: 30.0,
+          ),
+          onPressed: () {
+            Utils.model(context, ChatTabScreen());
+          }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: BottomAppBar(
+      //   shape: CircularNotchedRectangle(),
+      //   notchMargin: 10,
+      //   child: Container(
+      //     height: 60,
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         Row(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             MaterialButton(
+      //               onPressed: () {},
+      //               minWidth: 40,
+      //               child: Column(
+      //                 mainAxisAlignment: MainAxisAlignment.center,
+      //                 children: [
+      //                   Icon(Icons.home),
+      //                   Text("Hey"),
+      //                 ],
+      //               ),
+      //             ),
+      //             MaterialButton(
+      //               onPressed: () {
+      //                 currentIndex = 1;
+      //               },
+      //               minWidth: 40,
+      //               child: Column(
+      //                 mainAxisAlignment: MainAxisAlignment.center,
+      //                 children: [
+      //                   Icon(Icons.home),
+      //                   Text("Hey"),
+      //                 ],
+      //               ),
+      //             )
+      //           ],
+      //         )
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
