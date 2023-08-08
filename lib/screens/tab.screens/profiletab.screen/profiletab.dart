@@ -21,6 +21,7 @@ import '../../auth.screen/signup.auth/signup_view_model.dart';
 import '../hometab.screen/hometab_view_model.dart';
 import 'edit_profile/edit_profile.dart';
 import 'edit_profile/edit_profile_view_model.dart';
+import 'widgets/logout_alert.dart';
 
 class ProfileTabScreen extends HookWidget {
   const ProfileTabScreen({super.key});
@@ -160,8 +161,11 @@ class ProfileTabScreen extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
-                onPress: () =>
-                    useViewModel.handleLogOut(context, disposableProvider),
+                onPress: () {
+                  // useViewModel.handleLogOut(context, disposableProvider);
+                  showLogoutAccountDialog(
+                      context, useViewModel, disposableProvider);
+                },
                 leftIcon: SvgPicture.asset('assets/svg/logout.svg'),
                 title: AppLocalizations.of(context)!.logouthi,
                 width: dimension["width"]! - 32,

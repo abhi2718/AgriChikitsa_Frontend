@@ -112,6 +112,7 @@ class MandiPricesScreen extends HookWidget {
                                             borderRadius:
                                                 BorderRadius.circular(20)),
                                         child: DropdownButton(
+                                            underline: Container(),
                                             isExpanded: true,
                                             hint: BaseText(
                                               title:

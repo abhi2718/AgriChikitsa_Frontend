@@ -8,14 +8,16 @@ import '../../../../widgets/Input.widgets/input.dart';
 
 void showDeleteAccountDialog(BuildContext context,
     ProfileViewModel useViewModel, List<dynamic> disposableProvider) {
+  final dimension = Utils.getDimensions(context, true);
   showDialog(
     context: context,
     builder: (BuildContext dialogContext) {
       return useViewModel.deleteLoader
-          ? const AlertDialog(
+          ? AlertDialog(
               content: SizedBox(
-                height: 100,
-                child: Center(
+                width: dimension['width'],
+                height: dimension['height']! * 0.18,
+                child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               ),
@@ -25,7 +27,8 @@ void showDeleteAccountDialog(BuildContext context,
                   title: AppLocalizations.of(context)!.deleteAccounthi,
                   style: const TextStyle()),
               content: SizedBox(
-                height: 125,
+                width: dimension['width'],
+                height: dimension['height']! * 0.18,
                 child: Column(
                   children: [
                     BaseText(
@@ -65,7 +68,6 @@ void showDeleteAccountDialog(BuildContext context,
                     if (useViewModel.deleteReason.isNotEmpty &&
                         useViewModel.deleteReason.length > 3) {
                       useViewModel.handleDelete(context, disposableProvider);
-                      Navigator.of(dialogContext).pop();
                     } else {
                       Utils.flushBarErrorMessage(
                           AppLocalizations.of(context)!.alerthi,

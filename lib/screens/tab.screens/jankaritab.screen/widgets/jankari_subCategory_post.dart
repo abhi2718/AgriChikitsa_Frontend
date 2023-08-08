@@ -105,15 +105,63 @@ class JankariPost extends HookWidget {
                                     style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w300)),
-                                InkWell(
-                                    onTap: () async {
-                                      final xfile = await provider.shareFiles(
-                                          'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}');
-                                      await Share.shareXFiles([xfile],
-                                          text:
-                                              "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
-                                    },
-                                    child: const Icon(Remix.share_line)),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                        onTap: () {
+                                          provider.togglePostLike(
+                                              context,
+                                              provider
+                                                  .jankariSubcategoryPostList[
+                                                      index]
+                                                  .id,
+                                              'like',
+                                              provider.jankariSubcategoryPostList[
+                                                  index]);
+                                        },
+                                        child: Icon(provider
+                                                .jankariSubcategoryPostList[
+                                                    index]
+                                                .isLiked
+                                            ? Remix.thumb_up_fill
+                                            : Remix.thumb_up_line)),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          provider.togglePostLike(
+                                              context,
+                                              provider
+                                                  .jankariSubcategoryPostList[
+                                                      index]
+                                                  .id,
+                                              'dislike',
+                                              provider.jankariSubcategoryPostList[
+                                                  index]);
+                                        },
+                                        child: Icon(provider
+                                                .jankariSubcategoryPostList[
+                                                    index]
+                                                .isDisLiked
+                                            ? Remix.thumb_down_fill
+                                            : Remix.thumb_down_line)),
+                                    const SizedBox(
+                                      width: 6,
+                                    ),
+                                    InkWell(
+                                        onTap: () async {
+                                          final xfile = await provider.shareFiles(
+                                              'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}');
+                                          await Share.shareXFiles([xfile],
+                                              text:
+                                                  "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
+                                        },
+                                        child: const Icon(Remix.share_line)),
+                                  ],
+                                ),
                               ],
                             ),
                             const SizedBox(

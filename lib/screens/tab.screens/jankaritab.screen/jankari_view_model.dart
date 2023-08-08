@@ -183,6 +183,34 @@ class JankariViewModel with ChangeNotifier {
     }));
   }
 
+  void togglePostLike(
+      BuildContext context, String postId, String type, dynamic post) async {
+    try {
+      if (type == 'like') {
+        if (!post.isLiked) {
+          post.isDisLiked = false;
+          post.isLiked = true;
+        } else {
+          post.isLiked = false;
+        }
+      } else {
+        if (!post.isDisLiked) {
+          post.isLiked = false;
+          post.isDisLiked = true;
+        } else {
+          post.isDisLiked = false;
+        }
+      }
+      notifyListeners();
+      await _jankariRepository.toggleJankariPostLike(postId, type);
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
+  }
+
   dynamic shareFiles(String imagePath) async {
     final uri = Uri.parse(imagePath);
     final res = await http.get(uri);

@@ -74,8 +74,8 @@
 "somethingWentWronghi":"कुछ गलत हो गया",
 "noCommenthi":"कोई टिप्पणी नहीं जोड़ी गई",
 "nameReuiredhi":"नाम आवश्यक है !",
-"selectState":"राज्य चुनें",
-"selectDistrict":"जिला चुनें",
+"selectState":"राज्य चूने",
+"selectDistrict":"जिला चूने",
 "warningSelectState":"कृपया पहले राज्य चुनें",
 "warningSelectDistrict":"कृपया पहले जिला चुनें",
 "chatHistory":"चैट हिस्ट्री",
@@ -85,7 +85,7 @@
 "enterDetailshi":"निम्नलिखित विवरण दर्ज करें",
 "knowPricehi":"कीमत जाँचे",
 "fillMandihi":"कृपा पहले मंडी चूने",
-"pricehi":"कीमत जानकारी",
+"pricehi":"कीमत जानकारी",                                       
 "cropPricehi":"फसल की कीमत",
 "maxPricehi":"अधिकतम कीमत",
 "minPricehi":"न्यूनतम कीमत",
@@ -94,5 +94,7 @@
 "selectCrophi":"फसल चूने",
 "selectVillagehi":"कृपया अपने गांव का नाम दर्ज करें",
 "validReasonhi":"उचित कारण दर्ज करें",
+"accountLogouthi":"खाता लॉगआउट",
+"accountLogoutConfirmhi":"क्या आप लॉग आउट करना चाहते हैं?",
 "emailRequiredhi":"ईमेल आवश्यक है !"
 }

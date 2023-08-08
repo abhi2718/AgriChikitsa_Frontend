@@ -19,4 +19,5 @@ class AppUrl {
   static const String botQquestionsEndPoint = '$baseUrl/chat/script';
   static const String notificationsEndPoint = '$baseUrl/notification';
   static const String chatEndPoint = '$baseUrl/chat';
+  static const String jankariPostToggleLike = '$baseUrl/jankari/likes/post';
 }

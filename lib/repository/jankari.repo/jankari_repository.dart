@@ -34,4 +34,14 @@ class JankariRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> toggleJankariPostLike(String postId, String type) async {
+    try {
+      final url = '${AppUrl.jankariPostToggleLike}/$postId/$type';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

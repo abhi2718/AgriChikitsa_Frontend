@@ -59,8 +59,8 @@
 "nohi":"नहीं",
 "takeAPhoto":"एक फोटो लें",
 "uploadAPhoto":"फोटो अपलोड करें",
-"selectState":"राज्य चुनें",
-"selectDistrict":"जिला चुनें",
+"selectState":"राज्य चूने",
+"selectDistrict":"जिला चूने",
 "warningSelectState":"कृपया पहले राज्य चुनें",
 "warningSelectDistrict":"कृपया पहले जिला चुनें",
 "villagehi":"गाँव",
@@ -80,5 +80,7 @@
 "selectCrophi":"फसल चूने",
 "selectVillagehi":"कृपया अपने गांव का नाम दर्ज करें",
 "validReasonhi":"उचित कारण दर्ज करें",
+"accountLogouthi":"खाता लॉगआउट",
+"accountLogoutConfirmhi":"क्या आप लॉग आउट करना चाहते हैं?",
 "joinAgrichikitsahi": "एग्रीचिकित्सा के साथ जूडने के लिए अपना विवरण दर्ज करें"
 }
