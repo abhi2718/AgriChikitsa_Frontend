@@ -35,13 +35,13 @@ class ProfileViewModel with ChangeNotifier {
   }
 
   void handleLogOut(BuildContext context, disposableProvider) {
+    setDeleteLoader(false);
     disposableProvider.forEach((disposableProvider) {
       disposableProvider.disposeValues();
     });
     clearLocalStorage().then((_) {
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(RouteName.authLandingRoute, (route) => false)
-          .then((_) => setDeleteLoader(false));
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          RouteName.authLandingRoute, (route) => false);
     });
   }
 
