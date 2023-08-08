@@ -96,10 +96,16 @@ class TabScreen extends HookWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
           elevation: 10.0,
-          child: const Icon(
-            Icons.chat_bubble_outline,
-            size: 30.0,
+          // child: const Icon(
+          //   Icons.chat_bubble_outline,
+          //   size: 30.0,
+          // ),
+          child: Image.asset(
+            "assets/images/logoagrichikitsa.png",
+            height: 40,
+            width: 40,
           ),
           onPressed: () {
             Utils.model(context, ChatTabScreen());
