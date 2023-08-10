@@ -64,39 +64,43 @@ class TabScreen extends HookWidget {
                   currentIndex.value = 0;
                 },
               ),
-              IconButton(
-                padding: const EdgeInsets.only(right: 30),
-                icon: currentIndex.value == 1
-                    ? SvgPicture.asset(
-                        'assets/svg/jankari-filled.svg',
-                        width: 23,
-                        height: 22,
-                      )
-                    : SvgPicture.asset(
-                        'assets/svg/jankari.svg',
-                        width: 23,
-                        height: 22,
-                      ),
-                onPressed: () {
-                  currentIndex.value = 1;
-                },
+              Container(
+                margin: const EdgeInsets.only(right: 20),
+                child: IconButton(
+                  icon: currentIndex.value == 1
+                      ? SvgPicture.asset(
+                          'assets/svg/jankari-filled.svg',
+                          width: 23,
+                          height: 22,
+                        )
+                      : SvgPicture.asset(
+                          'assets/svg/jankari.svg',
+                          width: 23,
+                          height: 22,
+                        ),
+                  onPressed: () {
+                    currentIndex.value = 1;
+                  },
+                ),
               ),
-              IconButton(
-                padding: const EdgeInsets.only(left: 30),
-                icon: currentIndex.value == 2
-                    ? SvgPicture.asset(
-                        'assets/svg/timeline-filled.svg',
-                        width: 23,
-                        height: 22,
-                      )
-                    : SvgPicture.asset(
-                        'assets/svg/timeline.svg',
-                        width: 23,
-                        height: 22,
-                      ),
-                onPressed: () {
-                  currentIndex.value = 2;
-                },
+              Container(
+                margin: const EdgeInsets.only(left: 20),
+                child: IconButton(
+                  icon: currentIndex.value == 2
+                      ? SvgPicture.asset(
+                          'assets/svg/timeline-filled.svg',
+                          width: 23,
+                          height: 22,
+                        )
+                      : SvgPicture.asset(
+                          'assets/svg/timeline.svg',
+                          width: 23,
+                          height: 22,
+                        ),
+                  onPressed: () {
+                    currentIndex.value = 2;
+                  },
+                ),
               ),
               IconButton(
                 icon: currentIndex.value == 3
