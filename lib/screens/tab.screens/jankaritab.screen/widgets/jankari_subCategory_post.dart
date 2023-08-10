@@ -89,8 +89,6 @@ class JankariPost extends HookWidget {
                             style: const TextStyle()),
                       )
                     : SizedBox(
-                        height: 100,
-                        width: 100,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -100,14 +98,15 @@ class JankariPost extends HookWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                BaseText(
-                                    title: subCategoryTitle,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w300)),
+                                Flexible(
+                                  child: Text(subCategoryTitle,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w300)),
+                                ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     InkWell(
                                         onTap: () {
@@ -121,14 +120,19 @@ class JankariPost extends HookWidget {
                                               provider.jankariSubcategoryPostList[
                                                   index]);
                                         },
-                                        child: Icon(provider
-                                                .jankariSubcategoryPostList[
-                                                    index]
-                                                .isLiked
-                                            ? Remix.thumb_up_fill
-                                            : Remix.thumb_up_line)),
+                                        child: SizedBox(
+                                          // color: Colors.red,
+                                          height: 40,
+                                          width: 40,
+                                          child: Icon(provider
+                                                  .jankariSubcategoryPostList[
+                                                      index]
+                                                  .isLiked
+                                              ? Remix.thumb_up_fill
+                                              : Remix.thumb_up_line),
+                                        )),
                                     const SizedBox(
-                                      width: 6,
+                                      width: 10,
                                     ),
                                     InkWell(
                                         onTap: () {
@@ -142,14 +146,18 @@ class JankariPost extends HookWidget {
                                               provider.jankariSubcategoryPostList[
                                                   index]);
                                         },
-                                        child: Icon(provider
-                                                .jankariSubcategoryPostList[
-                                                    index]
-                                                .isDisLiked
-                                            ? Remix.thumb_down_fill
-                                            : Remix.thumb_down_line)),
+                                        child: SizedBox(
+                                          height: 40,
+                                          width: 40,
+                                          child: Icon(provider
+                                                  .jankariSubcategoryPostList[
+                                                      index]
+                                                  .isDisLiked
+                                              ? Remix.thumb_down_fill
+                                              : Remix.thumb_down_line),
+                                        )),
                                     const SizedBox(
-                                      width: 6,
+                                      width: 10,
                                     ),
                                     InkWell(
                                         onTap: () async {
@@ -159,7 +167,11 @@ class JankariPost extends HookWidget {
                                               text:
                                                   "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
                                         },
-                                        child: const Icon(Remix.share_line)),
+                                        child: SizedBox(
+                                            height: 40,
+                                            width: 40,
+                                            child:
+                                                const Icon(Remix.share_line))),
                                   ],
                                 ),
                               ],

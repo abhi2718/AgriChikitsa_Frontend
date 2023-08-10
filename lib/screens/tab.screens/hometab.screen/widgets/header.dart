@@ -38,55 +38,48 @@ class HeaderWidget extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset(
-                    "assets/images/logoagrichikitsa.png",
-                    height: 40,
-                    width: 40,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Consumer<NotificationViewModel>(
-                          builder: (context, provider, child) {
-                        return NotificationIndicatorButton(
-                          notificationCount: provider.notificationCount,
-                        );
-                      }),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Consumer<AuthService>(
-                          builder: (context, provider, child) {
-                        if (provider.userInfo != null) {
-                          final user = provider.userInfo["user"];
-                          final profileImage = user['profileImage'].split(
-                              'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-                          return SizedBox(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        Skeleton(
-                                  height: 40,
-                                  width: 40,
-                                  radius: 0,
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                width: 40,
-                                fit: BoxFit.cover,
-                                height: 40,
-                              ),
+                  // Image.asset(
+                  //   "assets/images/logoagrichikitsa.png",
+                  //   height: 40,
+                  //   width: 40,
+                  // ),
+                  Consumer<AuthService>(builder: (context, provider, child) {
+                    if (provider.userInfo != null) {
+                      final user = provider.userInfo["user"];
+                      final profileImage = user['profileImage'].split(
+                          'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                      return SizedBox(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Skeleton(
+                              height: 40,
+                              width: 40,
+                              radius: 0,
                             ),
-                          );
-                        }
-                        return Container();
-                      }),
-                    ],
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            width: 40,
+                            fit: BoxFit.cover,
+                            height: 40,
+                          ),
+                        ),
+                      );
+                    }
+                    return Container();
+                  }),
+                  const SizedBox(
+                    width: 10,
                   ),
+                  Consumer<NotificationViewModel>(
+                      builder: (context, provider, child) {
+                    return NotificationIndicatorButton(
+                      notificationCount: provider.notificationCount,
+                    );
+                  }),
                 ],
               ),
             ),

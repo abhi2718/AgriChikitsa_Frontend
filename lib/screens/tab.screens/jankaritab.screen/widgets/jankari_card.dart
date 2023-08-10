@@ -57,6 +57,16 @@ class JankariCard extends HookWidget {
                   ),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8),
                   child: Row(
@@ -88,7 +98,7 @@ class JankariCard extends HookWidget {
                             BaseText(
                               title: jankari.hindiName,
                               style: const TextStyle(
-                                fontSize: 16,
+                                fontSize: 17,
                                 fontWeight: FontWeight.w700,
                                 color: AppColor.whiteColor,
                               ),
@@ -97,8 +107,8 @@ class JankariCard extends HookWidget {
                             BaseText(
                               title: jankari.hindiDescription,
                               style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                                 color: AppColor.whiteColor,
                               ),
                             ),

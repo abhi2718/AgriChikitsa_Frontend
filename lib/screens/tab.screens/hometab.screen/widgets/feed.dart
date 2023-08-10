@@ -144,9 +144,9 @@ class Feed extends HookWidget {
                         ),
                       ],
                     ),
-                    const InkWell(
-                      child: Icon(Remix.more_2_line),
-                    ),
+                    // const InkWell(
+                    //   child: Icon(Remix.more_2_line),
+                    // ),
                   ],
                 ),
               ),
