@@ -120,16 +120,33 @@ class JankariPost extends HookWidget {
                                               provider.jankariSubcategoryPostList[
                                                   index]);
                                         },
-                                        child: SizedBox(
+                                        child: Container(
                                           // color: Colors.red,
                                           height: 40,
                                           width: 40,
-                                          child: Icon(provider
-                                                  .jankariSubcategoryPostList[
-                                                      index]
-                                                  .isLiked
-                                              ? Remix.thumb_up_fill
-                                              : Remix.thumb_up_line),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(provider
+                                                      .jankariSubcategoryPostList[
+                                                          index]
+                                                      .isLiked
+                                                  ? Remix.thumb_up_fill
+                                                  : Remix.thumb_up_line),
+                                              BaseText(
+                                                title: provider
+                                                    .jankariSubcategoryPostList[
+                                                        index]
+                                                    .likesCount
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
                                         )),
                                     const SizedBox(
                                       width: 10,
@@ -149,12 +166,29 @@ class JankariPost extends HookWidget {
                                         child: SizedBox(
                                           height: 40,
                                           width: 40,
-                                          child: Icon(provider
-                                                  .jankariSubcategoryPostList[
-                                                      index]
-                                                  .isDisLiked
-                                              ? Remix.thumb_down_fill
-                                              : Remix.thumb_down_line),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(provider
+                                                      .jankariSubcategoryPostList[
+                                                          index]
+                                                      .isDisLiked
+                                                  ? Remix.thumb_down_fill
+                                                  : Remix.thumb_down_line),
+                                              BaseText(
+                                                title: provider
+                                                    .jankariSubcategoryPostList[
+                                                        index]
+                                                    .dislikesCount
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              )
+                                            ],
+                                          ),
                                         )),
                                     const SizedBox(
                                       width: 10,
@@ -167,11 +201,10 @@ class JankariPost extends HookWidget {
                                               text:
                                                   "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
                                         },
-                                        child: SizedBox(
+                                        child: const SizedBox(
                                             height: 40,
                                             width: 40,
-                                            child:
-                                                const Icon(Remix.share_line))),
+                                            child: Icon(Remix.share_line))),
                                   ],
                                 ),
                               ],

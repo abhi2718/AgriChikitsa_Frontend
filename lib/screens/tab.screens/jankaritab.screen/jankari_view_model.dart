@@ -188,17 +188,27 @@ class JankariViewModel with ChangeNotifier {
     try {
       if (type == 'like') {
         if (!post.isLiked) {
+          if (post.isDisLiked) {
+            post.dislikesCount--;
+          }
           post.isDisLiked = false;
           post.isLiked = true;
+          post.likesCount++;
         } else {
           post.isLiked = false;
+          post.likesCount--;
         }
       } else {
         if (!post.isDisLiked) {
+          if (post.isLiked) {
+            post.likesCount--;
+          }
           post.isLiked = false;
           post.isDisLiked = true;
+          post.dislikesCount++;
         } else {
           post.isDisLiked = false;
+          post.dislikesCount--;
         }
       }
       notifyListeners();

@@ -11,6 +11,8 @@ class JankariSubCategoryPostModel {
   DateTime updatedAt;
   bool isLiked;
   bool isDisLiked;
+  int likesCount;
+  int dislikesCount;
 
   JankariSubCategoryPostModel(
       {required this.id,
@@ -24,7 +26,9 @@ class JankariSubCategoryPostModel {
       required this.createdAt,
       required this.updatedAt,
       this.isLiked = false,
-      this.isDisLiked = false});
+      this.isDisLiked = false,
+      this.likesCount = 0,
+      this.dislikesCount = 0});
 
   factory JankariSubCategoryPostModel.fromJson(Map<String, dynamic> json) {
     return JankariSubCategoryPostModel(
@@ -39,6 +43,8 @@ class JankariSubCategoryPostModel {
         createdAt: DateTime.parse(json['createdAt']),
         updatedAt: DateTime.parse(json['updatedAt']),
         isLiked: json['isLike'],
-        isDisLiked: json['isDisLike']);
+        isDisLiked: json['isDisLike'],
+        likesCount: json['likes'],
+        dislikesCount: json['disLikes']);
   }
 }
