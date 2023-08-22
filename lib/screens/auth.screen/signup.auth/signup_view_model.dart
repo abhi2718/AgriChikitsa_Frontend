@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:agriChikitsa/model/states_district_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,7 +21,28 @@ class SignUpViewModel with ChangeNotifier {
   var email = '';
   var mobileNumber = '';
   var firebaseId = '';
+  var village = '';
+  dynamic stateList = [];
+  dynamic districtList = [];
+  var selectedState = '';
+  var selectedDistrictHi = '';
+  var selectedDistrictEn = '';
   dynamic userProfile;
+
+  void setSelectedState(BuildContext context, dynamic value) {
+    selectedState = value;
+    notifyListeners();
+    fetchDistrict(context, selectedState);
+  }
+
+  void setSelectedDistrict(value) {
+    selectedDistrictHi = value;
+    notifyListeners();
+  }
+
+  void setSelectedDistrictEn(value) {
+    selectedDistrictEn = value.name;
+  }
 
   bool get loading {
     return _loading;
@@ -43,6 +66,11 @@ class SignUpViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setVillage(value) {
+    village = value;
+    notifyListeners();
+  }
+
   void setUserInfo(String name, String companyId) {
     userName = name;
     notifyListeners();
@@ -52,9 +80,63 @@ class SignUpViewModel with ChangeNotifier {
     Navigator.pop(context);
   }
 
+  void fetchStates(BuildContext context) async {
+    try {
+      final data = await _authRepository.fetchStates();
+      stateList = mapStates(data['states']);
+      notifyListeners();
+    } catch (error) {
+      Utils.flushBarErrorMessage(
+          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+    }
+  }
+
+  List<StateModel> mapStates(dynamic states) {
+    return List<StateModel>.from(states.map((state) {
+      return StateModel.fromJson(state);
+    }));
+  }
+
+  void fetchDistrict(BuildContext context, String selectedDistrict) async {
+    try {
+      districtList.clear();
+      selectedDistrictEn = "";
+      selectedDistrictHi = "";
+      final data = await _authRepository.fetchDistricts(selectedDistrict);
+      districtList = mapDistricts(data['districts']);
+      notifyListeners();
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
+  }
+
+  List<DistrictModel> mapDistricts(dynamic districts) {
+    return List<DistrictModel>.from(districts.map((district) {
+      return DistrictModel.fromJson(district);
+    }));
+  }
+
   void saveRegisterUserForm(BuildContext context) {
     final isValid = registerUserformKey.currentState?.validate();
     if (!isValid!) {
+      return;
+    }
+    if (selectedState.isEmpty ||
+        selectedDistrictHi.isEmpty ||
+        village.isEmpty) {
+      if (selectedState.isEmpty) {
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.warningSelectState, context);
+      } else if (village.isEmpty) {
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.selectVillagehi, context);
+      } else {
+        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
+            AppLocalizations.of(context)!.warningSelectDistrict, context);
+      }
       return;
     }
     registerUserformKey.currentState?.save();
@@ -64,14 +146,22 @@ class SignUpViewModel with ChangeNotifier {
             "roles": "User",
             "name": userName,
             "phoneNumber": mobileNumber,
-            "firebaseId": firebaseId
+            "firebaseId": firebaseId,
+            "state": selectedState,
+            "district_en": selectedDistrictEn,
+            "district_hi": selectedDistrictHi,
+            "village": village
           }
         : {
             "roles": "User",
             "name": userName,
             "email": email,
             "phoneNumber": mobileNumber,
-            "firebaseId": firebaseId
+            "firebaseId": firebaseId,
+            "state": selectedState,
+            "district_en": selectedDistrictEn,
+            "district_hi": selectedDistrictHi,
+            "village": village
           };
     FocusManager.instance.primaryFocus!.unfocus();
     register(userInfo, context);
@@ -88,12 +178,27 @@ class SignUpViewModel with ChangeNotifier {
     return null;
   }
 
+  String? villageFieldValidator(BuildContext context, value) {
+    if (value!.isEmpty) {
+      return AppLocalizations.of(context)!.validateVillagehi;
+    }
+    return null;
+  }
+
   void onSavedNameField(value) {
     userName = value;
   }
 
+  void onSavedvillageField(value) {
+    village = value;
+  }
+
   Widget suffixIconForEmail() {
     return const Icon(Icons.email);
+  }
+
+  Widget suffixIconForVillage() {
+    return const Icon(Icons.cottage);
   }
 
   bool validateEmail(String email) {
@@ -131,14 +236,11 @@ class SignUpViewModel with ChangeNotifier {
           'user': data["newUser"],
           'token': data["token"],
         };
-        await localStorage
-            .setString("profile", jsonEncode(profile))
-            .then((value) {
-          setUserProfile(data);
-          setloading(false);
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
-        });
+        await localStorage.setString("profile", jsonEncode(profile));
+        setUserProfile(data);
+        setloading(false);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         disposeValues();
       } catch (error) {
         Utils.flushBarErrorMessage(
@@ -159,6 +261,11 @@ class SignUpViewModel with ChangeNotifier {
     userName = '';
     email = '';
     mobileNumber = '';
+    districtList = [];
+    selectedState = '';
+    selectedDistrictHi = '';
+    selectedDistrictEn = '';
+    village = '';
     userProfile = null;
     registerUserformKey.currentState?.dispose();
   }

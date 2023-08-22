@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../res/app_url.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
 import '../jankari_view_model.dart';
@@ -30,6 +32,13 @@ class JankariPost extends HookWidget {
         useViewModel.getJankariSubCategoryPost(context);
       });
     }, []);
+    useEffect(() {
+      if (useViewModel.jankariSubcategoryPostList.isEmpty) {
+      } else {
+        useViewModel.updateStats(
+            context, 'post', useViewModel.jankariSubcategoryPostList[index].id);
+      }
+    }, [index]);
     return WillPopScope(
       onWillPop: () async {
         SystemChrome.setPreferredOrientations(
@@ -80,18 +89,126 @@ class JankariPost extends HookWidget {
                             style: const TextStyle()),
                       )
                     : SizedBox(
-                        height: 100,
-                        width: 100,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(
                               height: 20,
                             ),
-                            BaseText(
-                                title: subCategoryTitle,
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w300)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(subCategoryTitle,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w300)),
+                                ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                        onTap: () {
+                                          provider.togglePostLike(
+                                              context,
+                                              provider
+                                                  .jankariSubcategoryPostList[
+                                                      index]
+                                                  .id,
+                                              'like',
+                                              provider.jankariSubcategoryPostList[
+                                                  index]);
+                                        },
+                                        child: Container(
+                                          // color: Colors.red,
+                                          height: 40,
+                                          width: 40,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(provider
+                                                      .jankariSubcategoryPostList[
+                                                          index]
+                                                      .isLiked
+                                                  ? Remix.thumb_up_fill
+                                                  : Remix.thumb_up_line),
+                                              BaseText(
+                                                title: provider
+                                                    .jankariSubcategoryPostList[
+                                                        index]
+                                                    .likesCount
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          provider.togglePostLike(
+                                              context,
+                                              provider
+                                                  .jankariSubcategoryPostList[
+                                                      index]
+                                                  .id,
+                                              'dislike',
+                                              provider.jankariSubcategoryPostList[
+                                                  index]);
+                                        },
+                                        child: SizedBox(
+                                          height: 40,
+                                          width: 40,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(provider
+                                                      .jankariSubcategoryPostList[
+                                                          index]
+                                                      .isDisLiked
+                                                  ? Remix.thumb_down_fill
+                                                  : Remix.thumb_down_line),
+                                              BaseText(
+                                                title: provider
+                                                    .jankariSubcategoryPostList[
+                                                        index]
+                                                    .dislikesCount
+                                                    .toString(),
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              )
+                                            ],
+                                          ),
+                                        )),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                        onTap: () async {
+                                          final xfile = await provider.shareFiles(
+                                              'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}');
+                                          await Share.shareXFiles([xfile],
+                                              text:
+                                                  "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
+                                        },
+                                        child: const SizedBox(
+                                            height: 40,
+                                            width: 40,
+                                            child: Icon(Remix.share_line))),
+                                  ],
+                                ),
+                              ],
+                            ),
                             const SizedBox(
                               height: 10,
                             ),

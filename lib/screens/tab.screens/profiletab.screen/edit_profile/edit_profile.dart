@@ -25,27 +25,25 @@ class EditProfileScreen extends HookWidget {
         () => Provider.of<EditProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     final user = User.fromJson(authService.userInfo["user"]);
-
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          systemOverlayStyle:
-              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-          backgroundColor: AppColor.whiteColor,
-          foregroundColor: AppColor.darkBlackColor,
-          centerTitle: true,
-          leading: IconButton(
+    return 
+       Scaffold(
+        backgroundColor: AppColor.notificationBgColor,
+         appBar: AppBar(
+        title: BaseText(
+          title: AppLocalizations.of(context)!.notificationhi,
+          style: const TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColor.whiteColor,
+        leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
             icon: const Icon(
               Remix.arrow_left_line,
-            ),
-          ),
-          title: BaseText(
-              title: AppLocalizations.of(context)!.editprofilehi,
-              style: const TextStyle(color: AppColor.darkBlackColor)),
-        ),
+              color: AppColor.darkBlackColor,
+            )),
+      ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -94,7 +92,8 @@ class EditProfileScreen extends HookWidget {
                           onTapOutside: (_) =>
                               FocusManager.instance.primaryFocus?.unfocus(),
                           onSaved: useViewModel.onSavedNameField,
-                          onFieldSubmitted: (_) {
+                          onFieldSubmitted: (value) {
+                            useViewModel.onSavedNameField(value);
                             Utils.fieldFocusChange(
                                 context,
                                 useViewModel.nameFocusNode,
@@ -116,8 +115,7 @@ class EditProfileScreen extends HookWidget {
                           validator: (value) =>
                               useViewModel.emailFieldValidator(context, value),
                           onSaved: useViewModel.onSavedEmailField,
-                          onFieldSubmitted: (_) =>
-                              provider.saveForm(context, user, authService),
+                          onFieldSubmitted: (_) {},
                         ),
                       ),
                       const SizedBox(
@@ -126,21 +124,20 @@ class EditProfileScreen extends HookWidget {
                       Consumer<EditProfileViewModel>(
                         builder: (context, provider, child) =>
                             CustomElevatedButton(
-                          title: AppLocalizations.of(context)!.updatehi,
-                          loading: provider.loading,
-                          width: dimension["width"]! - 32,
-                          onPress: () =>
-                              provider.saveForm(context, user, authService),
-                        ),
-                      )
+                                title: AppLocalizations.of(context)!.updatehi,
+                                loading: provider.loading,
+                                width: dimension["width"]! - 32,
+                                onPress: () {
+                                  provider.saveForm(context, user, authService);
+                                }),
+                      ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

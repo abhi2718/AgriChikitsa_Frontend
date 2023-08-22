@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import '../chattab.screen/chattab.dart';
 import './hometab_view_model.dart';
 import '../../../services/auth.dart';
 import 'widgets/feed_loader.dart';
@@ -61,7 +62,7 @@ class HomeTabScreen1 extends HookWidget {
         if (state == AppLifecycleState.resumed) {
           Future.delayed(Duration.zero, () {
             notificationViewModel.fetchNotifications(context);
-            useViewModel.fetchFeeds(context);
+            //useViewModel.fetchFeeds(context);
           });
         }
       });
@@ -71,8 +72,12 @@ class HomeTabScreen1 extends HookWidget {
 
     useEffect(() {
       Future.delayed(Duration.zero, () {
-        useViewModel.fetchFeeds(context);
-        useViewModel.fetchFeedsCategory(context);
+        if (useViewModel.categoriesList.isEmpty) {
+          useViewModel.fetchFeedsCategory(context);
+        }
+        if (useViewModel.feedList.isEmpty) {
+          useViewModel.fetchFeeds(context);
+        }
       });
     }, []);
 
@@ -83,130 +88,127 @@ class HomeTabScreen1 extends HookWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColor.notificationBgColor,
-        body: Column(
-          children: [
-            const HeaderWidget(),
-            RefreshIndicator(
-              onRefresh: refresh,
-              child: Consumer<HomeTabViewModel>(
-                  builder: (context, provider, child) {
-                return provider.loading
-                    ? SizedBox(
-                        height: dimension['height']! - 100,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: Card(
-                                    child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 8),
-                                  height: dimension['height']! * 0.16,
-                                  width: dimension['width'],
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: Row(
-                                          children: [
-                                            Skeleton(
-                                              height: 40,
-                                              width: 40,
-                                              radius: 30,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Skeleton(
-                                                height: 13,
-                                                width:
-                                                    dimension['width']! - 250,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const HeaderWidget(),
+              RefreshIndicator(
+                onRefresh: refresh,
+                child: Consumer<HomeTabViewModel>(
+                    builder: (context, provider, child) {
+                  return provider.loading
+                      ? SizedBox(
+                          height: dimension['height']! - 100,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Card(
+                                      child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 8),
+                                    height: dimension['height']! * 0.16,
+                                    width: dimension['width'],
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8),
+                                          child: Row(
+                                            children: [
+                                              Skeleton(
+                                                height: 40,
+                                                width: 40,
+                                                radius: 30,
                                               ),
-                                            )
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                child: Skeleton(
+                                                  height: 13,
+                                                  width:
+                                                      dimension['width']! - 250,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 10,
+                                                    right: 5,
+                                                    bottom: 2),
+                                                child: Skeleton(
+                                                  width: dimension['width']! *
+                                                      0.30,
+                                                  height: dimension['height']! *
+                                                      0.055,
+                                                  radius: 10,
+                                                )),
                                           ],
                                         ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10, right: 5, bottom: 2),
-                                              child: Skeleton(
-                                                width:
-                                                    dimension['width']! * 0.30,
-                                                height: dimension['height']! *
-                                                    0.055,
-                                                radius: 10,
-                                              )),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 12),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: 10,
-                                  itemBuilder: (context, index) {
-                                    return const FeedLoader();
-                                  },
+                                      ],
+                                    ),
+                                  )),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : provider.feedList.isEmpty
-                        ? SizedBox(
-                            height: dimension['height']! - 100,
-                            child: Center(
-                              child: Text(
-                                  AppLocalizations.of(context)!.nopostYethi),
-                            ),
-                          )
-                        : SizedBox(
-                            height: dimension['height']! - 100,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  const CreatePostCard(),
-                                  ListView.builder(
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 12),
+                                  child: ListView.builder(
                                     shrinkWrap: true,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
-                                    itemCount: provider.feedList.length,
+                                    itemCount: 10,
                                     itemBuilder: (context, index) {
-                                      final feed = provider.feedList[index];
-                                      return Feed(
-                                        feed: feed,
-                                      );
+                                      return const FeedLoader();
                                     },
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          );
-              }),
-            ),
-          ],
+                          ),
+                        )
+                      : provider.feedList.isEmpty
+                          ? SizedBox(
+                              height: dimension['height']! - 100,
+                              child: Center(
+                                child: Text(
+                                    AppLocalizations.of(context)!.nopostYethi),
+                              ),
+                            )
+                          : SizedBox(
+                              height: dimension['height']! - 100,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    const CreatePostCard(),
+                                    ...provider.feedList.map((feed) {
+                                      return Feed(feed: feed);
+                                    }).toList(),
+                                  ],
+                                ),
+                              ),
+                            );
+                }),
+              ),
+            ],
+          ),
         ),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(
-              Icons.chat_bubble_outline,
-              size: 30.0,
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, RouteName.chatBotRoute);
-            }),
+        // floatingActionButton: FloatingActionButton(
+        //     child: const Icon(
+        //       Icons.chat_bubble_outline,
+        //       size: 30.0,
+        //     ),
+        //     onPressed: () {
+        //       Utils.model(context, ChatTabScreen());
+        //     }),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }

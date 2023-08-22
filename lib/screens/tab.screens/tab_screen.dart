@@ -1,11 +1,13 @@
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../utils/utils.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
+import 'chattab.screen/chattab.dart';
 
 class TabScreen extends HookWidget {
   const TabScreen({super.key});
@@ -13,105 +15,112 @@ class TabScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentIndex = useState(0);
-    final homeTabKey = useMemoized(() => UniqueKey());
-    final jankariHomeTabKey = useMemoized(() => UniqueKey());
-    final myProfileScreenKey = useMemoized(() => UniqueKey());
-    final profileTabScreenKey = useMemoized(() => UniqueKey());
+    List<Widget> tabs = [
+      const HomeTabScreen(),
+      const JankariHomeTab(),
+      const MyProfileScreen(),
+      const ProfileTabScreen()
+    ];
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex.value,
-        children: [
-          HookBuilder(
-            key: homeTabKey,
-            builder: (context) {
-              return const HomeTabScreen();
-            },
+      body: tabs[currentIndex.value],
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          elevation: 10.0,
+          child: Image.asset(
+            "assets/images/logoagrichikitsa.png",
+            height: 40,
+            width: 40,
           ),
-          HookBuilder(
-            key: jankariHomeTabKey,
-            builder: (context) {
-              return const JankariHomeTab();
-            },
+          onPressed: () {
+            Utils.model(context, ChatTabScreen());
+          }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        elevation: 6.0,
+        color: AppColor.notificationBgColor,
+        shape: CircularNotchedRectangle(),
+        notchMargin: 10,
+        child: Container(
+          height: 60,
+          child: Row(
+            //children inside bottom appbar
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              IconButton(
+                icon: currentIndex.value == 0
+                    ? SvgPicture.asset(
+                        'assets/svg/home-filled.svg',
+                        width: 23,
+                        height: 22,
+                      )
+                    : SvgPicture.asset(
+                        'assets/svg/home-2.svg',
+                        width: 23,
+                        height: 22,
+                      ),
+                onPressed: () {
+                  currentIndex.value = 0;
+                },
+              ),
+              Container(
+                margin: const EdgeInsets.only(right: 20),
+                child: IconButton(
+                  icon: currentIndex.value == 1
+                      ? SvgPicture.asset(
+                          'assets/svg/jankari-filled.svg',
+                          width: 23,
+                          height: 22,
+                        )
+                      : SvgPicture.asset(
+                          'assets/svg/jankari.svg',
+                          width: 23,
+                          height: 22,
+                        ),
+                  onPressed: () {
+                    currentIndex.value = 1;
+                  },
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 20),
+                child: IconButton(
+                  icon: currentIndex.value == 2
+                      ? SvgPicture.asset(
+                          'assets/svg/timeline-filled.svg',
+                          width: 23,
+                          height: 22,
+                        )
+                      : SvgPicture.asset(
+                          'assets/svg/timeline.svg',
+                          width: 23,
+                          height: 22,
+                        ),
+                  onPressed: () {
+                    currentIndex.value = 2;
+                  },
+                ),
+              ),
+              IconButton(
+                icon: currentIndex.value == 3
+                    ? SvgPicture.asset(
+                        'assets/svg/settings-filled.svg',
+                        width: 23,
+                        height: 22,
+                      )
+                    : SvgPicture.asset(
+                        'assets/svg/settings.svg',
+                        width: 23,
+                        height: 22,
+                      ),
+                onPressed: () {
+                  currentIndex.value = 3;
+                },
+              ),
+            ],
           ),
-          HookBuilder(
-            key: myProfileScreenKey,
-            builder: (context) {
-              return const MyProfileScreen();
-            },
-          ),
-          HookBuilder(
-            key: profileTabScreenKey,
-            builder: (context) {
-              return const ProfileTabScreen();
-            },
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: true,
-        backgroundColor: AppColor.lightColor,
-        showSelectedLabels: true,
-        selectedItemColor: AppColor.tabIconColor,
-        unselectedItemColor: AppColor.extraDark,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentIndex.value,
-        onTap: (index) {
-          currentIndex.value = index;
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/home-2.png',
-              width: 23,
-              height: 22,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/Home Filled.png',
-              width: 20,
-              height: 20,
-            ),
-            label: AppLocalizations.of(context)!.homehi,
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/jankari_new.png',
-              width: 23,
-              height: 22,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/Jankari Filled.png',
-              width: 23,
-              height: 22,
-            ),
-            label: AppLocalizations.of(context)!.jankarihi,
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/timeline.png',
-              width: 23,
-              height: 22,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/timeline_filled.png',
-              width: 23,
-              height: 22,
-            ),
-            label: AppLocalizations.of(context)!.timelinehi,
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/settings_new.png',
-              width: 23,
-              height: 22,
-            ),
-            activeIcon: Image.asset(
-              'assets/icons/Settings Filled.png',
-              width: 23,
-              height: 22,
-            ),
-            label: AppLocalizations.of(context)!.settinghi,
-          ),
-        ],
+        ),
       ),
     );
   }

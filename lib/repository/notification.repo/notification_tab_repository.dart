@@ -14,6 +14,16 @@ class NotificationTabRepository {
     }
   }
 
+  Future<dynamic> fetchChatScript(String id) async {
+    try {
+      final url = "${AppUrl.baseUrl}/chat/$id";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> toggleNotifications(String id, dynamic payload) async {
     try {
       final url = '${AppUrl.notificationsEndPoint}/$id';

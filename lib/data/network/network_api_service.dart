@@ -32,7 +32,7 @@ class NetworkApiService extends BaseApiServices {
     final response = await retry(
       () => http
           .get(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 2)),
+          .timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);
@@ -45,7 +45,7 @@ class NetworkApiService extends BaseApiServices {
     final response = await retry(
       () => http
           .post(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 2)),
+          .timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);
@@ -58,7 +58,7 @@ class NetworkApiService extends BaseApiServices {
     final response = await retry(
       () => http
           .patch(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 2)),
+          .timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);
@@ -71,7 +71,7 @@ class NetworkApiService extends BaseApiServices {
     final response = await retry(
       () => http
           .delete(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 2)),
+          .timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);

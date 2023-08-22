@@ -1,6 +1,9 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
+
+import '../../notifications.screen/notification_screen.dart';
 
 class NotificationIndicatorButton extends StatelessWidget {
   final notificationCount;
@@ -10,14 +13,15 @@ class NotificationIndicatorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () =>
-          Navigator.pushNamed(context, RouteName.notificationScreenRoute),
+      onTap: () {
+        //Navigator.pushNamed(context, RouteName.notificationScreenRoute)
+        Utils.model(context, const NotificationScreen());
+      },
       child: Stack(
         children: [
-          Image.asset(
-            "assets/images/bell.png",
-            height: 30,
-            width: 30,
+          const Icon(
+            Icons.notifications_outlined,
+            size: 32,
           ),
           if (notificationCount > 0)
             Positioned(

@@ -16,8 +16,8 @@ class EditProfileViewModel with ChangeNotifier {
   final nameFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
   var _loading = false;
-  var userName = '';
-  var email = '';
+  var userName = "";
+  var email = "";
   var imageLoading = false;
 
   bool get loading {
@@ -54,7 +54,7 @@ class EditProfileViewModel with ChangeNotifier {
   }
 
   String? nameFieldValidator(BuildContext context, value) {
-    if (value!.isEmpty) {
+    if (value!.isEmpty || value.trim().isEmpty) {
       return AppLocalizations.of(context)!.nameReuiredhi;
     }
     return null;
@@ -75,13 +75,12 @@ class EditProfileViewModel with ChangeNotifier {
     return regExp.hasMatch(email);
   }
 
-  String? emailFieldValidator(BuildContext context, String? value) {
-    if (value!.isEmpty) {
-      return AppLocalizations.of(context)!.emailRequiredhi;
-    }
-    bool isValid = validateEmail(value);
-    if (!isValid) {
-      return AppLocalizations.of(context)!.emailRequiredhi;
+  String? emailFieldValidator(BuildContext context, value) {
+    if (value != null && value.isNotEmpty) {
+      bool isValid = validateEmail(value);
+      if (!isValid) {
+        return AppLocalizations.of(context)!.validateEmailhi;
+      }
     }
     return null;
   }
@@ -91,24 +90,32 @@ class EditProfileViewModel with ChangeNotifier {
   }
 
   void saveForm(BuildContext context, User user, AuthService authService) {
-    // final isValid = editUserformKey.currentState?.validate();
-    // if (!isValid!) {
-    //   return;
-    // }
-    // editUserformKey.currentState?.save();
-    final userInfo = {
-      "name": userName,
-      "email": email.isEmpty ? "" : email,
-      "_id": user.sId
-    };
+    final isValid = editUserformKey.currentState?.validate();
+    if (!isValid!) {
+      return;
+    }
+    editUserformKey.currentState?.save();
+
+    final userInfo = email.isEmpty
+        ? {
+            "name": userName,
+          }
+        : {
+            "name": userName,
+            "email": email,
+          };
+    FocusManager.instance.primaryFocus!.unfocus();
     updateProfile(userInfo, context, authService);
   }
+
+  void saveRegisterUserForm(BuildContext context) {}
 
   void updateProfile(userInfo, context, AuthService authService) async {
     try {
       setloading(true);
+      final user = User.fromJson(authService.userInfo["user"]);
       final data =
-          await _authRepository.updateProfile(userInfo["_id"], userInfo);
+          await _authRepository.updateProfile(user.sId!, userInfo);
       final localStorage = await SharedPreferences.getInstance();
       final profile = {
         'user': data["user"],

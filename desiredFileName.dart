@@ -50,6 +50,7 @@
     "adminVerifyhi",
     "fillAllDetailshi",
     "validateNamehi",
+    "validateVillagehi",
     "validateEmailhi",
     "notificationhi",
     "linkhi",

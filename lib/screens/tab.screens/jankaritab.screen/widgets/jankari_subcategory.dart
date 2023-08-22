@@ -156,6 +156,12 @@ class SubCategoryContainer extends HookWidget {
                                             'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
                                     return InkWell(
                                       onTap: () {
+                                        provider.updateStats(
+                                            context,
+                                            'subcategory',
+                                            provider
+                                                .jankariSubcategoryList[index]
+                                                .id);
                                         provider.setSelectedSubCategory(provider
                                             .jankariSubcategoryList[index].id);
                                         provider

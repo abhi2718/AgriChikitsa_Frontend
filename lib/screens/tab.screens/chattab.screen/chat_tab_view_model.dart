@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 
 class ChatTabViewModel with ChangeNotifier {
@@ -47,12 +45,14 @@ class ChatTabViewModel with ChangeNotifier {
 
   void goBack(BuildContext context) {
     unfocusKeyboard();
-    reinitilize();
+    reinitilize(context);
     Navigator.pop(context);
   }
 
-  void reinitilize() {
-    timmerInstances.forEach((timer) => timer.cancel());
+  void reinitilize(BuildContext context) {
+    timmerInstances.forEach((timer) {
+      timer.cancel();
+    });
     enableKeyBoard = false;
     questionAsked = "";
     chatMessages.clear();
@@ -70,6 +70,8 @@ class ChatTabViewModel with ChangeNotifier {
     showCameraButton = false;
     showCropImageLoader = false;
     cropImage = "";
+    selectedDisease = '';
+    cameraQuestionId = '';
   }
 
   void enableKeyboard(bool value) {
@@ -78,6 +80,7 @@ class ChatTabViewModel with ChangeNotifier {
   }
 
   void initialTask(context) {
+    reinitilize(context);
     if (chatMessages.isEmpty) {
       chatMessages.add(questions[0]);
       showFirstBubbleLoader = true;
