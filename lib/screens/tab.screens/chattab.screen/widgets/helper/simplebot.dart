@@ -36,11 +36,12 @@ class ChatScreen extends HookWidget {
                           provider.chatMessages.length > 1
                               ? BubbleSpecialThree(
                                   text: message["question_hi"],
-                                  color: AppColor.chatBubbleColor,
+                                  color: AppColor.chatSent,
                                   tail: true,
                                   isSender: message["isMe"],
                                   textStyle: const TextStyle(
-                                      color: AppColor.whiteColor, fontSize: 16),
+                                      color: AppColor.darkBlackColor,
+                                      fontSize: 16),
                                 )
                               : Container(
                                   margin: const EdgeInsets.only(left: 18),
@@ -50,14 +51,14 @@ class ChatScreen extends HookWidget {
                                   width: dimension['width']! * 0.735,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: AppColor.chatBubbleColor,
+                                    color: AppColor.chatSent,
                                   ),
                                   child: AnimatedTextKit(
                                     animatedTexts: [
                                       TyperAnimatedText(
                                         message["question_hi"],
                                         textStyle: const TextStyle(
-                                            color: AppColor.whiteColor,
+                                            color: AppColor.darkBlackColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500),
                                       ),
@@ -81,11 +82,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: AppColor.chatBubbleColor,
+                            color: AppColor.chatSent,
                             tail: true,
                             isSender: message["isMe"],
                             textStyle: const TextStyle(
-                                color: AppColor.whiteColor, fontSize: 16),
+                                color: AppColor.darkBlackColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -101,22 +102,22 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: AppColor.chatBubbleColor,
+                            color: AppColor.chatSent,
                             tail: true,
                             isSender: message["isMe"],
                             textStyle: const TextStyle(
-                                color: AppColor.whiteColor, fontSize: 16),
+                                color: AppColor.darkBlackColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
                           ),
                           SizedBox(
                             width: dimension['width']! - 32,
-                            height: 40,
+                            height: dimension['height']! * 0.06,
                             child: SingleChildScrollView(
                               child: SizedBox(
                                 width: dimension['width']! - 32,
-                                height: 40,
+                                height: dimension['height']! * 0.06,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: message["options_hi"].length,
@@ -151,7 +152,7 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: AppColor.chatSent,
+                                  color: AppColor.chatUserColor,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
@@ -173,48 +174,96 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: AppColor.chatBubbleColor,
+                            color: AppColor.chatSent,
                             tail: true,
                             isSender: message["isMe"],
                             textStyle: const TextStyle(
-                                color: AppColor.whiteColor, fontSize: 16),
+                                color: AppColor.darkBlackColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
                           ),
                           SizedBox(
                             width: dimension['width']! - 32,
-                            height: 40,
-                            child: SingleChildScrollView(
-                              child: SizedBox(
-                                width: dimension['width']! - 32,
-                                height: 40,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: message["options_hi"].length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: message["isAnswerSelected"]
-                                            ? null
-                                            : () {
-                                                provider.handleSelctCrop(
-                                                    context,
-                                                    message["options_hi"]
-                                                        [index],
-                                                    message["id"]);
-                                              },
-                                        child: BubbleSpecialThree(
-                                          text: message["options_hi"][index],
-                                          color: AppColor.chatSent,
-                                          tail: false,
-                                          isSender: false,
-                                          textStyle: const TextStyle(
-                                              color: AppColor.darkBlackColor,
-                                              fontSize: 16),
+                            child: Column(
+                              children: [
+                                SingleChildScrollView(
+                                  child: SizedBox(
+                                    width: dimension['width']! - 32,
+                                    height: dimension['height']! * 0.06,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount:
+                                            message["options_hi"].length > 10
+                                                ? 10
+                                                : message["options_hi"].length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: message["isAnswerSelected"]
+                                                ? null
+                                                : () {
+                                                    provider.handleSelctCrop(
+                                                        context,
+                                                        message["options_hi"]
+                                                            [index],
+                                                        message["id"]);
+                                                  },
+                                            child: BubbleSpecialThree(
+                                              text: message["options_hi"]
+                                                  [index],
+                                              color: AppColor.chatSent,
+                                              tail: false,
+                                              isSender: false,
+                                              textStyle: const TextStyle(
+                                                  color:
+                                                      AppColor.darkBlackColor,
+                                                  fontSize: 16),
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                ),
+                                message["options_hi"].length > 10
+                                    ? SingleChildScrollView(
+                                        child: SizedBox(
+                                          width: dimension['width']! - 32,
+                                          height: dimension['height']! * 0.06,
+                                          child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount:
+                                                  message["options_hi"].length -
+                                                      10,
+                                              itemBuilder: (context, index) {
+                                                int currentIndex = index + 10;
+                                                return InkWell(
+                                                  onTap: message[
+                                                          "isAnswerSelected"]
+                                                      ? null
+                                                      : () {
+                                                          provider.handleSelctCrop(
+                                                              context,
+                                                              message["options_hi"]
+                                                                  [
+                                                                  currentIndex],
+                                                              message["id"]);
+                                                        },
+                                                  child: BubbleSpecialThree(
+                                                    text: message["options_hi"]
+                                                        [currentIndex],
+                                                    color: AppColor.chatSent,
+                                                    tail: false,
+                                                    isSender: false,
+                                                    textStyle: const TextStyle(
+                                                        color: AppColor
+                                                            .darkBlackColor,
+                                                        fontSize: 16),
+                                                  ),
+                                                );
+                                              }),
                                         ),
-                                      );
-                                    }),
-                              ),
+                                      )
+                                    : Container(),
+                              ],
                             ),
                           ),
                           const SizedBox(
@@ -223,7 +272,7 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: AppColor.chatSent,
+                                  color: AppColor.chatUserColor,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
@@ -245,11 +294,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: AppColor.chatBubbleColor,
+                            color: AppColor.chatSent,
                             tail: true,
                             isSender: message["isMe"],
                             textStyle: const TextStyle(
-                                color: AppColor.whiteColor, fontSize: 16),
+                                color: AppColor.darkBlackColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -295,7 +344,7 @@ class ChatScreen extends HookWidget {
                           message["isAnswerSelected"]
                               ? BubbleSpecialThree(
                                   text: message["answer"],
-                                  color: AppColor.chatSent,
+                                  color: AppColor.chatUserColor,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
                                   textStyle: const TextStyle(
@@ -316,11 +365,12 @@ class ChatScreen extends HookWidget {
                               ? Container()
                               : BubbleSpecialThree(
                                   text: message["question_hi"],
-                                  color: AppColor.chatBubbleColor,
+                                  color: AppColor.chatSent,
                                   tail: true,
                                   isSender: message["isMe"],
                                   textStyle: const TextStyle(
-                                      color: AppColor.whiteColor, fontSize: 16),
+                                      color: AppColor.darkBlackColor,
+                                      fontSize: 16),
                                 ),
                           const SizedBox(
                             height: 16,
@@ -383,11 +433,11 @@ class ChatScreen extends HookWidget {
                         children: [
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: AppColor.darkColor,
+                            color: AppColor.chatSent,
                             tail: true,
                             isSender: message["isMe"],
                             textStyle: const TextStyle(
-                                color: AppColor.whiteColor, fontSize: 16),
+                                color: AppColor.darkBlackColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -521,11 +571,11 @@ class ChatScreen extends HookWidget {
                               : Container(),
                           BubbleSpecialThree(
                             text: message["question_hi"],
-                            color: AppColor.chatBubbleColor,
+                            color: AppColor.chatSent,
                             tail: true,
                             isSender: message["isMe"],
                             textStyle: const TextStyle(
-                                color: AppColor.whiteColor, fontSize: 16),
+                                color: AppColor.darkBlackColor, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 16,

@@ -22,11 +22,11 @@ class ChatLoader extends StatelessWidget {
           width: dimension['width']! * 0.15,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: AppColor.chatBubbleColor,
+            color: AppColor.chatSent,
           ),
           child: Center(
             child: JumpingDots(
-              color: AppColor.whiteColor,
+              color: AppColor.extraDark,
               radius: 4,
               numberOfDots: 3,
               animationDuration: const Duration(milliseconds: 200),

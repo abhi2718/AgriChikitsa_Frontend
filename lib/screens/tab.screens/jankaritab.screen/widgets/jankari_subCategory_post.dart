@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:share_plus/share_plus.dart';
@@ -50,6 +51,9 @@ class JankariPost extends HookWidget {
         width: dimension['width'],
         child: Consumer<JankariViewModel>(
           builder: (context, provider, child) {
+            String html = provider.jankariSubcategoryPostList.isNotEmpty
+                ? provider.jankariSubcategoryPostList[index].hindiDescription
+                : "";
             return provider.jankariSubCategoryPostLoader
                 ? SizedBox(
                     height: dimension['height']! - 180,
@@ -296,13 +300,10 @@ class JankariPost extends HookWidget {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    BaseText(
-                                        title: provider
-                                            .jankariSubcategoryPostList[index]
-                                            .hindiDescription,
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w300)),
+                                    HtmlWidget(
+                                      html,
+                                      textStyle: const TextStyle(fontSize: 18),
+                                    ),
                                   ],
                                 ),
                               ),
