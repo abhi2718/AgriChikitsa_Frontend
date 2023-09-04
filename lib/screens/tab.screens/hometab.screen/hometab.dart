@@ -1,5 +1,4 @@
 import 'package:agriChikitsa/res/color.dart';
-import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/create_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import '../chattab.screen/chattab.dart';
 import './hometab_view_model.dart';
 import '../../../services/auth.dart';
 import 'widgets/feed_loader.dart';
@@ -109,7 +107,7 @@ class HomeTabScreen1 extends HookWidget {
                                       child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 8),
-                                    height: dimension['height']! * 0.16,
+                                    height: dimension['height']! * 0.17,
                                     width: dimension['width'],
                                     child: Column(
                                       children: [
@@ -200,15 +198,6 @@ class HomeTabScreen1 extends HookWidget {
             ],
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //     child: const Icon(
-        //       Icons.chat_bubble_outline,
-        //       size: 30.0,
-        //     ),
-        //     onPressed: () {
-        //       Utils.model(context, ChatTabScreen());
-        //     }),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }

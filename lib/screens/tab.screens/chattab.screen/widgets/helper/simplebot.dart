@@ -26,8 +26,13 @@ class ChatScreen extends HookWidget {
             children: [
               Expanded(
                 child: ListView.builder(
+                  controller: useViewModel.scrollController,
                   itemCount: provider.chatMessages.length,
                   itemBuilder: (context, index) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      useViewModel.scrollController.jumpTo(useViewModel
+                          .scrollController.position.maxScrollExtent);
+                    });
                     final message = provider.chatMessages[index];
                     if (index == 0) {
                       return Column(

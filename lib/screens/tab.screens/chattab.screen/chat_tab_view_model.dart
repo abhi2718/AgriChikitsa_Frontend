@@ -8,6 +8,7 @@ import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 class ChatTabViewModel with ChangeNotifier {
   final _chatTabRepository = ChatTabRepository();
   final textEditingController = TextEditingController();
+  ScrollController scrollController = ScrollController();
   dynamic timmerInstances = [];
   bool showFirstBubbleLoader = false;
   bool showSecondBubbleLoader = false;
@@ -360,6 +361,7 @@ class ChatTabViewModel with ChangeNotifier {
   void uploadImage(context) async {
     try {
       final imageFile = await Utils.capturePhoto();
+      setShowCameraButton(false);
       if (imageFile != null) {
         showCropImageLoader = true;
         notifyListeners();
@@ -389,7 +391,6 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
-          setShowCameraButton(false);
           showSeventhBubbleLoader = false;
           showLastMessage = true;
           notifyListeners();
