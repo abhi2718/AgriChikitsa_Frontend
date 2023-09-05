@@ -29,10 +29,12 @@ class ChatScreen extends HookWidget {
                   controller: useViewModel.scrollController,
                   itemCount: provider.chatMessages.length,
                   itemBuilder: (context, index) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      useViewModel.scrollController.jumpTo(useViewModel
-                          .scrollController.position.maxScrollExtent);
-                    });
+                    if (useViewModel.shouldAutoScroll) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        useViewModel.scrollController.jumpTo(useViewModel
+                            .scrollController.position.maxScrollExtent);
+                      });
+                    }
                     final message = provider.chatMessages[index];
                     if (index == 0) {
                       return Column(
@@ -495,9 +497,6 @@ class ChatScreen extends HookWidget {
                           provider.showFifthBubbleLoader
                               ? const ChatLoader()
                               : Container(),
-                          const SizedBox(
-                            height: 16,
-                          ),
                           provider.showCropImageLoader
                               ? Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -569,6 +568,7 @@ class ChatScreen extends HookWidget {
                       );
                     }
                     if (index == 7) {
+                      useViewModel.shouldAutoScroll = false;
                       return Column(
                         children: [
                           provider.showSeventhBubbleLoader

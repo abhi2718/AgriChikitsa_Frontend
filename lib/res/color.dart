@@ -11,11 +11,11 @@ class AppColor {
   static const lightFeedContainerColor = Color(0xFFF8F8F8);
   static const iconColor = Color(0xff858484);
   static const chatBubbleColor = Color(0xFF5f9e29);
-  static const chatSent = Color(0xFFE8E8EE);
+  static const chatSent = Color.fromARGB(255, 237, 237, 237);
   static const notificationBgColor = Color(0xffE4EFE7);
   static const iconHeartColor = Colors.red;
   static const tabIconColor = Color(0xff138808);
-  static const chatUserColor = Color(0xffEFF4FF);
+  static const chatUserColor = Color.fromARGB(255, 232, 239, 255);
   static const hyperlinkColor = Colors.blue;
   static const pdfBgColor = Color(0xff1f1f1f);
 }

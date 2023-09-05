@@ -21,6 +21,7 @@ class ChatTabViewModel with ChangeNotifier {
   bool showCropImageLoader = false;
   bool showCameraButton = false;
   bool enableKeyBoard = false;
+  bool shouldAutoScroll = true;
   var questionAsked = "";
   var cropImage = "";
   var questionIndex = 0;
@@ -54,6 +55,7 @@ class ChatTabViewModel with ChangeNotifier {
     timmerInstances.forEach((timer) {
       timer.cancel();
     });
+    shouldAutoScroll = true;
     enableKeyBoard = false;
     questionAsked = "";
     chatMessages.clear();
@@ -351,6 +353,7 @@ class ChatTabViewModel with ChangeNotifier {
             },
           );
           showSixthBubbleLoader = false;
+          shouldAutoScroll = false;
           notifyListeners();
         });
         timmerInstances.add(t7);
@@ -363,6 +366,7 @@ class ChatTabViewModel with ChangeNotifier {
       final imageFile = await Utils.capturePhoto();
       setShowCameraButton(false);
       if (imageFile != null) {
+        shouldAutoScroll = true;
         showCropImageLoader = true;
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
@@ -408,7 +412,9 @@ class ChatTabViewModel with ChangeNotifier {
   void uploadGallery(context) async {
     try {
       final imageFile = await Utils.pickImage();
+      setShowCameraButton(false);
       if (imageFile != null) {
+        shouldAutoScroll = true;
         showCropImageLoader = true;
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
@@ -437,7 +443,6 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
-          setShowCameraButton(false);
           showSeventhBubbleLoader = false;
           showLastMessage = true;
           notifyListeners();
