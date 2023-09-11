@@ -24,7 +24,8 @@ class MyProfileScreen extends HookWidget {
     double appBarHeight = AppBar().preferredSize.height;
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
-    double availableHeight = screenHeight - (2 * appBarHeight + statusBarHeight);
+    double availableHeight =
+        screenHeight - (2 * appBarHeight + statusBarHeight);
     final useViewModel = useMemoized(
         () => Provider.of<MyProfileViewModel>(context, listen: true));
     final createPostModel =
@@ -55,6 +56,7 @@ class MyProfileScreen extends HookWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             systemOverlayStyle:
                 const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
             backgroundColor: AppColor.whiteColor,

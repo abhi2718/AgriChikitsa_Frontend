@@ -1,8 +1,10 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../notifications.screen/notification_view_model.dart';
@@ -38,11 +40,6 @@ class HeaderWidget extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Image.asset(
-                  //   "assets/images/logoagrichikitsa.png",
-                  //   height: 40,
-                  //   width: 40,
-                  // ),
                   Consumer<AuthService>(builder: (context, provider, child) {
                     if (provider.userInfo != null) {
                       final user = provider.userInfo["user"];
@@ -71,15 +68,30 @@ class HeaderWidget extends HookWidget {
                     }
                     return Container();
                   }),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Consumer<NotificationViewModel>(
-                      builder: (context, provider, child) {
-                    return NotificationIndicatorButton(
-                      notificationCount: provider.notificationCount,
-                    );
-                  }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Utils.model(context, MyProfileScreen());
+                        },
+                        child: SvgPicture.asset(
+                          'assets/svg/timeline.svg',
+                          width: 23,
+                          height: 22,
+                        ),
+                      ),
+                      SizedBox(
+                        width: dimension['width']! * 0.04,
+                      ),
+                      Consumer<NotificationViewModel>(
+                          builder: (context, provider, child) {
+                        return NotificationIndicatorButton(
+                          notificationCount: provider.notificationCount,
+                        );
+                      }),
+                    ],
+                  )
                 ],
               ),
             ),

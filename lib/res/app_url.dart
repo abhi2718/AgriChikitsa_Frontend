@@ -1,5 +1,6 @@
 class AppUrl {
-  static const String baseUrl = "https://agrichikitsa.org/api/v1";
+  // static const String baseUrl = "https://agrichikitsa.org/api/v1";
+  static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
   static const String statsEndpoint = '$baseUrl/stats';
   static const String shareLinkEndpoint = 'https://agrichikitsa.org/post';
   static const String loginEndPoint = '$baseUrl/auth/checkuser';
@@ -20,4 +21,6 @@ class AppUrl {
   static const String notificationsEndPoint = '$baseUrl/notification';
   static const String chatEndPoint = '$baseUrl/chat';
   static const String jankariPostToggleLike = '$baseUrl/jankari/likes/post';
+  // static const String getFieldsEndPoint = '$baseUrl/fields';
+  static const String createPlotEndPoint = '$baseUrl/agristick/addFeild';
 }

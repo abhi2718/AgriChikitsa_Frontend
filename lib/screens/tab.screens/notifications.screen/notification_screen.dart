@@ -19,7 +19,8 @@ class NotificationScreen extends HookWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     double appBarHeight = AppBar().preferredSize.height;
     double statusBarHeight = MediaQuery.of(context).padding.top;
-    double availableHeight = screenHeight - (appBarHeight + statusBarHeight + 50);
+    double availableHeight =
+        screenHeight - (appBarHeight + statusBarHeight + 50);
 
     final useViewModel = useMemoized(
         () => Provider.of<NotificationViewModel>(context, listen: false));
@@ -44,48 +45,52 @@ class NotificationScreen extends HookWidget {
               color: AppColor.darkBlackColor,
             )),
       ),
-      body: Column(
-        children: [
-          Consumer<NotificationViewModel>(builder: (context, provider, child) {
-            final notificationList = provider.notificationsList;
-            return provider.notificationsList.isEmpty
-                ? SizedBox(
-                    height: availableHeight,
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.notificationNotAvaiablehi,
-                      ),
-                    ),
-                  )
-                : useViewModel.loading
-                    ? SizedBox(
-                        height: availableHeight,
-                        child: ListView.builder(
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 20, left: 10, right: 10),
-                              child: Skeleton(
-                                  height: dimension['height']! * 0.11,
-                                  width: dimension['width']!),
-                            );
-                          },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Consumer<NotificationViewModel>(
+                builder: (context, provider, child) {
+              final notificationList = provider.notificationsList;
+              return provider.notificationsList.isEmpty
+                  ? SizedBox(
+                      height: availableHeight,
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .notificationNotAvaiablehi,
                         ),
-                      )
-                    : SizedBox(
-                        height: availableHeight,
-                        child: ListView.builder(
-                            itemCount: notificationList.length,
+                      ),
+                    )
+                  : useViewModel.loading
+                      ? SizedBox(
+                          height: availableHeight,
+                          child: ListView.builder(
+                            itemCount: 10,
                             itemBuilder: (context, index) {
-                              final notificationItem =
-                                  useViewModel.notificationsList[index];
-                              return NotificationTile(
-                                notificationItem: notificationItem,
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 20, left: 10, right: 10),
+                                child: Skeleton(
+                                    height: dimension['height']! * 0.11,
+                                    width: dimension['width']!),
                               );
-                            }));
-          })
-        ],
+                            },
+                          ),
+                        )
+                      : SizedBox(
+                          height: availableHeight,
+                          child: ListView.builder(
+                              itemCount: notificationList.length,
+                              itemBuilder: (context, index) {
+                                final notificationItem =
+                                    useViewModel.notificationsList[index];
+                                return NotificationTile(
+                                  notificationItem: notificationItem,
+                                );
+                              }));
+            })
+          ],
+        ),
       ),
     );
   }
