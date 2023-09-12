@@ -5,9 +5,9 @@ class AGPlusRepository {
   final _apiServices = NetworkApiService();
   Future<dynamic> getFields() async {
     try {
-      // const url = AppUrl.getFieldsEndPoint;
-      // final response = await _apiServices.getGetApiResponse(url);
-      // return response;
+      const url = AppUrl.getFieldsEndPoint;
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
     } catch (e) {
       rethrow;
     }

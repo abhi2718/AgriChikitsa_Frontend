@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/repository/AG+.repo/agPlus_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/getLocation.dart';
 
@@ -19,7 +20,8 @@ class AGPlusViewModel with ChangeNotifier {
   CameraPosition intialCameraPosition = const CameraPosition(
       target: LatLng(28.45038087587045, 77.28519398730188), zoom: 15);
   List<SelectCrop> cropList = [];
-  List userPlotList = ["e", "e", "e"];
+  List userPlotList = [];
+  dynamic selectedPlot;
   var plotImagePath = "";
   var mapLocation = {
     "latitude": "28.45038087587045",
@@ -31,13 +33,35 @@ class AGPlusViewModel with ChangeNotifier {
   TextEditingController fieldSizecontroller = TextEditingController();
   String fieldSize = "";
   String location = "Location Name:";
-  bool imageLoader = false;
+  bool addFieldLoader = false;
+  bool getFieldLoader = false;
   final plotSizeFocusNode = FocusNode();
   void reinitialize() {
-    imageLoader = false;
+    fieldName = "";
+    addFieldLoader = false;
+    getFieldLoader = false;
     selectedCrop = "";
     resetLocation();
     userPlotList = [];
+  }
+
+  void resetLoader() {
+    resetLocation();
+    fieldName = "";
+    fieldSize = "";
+    location = "Location Name:";
+    addFieldLoader = false;
+    fieldNamecontroller.clear();
+    fieldSizecontroller.clear();
+  }
+
+  setGetFieldLoader(value) {
+    getFieldLoader = value;
+  }
+
+  setAddFieldLoader(value) {
+    addFieldLoader = value;
+    notifyListeners();
   }
 
   void resetLocation() {
@@ -48,10 +72,6 @@ class AGPlusViewModel with ChangeNotifier {
       "longitude": "77.28519398730188"
     };
     location = "Location Name:";
-  }
-
-  setImageLoader(value) {
-    imageLoader = value;
   }
 
   Future<Position> getCurrentLocation() async {
@@ -89,7 +109,7 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   void getCropList(BuildContext context) async {
-    // setJankariSubCategoryLoaderPost(true);
+    setAddFieldLoader(true);
     try {
       cropList.clear();
       var tempList = [
@@ -102,10 +122,9 @@ class AGPlusViewModel with ChangeNotifier {
       cropList.addAll(tempList);
       // final data = await _jankariRepository.getJankariSubCategoryPost(selectedSubCategory);
       // jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
-      // setJankariSubCategoryLoaderPost(false);
-      // notifyListeners();
+      setAddFieldLoader(false);
     } catch (error) {
-      // setJankariSubCategoryLoaderPost(false);
+      setAddFieldLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);
@@ -136,20 +155,36 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   void getFields(BuildContext context) async {
+    setGetFieldLoader(true);
     try {
       final data = await _agPlusRepository.getFields();
+      userPlotList = mapFields(data);
+      userPlotList[0].isSelected = true;
+      selectedPlot = userPlotList[0];
+      setGetFieldLoader(false);
       notifyListeners();
     } catch (error) {
+      setGetFieldLoader(false);
       if (kDebugMode) {
-        print(error.toString());
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);
       }
     }
   }
 
+  List<Plots> mapFields(dynamic fields) {
+    return List<Plots>.from(fields.map((field) {
+      return Plots.fromJson(field);
+    }));
+  }
+
   void createPlot(BuildContext context) async {
     try {
+      userPlotList.add(Plots(
+          fieldName: fieldName,
+          cropName: selectedCrop,
+          cropImage: plotImagePath,
+          area: location));
       final payload = {
         "feildName": fieldName,
         "cropName": selectedCrop,
@@ -157,15 +192,29 @@ class AGPlusViewModel with ChangeNotifier {
         "cordinates": mapLocation,
         "area": location
       };
-      final data = await _agPlusRepository.createPlot(payload);
-      print(data);
+      await _agPlusRepository.createPlot(payload);
     } catch (error) {
-      // setImageLoader(false);
+      setAddFieldLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);
       }
     }
+  }
+
+  void setSelectedField(Plots currentSelectedPlot) {
+    if (selectedPlot == currentSelectedPlot) {
+    } else {
+      for (final plot in userPlotList) {
+        if (plot != currentSelectedPlot) {
+          plot.isSelected = false;
+        } else {
+          plot.isSelected = true;
+          selectedPlot = plot;
+        }
+      }
+    }
+    notifyListeners();
   }
 
   void setFieldName() {
@@ -203,22 +252,26 @@ class AGPlusViewModel with ChangeNotifier {
     } else {
       createPlot(context);
       FocusScope.of(context).unfocus();
+      Navigator.popUntil(context, (route) => route.isFirst);
     }
   }
 
   void uploadImage(context) async {
-    setImageLoader(true);
     try {
       final imageFile = await Utils.capturePhoto();
+      setAddFieldLoader(true);
       if (imageFile != null) {
+        // Timer(Duration(seconds: 4), () {
+        //   setAddFieldLoader(false);
+        //   Utils.model(context, GetLocation());
+        // });
         final data = await Utils.uploadImage(imageFile);
-        if (data != null) setImageLoader(false);
         plotImagePath = data["imgurl"];
+        setAddFieldLoader(false);
         Utils.model(context, GetLocation());
       }
-      notifyListeners();
     } catch (error) {
-      setImageLoader(false);
+      setAddFieldLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);

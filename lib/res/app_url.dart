@@ -21,6 +21,6 @@ class AppUrl {
   static const String notificationsEndPoint = '$baseUrl/notification';
   static const String chatEndPoint = '$baseUrl/chat';
   static const String jankariPostToggleLike = '$baseUrl/jankari/likes/post';
-  // static const String getFieldsEndPoint = '$baseUrl/fields';
+  static const String getFieldsEndPoint = '$baseUrl/agristick/feilds';
   static const String createPlotEndPoint = '$baseUrl/agristick/addFeild';
 }

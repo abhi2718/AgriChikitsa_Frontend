@@ -1,4 +1,3 @@
-import 'package:agriChikitsa/model/select_crop_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/plotDetails.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -29,23 +28,27 @@ class CropSelection extends HookWidget {
             children: [
               const BaseText(
                   title: "Select Your Crop", style: TextStyle(fontSize: 26)),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                height: dimension["height"]! * 0.90,
-                child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16),
-                    itemCount: useViewModel.cropList.length,
-                    itemBuilder: (context, index) {
-                      return CropItem(
-                        crop: useViewModel.cropList[index],
-                      );
-                    }),
-              )
+              Consumer<AGPlusViewModel>(builder: (context, provider, child) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  height: dimension["height"]! * 0.90,
+                  child: provider.addFieldLoader
+                      ? Center(child: CircularProgressIndicator())
+                      : GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16),
+                          itemCount: useViewModel.cropList.length,
+                          itemBuilder: (context, index) {
+                            return CropItem(
+                              crop: useViewModel.cropList[index],
+                            );
+                          }),
+                );
+              })
             ],
           ),
         ),

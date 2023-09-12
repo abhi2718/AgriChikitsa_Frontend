@@ -16,31 +16,52 @@ class CreatePlot extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<AGPlusViewModel>(context, listen: false);
+    useEffect(() {
+      useViewModel.resetLoader();
+    }, []);
     return Scaffold(
-      backgroundColor: AppColor.notificationBgColor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Lottie.asset(
-            'assets/lottie/animation_lm8y2fde.json',
-            height: dimension['height']! * 0.30,
-            width: dimension['width']! * 0.50,
-          ),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: BaseText(
-              title:
-                  "To get the right results, it is important to be in the middle of the field while taking the Photo.",
-              style: TextStyle(fontSize: 18, color: Colors.black54),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          CustomElevatedButton(
-              title: "Open Camera",
-              onPress: () => useViewModel.uploadImage(context))
-        ],
-      ),
-    );
+        backgroundColor: AppColor.notificationBgColor,
+        body: Consumer<AGPlusViewModel>(
+          builder: (context, provider, child) {
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/animation_lm8y2fde.json',
+                        height: dimension['height']! * 0.30,
+                        width: dimension['width']! * 0.50,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: BaseText(
+                          title:
+                              "To get the right results, it is important to be in the middle of the field while taking the Photo.",
+                          style: TextStyle(fontSize: 18, color: Colors.black54),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      CustomElevatedButton(
+                          title: "Open Camera",
+                          onPress: () => useViewModel.uploadImage(context))
+                    ],
+                  ),
+                ),
+                if (provider.addFieldLoader)
+                  // if (true)
+                  Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: const Center(
+                      child:
+                          CircularProgressIndicator(color: AppColor.whiteColor),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ));
   }
 }

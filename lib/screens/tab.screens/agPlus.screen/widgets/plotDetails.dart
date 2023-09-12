@@ -71,7 +71,6 @@ class PlotDetails extends HookWidget {
               InkWell(
                 onTap: () {
                   useViewModel.checkPlotDetails(context);
-                  Navigator.popUntil(context, (route) => route.isFirst);
                 },
                 child: Container(
                   margin: const EdgeInsets.only(top: 16),
