@@ -46,6 +46,30 @@ class AGPlus extends HookWidget {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
+                              InkWell(
+                                onTap: () {
+                                  Utils.model(context, CreatePlot());
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 20, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      // image: const DecorationImage(
+                                      //     fit: BoxFit.cover,
+                                      //     image: NetworkImage(
+                                      //         "https://images.unsplash.com/photo-1512233866604-11b9c3d7ec96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80")),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  height: dimension["height"]! * 0.22,
+                                  width: dimension["width"]! * 0.35,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.control_point,
+                                      size: 34,
+                                    ),
+                                  ),
+                                ),
+                              ),
                               ...useViewModel.userPlotList.map((e) {
                                 final plotImage = e.cropImage.split(
                                     'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
@@ -101,30 +125,6 @@ class AGPlus extends HookWidget {
                                   ),
                                 );
                               }).toList(),
-                              InkWell(
-                                onTap: () {
-                                  Utils.model(context, CreatePlot());
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      // image: const DecorationImage(
-                                      //     fit: BoxFit.cover,
-                                      //     image: NetworkImage(
-                                      //         "https://images.unsplash.com/photo-1512233866604-11b9c3d7ec96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80")),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  height: dimension["height"]! * 0.22,
-                                  width: dimension["width"]! * 0.35,
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.control_point,
-                                      size: 34,
-                                    ),
-                                  ),
-                                ),
-                              )
                             ],
                           ),
                         ),
