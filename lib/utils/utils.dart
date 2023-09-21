@@ -121,6 +121,7 @@ class Utils {
         ..files.add(await http.MultipartFile.fromPath('image', image.path));
       final response = await http.Response.fromStream(await request.send());
       final body = jsonDecode(response.body);
+      print(body);
       switch (response.statusCode) {
         case 200:
           return body;

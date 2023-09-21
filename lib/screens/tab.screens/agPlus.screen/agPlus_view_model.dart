@@ -184,6 +184,9 @@ class AGPlusViewModel with ChangeNotifier {
           fieldName: fieldName,
           cropName: selectedCrop,
           cropImage: plotImagePath,
+          latitude: mapLocation['latitude'].toString(),
+          longitude: mapLocation['longitude'].toString(),
+          agristick: null,
           area: location));
       final payload = {
         "feildName": fieldName,
@@ -261,10 +264,6 @@ class AGPlusViewModel with ChangeNotifier {
       final imageFile = await Utils.capturePhoto();
       setAddFieldLoader(true);
       if (imageFile != null) {
-        // Timer(Duration(seconds: 4), () {
-        //   setAddFieldLoader(false);
-        //   Utils.model(context, GetLocation());
-        // });
         final data = await Utils.uploadImage(imageFile);
         plotImagePath = data["imgurl"];
         setAddFieldLoader(false);

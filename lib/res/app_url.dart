@@ -1,6 +1,7 @@
 class AppUrl {
   // static const String baseUrl = "https://agrichikitsa.org/api/v1";
-  static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
+  // static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
+  static const String baseUrl = "http://192.168.1.106:9090/api/v1";
   static const String statsEndpoint = '$baseUrl/stats';
   static const String shareLinkEndpoint = 'https://agrichikitsa.org/post';
   static const String loginEndPoint = '$baseUrl/auth/checkuser';
@@ -23,4 +24,8 @@ class AppUrl {
   static const String jankariPostToggleLike = '$baseUrl/jankari/likes/post';
   static const String getFieldsEndPoint = '$baseUrl/agristick/feilds';
   static const String createPlotEndPoint = '$baseUrl/agristick/addFeild';
+  static const String activateAgriStickEndPoint =
+      '$baseUrl/agristick/activateAgristick';
+  static const String weatherAPIEndPoint =
+      'http://api.weatherapi.com/v1/current.json?key=94488ccb442e4337ad735838231309';
 }

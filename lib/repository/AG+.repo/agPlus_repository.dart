@@ -22,4 +22,24 @@ class AGPlusRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> activateAgristick(String id, String fieldId) async {
+    final url = '${AppUrl.activateAgriStickEndPoint}/$id/$fieldId';
+    try {
+      final response = await _apiServices.getPutApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getCurrentWeather(String latitude, String longitude) async {
+    try {
+      final url = '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no';
+      final response = await _apiServices.getWeatherApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

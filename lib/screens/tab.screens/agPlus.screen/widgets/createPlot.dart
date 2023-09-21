@@ -51,7 +51,6 @@ class CreatePlot extends HookWidget {
                   ),
                 ),
                 if (provider.addFieldLoader)
-                  // if (true)
                   Container(
                     color: Colors.black.withOpacity(0.5),
                     child: const Center(

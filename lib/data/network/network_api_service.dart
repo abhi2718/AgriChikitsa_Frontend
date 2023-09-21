@@ -39,6 +39,15 @@ class NetworkApiService extends BaseApiServices {
     return _jsonResponse;
   }
 
+  Future<dynamic> getWeatherApiResponse(String url) async {
+    final response = await retry(
+      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
   @override
   Future getPostApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
@@ -58,6 +67,19 @@ class NetworkApiService extends BaseApiServices {
     final response = await retry(
       () => http
           .patch(Uri.parse(url), headers: headers, body: jsonEncode(payload))
+          .timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
+  @override
+  Future getPutApiResponse(String url) async {
+    final headers = await getHeaders();
+    final response = await retry(
+      () => http
+          .put(Uri.parse(url), headers: headers)
           .timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );

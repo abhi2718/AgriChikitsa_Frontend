@@ -1,5 +1,7 @@
 import 'package:agriChikitsa/l10n/l10n.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agPlus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/qrScanner.screen/qr_scanner_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/weather.screen/weather_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandiPricesViewModel.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
@@ -27,7 +29,7 @@ void main() async {
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyAGfebkdT45UkYPIZZL4EA3rAQDMfpHaCE",
-      appId: "1:137132429712:android:3b1c3eabfc4909714c6315", 
+      appId: "1:137132429712:android:3b1c3eabfc4909714c6315",
       messagingSenderId: "137132429712",
       projectId: "agrichikitsa-8be74",
     ),
@@ -86,6 +88,12 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<AGPlusViewModel>(
           create: (_) => AGPlusViewModel(),
+        ),
+        ChangeNotifierProvider<QRScannerViewModel>(
+          create: (_) => QRScannerViewModel(),
+        ),
+        ChangeNotifierProvider<WeatherViewModel>(
+          create: (_) => WeatherViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(

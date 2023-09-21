@@ -1,0 +1,211 @@
+import 'dart:math';
+
+import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/weather.screen/weather_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/weather.screen/widgets/weather_card.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
+import '../../../../../../utils/utils.dart';
+
+class WeatherScreenDeatils extends StatelessWidget {
+  WeatherScreenDeatils({super.key, required this.useViewModel});
+  WeatherViewModel useViewModel;
+  @override
+  Widget build(BuildContext context) {
+    final dimension = Utils.getDimensions(context, true);
+    return Scaffold(
+      backgroundColor: AppColor.notificationBgColor,
+      body: SafeArea(
+          child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+              ),
+              height: dimension["height"]! * 0.37,
+              width: dimension["width"],
+              decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [Color(0xff201C1C), Color(0xff31671E)])),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: AppColor.whiteColor,
+                          ),
+                        ),
+                        Text(
+                          '${useViewModel.latestWeatherData.region}, ${useViewModel.latestWeatherData.countryName}',
+                          style: TextStyle(color: AppColor.whiteColor),
+                        ),
+                        const Icon(
+                          Icons.more_horiz,
+                          color: AppColor.whiteColor,
+                        )
+                      ],
+                    ),
+                  ),
+                  Text(
+                    useViewModel.date,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: AppColor.whiteColor),
+                  ),
+                  SvgPicture.asset(
+                    'assets/svg/rainy.svg',
+                    height: dimension['height']! * 0.15,
+                  ),
+                  Text(
+                    '${useViewModel.latestWeatherData.temp_c.toString()}º C',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: AppColor.whiteColor,
+                        fontSize: 18),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    useViewModel.latestWeatherData.condition,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: AppColor.whiteColor,
+                        fontSize: 18),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Last update ${useViewModel.time}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: AppColor.whiteColor,
+                            fontSize: 15),
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Icon(
+                        Icons.refresh,
+                        color: AppColor.whiteColor,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    height: dimension['height']! * 0.12,
+                    width: dimension['width']! * 0.40,
+                    decoration: BoxDecoration(
+                        color: AppColor.whiteColor,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Transform.rotate(
+                          angle: pi / 2,
+                          child: Icon(
+                            Remix.blaze_line,
+                            size: 34,
+                            color: Color(0xff3C6EEF),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                useViewModel.latestWeatherData.vis_km
+                                    .toString(),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w700),
+                              ),
+                              Text(
+                                "Visibility",
+                                style: TextStyle(
+                                    fontSize: 17, color: Color(0xff494343)),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  WeatherCard(
+                      title: "Pressure",
+                      value: "940 hpa",
+                      imagePath: Remix.haze_2_line)
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  WeatherCard(
+                      title: "Wind Speed",
+                      value: "${useViewModel.latestWeatherData.wind_kph} km/h",
+                      imagePath: Remix.windy_line),
+                  WeatherCard(
+                      title: "Humidity",
+                      value:
+                          "${useViewModel.latestWeatherData.humidity.toString()}%",
+                      imagePath: Remix.mist_line)
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              height: dimension['height']! * 0.15,
+              width: dimension['width']!,
+              decoration: BoxDecoration(
+                  color: AppColor.whiteColor,
+                  borderRadius: BorderRadius.circular(12)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "AQI Index",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                  ),
+                  Text(
+                      "Kualitas udara di daerahmu untuk saat ini sangat baik. Tidak ada pencemaran udarayang menyebabkan berbagai penyakit."),
+                ],
+              ),
+            )
+          ],
+        ),
+      )),
+    );
+  }
+}
