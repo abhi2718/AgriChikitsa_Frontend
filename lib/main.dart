@@ -1,6 +1,6 @@
 import 'package:agriChikitsa/l10n/l10n.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agPlus_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/qrScanner.screen/qr_scanner_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/agristick.screen/agristick_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/weather.screen/weather_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandiPricesViewModel.dart';
@@ -89,8 +89,8 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<AGPlusViewModel>(
           create: (_) => AGPlusViewModel(),
         ),
-        ChangeNotifierProvider<QRScannerViewModel>(
-          create: (_) => QRScannerViewModel(),
+        ChangeNotifierProvider<AgristickViewModel>(
+          create: (_) => AgristickViewModel(),
         ),
         ChangeNotifierProvider<WeatherViewModel>(
           create: (_) => WeatherViewModel(),

@@ -183,26 +183,26 @@ class WeatherScreenDeatils extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              height: dimension['height']! * 0.15,
-              width: dimension['width']!,
-              decoration: BoxDecoration(
-                  color: AppColor.whiteColor,
-                  borderRadius: BorderRadius.circular(12)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "AQI Index",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  Text(
-                      "Kualitas udara di daerahmu untuk saat ini sangat baik. Tidak ada pencemaran udarayang menyebabkan berbagai penyakit."),
-                ],
-              ),
-            )
+            // Container(
+            //   margin: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+            //   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            //   height: dimension['height']! * 0.15,
+            //   width: dimension['width']!,
+            //   decoration: BoxDecoration(
+            //       color: AppColor.whiteColor,
+            //       borderRadius: BorderRadius.circular(12)),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Text(
+            //         "AQI Index",
+            //         style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+            //       ),
+            //       Text(
+            //           "Kualitas udara di daerahmu untuk saat ini sangat baik. Tidak ada pencemaran udarayang menyebabkan berbagai penyakit."),
+            //     ],
+            //   ),
+            // )
           ],
         ),
       )),

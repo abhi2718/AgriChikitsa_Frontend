@@ -1,7 +1,7 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/createPlot.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/helper/noPlotScreen.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/qrScanner.screen/qr_scanner_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/agristick.screen/agristick_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/weather.screen/weather_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -194,8 +194,9 @@ class AGPlus extends HookWidget {
                             WeatherScreen(
                               currentSelectedPlot: provider.selectedPlot,
                             ),
-                            QRScanner(
+                            AgriStickScreen(
                               currentSelectedPlot: provider.selectedPlot,
+                              agPlusViewModel: useViewModel,
                             )
                           ],
                         ))

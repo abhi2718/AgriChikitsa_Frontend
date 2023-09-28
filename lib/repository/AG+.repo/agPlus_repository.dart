@@ -42,4 +42,15 @@ class AGPlusRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> getGraphData(String agriStickId, String selectedDate) async {
+    final url =
+        '${AppUrl.graphDataEndPoint}/$agriStickId?startDate=$selectedDate';
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
 }
