@@ -34,10 +34,7 @@ class NotificationTile extends HookWidget {
       }
     }
 
-    final notificationImage = notificationItem['imgurl'] == null
-        ? null
-        : notificationItem['imgurl'].split(
-            'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final notificationImage = notificationItem['imgurl'];
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 8, right: 8, bottom: 4),
       child: InkWell(
@@ -90,14 +87,6 @@ class NotificationTile extends HookWidget {
                                       )),
                                   InkWell(
                                     onTap: () {
-                                      // final splitUrl =
-                                      //     notificationItem['url'].split('//');
-                                      // final protocol = splitUrl[0].split(':')[0];
-                                      // final domainSplit = splitUrl[1].split('/');
-                                      // final path =
-                                      //     splitUrl[1].split('${domainSplit[0]}/')[1];
-                                      // useViewModel.openLink(
-                                      //     context, protocol, domainSplit[0], path);
                                       launchUrl(
                                           Uri.parse(notificationItem['url']));
                                     },
@@ -133,8 +122,7 @@ class NotificationTile extends HookWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://d336izsd4bfvcs.cloudfront.net/$notificationImage',
+                                imageUrl: notificationImage,
                                 progressIndicatorBuilder:
                                     (context, url, downloadProgress) =>
                                         Skeleton(
@@ -161,8 +149,7 @@ class NotificationTile extends HookWidget {
                           notificationItem: notificationItem,
                         ));
                   },
-                  icon: const Icon(
-                      Icons.description), // Replace with the desired icon
+                  icon: const Icon(Icons.description),
                 ),
               ),
             ],

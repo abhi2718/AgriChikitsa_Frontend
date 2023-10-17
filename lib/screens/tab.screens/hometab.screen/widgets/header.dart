@@ -43,14 +43,12 @@ class HeaderWidget extends HookWidget {
                   Consumer<AuthService>(builder: (context, provider, child) {
                     if (provider.userInfo != null) {
                       final user = provider.userInfo["user"];
-                      final profileImage = user['profileImage'].split(
-                          'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                      final profileImage = user['profileImage'];
                       return SizedBox(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: CachedNetworkImage(
-                            imageUrl:
-                                'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                            imageUrl: profileImage,
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) => Skeleton(
                               height: 40,

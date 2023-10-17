@@ -110,8 +110,7 @@ class UserComment extends HookWidget {
                                           final comment =
                                               provider.commentsList[index];
                                           final profileImage =
-                                              comment.user.profileImage.split(
-                                                  'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                              comment.user.profileImage;
                                           return Column(
                                             children: [
                                               Row(
@@ -129,7 +128,7 @@ class UserComment extends HookWidget {
                                                         child:
                                                             CachedNetworkImage(
                                                           imageUrl:
-                                                              'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                                              profileImage,
                                                           progressIndicatorBuilder:
                                                               (context, url,
                                                                       downloadProgress) =>
@@ -243,15 +242,13 @@ class UserComment extends HookWidget {
                                       builder: (context, provider, child) {
                                     if (provider.userInfo != null) {
                                       final user = provider.userInfo["user"];
-                                      final userImage = user['profileImage'].split(
-                                          'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                      final userImage = user['profileImage'];
                                       return SizedBox(
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(20),
                                           child: CachedNetworkImage(
-                                            imageUrl:
-                                                'https://d336izsd4bfvcs.cloudfront.net/$userImage',
+                                            imageUrl: userImage,
                                             progressIndicatorBuilder: (context,
                                                     url, downloadProgress) =>
                                                 Skeleton(

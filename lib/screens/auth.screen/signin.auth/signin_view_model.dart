@@ -128,8 +128,8 @@ class SignInViewModel with ChangeNotifier {
       },
       verificationFailed: (FirebaseAuthException e) {
         setloading(false);
-        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
-            e.message.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, e.message.toString(), context);
         return;
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -181,8 +181,7 @@ class SignInViewModel with ChangeNotifier {
           setUserProfile(data);
           setloading(false);
           resetTimer();
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         }
       } catch (error) {
         if (kDebugMode) {

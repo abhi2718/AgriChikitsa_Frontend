@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../model/select_crop_model.dart';
 import '../../../../../res/color.dart';
 import '../../../../../utils/utils.dart';
+import '../../../../../widgets/skeleton/skeleton.dart';
 import '../../agPlus_view_model.dart';
 
 class CropItem extends StatelessWidget {
@@ -21,27 +23,42 @@ class CropItem extends StatelessWidget {
         return InkWell(
           onTap: () => useViewModel.setSelectedCrop(context, crop),
           child: SizedBox(
-            child: Column(
-              children: [
-                Container(
-                  height: dimension["height"]! * 0.125,
-                  width: dimension["width"]! * 0.235,
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Colors.black54, spreadRadius: 1, blurRadius: 8)
-                    ],
-                    image: const DecorationImage(
-                        // image: NetworkImage(crop.backgroundImage),
-                        image: NetworkImage(
-                            "https://images.pexels.com/photos/46164/field-of-rapeseeds-oilseed-rape-blutenmeer-yellow-46164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Stack(
-                    children: crop.isSelected
-                        ? [
-                            Positioned.fill(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    height: dimension["height"]! * 0.125,
+                    width: dimension["width"]! * 0.235,
+                    decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Colors.black54,
+                            spreadRadius: 1,
+                            blurRadius: 8)
+                      ],
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Stack(fit: StackFit.expand, children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: CachedNetworkImage(
+                          imageUrl: crop.backgroundImage,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Skeleton(
+                            height: dimension["height"]! * 0.125,
+                            width: dimension["width"]! * 0.235,
+                            radius: 100,
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          width: 40,
+                          fit: BoxFit.cover,
+                          height: 40,
+                        ),
+                      ),
+                      crop.isSelected
+                          ? Positioned.fill(
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.black.withOpacity(0.4),
@@ -49,24 +66,27 @@ class CropItem extends StatelessWidget {
                                     Radius.circular(100),
                                   ),
                                 ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.done,
+                                    size: 36,
+                                    color: AppColor.whiteColor,
+                                  ),
+                                ),
                               ),
-                            ),
-                            const Center(
-                              child: Icon(
-                                Icons.done,
-                                size: 36,
-                                color: AppColor.whiteColor,
-                              ),
-                            ),
-                          ]
-                        : [],
+                            )
+                          : Container(),
+                    ]),
                   ),
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Text(crop.name)
-              ],
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Text(
+                    crop.name,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ],
+              ),
             ),
           ),
         );

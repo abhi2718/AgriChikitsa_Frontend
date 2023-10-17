@@ -125,7 +125,6 @@ class JankariPost extends HookWidget {
                                                   index]);
                                         },
                                         child: Container(
-                                          // color: Colors.red,
                                           height: 40,
                                           width: 40,
                                           child: Row(
@@ -199,8 +198,11 @@ class JankariPost extends HookWidget {
                                     ),
                                     InkWell(
                                         onTap: () async {
-                                          final xfile = await provider.shareFiles(
-                                              'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}');
+                                          final xfile =
+                                              await provider.shareFiles(provider
+                                                  .jankariSubcategoryPostList[
+                                                      index]
+                                                  .imageUrl);
                                           await Share.shareXFiles([xfile],
                                               text:
                                                   "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
@@ -249,8 +251,10 @@ class JankariPost extends HookWidget {
                                               child: Stack(
                                                 children: [
                                                   CachedNetworkImage(
-                                                    imageUrl:
-                                                        'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}',
+                                                    imageUrl: provider
+                                                        .jankariSubcategoryPostList[
+                                                            index]
+                                                        .imageUrl,
                                                     progressIndicatorBuilder:
                                                         (context, url,
                                                                 downloadProgress) =>

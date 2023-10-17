@@ -42,8 +42,7 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<JankariViewModel>(context, listen: false),
       Provider.of<MyProfileViewModel>(context, listen: false),
     ];
-    final profileImage = user.profileImage!.split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = user.profileImage!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.whiteColor,
@@ -72,8 +71,7 @@ class ProfileTabScreen extends HookWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(60),
                     child: CachedNetworkImage(
-                      imageUrl:
-                          'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                      imageUrl: profileImage,
                       progressIndicatorBuilder:
                           (context, url, downloadProgress) => Skeleton(
                         height: 40,

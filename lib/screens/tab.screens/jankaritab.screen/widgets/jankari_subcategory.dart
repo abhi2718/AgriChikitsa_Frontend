@@ -152,8 +152,7 @@ class SubCategoryContainer extends HookWidget {
                                     final subCategory =
                                         provider.jankariSubcategoryList[index];
                                     final backgroundImage =
-                                        subCategory.backgroundImage.split(
-                                            'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                        subCategory.backgroundImage;
                                     return InkWell(
                                       onTap: () {
                                         provider.updateStats(
@@ -184,8 +183,7 @@ class SubCategoryContainer extends HookWidget {
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                               child: CachedNetworkImage(
-                                                imageUrl:
-                                                    'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage',
+                                                imageUrl: backgroundImage,
                                                 progressIndicatorBuilder:
                                                     (context, url,
                                                             downloadProgress) =>

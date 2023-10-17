@@ -21,6 +21,9 @@ class ChatTabViewModel with ChangeNotifier {
   bool showCropImageLoader = false;
   bool showCameraButton = false;
   bool enableKeyBoard = false;
+  String selectedAge = "";
+  String selectedCrop = "";
+  String selectedReason = "";
   var questionAsked = "";
   var cropImage = "";
   var questionIndex = 0;
@@ -73,6 +76,9 @@ class ChatTabViewModel with ChangeNotifier {
     cropImage = "";
     selectedDisease = '';
     cameraQuestionId = '';
+    selectedAge = "";
+    selectedCrop = "";
+    selectedReason = "";
   }
 
   void enableKeyboard(bool value) {
@@ -92,16 +98,14 @@ class ChatTabViewModel with ChangeNotifier {
     }
   }
 
-  void sendQuestion(
-      String id, String scriptQuestion, String answer, String imgurl) async {
+  void sendQuestion(String id, String scriptQuestion, String answer, String imgurl) async {
     final payloadStructure = {
       "id": id,
       "question": scriptQuestion,
       "answer": answer,
     };
-    final finalPayload = imgurl == ""
-        ? payloadStructure
-        : {...payloadStructure, "imageQuestion": imgurl};
+    final finalPayload =
+        imgurl == "" ? payloadStructure : {...payloadStructure, "imageQuestion": imgurl};
     await _chatTabRepository.postChatQuestion(finalPayload);
   }
 
@@ -152,6 +156,7 @@ class ChatTabViewModel with ChangeNotifier {
       }
       return item;
     });
+    selectedAge = age;
     chatMessages = updatedChatMessages.toList();
     notifyListeners();
     loadQuestionFour(context);
@@ -195,6 +200,7 @@ class ChatTabViewModel with ChangeNotifier {
       }
       return item;
     });
+    selectedCrop = crop;
     questionIndex = 4;
     chatMessages = updatedChatMessages.toList();
     showFourthLoader = true;
@@ -235,6 +241,7 @@ class ChatTabViewModel with ChangeNotifier {
       }
       return item;
     });
+    selectedReason = disease;
     questionIndex = 6;
     chatMessages = updatedChatMessages.toList();
     showFifthBubbleLoader = true;
@@ -253,8 +260,7 @@ class ChatTabViewModel with ChangeNotifier {
       final question = data["question"];
       final checkList = ['अन्य', 'खरपतवार'];
       if (!checkList.contains(id)) {
-        final isToShowCameraIcon =
-            question["showCameraIcon"] == null ? false : true;
+        final isToShowCameraIcon = question["showCameraIcon"] == null ? false : true;
         if (!isToShowCameraIcon) {
           showSixthBubbleLoader = true;
           final t7 = Timer(const Duration(seconds: 1), () {
@@ -281,8 +287,7 @@ class ChatTabViewModel with ChangeNotifier {
       chatMessages.add(data["question"]);
       showSixthBubbleLoader = false;
       final question = data["question"];
-      final isToShowCameraIcon =
-          question["showCameraIcon"] == null ? false : true;
+      final isToShowCameraIcon = question["showCameraIcon"] == null ? false : true;
       if (isToShowCameraIcon) {
         setShowCameraButton(true);
         cameraQuestionId = id;
@@ -303,8 +308,7 @@ class ChatTabViewModel with ChangeNotifier {
       unfocusKeyboard();
       if (questionIndex == 3) {
         final currentQuestion = chatMessages[questionIndex];
-        handleSelctCrop(
-            context, textEditingController.text, currentQuestion["id"]);
+        handleSelctCrop(context, textEditingController.text, currentQuestion["id"]);
         textEditingController.clear();
         questionIndex = 4;
         showFourthLoader = true;
@@ -320,8 +324,7 @@ class ChatTabViewModel with ChangeNotifier {
         enableKeyboard(false);
         var updatedChatMessages = chatMessages.map((item) {
           if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
-            sendQuestion(
-                'अन्य', item['question_hi'], textEditingController.text, "");
+            sendQuestion('अन्य', item['question_hi'], textEditingController.text, "");
             return {
               ...item,
               "isAnswerSelected": true,
@@ -340,8 +343,7 @@ class ChatTabViewModel with ChangeNotifier {
           chatMessages.add(
             {
               "id": "7",
-              "question_hi":
-                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
               "question_en": "Know about your crop with Agrichikitsa",
               "options_hi": [],
               "options_en": [],
@@ -381,8 +383,7 @@ class ChatTabViewModel with ChangeNotifier {
           chatMessages.add(
             {
               "id": "8",
-              "question_hi":
-                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
               "question_en": "Know about your crop with Agrichikitsa",
               "options_hi": [],
               "options_en": [],
@@ -427,8 +428,7 @@ class ChatTabViewModel with ChangeNotifier {
           chatMessages.add(
             {
               "id": "8",
-              "question_hi":
-                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
               "question_en": "Know about your crop with Agrichikitsa",
               "options_hi": [],
               "options_en": [],

@@ -22,8 +22,7 @@ class ProfilePicture extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final user = User.fromJson(authService.userInfo["user"]);
-    final profileImage = user.profileImage!.split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = user.profileImage!;
     return GestureDetector(onTap: () {
       showModalBottomSheet(
         context: context,
@@ -73,8 +72,7 @@ class ProfilePicture extends HookWidget {
                 color: Colors.grey[300],
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(
-                      'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
+                  image: CachedNetworkImageProvider(profileImage),
                 ),
               ),
               child: Container(

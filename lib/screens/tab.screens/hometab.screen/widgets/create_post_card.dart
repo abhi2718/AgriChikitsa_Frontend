@@ -10,7 +10,6 @@ import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
 import '../createPost.screen/createPost.dart';
-import '../hometab_view_model.dart';
 
 class CreatePostCard extends HookWidget {
   const CreatePostCard({super.key});
@@ -18,11 +17,8 @@ class CreatePostCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel = useMemoized(
-        () => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
-    final profileImage = authService.userInfo['user']['profileImage'].split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = authService.userInfo['user']['profileImage'];
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
@@ -41,8 +37,7 @@ class CreatePostCard extends HookWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: CachedNetworkImage(
-                        imageUrl:
-                            'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                        imageUrl: profileImage,
                         progressIndicatorBuilder:
                             (context, url, downloadProgress) => Skeleton(
                           height: 40,
@@ -88,7 +83,6 @@ class CreatePostCard extends HookWidget {
                             borderRadius: BorderRadius.circular(10)),
                       ),
                       onPressed: () {
-                        //useViewModel.goToCreatePostScreen(context);
                         Utils.model(context, const CreatePostScreen());
                       },
                       child: BaseText(

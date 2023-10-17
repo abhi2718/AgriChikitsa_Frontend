@@ -51,12 +51,8 @@ class NetworkApiService extends BaseApiServices {
   @override
   Future getPostApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
-    final response = await retry(
-      () => http
-          .post(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 4)),
-      retryIf: (e) => e is SocketException || e is TimeoutException,
-    );
+    final response = await http.post(Uri.parse(url),
+        headers: headers, body: jsonEncode(payload));
     _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }

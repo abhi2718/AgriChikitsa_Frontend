@@ -13,10 +13,30 @@ class AGPlusRepository {
     }
   }
 
+  Future<dynamic> getCropsList() async {
+    try {
+      const url = AppUrl.getCropsListEndPoint;
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> createPlot(dynamic payload) async {
     const url = AppUrl.createPlotEndPoint;
     try {
       final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> deleteField(String fieldId) async {
+    final url = '${AppUrl.deleteFieldEndPoint}/$fieldId';
+    try {
+      final response = await _apiServices.getPutApiResponse(url);
       return response;
     } catch (error) {
       rethrow;

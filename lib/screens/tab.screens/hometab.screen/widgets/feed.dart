@@ -5,7 +5,6 @@ import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -33,8 +32,6 @@ class Feed extends HookWidget {
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
     var isBookMarked = useState(feed['bookmarks'].contains(userInfo.sId));
     final numberOfComments = useState(feed['comments'].length);
-    final imageName = feed['imgurl'].split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     // useEffect(() {
     //   if (myProfileViewModel.unBookMarkedFeedData["id"] == feed["_id"]) {
     //     isBookMarked.value = false;
@@ -79,11 +76,15 @@ class Feed extends HookWidget {
     //   }
     // }, [myProfileViewModel.toogleHomeFeed]);
     final user = feed['user'];
-    final profileImage = user['profileImage'].split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     return Container(
-      margin: const EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(
+          top: 10,
+          bottom: feed ==
+                  useViewModel.feedList
+                      .elementAt(useViewModel.feedList.length - 1)
+              ? 30
+              : 0),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Card(
@@ -105,8 +106,7 @@ class Feed extends HookWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                  imageUrl: user['profileImage'],
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           Skeleton(
@@ -144,9 +144,6 @@ class Feed extends HookWidget {
                         ),
                       ],
                     ),
-                    // const InkWell(
-                    //   child: Icon(Remix.more_2_line),
-                    // ),
                   ],
                 ),
               ),
@@ -154,7 +151,7 @@ class Feed extends HookWidget {
                 height: dimension["width"]! - 16,
                 width: dimension["width"]! - 16,
                 child: CachedNetworkImage(
-                  imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
+                  imageUrl: feed['imgurl'],
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       Skeleton(
                     height: dimension["width"]! - 16,

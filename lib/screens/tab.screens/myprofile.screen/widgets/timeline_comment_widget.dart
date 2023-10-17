@@ -102,8 +102,7 @@ class TimelineUserComment extends HookWidget {
                                           final comment =
                                               provider.commentsList[index];
                                           final profileImage =
-                                              comment.user.profileImage.split(
-                                                  'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                              comment.user.profileImage;
                                           return Column(
                                             children: [
                                               Row(
@@ -121,7 +120,7 @@ class TimelineUserComment extends HookWidget {
                                                         child:
                                                             CachedNetworkImage(
                                                           imageUrl:
-                                                              'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                                              profileImage,
                                                           progressIndicatorBuilder:
                                                               (context, url,
                                                                       downloadProgress) =>

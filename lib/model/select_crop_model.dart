@@ -12,7 +12,7 @@ class SelectCrop {
   factory SelectCrop.fromJson(Map<String, dynamic> json) {
     return SelectCrop(
       name: json['name'],
-      backgroundImage: json['backgroundImage'],
+      backgroundImage: json['image'],
     );
   }
 }

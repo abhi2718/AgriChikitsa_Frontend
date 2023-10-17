@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../agristick_view_model.dart';
 
@@ -29,7 +30,7 @@ class DatePicker extends StatelessWidget {
             onPressed: () {
               useViewModel.selectDate(context);
             },
-            child: Text('Select Date'),
+            child: Text(AppLocalizations.of(context)!.selectDatehi),
           ),
         ],
       ),

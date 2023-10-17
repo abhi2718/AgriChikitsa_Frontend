@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
 
 class NoPlotScreen extends HookWidget {
@@ -13,7 +14,7 @@ class NoPlotScreen extends HookWidget {
         children: [
           LottieBuilder.asset('assets/lottie/clickHere.json'),
           Text(
-            "No Plot Added\nTap to Add New Plot",
+            AppLocalizations.of(context)!.noFieldAddedhi,
             textAlign: TextAlign.center,
           )
         ],

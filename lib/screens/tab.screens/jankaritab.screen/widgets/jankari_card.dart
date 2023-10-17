@@ -24,11 +24,6 @@ class JankariCard extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(
         () => Provider.of<JankariViewModel>(context, listen: false));
-    final backgroundImage = jankari.backgroundImage.split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-    final iconImage = jankari.icon.split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-
     return InkWell(
       onTap: () {
         useViewModel.updateStats(context, 'category', jankari.id);
@@ -47,8 +42,7 @@ class JankariCard extends HookWidget {
               fit: StackFit.expand,
               children: [
                 CachedNetworkImage(
-                  imageUrl:
-                      'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage',
+                  imageUrl: jankari.backgroundImage,
                   fit: BoxFit.fill,
                   placeholder: (context, url) => Skeleton(
                     height: dimension['height']! * 0.16,
@@ -74,8 +68,7 @@ class JankariCard extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CachedNetworkImage(
-                        imageUrl:
-                            'https://d336izsd4bfvcs.cloudfront.net/$iconImage',
+                        imageUrl: jankari.icon,
                         progressIndicatorBuilder:
                             (context, url, downloadProgress) => Skeleton(
                           height: 50,

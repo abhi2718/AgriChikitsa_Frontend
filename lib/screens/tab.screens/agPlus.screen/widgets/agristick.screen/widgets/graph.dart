@@ -1,12 +1,14 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../../../model/plots.dart';
+import '../../../../../../utils/utils.dart';
 
 class SoilHealthChart extends HookWidget {
-  SoilHealthChart(
-      {super.key, required this.useViewModel, required this.selectedField});
+  SoilHealthChart({super.key, required this.useViewModel, required this.selectedField});
   final useViewModel;
   List<Color> gradientColors = [
     Color(0xff12c2e9),
@@ -18,49 +20,84 @@ class SoilHealthChart extends HookWidget {
   Plots selectedField;
   @override
   Widget build(BuildContext context) {
+    final dimension = Utils.getDimensions(context, true);
     useEffect(() {
       useViewModel.getGraphData(context, selectedField);
     }, [useViewModel.selectedDate]);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          "Soil Health",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        Center(
+          child: Text(
+            AppLocalizations.of(context)!.soilMoisturehi,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
         ),
-        AspectRatio(
-          aspectRatio: 1.50,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              right: 18,
-              left: 10,
-              top: 36,
-              bottom: 6,
-            ),
-            child: LineChart(
-              mainData(),
+        Container(
+          height: dimension['height']! * 0.35,
+          width: dimension['width']!,
+          margin: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          decoration: BoxDecoration(
+              color: AppColor.whiteColor,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                    color: Colors.black54, spreadRadius: 0, blurRadius: 1, offset: Offset(0, 1))
+              ]),
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 1.50,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 16,
+                  left: 8,
+                  top: 36,
+                  bottom: 6,
+                ),
+                child: LineChart(
+                  mainData(),
+                ),
+              ),
             ),
           ),
         ),
-        Divider(),
+        const Divider(),
         Padding(
           padding: const EdgeInsets.only(top: 22),
-          child: Text(
-            "Leaf Wetness",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          child: Center(
+            child: Text(
+              AppLocalizations.of(context)!.leafWetnesshi,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            ),
           ),
         ),
-        AspectRatio(
-          aspectRatio: 1.50,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              right: 18,
-              left: 10,
-              top: 36,
-              bottom: 6,
-            ),
-            child: LineChart(
-              leafWetness(),
+        Container(
+          height: dimension['height']! * 0.35,
+          width: dimension['width']!,
+          margin: const EdgeInsets.only(top: 8, bottom: 28),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          decoration: BoxDecoration(
+              color: AppColor.whiteColor,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                    color: Colors.black54, spreadRadius: 0, blurRadius: 1, offset: Offset(0, 1))
+              ]),
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 1.50,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 16,
+                  left: 8,
+                  top: 36,
+                  bottom: 6,
+                ),
+                child: LineChart(
+                  leafWetness(),
+                ),
+              ),
             ),
           ),
         ),
@@ -101,34 +138,27 @@ class SoilHealthChart extends HookWidget {
             reservedSize: 20,
             interval: 1,
             getTitlesWidget: (value, TitleMeta) {
-              final dayNames = [
-                'Mon',
-                'Tue',
-                'Wed',
-                'Thu',
-                'Fri',
-                'Sat',
-                'Sun'
-              ];
-              final index = value.toInt() % dayNames.length;
-
-              return Text(
-                dayNames[index],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              );
+              final dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+              if (value >= 0 && value < useViewModel.soilMoistureData.length) {
+                final index = useViewModel.soilMoistureData[value.toInt()].x.toInt();
+                if (index >= 0 && index < dayNames.length) {
+                  return Text(
+                    dayNames[index],
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  );
+                }
+              }
+              return Text("");
             },
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 20,
+            interval: useViewModel.maxY != 0 ? useViewModel.maxY / 4 : 30,
             getTitlesWidget: (value, TitleMeta) {
               return Text(
-                '${value.toInt()}%',
+                "$value",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
@@ -136,7 +166,7 @@ class SoilHealthChart extends HookWidget {
                 textAlign: TextAlign.left,
               );
             },
-            reservedSize: 45,
+            reservedSize: 50,
           ),
         ),
       ),
@@ -145,9 +175,9 @@ class SoilHealthChart extends HookWidget {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: useViewModel.graphData.length.toDouble() - 1,
-      minY: -10,
-      maxY: 100,
+      maxX: useViewModel.soilMoistureData.length.toDouble() - 1,
+      minY: 0,
+      maxY: useViewModel.maxY != 0 ? useViewModel.maxY : 100,
       lineBarsData: [
         LineChartBarData(
           show: useViewModel.showGraph,
@@ -164,9 +194,7 @@ class SoilHealthChart extends HookWidget {
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
-              colors: gradientColors
-                  .map((color) => color.withOpacity(0.3))
-                  .toList(),
+              colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
             ),
           ),
         ),
@@ -207,34 +235,27 @@ class SoilHealthChart extends HookWidget {
             reservedSize: 20,
             interval: 1,
             getTitlesWidget: (value, TitleMeta) {
-              final dayNames = [
-                'Mon',
-                'Tue',
-                'Wed',
-                'Thu',
-                'Fri',
-                'Sat',
-                'Sun'
-              ];
-              final index = value.toInt() % dayNames.length;
-
-              return Text(
-                dayNames[index],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              );
+              final dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+              if (value >= 0 && value < useViewModel.leafWetnessData.length) {
+                final index = useViewModel.leafWetnessData[value.toInt()].x.toInt();
+                if (index >= 0 && index < dayNames.length) {
+                  return Text(
+                    dayNames[index],
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  );
+                }
+              }
+              return Text("");
             },
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 20,
+            interval: useViewModel.maxLeafWetnessY != 0 ? useViewModel.maxLeafWetnessY / 4 : 30,
             getTitlesWidget: (value, TitleMeta) {
               return Text(
-                '${value.toInt()}%',
+                '$value',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
@@ -242,7 +263,7 @@ class SoilHealthChart extends HookWidget {
                 textAlign: TextAlign.left,
               );
             },
-            reservedSize: 45,
+            reservedSize: 50,
           ),
         ),
       ),
@@ -251,9 +272,9 @@ class SoilHealthChart extends HookWidget {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: useViewModel.graphData.length.toDouble() - 1,
-      minY: -10,
-      maxY: 100,
+      maxX: useViewModel.leafWetnessData.length.toDouble() - 1,
+      minY: 0,
+      maxY: useViewModel.maxLeafWetnessY != 0 ? useViewModel.maxLeafWetnessY : 100,
       lineBarsData: [
         LineChartBarData(
           show: useViewModel.showGraph,
@@ -270,9 +291,7 @@ class SoilHealthChart extends HookWidget {
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
-              colors: gradientColors
-                  .map((color) => color.withOpacity(0.3))
-                  .toList(),
+              colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
             ),
           ),
         ),

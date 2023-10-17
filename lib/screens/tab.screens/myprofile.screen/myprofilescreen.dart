@@ -1,4 +1,6 @@
+import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprofile_feed.dart';
@@ -55,103 +57,114 @@ class MyProfileScreen extends HookWidget {
       length: 2,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: AppColor.notificationBgColor,
           appBar: AppBar(
-            automaticallyImplyLeading: false,
+            automaticallyImplyLeading: true,
+            elevation: 0.0,
             systemOverlayStyle:
                 const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-            backgroundColor: AppColor.whiteColor,
+            backgroundColor: AppColor.notificationBgColor,
             foregroundColor: AppColor.darkBlackColor,
-            flexibleSpace: TabBar(
-                onTap: (index) {
-                  useViewModel.setActiveTabIndex(true);
-                },
-                padding: const EdgeInsets.only(top: 10),
-                tabs: [
-                  Tab(
-                      child: BaseText(
-                          title: AppLocalizations.of(context)!.myPosthi,
-                          style: const TextStyle(color: Colors.black))),
-                  Tab(
-                      child: BaseText(
-                          title: AppLocalizations.of(context)!.bookmarkhi,
-                          style: const TextStyle(color: Colors.black))),
-                ]),
           ),
-          body: TabBarView(
+          body: Column(
             children: [
-              Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.loading
-                    ? const PreLoader()
-                    : provider.feedList.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              BaseText(
-                                title:
-                                    AppLocalizations.of(context)!.nopostYethi,
-                                style: const TextStyle(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              InkWell(
-                                onTap: () => Navigator.pushNamed(
-                                    context, RouteName.createPostRoute),
-                                child: Container(
-                                    height: dimension['height']! * 0.07,
-                                    width: dimension['width']! * 0.30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: AppColor.darkColor,
-                                    ),
-                                    child: Center(
-                                        child: BaseText(
+              TabBar(
+                  onTap: (index) {
+                    useViewModel.setActiveTabIndex(true);
+                  },
+                  tabs: [
+                    Tab(
+                        child: BaseText(
+                            title: AppLocalizations.of(context)!.myPosthi,
+                            style: const TextStyle(color: Colors.black))),
+                    Tab(
+                        child: BaseText(
+                            title: AppLocalizations.of(context)!.bookmarkhi,
+                            style: const TextStyle(color: Colors.black))),
+                  ]),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    Consumer<MyProfileViewModel>(
+                        builder: (context, provider, child) {
+                      return provider.loading
+                          ? const PreLoader()
+                          : provider.feedList.isEmpty
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    BaseText(
                                       title: AppLocalizations.of(context)!
-                                          .createOnehi,
-                                      style: const TextStyle(
-                                          color: AppColor.whiteColor),
-                                    ))),
-                              )
-                            ],
-                          )
-                        : RefreshIndicator(
-                            onRefresh: refresh,
-                            child: SizedBox(
-                              height: availableHeight,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: provider.feedList.length,
-                                itemBuilder: (context, index) {
-                                  final feed = provider.feedList[index];
-                                  return MyProfileFeed(feed: feed);
-                                },
-                              ),
-                            ),
-                          );
-              }),
-              Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.bookMarkLoader
-                    ? const PreLoader()
-                    : provider.bookMarkFeedList.isEmpty
-                        ? Center(
-                            child: Text(
-                                AppLocalizations.of(context)!.noBookMarkAddhi))
-                        : SizedBox(
-                            height: availableHeight,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: provider.bookMarkFeedList.reversed
-                                    .map((feed) {
-                                  return BookmarkFeed(
-                                    key: ObjectKey(feed["_id"]),
-                                    feed: feed,
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          );
-              })
+                                          .nopostYethi,
+                                      style: const TextStyle(),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    InkWell(
+                                      onTap: () => Navigator.pushNamed(
+                                          context, RouteName.createPostRoute),
+                                      child: Container(
+                                          height: dimension['height']! * 0.07,
+                                          width: dimension['width']! * 0.30,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            color: AppColor.darkColor,
+                                          ),
+                                          child: Center(
+                                              child: BaseText(
+                                            title: AppLocalizations.of(context)!
+                                                .createOnehi,
+                                            style: const TextStyle(
+                                                color: AppColor.whiteColor),
+                                          ))),
+                                    )
+                                  ],
+                                )
+                              : RefreshIndicator(
+                                  onRefresh: refresh,
+                                  child: SizedBox(
+                                    height: availableHeight,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: provider.feedList.length,
+                                      itemBuilder: (context, index) {
+                                        final feed = provider.feedList[index];
+                                        return MyProfileFeed(feed: feed);
+                                      },
+                                    ),
+                                  ),
+                                );
+                    }),
+                    Consumer<MyProfileViewModel>(
+                        builder: (context, provider, child) {
+                      return provider.bookMarkLoader
+                          ? const PreLoader()
+                          : provider.bookMarkFeedList.isEmpty
+                              ? Center(
+                                  child: Text(AppLocalizations.of(context)!
+                                      .noBookMarkAddhi))
+                              : SizedBox(
+                                  height: availableHeight,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: provider
+                                          .bookMarkFeedList.reversed
+                                          .map((feed) {
+                                        return BookmarkFeed(
+                                          key: ObjectKey(feed["_id"]),
+                                          feed: feed,
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                );
+                    })
+                  ],
+                ),
+              ),
             ],
           ),
         ),

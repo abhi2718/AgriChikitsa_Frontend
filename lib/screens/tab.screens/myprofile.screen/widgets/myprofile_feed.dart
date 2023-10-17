@@ -48,10 +48,10 @@ class MyProfileFeed extends HookWidget {
     }
 
     final user = feed['user'];
-    final imageName = feed['imgurl'].split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-    final profileImage = user['profileImage'].split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    // final imageName = feed['imgurl'].split(
+    //     'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    // final profileImage = user['profileImage'].split(
+    //     'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
       if (useViewModel.isUserSwitchTheTab) {
@@ -89,8 +89,7 @@ class MyProfileFeed extends HookWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                  imageUrl: user['profileImage'],
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           Skeleton(
@@ -138,7 +137,7 @@ class MyProfileFeed extends HookWidget {
                 height: dimension["width"]! - 16,
                 width: dimension["width"]! - 16,
                 child: CachedNetworkImage(
-                  imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
+                  imageUrl: feed['imgurl'],
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       Skeleton(
                     height: dimension["width"]! - 16,

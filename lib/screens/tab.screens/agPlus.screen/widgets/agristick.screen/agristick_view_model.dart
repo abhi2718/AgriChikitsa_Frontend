@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/agristick.screen/widgets/activateAgristickStatusScreen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,14 +16,26 @@ class AgristickViewModel with ChangeNotifier {
   List<FlSpot> leafWetnessData = [];
   List<FlSpot> soilMoistureData = [];
   String barCodeResult = "";
+  double maxY = 0;
+  double maxLeafWetnessY = 0;
   DateTime selectedDate = DateTime.now();
   bool showGraph = false;
+  bool scanBarCodeLoader = false;
+  late bool agristickStatus;
+
   void reinitialize() {
     graphData = [];
+    maxY = 0;
+    maxLeafWetnessY = 0;
     leafWetnessData = [];
     soilMoistureData = [];
     barCodeResult = "";
     selectedDate = DateTime.now();
+  }
+
+  void setBarCodeLoader(value) {
+    scanBarCodeLoader = value;
+    notifyListeners();
   }
 
   Future<void> selectDate(BuildContext context) async {
@@ -43,11 +56,13 @@ class AgristickViewModel with ChangeNotifier {
     try {
       barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', false, ScanMode.QR);
-      barCodeResult = barCodeScanRes == "-1" ? "Scan Failed" : barCodeScanRes;
+      barCodeResult = barCodeScanRes == "-1"
+          ? AppLocalizations.of(context)!.scanFailhi
+          : barCodeScanRes;
       if (barCodeScanRes == "-1") {
-        barCodeResult = "Scan Failed";
+        barCodeResult = AppLocalizations.of(context)!.scanFailhi;
       } else {
-        barCodeResult = barCodeScanRes;
+        setBarCodeLoader(true);
         activateAgristick(context, currentField);
       }
       notifyListeners();
@@ -62,9 +77,19 @@ class AgristickViewModel with ChangeNotifier {
           barCodeResult, currentField.id);
       if (data["agristick"]["status"] == "Activated") {
         currentField.agristick = data["agristick"]["_id"];
+        agristickStatus = true;
+        Utils.model(context, AgriStickStatusScreen());
+      } else {
+        barCodeResult = "अमान्य एग्रीस्टिक प्रदान की गई";
+        agristickStatus = false;
+        Utils.model(context, AgriStickStatusScreen());
       }
-      notifyListeners();
+      setBarCodeLoader(false);
     } catch (error) {
+      barCodeResult = "क्षमा करें कुछ त्रुटि हुई";
+      setBarCodeLoader(false);
+      agristickStatus = false;
+      Utils.model(context, AgriStickStatusScreen());
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);
@@ -77,6 +102,8 @@ class AgristickViewModel with ChangeNotifier {
     try {
       soilMoistureData = [];
       leafWetnessData = [];
+      maxY = 0;
+      maxLeafWetnessY = 0;
       final data = await _agPlusRepository.getGraphData(
           currentField.agristick['_id'],
           selectedDate.toLocal().toString().split(' ')[0]);
@@ -94,12 +121,22 @@ class AgristickViewModel with ChangeNotifier {
 
   void setFlData() {
     for (int i = 0; i < graphData.length; i++) {
+      int index = DateTime.parse(graphData[i]["createdAt"]).weekday;
+      if (index == 7) {
+        index = 0;
+      }
       final leafWetness =
           double.parse(graphData[i]["averageLeafWetness"].replaceAll("%", ""));
+      maxLeafWetnessY =
+          maxLeafWetnessY < leafWetness ? leafWetness : maxLeafWetnessY;
+
       final soilMoisture =
           double.parse(graphData[i]["averageSoilMoisture"].replaceAll("%", ""));
-      leafWetnessData.add(FlSpot(i.toDouble(), leafWetness));
-      soilMoistureData.add(FlSpot(i.toDouble(), soilMoisture));
+      // final soilMoisture = double.parse(graphData[i]["averageSoilMoisture"]);
+      maxY = maxY < soilMoisture ? soilMoisture : maxY;
+
+      leafWetnessData.add(FlSpot(index.toDouble(), leafWetness));
+      soilMoistureData.add(FlSpot(index.toDouble(), soilMoisture));
     }
   }
 }
