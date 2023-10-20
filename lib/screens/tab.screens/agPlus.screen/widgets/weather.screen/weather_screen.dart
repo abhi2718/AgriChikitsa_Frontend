@@ -71,7 +71,7 @@ class WeatherScreen extends HookWidget {
                           ),
                           Text(
                             '${provider.latestWeatherData.region}, ${provider.latestWeatherData.countryName}',
-                            style: TextStyle(fontWeight: FontWeight.w500),
+                            style: const TextStyle(fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -107,7 +107,7 @@ class WeatherScreen extends HookWidget {
                                   children: [
                                     Text(
                                       provider.date,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: AppColor.whiteColor,
                                           fontSize: 15,
                                           fontWeight: FontWeight.w500),
@@ -152,7 +152,7 @@ class WeatherScreen extends HookWidget {
                                   children: [
                                     Text(
                                       "Last update ${provider.time}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: AppColor.whiteColor, fontWeight: FontWeight.w400),
                                     ),
                                     const SizedBox(
@@ -177,16 +177,17 @@ class WeatherScreen extends HookWidget {
                       onTap: () => showDeleteFieldDialog(context, agplusViewModel),
                       child: Container(
                         margin: const EdgeInsets.only(top: 25, bottom: 25),
-                        height: dimension['height']! * 0.11,
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                         width: dimension['width']!,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: AppColor.hyperlinkColor,
+                          color: Colors.yellow[400],
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            const Icon(Icons.delete, size: 34),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,9 +196,12 @@ class WeatherScreen extends HookWidget {
                                   AppLocalizations.of(context)!.deleteFieldhi,
                                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                 ),
-                                Text(
-                                  AppLocalizations.of(context)!.deleteFieldMessagehi,
-                                  style: const TextStyle(fontSize: 14),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.deleteFieldMessagehi,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
                                 ),
                               ],
                             ),
@@ -218,9 +222,10 @@ void showDeleteFieldDialog(BuildContext context, AGPlusViewModel useViewModel) {
     context: context,
     builder: (BuildContext dialogContext) {
       return AlertDialog(
-        title: BaseText(title: AppLocalizations.of(context)!.deleteFieldhi, style: TextStyle()),
-        content:
-            BaseText(title: AppLocalizations.of(context)!.confirmDeleteFieldhi, style: TextStyle()),
+        title:
+            BaseText(title: AppLocalizations.of(context)!.deleteFieldhi, style: const TextStyle()),
+        content: BaseText(
+            title: AppLocalizations.of(context)!.confirmDeleteFieldhi, style: const TextStyle()),
         actions: <Widget>[
           TextButton(
             child: BaseText(

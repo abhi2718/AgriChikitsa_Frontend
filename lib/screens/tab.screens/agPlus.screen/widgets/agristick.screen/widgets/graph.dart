@@ -10,7 +10,7 @@ import '../../../../../../utils/utils.dart';
 class SoilHealthChart extends HookWidget {
   SoilHealthChart({super.key, required this.useViewModel, required this.selectedField});
   final useViewModel;
-  List<Color> gradientColors = [
+  List<Color> gradientColors = const [
     Color(0xff12c2e9),
     Color(0xffc471ed),
     Color(0xfff64f59),
@@ -144,11 +144,11 @@ class SoilHealthChart extends HookWidget {
                 if (index >= 0 && index < dayNames.length) {
                   return Text(
                     dayNames[index],
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   );
                 }
               }
-              return Text("");
+              return const Text("");
             },
           ),
         ),
@@ -241,11 +241,11 @@ class SoilHealthChart extends HookWidget {
                 if (index >= 0 && index < dayNames.length) {
                   return Text(
                     dayNames[index],
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   );
                 }
               }
-              return Text("");
+              return const Text("");
             },
           ),
         ),

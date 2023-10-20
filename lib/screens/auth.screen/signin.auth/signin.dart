@@ -14,8 +14,7 @@ class SignInScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel =
-        useMemoized(() => Provider.of<SignInViewModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<SignInViewModel>(context, listen: false));
     return (SizedBox(
       height: dimension['height']! - 150,
       child: Padding(
@@ -28,23 +27,20 @@ class SignInScreen extends HookWidget {
             ),
             SizedBox(
               width: double.infinity,
-              child: ParagraphText(AppLocalizations.of(context)!
-                  .enterYourPhoneNumberToProceedhi),
+              child: ParagraphText(AppLocalizations.of(context)!.enterYourPhoneNumberToProceedhi),
             ),
             const SizedBox(
               height: 26,
             ),
             Consumer<SignInViewModel>(builder: (context, provider, child) {
               return TextField(
-                autofillHints: [AutofillHints.telephoneNumber],
+                autofillHints: const [AutofillHints.telephoneNumber],
                 controller: useViewModel.phoneNumberController,
                 keyboardType: TextInputType.number,
                 autofocus: true,
                 maxLength: 10,
-                onChanged: (value) =>
-                    useViewModel.onPhoneNumberChanged(context, value),
-                onSubmitted: (value) =>
-                    useViewModel.verifyUserPhoneNumber(context),
+                onChanged: (value) => useViewModel.onPhoneNumberChanged(context, value),
+                onSubmitted: (value) => useViewModel.verifyUserPhoneNumber(context),
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.digitmobilenumberhi,
                   errorText: useViewModel.errorMessage,

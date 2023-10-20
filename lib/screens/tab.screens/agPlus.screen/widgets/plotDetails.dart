@@ -24,7 +24,7 @@ class PlotDetails extends HookWidget {
         return false;
       }
       Navigator.pop(context);
-      Utils.model(context, CropSelection());
+      Utils.model(context, const CropSelection());
       return true;
     }
 
@@ -42,61 +42,48 @@ class PlotDetails extends HookWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
                             child: BaseText(
-                                title: AppLocalizations.of(context)!
-                                    .fieldDetailshi,
-                                style: TextStyle(
-                                    fontSize: 22, color: Colors.black87)),
+                                title: AppLocalizations.of(context)!.fieldDetailshi,
+                                style: const TextStyle(fontSize: 22, color: Colors.black87)),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             child: TextField(
                               controller: useViewModel.fieldNamecontroller,
                               cursorColor: AppColor.darkBlackColor,
                               textInputAction: TextInputAction.next,
-                              style: const TextStyle(
-                                  color: AppColor.darkBlackColor),
+                              style: const TextStyle(color: AppColor.darkBlackColor),
                               decoration: InputDecoration(
-                                hintText:
-                                    AppLocalizations.of(context)!.fieldNamehi,
+                                hintText: AppLocalizations.of(context)!.fieldNamehi,
                                 filled: true,
                                 fillColor: AppColor.whiteColor,
                                 border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius: BorderRadius.circular(10)),
                               ),
-                              onEditingComplete: () =>
-                                  useViewModel.setFieldName(),
-                              onSubmitted: (_) =>
-                                  useViewModel.validateFieldName(context),
+                              onEditingComplete: () => useViewModel.setFieldName(),
+                              onSubmitted: (_) => useViewModel.validateFieldName(context),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             child: TextField(
                               focusNode: useViewModel.plotSizeFocusNode,
                               controller: useViewModel.fieldSizecontroller,
                               cursorColor: AppColor.darkBlackColor,
-                              style: const TextStyle(
-                                  color: AppColor.darkBlackColor),
+                              style: const TextStyle(color: AppColor.darkBlackColor),
                               decoration: InputDecoration(
-                                hintText:
-                                    AppLocalizations.of(context)!.fieldSizehi,
+                                hintText: AppLocalizations.of(context)!.fieldSizehi,
                                 filled: true,
                                 fillColor: AppColor.whiteColor,
                                 border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius: BorderRadius.circular(10)),
                               ),
-                              onTapOutside: (_) =>
-                                  FocusScope.of(context).unfocus(),
-                              onEditingComplete: () =>
-                                  useViewModel.setFieldSize(),
-                              onSubmitted: (_) =>
-                                  useViewModel.validateFieldSize(context),
+                              onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                              onEditingComplete: () => useViewModel.setFieldSize(),
+                              onSubmitted: (_) => useViewModel.validateFieldSize(context),
                             ),
                           ),
                           InkWell(
@@ -112,10 +99,8 @@ class PlotDetails extends HookWidget {
                                   borderRadius: BorderRadius.circular(12)),
                               child: Center(
                                   child: BaseText(
-                                title: AppLocalizations.of(context)!
-                                    .continueTexthi,
-                                style: TextStyle(
-                                    color: AppColor.whiteColor, fontSize: 18),
+                                title: AppLocalizations.of(context)!.continueTexthi,
+                                style: const TextStyle(color: AppColor.whiteColor, fontSize: 18),
                               )),
                             ),
                           )
@@ -128,8 +113,7 @@ class PlotDetails extends HookWidget {
                   Container(
                     color: Colors.black.withOpacity(0.5),
                     child: const Center(
-                      child:
-                          CircularProgressIndicator(color: AppColor.whiteColor),
+                      child: CircularProgressIndicator(color: AppColor.whiteColor),
                     ),
                   ),
               ],

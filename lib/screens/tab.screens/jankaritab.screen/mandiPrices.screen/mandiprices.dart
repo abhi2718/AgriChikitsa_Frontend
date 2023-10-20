@@ -13,8 +13,7 @@ class MandiPricesScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel = useMemoized(
-        () => Provider.of<MandiPricesModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<MandiPricesModel>(context, listen: false));
     useEffect(() {
       useViewModel.reinitalize();
       useViewModel.fetchStates(context);
@@ -26,15 +25,12 @@ class MandiPricesScreen extends HookWidget {
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
         centerTitle: true,
-        leading: InkWell(
-            onTap: () => useViewModel.goBack(context),
-            child: const Icon(Icons.arrow_back)),
+        leading:
+            InkWell(onTap: () => useViewModel.goBack(context), child: const Icon(Icons.arrow_back)),
         title: BaseText(
           title: AppLocalizations.of(context)!.checkPriceshi,
           style: const TextStyle(
-              color: AppColor.darkBlackColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w500),
+              color: AppColor.darkBlackColor, fontSize: 20, fontWeight: FontWeight.w500),
         ),
         elevation: 0.0,
       ),
@@ -49,26 +45,21 @@ class MandiPricesScreen extends HookWidget {
                     Positioned.fill(
                       child: SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               BaseText(
-                                  title: AppLocalizations.of(context)!
-                                      .enterDetailshi,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500)),
+                                  title: AppLocalizations.of(context)!.enterDetailshi,
+                                  style:
+                                      const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                               const SizedBox(
                                 height: 20,
                               ),
-                              Consumer<MandiPricesModel>(
-                                  builder: (context, provider, child) {
+                              Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return useViewModel.stateList.isEmpty
                                     ? Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
                                         decoration: BoxDecoration(
                                             boxShadow: [
@@ -79,26 +70,21 @@ class MandiPricesScreen extends HookWidget {
                                                   offset: const Offset(0, 3))
                                             ],
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
+                                            borderRadius: BorderRadius.circular(20)),
                                         child: DropdownButton(
                                             hint: BaseText(
-                                              title:
-                                                  AppLocalizations.of(context)!
-                                                      .selectState,
+                                              title: AppLocalizations.of(context)!.selectState,
                                               style: const TextStyle(),
                                             ),
                                             value: null,
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
+                                            alignment: AlignmentDirectional.centerStart,
                                             isExpanded: true,
                                             underline: Container(),
-                                            items: [],
+                                            items: const [],
                                             onChanged: (value) {}),
                                       )
                                     : Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
                                         decoration: BoxDecoration(
                                             boxShadow: [
@@ -109,64 +95,51 @@ class MandiPricesScreen extends HookWidget {
                                                   offset: const Offset(0, 3))
                                             ],
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
+                                            borderRadius: BorderRadius.circular(20)),
                                         child: DropdownButton(
                                             underline: Container(),
                                             isExpanded: true,
                                             hint: BaseText(
-                                              title:
-                                                  AppLocalizations.of(context)!
-                                                      .selectState,
+                                              title: AppLocalizations.of(context)!.selectState,
                                               style: const TextStyle(),
                                             ),
-                                            value: provider
-                                                    .selectedState.isEmpty
+                                            value: provider.selectedState.isEmpty
                                                 ? null
                                                 : useViewModel.selectedState,
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
+                                            alignment: AlignmentDirectional.centerStart,
                                             items: provider.stateList
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
+                                                .map<DropdownMenuItem<String>>((String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value,
                                                 child: BaseText(
                                                   title: value,
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
+                                                  style: const TextStyle(fontSize: 14),
                                                 ),
                                                 onTap: () {
-                                                  provider
-                                                      .setSelectedState(value);
-                                                  provider
-                                                      .fetchDistrict(context);
+                                                  provider.setSelectedState(value);
+                                                  provider.fetchDistrict(context);
                                                 },
                                               );
                                             }).toList(),
                                             onChanged: (value) {
                                               provider.setSelectedState(value!);
-                                              useViewModel
-                                                  .fetchDistrict(context);
+                                              useViewModel.fetchDistrict(context);
                                             }),
                                       );
                               }),
                               const SizedBox(
                                 height: 20,
                               ),
-                              Consumer<MandiPricesModel>(
-                                  builder: (context, provider, child) {
+                              Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return useViewModel.districtList.isEmpty
                                     ? InkWell(
                                         onTap: () {
                                           Utils.snackbar(
-                                              AppLocalizations.of(context)!
-                                                  .warningSelectState,
+                                              AppLocalizations.of(context)!.warningSelectState,
                                               context);
                                         },
                                         child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
+                                          padding: const EdgeInsets.symmetric(horizontal: 20),
                                           width: dimension['width']! * 0.90,
                                           decoration: BoxDecoration(
                                               boxShadow: [
@@ -177,27 +150,22 @@ class MandiPricesScreen extends HookWidget {
                                                     offset: const Offset(0, 3))
                                               ],
                                               color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
+                                              borderRadius: BorderRadius.circular(20)),
                                           child: DropdownButton(
                                               hint: BaseText(
-                                                title: AppLocalizations.of(
-                                                        context)!
-                                                    .selectDistrict,
+                                                title: AppLocalizations.of(context)!.selectDistrict,
                                                 style: const TextStyle(),
                                               ),
                                               value: null,
-                                              alignment: AlignmentDirectional
-                                                  .centerStart,
+                                              alignment: AlignmentDirectional.centerStart,
                                               isExpanded: true,
                                               underline: Container(),
-                                              items: [],
+                                              items: const [],
                                               onChanged: (value) {}),
                                         ),
                                       )
                                     : Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
                                         decoration: BoxDecoration(
                                             boxShadow: [
@@ -208,43 +176,34 @@ class MandiPricesScreen extends HookWidget {
                                                   offset: const Offset(0, 3))
                                             ],
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
+                                            borderRadius: BorderRadius.circular(20)),
                                         child: DropdownButton(
                                             hint: BaseText(
-                                              title:
-                                                  AppLocalizations.of(context)!
-                                                      .selectDistrict,
+                                              title: AppLocalizations.of(context)!.selectDistrict,
                                               style: const TextStyle(),
                                             ),
-                                            value: provider
-                                                    .selectedDistrict.isEmpty
+                                            value: provider.selectedDistrict.isEmpty
                                                 ? null
                                                 : useViewModel.selectedDistrict,
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
+                                            alignment: AlignmentDirectional.centerStart,
                                             isExpanded: true,
                                             underline: Container(),
                                             items: provider.districtList
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
+                                                .map<DropdownMenuItem<String>>((String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value,
                                                 child: BaseText(
                                                   title: value,
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
+                                                  style: const TextStyle(fontSize: 14),
                                                 ),
                                                 onTap: () {
-                                                  provider.setSelectedDistrict(
-                                                      value);
+                                                  provider.setSelectedDistrict(value);
                                                   provider.fetchMarket(context);
                                                 },
                                               );
                                             }).toList(),
                                             onChanged: (value) {
-                                              provider
-                                                  .setSelectedDistrict(value!);
+                                              provider.setSelectedDistrict(value!);
                                               provider.fetchMarket(context);
                                             }),
                                       );
@@ -252,17 +211,14 @@ class MandiPricesScreen extends HookWidget {
                               const SizedBox(
                                 height: 20,
                               ),
-                              Consumer<MandiPricesModel>(
-                                  builder: (context, provider, child) {
+                              Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return provider.marketList.isEmpty
                                     ? InkWell(
                                         onTap: () => Utils.snackbar(
-                                            AppLocalizations.of(context)!
-                                                .warningSelectDistrict,
+                                            AppLocalizations.of(context)!.warningSelectDistrict,
                                             context),
                                         child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
+                                          padding: const EdgeInsets.symmetric(horizontal: 20),
                                           width: dimension['width']! * 0.90,
                                           decoration: BoxDecoration(
                                               boxShadow: [
@@ -273,27 +229,22 @@ class MandiPricesScreen extends HookWidget {
                                                     offset: const Offset(0, 3))
                                               ],
                                               color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
+                                              borderRadius: BorderRadius.circular(20)),
                                           child: DropdownButton(
                                               hint: BaseText(
-                                                title: AppLocalizations.of(
-                                                        context)!
-                                                    .selectMandihi,
+                                                title: AppLocalizations.of(context)!.selectMandihi,
                                                 style: const TextStyle(),
                                               ),
                                               value: null,
-                                              alignment: AlignmentDirectional
-                                                  .centerStart,
+                                              alignment: AlignmentDirectional.centerStart,
                                               isExpanded: true,
                                               underline: Container(),
-                                              items: [],
+                                              items: const [],
                                               onChanged: (value) {}),
                                         ),
                                       )
                                     : Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
                                         decoration: BoxDecoration(
                                             boxShadow: [
@@ -304,57 +255,44 @@ class MandiPricesScreen extends HookWidget {
                                                   offset: const Offset(0, 3))
                                             ],
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
+                                            borderRadius: BorderRadius.circular(20)),
                                         child: DropdownButton(
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
+                                            alignment: AlignmentDirectional.centerStart,
                                             isExpanded: true,
                                             underline: Container(),
                                             hint: BaseText(
-                                              title:
-                                                  AppLocalizations.of(context)!
-                                                      .selectMandihi,
+                                              title: AppLocalizations.of(context)!.selectMandihi,
                                               style: const TextStyle(),
                                             ),
-                                            value: provider
-                                                    .selectedMarket.isEmpty
+                                            value: provider.selectedMarket.isEmpty
                                                 ? null
                                                 : useViewModel.selectedMarket,
                                             items: provider.marketList
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
+                                                .map<DropdownMenuItem<String>>((String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value,
                                                 child: BaseText(
                                                   title: value,
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
+                                                  style: const TextStyle(fontSize: 14),
                                                 ),
                                               );
                                             }).toList(),
                                             onChanged: (value) {
-                                              provider
-                                                  .setSelectedMarket(value!);
-                                              provider
-                                                  .fetchCommodities(context);
+                                              provider.setSelectedMarket(value!);
+                                              provider.fetchCommodities(context);
                                             }),
                                       );
                               }),
                               const SizedBox(
                                 height: 20,
                               ),
-                              Consumer<MandiPricesModel>(
-                                  builder: (context, provider, child) {
+                              Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return provider.cropList.isEmpty
                                     ? InkWell(
                                         onTap: () => Utils.snackbar(
-                                            AppLocalizations.of(context)!
-                                                .fillMandihi,
-                                            context),
+                                            AppLocalizations.of(context)!.fillMandihi, context),
                                         child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
+                                          padding: const EdgeInsets.symmetric(horizontal: 20),
                                           width: dimension['width']! * 0.90,
                                           decoration: BoxDecoration(
                                               boxShadow: [
@@ -365,27 +303,22 @@ class MandiPricesScreen extends HookWidget {
                                                     offset: const Offset(0, 3))
                                               ],
                                               color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
+                                              borderRadius: BorderRadius.circular(20)),
                                           child: DropdownButton(
                                               hint: BaseText(
-                                                title: AppLocalizations.of(
-                                                        context)!
-                                                    .selectCrophi,
+                                                title: AppLocalizations.of(context)!.selectCrophi,
                                                 style: const TextStyle(),
                                               ),
                                               value: null,
-                                              alignment: AlignmentDirectional
-                                                  .centerStart,
+                                              alignment: AlignmentDirectional.centerStart,
                                               isExpanded: true,
                                               underline: Container(),
-                                              items: [],
+                                              items: const [],
                                               onChanged: (value) {}),
                                         ),
                                       )
                                     : Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
                                         decoration: BoxDecoration(
                                             boxShadow: [
@@ -396,43 +329,33 @@ class MandiPricesScreen extends HookWidget {
                                                   offset: const Offset(0, 3))
                                             ],
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
+                                            borderRadius: BorderRadius.circular(20)),
                                         child: DropdownButton(
                                             hint: BaseText(
-                                              title:
-                                                  AppLocalizations.of(context)!
-                                                      .selectCrophi,
+                                              title: AppLocalizations.of(context)!.selectCrophi,
                                               style: const TextStyle(),
                                             ),
-                                            value: provider
-                                                    .selectedCommodity.isEmpty
+                                            value: provider.selectedCommodity.isEmpty
                                                 ? null
-                                                : useViewModel
-                                                    .selectedCommodity,
-                                            alignment: AlignmentDirectional
-                                                .centerStart,
+                                                : useViewModel.selectedCommodity,
+                                            alignment: AlignmentDirectional.centerStart,
                                             underline: Container(),
                                             isExpanded: true,
                                             items: provider.cropList
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
+                                                .map<DropdownMenuItem<String>>((String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value,
                                                 child: BaseText(
                                                   title: value,
-                                                  style: const TextStyle(
-                                                      fontSize: 14),
+                                                  style: const TextStyle(fontSize: 14),
                                                 ),
                                                 onTap: () {
-                                                  provider.setSelectedCommodity(
-                                                      value);
+                                                  provider.setSelectedCommodity(value);
                                                 },
                                               );
                                             }).toList(),
                                             onChanged: (value) {
-                                              provider
-                                                  .setSelectedCommodity(value!);
+                                              provider.setSelectedCommodity(value!);
                                             }),
                                       );
                               }),
@@ -445,28 +368,18 @@ class MandiPricesScreen extends HookWidget {
                                   height: dimension['height']! * 0.07,
                                   child: ElevatedButton(
                                       onPressed: () {
-                                        if (useViewModel
-                                                .selectedState.isNotEmpty &&
-                                            useViewModel
-                                                .selectedDistrict.isNotEmpty &&
-                                            useViewModel
-                                                .selectedMarket.isNotEmpty &&
-                                            useViewModel
-                                                .selectedCommodity.isNotEmpty) {
-                                          useViewModel
-                                              .fetchPrices(context)
-                                              .then((value) {
+                                        if (useViewModel.selectedState.isNotEmpty &&
+                                            useViewModel.selectedDistrict.isNotEmpty &&
+                                            useViewModel.selectedMarket.isNotEmpty &&
+                                            useViewModel.selectedCommodity.isNotEmpty) {
+                                          useViewModel.fetchPrices(context).then((value) {
                                             Utils.model(
-                                                context,
-                                                PricesScreen(
-                                                    pricesData: value['data']));
+                                                context, PricesScreen(pricesData: value['data']));
                                           });
                                         } else {
                                           Utils.flushBarErrorMessage(
-                                              AppLocalizations.of(context)!
-                                                  .alerthi,
-                                              AppLocalizations.of(context)!
-                                                  .fillAllDetailshi,
+                                              AppLocalizations.of(context)!.alerthi,
+                                              AppLocalizations.of(context)!.fillAllDetailshi,
                                               context);
                                         }
                                       },
@@ -475,11 +388,8 @@ class MandiPricesScreen extends HookWidget {
                                               color: AppColor.whiteColor,
                                             )
                                           : BaseText(
-                                              title:
-                                                  AppLocalizations.of(context)!
-                                                      .knowPricehi,
-                                              style: const TextStyle(
-                                                  fontSize: 16))),
+                                              title: AppLocalizations.of(context)!.knowPricehi,
+                                              style: const TextStyle(fontSize: 16))),
                                 ),
                               )
                             ],
@@ -492,8 +402,7 @@ class MandiPricesScreen extends HookWidget {
                       Container(
                         color: Colors.black.withOpacity(0.5),
                         child: const Center(
-                          child: CircularProgressIndicator(
-                              color: AppColor.whiteColor),
+                          child: CircularProgressIndicator(color: AppColor.whiteColor),
                         ),
                       ),
                   ],

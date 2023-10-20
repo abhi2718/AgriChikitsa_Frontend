@@ -30,8 +30,8 @@ class WeatherScreenDeatils extends StatelessWidget {
               ),
               height: dimension["height"]! * 0.37,
               width: dimension["width"],
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [Color(0xff201C1C), Color(0xff31671E)])),
@@ -53,7 +53,7 @@ class WeatherScreenDeatils extends StatelessWidget {
                         ),
                         Text(
                           '${useViewModel.latestWeatherData.region}, ${useViewModel.latestWeatherData.countryName}',
-                          style: TextStyle(color: AppColor.whiteColor),
+                          style: const TextStyle(color: AppColor.whiteColor),
                         ),
                         const Icon(
                           Icons.more_horiz,
@@ -64,9 +64,7 @@ class WeatherScreenDeatils extends StatelessWidget {
                   ),
                   Text(
                     useViewModel.date,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color: AppColor.whiteColor),
+                    style: const TextStyle(fontWeight: FontWeight.w400, color: AppColor.whiteColor),
                   ),
                   SvgPicture.asset(
                     'assets/svg/rainy.svg',
@@ -74,22 +72,18 @@ class WeatherScreenDeatils extends StatelessWidget {
                   ),
                   Text(
                     '${useViewModel.latestWeatherData.temp_c.toString()}º C',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color: AppColor.whiteColor,
-                        fontSize: 18),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400, color: AppColor.whiteColor, fontSize: 18),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   Text(
                     useViewModel.latestWeatherData.condition,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: AppColor.whiteColor,
-                        fontSize: 18),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, color: AppColor.whiteColor, fontSize: 18),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   Row(
@@ -97,15 +91,13 @@ class WeatherScreenDeatils extends StatelessWidget {
                     children: [
                       Text(
                         "Last update ${useViewModel.time}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColor.whiteColor,
-                            fontSize: 15),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w400, color: AppColor.whiteColor, fontSize: 15),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
-                      Icon(
+                      const Icon(
                         Icons.refresh,
                         color: AppColor.whiteColor,
                       ),
@@ -123,14 +115,13 @@ class WeatherScreenDeatils extends StatelessWidget {
                     height: dimension['height']! * 0.12,
                     width: dimension['width']! * 0.40,
                     decoration: BoxDecoration(
-                        color: AppColor.whiteColor,
-                        borderRadius: BorderRadius.circular(12)),
+                        color: AppColor.whiteColor, borderRadius: BorderRadius.circular(12)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Transform.rotate(
                           angle: pi / 2,
-                          child: Icon(
+                          child: const Icon(
                             Remix.blaze_line,
                             size: 34,
                             color: Color(0xff3C6EEF),
@@ -143,15 +134,12 @@ class WeatherScreenDeatils extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                useViewModel.latestWeatherData.vis_km
-                                    .toString(),
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w700),
+                                useViewModel.latestWeatherData.vis_km.toString(),
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                               ),
-                              Text(
+                              const Text(
                                 "Visibility",
-                                style: TextStyle(
-                                    fontSize: 17, color: Color(0xff494343)),
+                                style: TextStyle(fontSize: 17, color: Color(0xff494343)),
                               ),
                             ],
                           ),
@@ -159,10 +147,7 @@ class WeatherScreenDeatils extends StatelessWidget {
                       ],
                     ),
                   ),
-                  WeatherCard(
-                      title: "Pressure",
-                      value: "940 hpa",
-                      imagePath: Remix.haze_2_line)
+                  WeatherCard(title: "Pressure", value: "940 hpa", imagePath: Remix.haze_2_line)
                 ],
               ),
             ),
@@ -177,32 +162,11 @@ class WeatherScreenDeatils extends StatelessWidget {
                       imagePath: Remix.windy_line),
                   WeatherCard(
                       title: "Humidity",
-                      value:
-                          "${useViewModel.latestWeatherData.humidity.toString()}%",
+                      value: "${useViewModel.latestWeatherData.humidity.toString()}%",
                       imagePath: Remix.mist_line)
                 ],
               ),
             ),
-            // Container(
-            //   margin: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-            //   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            //   height: dimension['height']! * 0.15,
-            //   width: dimension['width']!,
-            //   decoration: BoxDecoration(
-            //       color: AppColor.whiteColor,
-            //       borderRadius: BorderRadius.circular(12)),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Text(
-            //         "AQI Index",
-            //         style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-            //       ),
-            //       Text(
-            //           "Kualitas udara di daerahmu untuk saat ini sangat baik. Tidak ada pencemaran udarayang menyebabkan berbagai penyakit."),
-            //     ],
-            //   ),
-            // )
           ],
         ),
       )),

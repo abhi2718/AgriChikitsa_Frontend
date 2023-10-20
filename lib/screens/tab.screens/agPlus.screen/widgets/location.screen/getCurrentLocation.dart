@@ -25,7 +25,7 @@ class GetCurrentLocation extends HookWidget {
         return false;
       }
       Navigator.pop(context);
-      Utils.model(context, GetLocation());
+      Utils.model(context, const GetLocation());
       return true;
     }
 
@@ -85,8 +85,7 @@ class GetCurrentLocation extends HookWidget {
                   Container(
                     color: Colors.black.withOpacity(0.5),
                     child: const Center(
-                      child:
-                          CircularProgressIndicator(color: AppColor.whiteColor),
+                      child: CircularProgressIndicator(color: AppColor.whiteColor),
                     ),
                   ),
               ],
@@ -96,9 +95,7 @@ class GetCurrentLocation extends HookWidget {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
           onPressed: () {
-            useViewModel.getCropListLoader
-                ? null
-                : useViewModel.getCropList(context);
+            useViewModel.getCropListLoader ? null : useViewModel.getCropList(context);
           },
           child: const Icon(
             Icons.arrow_forward_ios,

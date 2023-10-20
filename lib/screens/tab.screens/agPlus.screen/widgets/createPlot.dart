@@ -47,12 +47,10 @@ class CreatePlot extends HookWidget {
                           width: dimension['width']! * 0.50,
                         ),
                         Padding(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: BaseText(
-                            title: AppLocalizations.of(context)!
-                                .uploadFieldImagehi,
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.black54),
+                            title: AppLocalizations.of(context)!.uploadFieldImagehi,
+                            style: const TextStyle(fontSize: 18, color: Colors.black54),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -66,8 +64,7 @@ class CreatePlot extends HookWidget {
                     Container(
                       color: Colors.black.withOpacity(0.5),
                       child: const Center(
-                        child: CircularProgressIndicator(
-                            color: AppColor.whiteColor),
+                        child: CircularProgressIndicator(color: AppColor.whiteColor),
                       ),
                     ),
                 ],

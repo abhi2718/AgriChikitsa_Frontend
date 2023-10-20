@@ -1,6 +1,4 @@
-import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprofile_feed.dart';
@@ -26,12 +24,9 @@ class MyProfileScreen extends HookWidget {
     double appBarHeight = AppBar().preferredSize.height;
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
-    double availableHeight =
-        screenHeight - (2 * appBarHeight + statusBarHeight);
-    final useViewModel = useMemoized(
-        () => Provider.of<MyProfileViewModel>(context, listen: true));
-    final createPostModel =
-        useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
+    double availableHeight = screenHeight - (2 * appBarHeight + statusBarHeight);
+    final useViewModel = useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: true));
+    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
 
     useEffect(() {
       if (useViewModel.feedList.isEmpty) {
@@ -61,8 +56,7 @@ class MyProfileScreen extends HookWidget {
           appBar: AppBar(
             automaticallyImplyLeading: true,
             elevation: 0.0,
-            systemOverlayStyle:
-                const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+            systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
             backgroundColor: AppColor.notificationBgColor,
             foregroundColor: AppColor.darkBlackColor,
           ),
@@ -85,8 +79,7 @@ class MyProfileScreen extends HookWidget {
               Expanded(
                 child: TabBarView(
                   children: [
-                    Consumer<MyProfileViewModel>(
-                        builder: (context, provider, child) {
+                    Consumer<MyProfileViewModel>(builder: (context, provider, child) {
                       return provider.loading
                           ? const PreLoader()
                           : provider.feedList.isEmpty
@@ -95,30 +88,26 @@ class MyProfileScreen extends HookWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     BaseText(
-                                      title: AppLocalizations.of(context)!
-                                          .nopostYethi,
+                                      title: AppLocalizations.of(context)!.nopostYethi,
                                       style: const TextStyle(),
                                     ),
                                     const SizedBox(
                                       height: 10,
                                     ),
                                     InkWell(
-                                      onTap: () => Navigator.pushNamed(
-                                          context, RouteName.createPostRoute),
+                                      onTap: () =>
+                                          Navigator.pushNamed(context, RouteName.createPostRoute),
                                       child: Container(
                                           height: dimension['height']! * 0.07,
                                           width: dimension['width']! * 0.30,
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(8),
                                             color: AppColor.darkColor,
                                           ),
                                           child: Center(
                                               child: BaseText(
-                                            title: AppLocalizations.of(context)!
-                                                .createOnehi,
-                                            style: const TextStyle(
-                                                color: AppColor.whiteColor),
+                                            title: AppLocalizations.of(context)!.createOnehi,
+                                            style: const TextStyle(color: AppColor.whiteColor),
                                           ))),
                                     )
                                   ],
@@ -138,21 +127,16 @@ class MyProfileScreen extends HookWidget {
                                   ),
                                 );
                     }),
-                    Consumer<MyProfileViewModel>(
-                        builder: (context, provider, child) {
+                    Consumer<MyProfileViewModel>(builder: (context, provider, child) {
                       return provider.bookMarkLoader
                           ? const PreLoader()
                           : provider.bookMarkFeedList.isEmpty
-                              ? Center(
-                                  child: Text(AppLocalizations.of(context)!
-                                      .noBookMarkAddhi))
+                              ? Center(child: Text(AppLocalizations.of(context)!.noBookMarkAddhi))
                               : SizedBox(
                                   height: availableHeight,
                                   child: SingleChildScrollView(
                                     child: Column(
-                                      children: provider
-                                          .bookMarkFeedList.reversed
-                                          .map((feed) {
+                                      children: provider.bookMarkFeedList.reversed.map((feed) {
                                         return BookmarkFeed(
                                           key: ObjectKey(feed["_id"]),
                                           feed: feed,

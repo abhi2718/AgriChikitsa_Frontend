@@ -1,5 +1,4 @@
 import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
-import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/chat_history.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,21 +36,18 @@ class NotificationViewModel with ChangeNotifier {
     }
   }
 
-  void toggleNotifications(
-      BuildContext context, String id, bool readStatus) async {
+  void toggleNotifications(BuildContext context, String id, bool readStatus) async {
     try {
       if (!readStatus) {
         await _notificationTabRepository.toggleNotifications(id, {});
         notificationCount--;
-        final index =
-            notificationsList.indexWhere((element) => element['_id'] == id);
+        final index = notificationsList.indexWhere((element) => element['_id'] == id);
         final oldItem = notificationsList[index];
         dynamic updatedNotificationItem = {
           ...oldItem,
           "read": true,
         };
-        notificationsList
-            .replaceRange(index, index + 1, [updatedNotificationItem]);
+        notificationsList.replaceRange(index, index + 1, [updatedNotificationItem]);
       }
       notifyListeners();
     } catch (error) {

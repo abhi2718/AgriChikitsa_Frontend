@@ -17,10 +17,9 @@ class AgriStickStatusScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel =
-        Provider.of<AgristickViewModel>(context, listen: false);
+    final useViewModel = Provider.of<AgristickViewModel>(context, listen: false);
     useEffect(() {
-      Timer(Duration(milliseconds: 2500), () {
+      Timer(const Duration(milliseconds: 2500), () {
         Navigator.popUntil(context, (route) => route.isFirst);
       });
     }, []);
@@ -44,8 +43,7 @@ class AgriStickStatusScreen extends HookWidget {
                 ),
                 BaseText(
                   title: useViewModel.agristickStatus
-                      ? AppLocalizations.of(context)!
-                          .successAgristickMessagehihi
+                      ? AppLocalizations.of(context)!.successAgristickMessagehihi
                       : AppLocalizations.of(context)!.errorMessagehi,
                   style: const TextStyle(fontSize: 18, color: Colors.black54),
                   textAlign: TextAlign.center,

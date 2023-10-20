@@ -98,7 +98,7 @@ class AGPlusViewModel with ChangeNotifier {
   void resetLocation() {
     getCropListLoader = false;
     intialCameraPosition =
-        CameraPosition(target: LatLng(28.45038087587045, 77.28519398730188), zoom: 15);
+        const CameraPosition(target: LatLng(28.45038087587045, 77.28519398730188), zoom: 15);
     mapLocation = {"latitude": "28.45038087587045", "longitude": "77.28519398730188"};
     location = "जगह का नाम:";
   }

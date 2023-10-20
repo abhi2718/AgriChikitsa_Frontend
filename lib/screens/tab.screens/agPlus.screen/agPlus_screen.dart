@@ -37,9 +37,9 @@ class AGPlus extends HookWidget {
             : provider.userPlotList.isEmpty
                 ? InkWell(
                     onTap: () {
-                      Utils.model(context, CreatePlot());
+                      Utils.model(context, const CreatePlot());
                     },
-                    child: NoPlotScreen(),
+                    child: const NoPlotScreen(),
                   )
                 : SizedBox(
                     child: Column(
@@ -54,7 +54,7 @@ class AGPlus extends HookWidget {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    Utils.model(context, CreatePlot());
+                                    Utils.model(context, const CreatePlot());
                                   },
                                   child: Container(
                                       margin:
@@ -132,6 +132,7 @@ class AGPlus extends HookWidget {
                                               ? Positioned.fill(
                                                   child: Container(
                                                     decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
                                                       color: Colors.black.withOpacity(0.4),
                                                     ),
                                                   ),

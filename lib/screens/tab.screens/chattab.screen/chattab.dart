@@ -35,8 +35,7 @@ class ChatTabScreen extends HookWidget {
               },
               child: const Icon(Icons.arrow_back)),
           title: BaseText(
-              title: AppLocalizations.of(context)!.chatPanchamhi,
-              style: const TextStyle()),
+              title: AppLocalizations.of(context)!.chatPanchamhi, style: const TextStyle()),
         ),
         body: Column(
           children: [
@@ -47,8 +46,7 @@ class ChatTabScreen extends HookWidget {
             Consumer<ChatTabViewModel>(builder: (context, provider, chlid) {
               return provider.enableKeyBoard || provider.showCameraButton
                   ? Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: SafeArea(
                         child: Row(
@@ -79,8 +77,7 @@ class ChatTabScreen extends HookWidget {
                                   }
                                 },
                                 child: provider.showCameraButton
-                                    ? Image.asset('assets/icons/gallery.png',
-                                        width: 24, height: 24)
+                                    ? Image.asset('assets/icons/gallery.png', width: 24, height: 24)
                                     : const Icon(
                                         Icons.hide_image,
                                         color: AppColor.iconColor,
@@ -93,16 +90,14 @@ class ChatTabScreen extends HookWidget {
                                 controller: useViewModel.textEditingController,
                                 decoration: InputDecoration(
                                   disabledBorder: const OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: AppColor.iconColor),
+                                      borderSide: BorderSide(color: AppColor.iconColor),
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(
                                           8,
                                         ),
                                       )),
                                   enabledBorder: const OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: AppColor.darkColor),
+                                    borderSide: BorderSide(color: AppColor.darkColor),
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(
                                         8,
@@ -110,18 +105,16 @@ class ChatTabScreen extends HookWidget {
                                     ),
                                   ),
                                   focusedBorder: const OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: AppColor.darkColor),
+                                    borderSide: BorderSide(color: AppColor.darkColor),
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(
                                         8,
                                       ),
                                     ),
                                   ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 10),
-                                  hintText:
-                                      AppLocalizations.of(context)!.typeHerehi,
+                                  contentPadding:
+                                      const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                  hintText: AppLocalizations.of(context)!.typeHerehi,
                                   hintStyle: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
