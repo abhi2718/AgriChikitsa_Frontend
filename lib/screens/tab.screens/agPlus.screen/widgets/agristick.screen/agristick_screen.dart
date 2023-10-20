@@ -46,7 +46,7 @@ class AgriStickScreen extends HookWidget {
                         ),
                         Text(
                           provider.barCodeResult,
-                          style: TextStyle(fontSize: 18),
+                          style: const TextStyle(fontSize: 18),
                         ),
                       ],
                     ),
@@ -56,9 +56,9 @@ class AgriStickScreen extends HookWidget {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         width: dimension['width'],
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppColor.notificationBgColor,
                         ),
                         child: SingleChildScrollView(
