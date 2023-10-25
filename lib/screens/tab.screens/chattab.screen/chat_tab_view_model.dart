@@ -113,6 +113,9 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showFirstBubbleLoader = false;
       showSecondBubbleLoader = true;
       notifyListeners();
@@ -133,6 +136,9 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showSecondBubbleLoader = false;
       notifyListeners();
     } catch (error) {
@@ -158,6 +164,9 @@ class ChatTabViewModel with ChangeNotifier {
     });
     selectedAge = age;
     chatMessages = updatedChatMessages.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     notifyListeners();
     loadQuestionFour(context);
   }
@@ -177,6 +186,9 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showThirdLoader = false;
       notifyListeners();
     } catch (error) {
@@ -203,6 +215,9 @@ class ChatTabViewModel with ChangeNotifier {
     selectedCrop = crop;
     questionIndex = 4;
     chatMessages = updatedChatMessages.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     showFourthLoader = true;
     notifyListeners();
     final t5 = Timer(const Duration(seconds: 1), () {
@@ -217,6 +232,9 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showFourthLoader = false;
       notifyListeners();
     } catch (error) {
@@ -244,6 +262,9 @@ class ChatTabViewModel with ChangeNotifier {
     selectedReason = disease;
     questionIndex = 6;
     chatMessages = updatedChatMessages.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     showFifthBubbleLoader = true;
     notifyListeners();
     final t6 = Timer(const Duration(seconds: 1), () {
@@ -256,6 +277,9 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showFifthBubbleLoader = false;
       final question = data["question"];
       final checkList = ['अन्य', 'खरपतवार'];
@@ -285,6 +309,9 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showSixthBubbleLoader = false;
       final question = data["question"];
       final isToShowCameraIcon = question["showCameraIcon"] == null ? false : true;
@@ -334,6 +361,9 @@ class ChatTabViewModel with ChangeNotifier {
           return item;
         });
         chatMessages = updatedChatMessages.toList();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
         selectedDisease = '';
         textEditingController.clear();
         showSixthBubbleLoader = true;
@@ -352,6 +382,9 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          });
           showSixthBubbleLoader = false;
           notifyListeners();
         });
@@ -369,6 +402,9 @@ class ChatTabViewModel with ChangeNotifier {
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
         cropImage = data["imgurl"];
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
         final index = chatMessages.indexWhere((chatMessage) {
           return chatMessage['id'] == cameraQuestionId;
         });
@@ -392,6 +428,9 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          });
           showSeventhBubbleLoader = false;
           showLastMessage = true;
           notifyListeners();
@@ -414,6 +453,9 @@ class ChatTabViewModel with ChangeNotifier {
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
         cropImage = data["imgurl"];
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
         final index = chatMessages.indexWhere((chatMessage) {
           return chatMessage['id'] == cameraQuestionId;
         });
@@ -437,6 +479,9 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          });
           setShowCameraButton(false);
           showSeventhBubbleLoader = false;
           showLastMessage = true;

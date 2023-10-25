@@ -180,21 +180,27 @@ class WeatherScreen extends HookWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                         width: dimension['width']!,
                         decoration: BoxDecoration(
+                          border: Border.all(color: AppColor.darkColor),
                           borderRadius: BorderRadius.circular(16),
-                          color: Colors.yellow[400],
+                          boxShadow: const [BoxShadow(offset: Offset(2, 3), color: Colors.grey)],
+                          color: AppColor.whiteColor,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Icon(Icons.delete, size: 34),
+                            // const Icon(Icons.delete, size: 34),
+                            Image(
+                              image: AssetImage("assets/images/delete.jpg"),
+                              height: dimension['height']! * 0.08,
+                            ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   AppLocalizations.of(context)!.deleteFieldhi,
-                                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                  style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8),

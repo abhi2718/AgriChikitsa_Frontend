@@ -147,7 +147,10 @@ class WeatherScreenDeatils extends StatelessWidget {
                       ],
                     ),
                   ),
-                  WeatherCard(title: "Pressure", value: "940 hpa", imagePath: Remix.haze_2_line)
+                  WeatherCard(
+                      title: "Pressure",
+                      value: "${useViewModel.latestWeatherData.pressure_mb.toString()} mb",
+                      imagePath: Remix.haze_2_line)
                 ],
               ),
             ),

@@ -21,11 +21,10 @@ class WeatherViewModel with ChangeNotifier {
   void getCurrentWeather(BuildContext context, Plots currentField) async {
     setWeatherDataLoader(true);
     try {
-      final data = await _agPlusRepository.getCurrentWeather(
-          currentField.latitude, currentField.longitude);
+      final data =
+          await _agPlusRepository.getCurrentWeather(currentField.latitude, currentField.longitude);
       latestWeatherData = WeatherData.fromJson(data);
-      date =
-          DateFormat('EEEE, d MMMM y - h.mm a', 'en_IN').format(DateTime.now());
+      date = DateFormat('EEEE, d MMMM y - h.mm a', 'en_IN').format(DateTime.now());
       time = DateFormat('hh:mm a', 'en_US')
           .format(DateTime.parse(latestWeatherData.last_updated).toLocal());
       setWeatherDataLoader(false);

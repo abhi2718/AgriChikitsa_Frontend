@@ -34,9 +34,11 @@ class WeatherCard extends StatelessWidget {
                   Text(
                     value,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     title,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 17, color: Color(0xff494343)),
                   ),
                 ],
