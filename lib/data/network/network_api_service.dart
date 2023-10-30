@@ -30,9 +30,7 @@ class NetworkApiService extends BaseApiServices {
   Future<dynamic> getGetApiResponse(String url) async {
     final headers = await getHeaders();
     final response = await retry(
-      () => http
-          .get(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 4)),
+      () => http.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);
@@ -51,8 +49,7 @@ class NetworkApiService extends BaseApiServices {
   @override
   Future getPostApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
-    final response = await http.post(Uri.parse(url),
-        headers: headers, body: jsonEncode(payload));
+    final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(payload));
     _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
@@ -74,9 +71,7 @@ class NetworkApiService extends BaseApiServices {
   Future getPutApiResponse(String url) async {
     final headers = await getHeaders();
     final response = await retry(
-      () => http
-          .put(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 4)),
+      () => http.put(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);
@@ -87,9 +82,7 @@ class NetworkApiService extends BaseApiServices {
   Future getDeleteApiResponse(String url) async {
     final headers = await getHeaders();
     final response = await retry(
-      () => http
-          .delete(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 4)),
+      () => http.delete(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);

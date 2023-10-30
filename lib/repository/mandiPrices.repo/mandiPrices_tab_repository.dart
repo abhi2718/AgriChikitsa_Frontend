@@ -47,8 +47,7 @@ class MandiPricesTabRepository {
   Future<dynamic> fetchPrices(
       String state, String district, String market, String commodity) async {
     try {
-      final url =
-          '${AppUrl.mandiPricesEndPoint}/$state/$district/$market/$commodity';
+      final url = '${AppUrl.mandiPricesEndPoint}/$state/$district/$market/$commodity';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {

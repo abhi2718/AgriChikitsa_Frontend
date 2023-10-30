@@ -122,8 +122,7 @@ class MandiPricesModel with ChangeNotifier {
   void fetchCommodities(BuildContext context) async {
     setLoader(true);
     try {
-      final data =
-          await _mandiPricesRepository.fetchCommodities(selectedMarket);
+      final data = await _mandiPricesRepository.fetchCommodities(selectedMarket);
       cropList = data["comodities"].cast<String>();
       setLoader(false);
     } catch (error) {
