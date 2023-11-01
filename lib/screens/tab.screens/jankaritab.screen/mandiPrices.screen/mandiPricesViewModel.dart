@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../repository/mandiPrices.repo/mandiPrices_tab_repository.dart';
 import '../../../../utils/utils.dart';
 
@@ -70,6 +69,10 @@ class MandiPricesModel with ChangeNotifier {
     setStateLoading(true);
     try {
       final data = await _mandiPricesRepository.fetchStates();
+      // final localStorage = await SharedPreferences.getInstance();
+      // final mapString = localStorage.getString('profile');
+      // final profile = jsonDecode(mapString!);
+      // print(profile);
       stateList = data["states"].cast<String>();
       setStateLoading(false);
       notifyListeners();

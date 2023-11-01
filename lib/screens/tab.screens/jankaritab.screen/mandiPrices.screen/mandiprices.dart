@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandiPricesViewModel.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/widgets/empty_details_list.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/widgets/pricesScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -58,31 +59,9 @@ class MandiPricesScreen extends HookWidget {
                               ),
                               Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return useViewModel.stateList.isEmpty
-                                    ? Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        width: dimension['width']! * 0.90,
-                                        decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey[400]!,
-                                                  blurRadius: 1.0,
-                                                  spreadRadius: 1,
-                                                  offset: const Offset(0, 3))
-                                            ],
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20)),
-                                        child: DropdownButton(
-                                            hint: BaseText(
-                                              title: AppLocalizations.of(context)!.selectState,
-                                              style: const TextStyle(),
-                                            ),
-                                            value: null,
-                                            alignment: AlignmentDirectional.centerStart,
-                                            isExpanded: true,
-                                            underline: Container(),
-                                            items: const [],
-                                            onChanged: (value) {}),
-                                      )
+                                    ? EmptyDetailsList(
+                                        onTap: () {},
+                                        title: AppLocalizations.of(context)!.selectState)
                                     : Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
@@ -132,38 +111,11 @@ class MandiPricesScreen extends HookWidget {
                               ),
                               Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return useViewModel.districtList.isEmpty
-                                    ? InkWell(
-                                        onTap: () {
-                                          Utils.snackbar(
-                                              AppLocalizations.of(context)!.warningSelectState,
-                                              context);
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]!,
-                                                    blurRadius: 1.0,
-                                                    spreadRadius: 1,
-                                                    offset: const Offset(0, 3))
-                                              ],
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: DropdownButton(
-                                              hint: BaseText(
-                                                title: AppLocalizations.of(context)!.selectDistrict,
-                                                style: const TextStyle(),
-                                              ),
-                                              value: null,
-                                              alignment: AlignmentDirectional.centerStart,
-                                              isExpanded: true,
-                                              underline: Container(),
-                                              items: const [],
-                                              onChanged: (value) {}),
-                                        ),
-                                      )
+                                    ? EmptyDetailsList(
+                                        onTap: () => Utils.snackbar(
+                                            AppLocalizations.of(context)!.warningSelectState,
+                                            context),
+                                        title: AppLocalizations.of(context)!.selectDistrict)
                                     : Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
@@ -213,36 +165,11 @@ class MandiPricesScreen extends HookWidget {
                               ),
                               Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return provider.marketList.isEmpty
-                                    ? InkWell(
+                                    ? EmptyDetailsList(
                                         onTap: () => Utils.snackbar(
                                             AppLocalizations.of(context)!.warningSelectDistrict,
                                             context),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]!,
-                                                    blurRadius: 1.0,
-                                                    spreadRadius: 1,
-                                                    offset: const Offset(0, 3))
-                                              ],
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: DropdownButton(
-                                              hint: BaseText(
-                                                title: AppLocalizations.of(context)!.selectMandihi,
-                                                style: const TextStyle(),
-                                              ),
-                                              value: null,
-                                              alignment: AlignmentDirectional.centerStart,
-                                              isExpanded: true,
-                                              underline: Container(),
-                                              items: const [],
-                                              onChanged: (value) {}),
-                                        ),
-                                      )
+                                        title: AppLocalizations.of(context)!.selectMandihi)
                                     : Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,
@@ -288,35 +215,10 @@ class MandiPricesScreen extends HookWidget {
                               ),
                               Consumer<MandiPricesModel>(builder: (context, provider, child) {
                                 return provider.cropList.isEmpty
-                                    ? InkWell(
+                                    ? EmptyDetailsList(
                                         onTap: () => Utils.snackbar(
                                             AppLocalizations.of(context)!.fillMandihi, context),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]!,
-                                                    blurRadius: 1.0,
-                                                    spreadRadius: 1,
-                                                    offset: const Offset(0, 3))
-                                              ],
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: DropdownButton(
-                                              hint: BaseText(
-                                                title: AppLocalizations.of(context)!.selectCrophi,
-                                                style: const TextStyle(),
-                                              ),
-                                              value: null,
-                                              alignment: AlignmentDirectional.centerStart,
-                                              isExpanded: true,
-                                              underline: Container(),
-                                              items: const [],
-                                              onChanged: (value) {}),
-                                        ),
-                                      )
+                                        title: AppLocalizations.of(context)!.selectCrophi)
                                     : Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 20),
                                         width: dimension['width']! * 0.90,

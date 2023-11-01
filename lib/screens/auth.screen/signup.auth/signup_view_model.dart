@@ -86,8 +86,7 @@ class SignUpViewModel with ChangeNotifier {
       stateList = mapStates(data['states']);
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 
@@ -124,9 +123,7 @@ class SignUpViewModel with ChangeNotifier {
     if (!isValid!) {
       return;
     }
-    if (selectedState.isEmpty ||
-        selectedDistrictHi.isEmpty ||
-        village.isEmpty) {
+    if (selectedState.isEmpty || selectedDistrictHi.isEmpty || village.isEmpty) {
       if (selectedState.isEmpty) {
         Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
             AppLocalizations.of(context)!.warningSelectState, context);
@@ -239,8 +236,7 @@ class SignUpViewModel with ChangeNotifier {
         await localStorage.setString("profile", jsonEncode(profile));
         setUserProfile(data);
         setloading(false);
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+        Navigator.of(context).pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         disposeValues();
       } catch (error) {
         Utils.flushBarErrorMessage(

@@ -511,9 +511,6 @@ class ChatScreen extends HookWidget {
                                   ],
                                 )
                               : Container(),
-                          const SizedBox(
-                            height: 16,
-                          ),
                         ],
                       );
                     }
@@ -521,14 +518,16 @@ class ChatScreen extends HookWidget {
                       return Column(
                         children: [
                           provider.showSeventhBubbleLoader ? const ChatLoader() : Container(),
-                          BubbleSpecialThree(
-                            text: message["question_hi"],
-                            color: AppColor.botText,
-                            tail: true,
-                            isSender: message["isMe"],
-                            textStyle:
-                                const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
-                          ),
+                          message["question_hi"].isNotEmpty
+                              ? BubbleSpecialThree(
+                                  text: message["question_hi"],
+                                  color: AppColor.botText,
+                                  tail: true,
+                                  isSender: message["isMe"],
+                                  textStyle:
+                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                )
+                              : Container(),
                           const SizedBox(
                             height: 16,
                           ),
@@ -548,6 +547,15 @@ class ChatScreen extends HookWidget {
                               : Container(),
                           const SizedBox(
                             height: 4,
+                          ),
+                          provider.isChatCompleted ? const Divider() : Container(),
+                          provider.isChatCompleted
+                              ? ElevatedButton(
+                                  onPressed: () => provider.initialTask(context),
+                                  child: const Text("Restart Chat"))
+                              : Container(),
+                          const SizedBox(
+                            height: 8,
                           )
                         ],
                       );

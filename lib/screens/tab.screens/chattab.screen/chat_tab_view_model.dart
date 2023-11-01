@@ -4,12 +4,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
+import '../../../repository/notification.repo/notification_tab_repository.dart';
 
 class ChatTabViewModel with ChangeNotifier {
   final _chatTabRepository = ChatTabRepository();
   final textEditingController = TextEditingController();
   ScrollController scrollController = ScrollController();
   dynamic timmerInstances = [];
+  dynamic chatHistoryList = [];
+  dynamic chatMessagesList = [];
+  bool isChatCompleted = false;
+  bool chatHistoryLoader = false;
+  bool chatLoader = false;
   bool showFirstBubbleLoader = false;
   bool showSecondBubbleLoader = false;
   bool showThirdLoader = false;
@@ -63,6 +69,9 @@ class ChatTabViewModel with ChangeNotifier {
     questionIndex = 0;
     textEditingController.clear();
     timmerInstances.clear();
+    chatHistoryLoader = false;
+    chatLoader = false;
+    isChatCompleted = false;
     showFirstBubbleLoader = false;
     showSecondBubbleLoader = false;
     showThirdLoader = false;
@@ -84,6 +93,48 @@ class ChatTabViewModel with ChangeNotifier {
   void enableKeyboard(bool value) {
     enableKeyBoard = value;
     notifyListeners();
+  }
+
+  setChatHistoryLoader(value) {
+    chatHistoryLoader = value;
+  }
+
+  setChatLoader(value) {
+    chatLoader = value;
+  }
+
+  void getAllChatHistory(BuildContext context) async {
+    setChatLoader(true);
+    try {
+      final data = await _chatTabRepository.getChatHistory();
+      chatHistoryList = data;
+      setChatLoader(false);
+      notifyListeners();
+    } catch (error) {
+      setChatLoader(false);
+      Utils.flushBarErrorMessage("Umm!", "Some Error Occured", context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
+  }
+
+  void fetchChatHistory(BuildContext context, String id) async {
+    setChatHistoryLoader(true);
+    try {
+      chatMessagesList.clear();
+      final data = await NotificationTabRepository().fetchChatScript(id);
+      chatMessagesList = data;
+      setChatHistoryLoader(false);
+      notifyListeners();
+    } catch (error) {
+      setChatHistoryLoader(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
   }
 
   void initialTask(context) {
@@ -367,7 +418,6 @@ class ChatTabViewModel with ChangeNotifier {
         selectedDisease = '';
         textEditingController.clear();
         showSixthBubbleLoader = true;
-        showLastMessage = true;
         notifyListeners();
         final t7 = Timer(const Duration(seconds: 1), () {
           chatMessages.add(
@@ -382,10 +432,16 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          chatMessages.add({
+            "question_hi": "",
+            "isMe": false,
+          });
           WidgetsBinding.instance.addPostFrameCallback((_) {
             scrollController.jumpTo(scrollController.position.maxScrollExtent);
           });
           showSixthBubbleLoader = false;
+          showLastMessage = true;
+          isChatCompleted = true;
           notifyListeners();
         });
         timmerInstances.add(t7);
@@ -433,6 +489,7 @@ class ChatTabViewModel with ChangeNotifier {
           });
           showSeventhBubbleLoader = false;
           showLastMessage = true;
+          isChatCompleted = true;
           notifyListeners();
         });
         timmerInstances.add(t8);
@@ -448,6 +505,7 @@ class ChatTabViewModel with ChangeNotifier {
   void uploadGallery(context) async {
     try {
       final imageFile = await Utils.pickImage();
+      setShowCameraButton(false);
       if (imageFile != null) {
         showCropImageLoader = true;
         notifyListeners();
@@ -485,6 +543,7 @@ class ChatTabViewModel with ChangeNotifier {
           setShowCameraButton(false);
           showSeventhBubbleLoader = false;
           showLastMessage = true;
+          isChatCompleted = true;
           notifyListeners();
         });
         timmerInstances.add(t8);

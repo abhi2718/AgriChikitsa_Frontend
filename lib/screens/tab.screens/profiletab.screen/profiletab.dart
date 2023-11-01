@@ -72,14 +72,12 @@ class ProfileTabScreen extends HookWidget {
                     borderRadius: BorderRadius.circular(60),
                     child: CachedNetworkImage(
                       imageUrl: profileImage,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Skeleton(
+                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                         height: 40,
                         width: 40,
                         radius: 0,
                       ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -120,8 +118,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
-                leftIcon:
-                    SvgPicture.asset('assets/svg/terms-and-conditions.svg'),
+                leftIcon: SvgPicture.asset('assets/svg/terms-and-conditions.svg'),
                 title: AppLocalizations.of(context)!.termsandConditionhi,
                 width: dimension["width"]! - 32,
               ),
@@ -145,8 +142,7 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () {
-                  showDeleteAccountDialog(
-                      context, useViewModel, disposableProvider);
+                  showDeleteAccountDialog(context, useViewModel, disposableProvider);
                 },
                 leftIcon: SvgPicture.asset('assets/svg/trash.svg'),
                 title: AppLocalizations.of(context)!.deleteAccounthi,
@@ -161,8 +157,7 @@ class ProfileTabScreen extends HookWidget {
               child: ProfileButton(
                 onPress: () {
                   // useViewModel.handleLogOut(context, disposableProvider);
-                  showLogoutAccountDialog(
-                      context, useViewModel, disposableProvider);
+                  showLogoutAccountDialog(context, useViewModel, disposableProvider);
                 },
                 leftIcon: SvgPicture.asset('assets/svg/logout.svg'),
                 title: AppLocalizations.of(context)!.logouthi,

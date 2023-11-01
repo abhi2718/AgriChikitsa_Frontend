@@ -1,8 +1,10 @@
+import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_history.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
 
 import '../../../res/color.dart';
 import '../../../widgets/text.widgets/text.dart';
@@ -36,6 +38,18 @@ class ChatTabScreen extends HookWidget {
               child: const Icon(Icons.arrow_back)),
           title: BaseText(
               title: AppLocalizations.of(context)!.chatPanchamhi, style: const TextStyle()),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: InkWell(
+                  onTap: () {
+                    useViewModel.isChatCompleted
+                        ? Utils.model(context, const ChatHistory1())
+                        : Utils.snackbar("Uh! Chat Active, Try later!", context);
+                  },
+                  child: const Icon(Remix.chat_history_line)),
+            )
+          ],
         ),
         body: Column(
           children: [
