@@ -32,4 +32,5 @@ class AppUrl {
   static const String weatherAPIEndPoint =
       'http://api.weatherapi.com/v1/current.json?key=94488ccb442e4337ad735838231309';
   static const String chatHistoryEndPoint = '$baseUrl/chat/chatHistory';
+  static const String raiseTestingRequestEndPoint = '$baseUrl/soilTesting/request';
 }

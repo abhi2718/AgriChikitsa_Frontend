@@ -25,6 +25,7 @@ class AGPlus extends HookWidget {
       if (useViewModel.userPlotList.isEmpty) {
         useViewModel.getFields(context);
       }
+      useViewModel.getUserDetails();
     }, []);
     return DefaultTabController(
       length: 2,

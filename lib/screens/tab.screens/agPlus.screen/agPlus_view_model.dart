@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/repository/AG+.repo/agPlus_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/getLocation.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/helper/addFieldStatusScreen.dart';
+import 'package:agriChikitsa/services/auth.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../model/select_crop_model.dart';
 import '../../../utils/utils.dart';
@@ -32,12 +35,15 @@ class AGPlusViewModel with ChangeNotifier {
   TextEditingController fieldSizecontroller = TextEditingController();
   String fieldSize = "";
   String location = "जगह का नाम:";
+  String phoneNumber = '';
   bool fieldImageLoader = false;
   bool getFieldLoader = false;
   bool addFieldLoader = false;
   bool getCropListLoader = false;
   int currentSelectTab = 0;
   late bool fieldStatus;
+  bool requestStatus = false;
+  bool requestLoader = false;
   final plotSizeFocusNode = FocusNode();
   void reinitialize() {
     fieldName = "";
@@ -49,9 +55,12 @@ class AGPlusViewModel with ChangeNotifier {
     fieldStatus = false;
     selectedCrop = "";
     plotImagePath = "";
+    phoneNumber = '';
     resetLocation();
     userPlotList = [];
     cropList = [];
+    requestStatus = false;
+    requestLoader = false;
   }
 
   void resetLoader() {
@@ -65,6 +74,8 @@ class AGPlusViewModel with ChangeNotifier {
     getCropListLoader = false;
     fieldImageLoader = false;
     fieldStatus = false;
+    requestStatus = false;
+    requestLoader = false;
     fieldNamecontroller.clear();
     fieldSizecontroller.clear();
   }
@@ -93,6 +104,18 @@ class AGPlusViewModel with ChangeNotifier {
   setCropListLoader(value) {
     getCropListLoader = value;
     notifyListeners();
+  }
+
+  setRequestLoader(value) {
+    requestLoader = value;
+    notifyListeners();
+  }
+
+  getUserDetails() async {
+    final localStorage = await SharedPreferences.getInstance();
+    final rawProfile = localStorage.getString('profile');
+    final profile = jsonDecode(rawProfile!);
+    phoneNumber = profile['user']['phoneNumber'].toString();
   }
 
   void resetLocation() {
@@ -336,6 +359,25 @@ class AGPlusViewModel with ChangeNotifier {
       setFieldImageLoader(false);
       fieldStatus = false;
       Utils.model(context, FieldStatusScreen());
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      }
+    }
+  }
+
+  void raiseRequest(BuildContext context, String fieldName, String fieldId) async {
+    setRequestLoader(true);
+    try {
+      final payload = {'name': fieldName, 'phoneNumber': phoneNumber, 'fieldId': fieldId};
+      // final data = await _agPlusRepository.raiseSoilTestingRequest(payload);
+      Timer(Duration(seconds: 3), () {
+        requestStatus = true;
+        setRequestLoader(false);
+      });
+    } catch (error) {
+      setRequestLoader(false);
+      Utils.flushBarErrorMessage("Oops!", "Some Error Occured.", context);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
             AppLocalizations.of(context)!.alerthi, error.toString(), context);

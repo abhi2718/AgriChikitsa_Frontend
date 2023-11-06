@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agPlus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/soilHealthCard.screen/soil_health_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/weather.screen/weather_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/weather.screen/widgets/weather_details_Screen.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
@@ -14,8 +15,8 @@ import '../../../../../utils/utils.dart';
 import '../../../../../widgets/text.widgets/text.dart';
 
 class WeatherScreen extends HookWidget {
-  WeatherScreen({super.key, required this.currentSelectedPlot});
-  Plots currentSelectedPlot;
+  const WeatherScreen({super.key, required this.currentSelectedPlot});
+  final Plots currentSelectedPlot;
 
   @override
   Widget build(BuildContext context) {
@@ -174,9 +175,44 @@ class WeatherScreen extends HookWidget {
                       ),
                     ),
                     InkWell(
+                      onTap: () => Utils.model(context, const SoilHealthCard()),
+                      child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          height: dimension['height']! * 0.12,
+                          width: dimension['width'],
+                          decoration: BoxDecoration(
+                              color: AppColor.whiteColor, borderRadius: BorderRadius.circular(12)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/svg/soilHealthCardIcon.svg',
+                                height: dimension['height']! * 0.06,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Soil Health Card",
+                                        style:
+                                            TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                                    Text(
+                                      "Detailed Soil Health report.",
+                                      style: TextStyle(color: Color(0xff494343), fontSize: 13),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          )),
+                    ),
+                    InkWell(
                       onTap: () => showDeleteFieldDialog(context, agplusViewModel),
                       child: Container(
-                        margin: const EdgeInsets.only(top: 25, bottom: 25),
+                        margin: const EdgeInsets.only(top: 8, bottom: 25),
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                         width: dimension['width']!,
                         decoration: BoxDecoration(
@@ -191,7 +227,7 @@ class WeatherScreen extends HookWidget {
                           children: [
                             // const Icon(Icons.delete, size: 34),
                             Image(
-                              image: AssetImage("assets/images/delete.jpg"),
+                              image: const AssetImage("assets/images/delete.jpg"),
                               height: dimension['height']! * 0.08,
                             ),
                             Column(
