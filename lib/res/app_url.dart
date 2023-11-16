@@ -1,6 +1,6 @@
 class AppUrl {
-  static const String baseUrl = "https://agrichikitsa.org/api/v1";
-  // static const String baseUrl = "http://192.168.1.106:9090/api/v1";
+  // static const String baseUrl = "https://agrichikitsa.org/api/v1";
+  static const String baseUrl = "http://192.168.1.106:9090/api/v1";
   // static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
   // static const String baseUrl = "https://agrichikitsa-8be74.web.app/api/v1";
   static const String statsEndpoint = '$baseUrl/stats';

@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/soilHealthCard.screen/widgets/details_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/soilHealthCard.screen/widgets/helper/raise_request.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/soilHealthCard.screen/widgets/soil_testing_reports_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +63,7 @@ class SoilHealthCard extends HookWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () => Utils.model(context, const DetailsScreen()),
+                  onTap: () => Utils.model(context, const SoilTestingReportScreen()),
                   child: Container(
                     height: dimension["height"]! * 0.1,
                     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -72,7 +73,7 @@ class SoilHealthCard extends HookWidget {
                         borderRadius: BorderRadius.circular(10)),
                     child: const Center(
                         child: Text(
-                      "Soil Testing Report",
+                      "Soil Testing Reports",
                       style: TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
                     )),
                   ),

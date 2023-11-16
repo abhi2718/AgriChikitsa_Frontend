@@ -15,7 +15,7 @@ void showRaiseRequest(BuildContext context, dynamic dimension) {
               return provider.requestStatus
                   ? Container(
                       height: dimension["height"]! * 0.4,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

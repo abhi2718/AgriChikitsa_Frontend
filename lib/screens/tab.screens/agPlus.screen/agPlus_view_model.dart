@@ -369,19 +369,15 @@ class AGPlusViewModel with ChangeNotifier {
   void raiseRequest(BuildContext context, String fieldName, String fieldId) async {
     setRequestLoader(true);
     try {
-      final payload = {'name': fieldName, 'phoneNumber': phoneNumber, 'fieldId': fieldId};
-      // final data = await _agPlusRepository.raiseSoilTestingRequest(payload);
-      Timer(Duration(seconds: 3), () {
-        requestStatus = true;
-        setRequestLoader(false);
-      });
-    } catch (error) {
+      requestStatus = false;
+      final payload = {'name': fieldName, 'phoneNumber': phoneNumber, 'feildId': fieldId};
+      await _agPlusRepository.raiseSoilTestingRequest(payload);
+      requestStatus = true;
       setRequestLoader(false);
-      Utils.flushBarErrorMessage("Oops!", "Some Error Occured.", context);
-      if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
-      }
+    } catch (error) {
+      requestStatus = false;
+      setRequestLoader(false);
+      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi, error.toString(), context);
     }
   }
 }
