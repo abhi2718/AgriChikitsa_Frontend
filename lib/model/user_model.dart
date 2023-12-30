@@ -31,6 +31,7 @@ class User {
   int? iV;
   String? email;
   int? phoneNumber;
+  String? firebaseId;
   String? state;
   String? district_en;
   String? district_hi;
@@ -54,6 +55,7 @@ class User {
     this.district_hi,
     this.village,
     this.phoneNumber,
+    this.firebaseId,
     this.profileImage,
     this.timeline,
   });
@@ -74,6 +76,7 @@ class User {
     district_hi = json['district_hi'];
     village = json['village'];
     phoneNumber = json['phoneNumber'];
+    firebaseId = json['firebaseId'];
     profileImage = json['profileImage'];
     timeline = json['timeLine'];
   }
@@ -95,6 +98,7 @@ class User {
     data['district_hi'] = district_hi;
     data['village'] = village;
     data['phoneNumber'] = phoneNumber;
+    data['firebaseId'] = firebaseId;
     data['profileImage'] = profileImage;
     data['timeLine'] = timeline;
     return data;

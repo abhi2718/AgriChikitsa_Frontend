@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../res/color.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
@@ -12,8 +12,9 @@ import '../../../../widgets/text.widgets/text.dart';
 import '../createPost.screen/createPost.dart';
 
 class CreatePostCard extends HookWidget {
-  const CreatePostCard({super.key});
-
+  const CreatePostCard({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -38,14 +39,12 @@ class CreatePostCard extends HookWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: CachedNetworkImage(
                         imageUrl: profileImage,
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) => Skeleton(
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: 40,
                           width: 40,
                           radius: 0,
                         ),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
                         width: 40,
                         fit: BoxFit.cover,
                         height: 40,
@@ -55,10 +54,10 @@ class CreatePostCard extends HookWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: BaseText(
-                        title: AppLocalizations.of(context)!.createPosthi,
+                        title:
+                            AppLocalization.of(context).getTranslatedValue("createPost").toString(),
                         style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: AppColor.darkBlackColor)),
+                            fontWeight: FontWeight.w400, color: AppColor.darkBlackColor)),
                   )
                 ],
               ),
@@ -79,17 +78,14 @@ class CreatePostCard extends HookWidget {
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       onPressed: () {
                         Utils.model(context, const CreatePostScreen());
                       },
                       child: BaseText(
-                        title: AppLocalizations.of(context)!.posthi,
-                        style: const TextStyle(
-                          fontSize: 15,
-                        ),
+                        title: AppLocalization.of(context).getTranslatedValue("post").toString(),
+                        style: const TextStyle(fontSize: 15, color: AppColor.extraDark),
                       ),
                     ),
                   ),

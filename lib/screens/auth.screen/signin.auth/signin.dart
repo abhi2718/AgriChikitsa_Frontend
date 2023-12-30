@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/button.widgets/elevated_button.dart';
 import '../../../widgets/text.widgets/text.dart';
@@ -23,11 +23,13 @@ class SignInScreen extends HookWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              child: SubHeadingText(AppLocalizations.of(context)!.loginhi),
+              child: SubHeadingText(
+                  AppLocalization.of(context).getTranslatedValue("login").toString()),
             ),
             SizedBox(
               width: double.infinity,
-              child: ParagraphText(AppLocalizations.of(context)!.enterYourPhoneNumberToProceedhi),
+              child: ParagraphText(
+                  AppLocalization.of(context).getTranslatedValue("enterPhoneNumber").toString()),
             ),
             const SizedBox(
               height: 26,
@@ -42,7 +44,9 @@ class SignInScreen extends HookWidget {
                 onChanged: (value) => useViewModel.onPhoneNumberChanged(context, value),
                 onSubmitted: (value) => useViewModel.verifyUserPhoneNumber(context),
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.digitmobilenumberhi,
+                  labelText: AppLocalization.of(context)
+                      .getTranslatedValue("mobileNumberCount")
+                      .toString(),
                   errorText: useViewModel.errorMessage,
                   //   ),
                 ),
@@ -53,7 +57,7 @@ class SignInScreen extends HookWidget {
             ),
             Consumer<SignInViewModel>(builder: (context, provider, child) {
               return CustomElevatedButton(
-                title: AppLocalizations.of(context)!.continueTexthi,
+                title: AppLocalization.of(context).getTranslatedValue("continue").toString(),
                 loading: provider.loading,
                 onPress: () => useViewModel.verifyUserPhoneNumber(context),
                 width: (dimension["width"]! - 32),

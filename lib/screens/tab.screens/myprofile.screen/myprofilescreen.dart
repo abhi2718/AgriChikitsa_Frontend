@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
@@ -5,7 +6,6 @@ import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprof
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/post_pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -63,17 +63,22 @@ class MyProfileScreen extends HookWidget {
           body: Column(
             children: [
               TabBar(
+                  indicatorColor: AppColor.extraDark,
                   onTap: (index) {
                     useViewModel.setActiveTabIndex(true);
                   },
                   tabs: [
                     Tab(
                         child: BaseText(
-                            title: AppLocalizations.of(context)!.myPosthi,
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("myPostHeader")
+                                .toString(),
                             style: const TextStyle(color: Colors.black))),
                     Tab(
                         child: BaseText(
-                            title: AppLocalizations.of(context)!.bookmarkhi,
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("bookmarkhHeader")
+                                .toString(),
                             style: const TextStyle(color: Colors.black))),
                   ]),
               Expanded(
@@ -88,7 +93,9 @@ class MyProfileScreen extends HookWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     BaseText(
-                                      title: AppLocalizations.of(context)!.nopostYethi,
+                                      title: AppLocalization.of(context)
+                                          .getTranslatedValue("noPostYet")
+                                          .toString(),
                                       style: const TextStyle(),
                                     ),
                                     const SizedBox(
@@ -106,7 +113,9 @@ class MyProfileScreen extends HookWidget {
                                           ),
                                           child: Center(
                                               child: BaseText(
-                                            title: AppLocalizations.of(context)!.createOnehi,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("createNewPost")
+                                                .toString(),
                                             style: const TextStyle(color: AppColor.whiteColor),
                                           ))),
                                     )
@@ -131,7 +140,10 @@ class MyProfileScreen extends HookWidget {
                       return provider.bookMarkLoader
                           ? const PreLoader()
                           : provider.bookMarkFeedList.isEmpty
-                              ? Center(child: Text(AppLocalizations.of(context)!.noBookMarkAddhi))
+                              ? Center(
+                                  child: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("noBookMarkAdd")
+                                      .toString()))
                               : SizedBox(
                                   height: availableHeight,
                                   child: SingleChildScrollView(

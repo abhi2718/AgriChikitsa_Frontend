@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
 import '../../../repository/notification.repo/notification_tab_repository.dart';
 
@@ -115,7 +115,9 @@ class ChatTabViewModel with ChangeNotifier {
       Utils.flushBarErrorMessage("Umm!", "Some Error Occured", context);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -132,7 +134,9 @@ class ChatTabViewModel with ChangeNotifier {
       setChatHistoryLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -178,7 +182,9 @@ class ChatTabViewModel with ChangeNotifier {
       showSecondBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -196,7 +202,9 @@ class ChatTabViewModel with ChangeNotifier {
       showSecondBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -204,7 +212,13 @@ class ChatTabViewModel with ChangeNotifier {
   void selectAge(context, String age, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
-        sendQuestion(id, item['question_hi'], age, "");
+        sendQuestion(
+            id,
+            AppLocalization.of(context).locale.toString() == "en"
+                ? item['question_en']
+                : item['question_hi'],
+            age,
+            "");
         return {
           ...item,
           "isAnswerSelected": true,
@@ -246,7 +260,9 @@ class ChatTabViewModel with ChangeNotifier {
       showThirdLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -254,7 +270,13 @@ class ChatTabViewModel with ChangeNotifier {
   void handleSelctCrop(context, String crop, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
-        sendQuestion(id, item['question_hi'], crop, "");
+        sendQuestion(
+            id,
+            AppLocalization.of(context).locale.toString() == "en"
+                ? item['question_en']
+                : item['question_hi'],
+            crop,
+            "");
         return {
           ...item,
           "isAnswerSelected": true,
@@ -292,20 +314,28 @@ class ChatTabViewModel with ChangeNotifier {
       showFourthLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
-  void selectCropDisease(context, String disease, String id) {
+  void selectCropDisease(context, String selectedOption, String disease, String id) {
     selectedDisease = disease;
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
-        sendQuestion(id, item['question_hi'], selectedDisease, "");
+        sendQuestion(
+            id,
+            AppLocalization.of(context).locale.toString() == "en"
+                ? item['question_en']
+                : item['question_hi'],
+            selectedOption,
+            "");
         return {
           ...item,
           "isAnswerSelected": true,
-          "answer": disease,
+          "answer": selectedOption,
         };
       }
       return item;
@@ -351,7 +381,9 @@ class ChatTabViewModel with ChangeNotifier {
       showFifthBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -376,7 +408,9 @@ class ChatTabViewModel with ChangeNotifier {
       showSixthBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -402,7 +436,13 @@ class ChatTabViewModel with ChangeNotifier {
         enableKeyboard(false);
         var updatedChatMessages = chatMessages.map((item) {
           if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
-            sendQuestion('अन्य', item['question_hi'], textEditingController.text, "");
+            sendQuestion(
+                'अन्य',
+                AppLocalization.of(context).locale.toString() == "en"
+                    ? item['question_en']
+                    : item['question_hi'],
+                textEditingController.text,
+                "");
             return {
               ...item,
               "isAnswerSelected": true,
@@ -466,7 +506,13 @@ class ChatTabViewModel with ChangeNotifier {
         });
         if (index != -1) {
           final item = chatMessages[index];
-          sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
+          sendQuestion(
+              cameraQuestionId,
+              AppLocalization.of(context).locale.toString() == "en"
+                  ? item['question_en']
+                  : item['question_hi'],
+              "",
+              cropImage);
         }
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
@@ -497,7 +543,9 @@ class ChatTabViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -519,7 +567,13 @@ class ChatTabViewModel with ChangeNotifier {
         });
         if (index != -1) {
           final item = chatMessages[index];
-          sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
+          sendQuestion(
+              cameraQuestionId,
+              AppLocalization.of(context).locale.toString() == "en"
+                  ? item['question_en']
+                  : item['question_hi'],
+              "",
+              cropImage);
         }
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
@@ -551,7 +605,9 @@ class ChatTabViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

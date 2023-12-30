@@ -1,4 +1,4 @@
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agPlus_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/all_plots_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class Routes {
     RouteName.authLandingRoute: (context) => const LandingAuthScreen(),
     RouteName.otpVerificationRoute: (context) => const OtpVerification(),
     RouteName.signUpRoute: (context) => const SignUpScreen(),
-    RouteName.agPlusRoute: (context) => const AGPlus(),
+    RouteName.agPlusRoute: (context) => const AllPlotsScreen(),
     RouteName.editProfileRoute: (context) => const EditProfileScreen(),
     RouteName.createPostRoute: (context) => const CreatePostScreen(),
     RouteName.chatBotRoute: (context) => const ChatTabScreen(),

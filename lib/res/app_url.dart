@@ -1,6 +1,6 @@
 class AppUrl {
-  // static const String baseUrl = "https://agrichikitsa.org/api/v1";
-  static const String baseUrl = "http://192.168.1.106:9090/api/v1";
+  static const String baseUrl = "https://agrichikitsa.org/api/v1";
+  // static const String baseUrl = "http://192.168.1.103:9090/api/v1";
   // static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
   // static const String baseUrl = "https://agrichikitsa-8be74.web.app/api/v1";
   static const String statsEndpoint = '$baseUrl/stats';
@@ -27,6 +27,7 @@ class AppUrl {
   static const String deleteFieldEndPoint = '$baseUrl/agristick/feild';
   static const String createPlotEndPoint = '$baseUrl/agristick/addFeild';
   static const String getCropsListEndPoint = '$baseUrl/agristick/crops';
+  static const String getCropsCategoryListEndPoint = '$baseUrl/agristick/cropCategory';
   static const String activateAgriStickEndPoint = '$baseUrl/agristick/activateAgristick';
   static const String graphDataEndPoint = '$baseUrl/agristick/averageFeildData';
   static const String weatherAPIEndPoint =

@@ -1,8 +1,10 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/chat_history_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ChatHistory1 extends HookWidget {
@@ -21,17 +23,24 @@ class ChatHistory1 extends HookWidget {
         backgroundColor: AppColor.whiteColor,
         elevation: 0.0,
         centerTitle: true,
-        title: const Text("Chat History"),
+        title: Text(
+          AppLocalization.of(context).getTranslatedValue("chatHistoryTitle").toString(),
+          style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 18),
+        ),
       ),
       body: Consumer<ChatTabViewModel>(
         builder: (context, provider, child) {
           return provider.chatLoader
               ? const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: AppColor.extraDark,
+                  ),
                 )
               : provider.chatHistoryList.isEmpty
-                  ? const Center(
-                      child: Text("No Chat History Found!"),
+                  ? Center(
+                      child: Text(AppLocalization.of(context)
+                          .getTranslatedValue("noChatHistoryFound")
+                          .toString()),
                     )
                   : SingleChildScrollView(
                       child: Column(

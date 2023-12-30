@@ -10,8 +10,6 @@
         android:label="Agrichikitsa"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyApIBcgj5fcryq-55J7atVBrgbtO-eP0h4"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

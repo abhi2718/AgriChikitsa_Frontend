@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +16,13 @@ import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
 class HeaderWidget extends HookWidget {
-  const HeaderWidget({Key? key});
-
+  const HeaderWidget({Key? key, required this.profileViewModel});
+  final ProfileViewModel profileViewModel;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel = useMemoized(
-        () => Provider.of<NotificationViewModel>(context, listen: false));
+    final useViewModel =
+        useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
     useEffect(() {
       useViewModel.fetchNotifications(context);
     }, [useViewModel.notificationCount]);
@@ -49,14 +50,12 @@ class HeaderWidget extends HookWidget {
                           borderRadius: BorderRadius.circular(20),
                           child: CachedNetworkImage(
                             imageUrl: profileImage,
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Skeleton(
+                            progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                               height: 40,
                               width: 40,
                               radius: 0,
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
                             width: 40,
                             fit: BoxFit.cover,
                             height: 40,
@@ -71,7 +70,7 @@ class HeaderWidget extends HookWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          Utils.model(context, MyProfileScreen());
+                          Utils.model(context, const MyProfileScreen());
                         },
                         child: SvgPicture.asset(
                           'assets/svg/timeline.svg',
@@ -82,8 +81,7 @@ class HeaderWidget extends HookWidget {
                       SizedBox(
                         width: dimension['width']! * 0.04,
                       ),
-                      Consumer<NotificationViewModel>(
-                          builder: (context, provider, child) {
+                      Consumer<NotificationViewModel>(builder: (context, provider, child) {
                         return NotificationIndicatorButton(
                           notificationCount: provider.notificationCount,
                         );
@@ -106,9 +104,8 @@ class HeaderWidget extends HookWidget {
                             itemCount: 10,
                             itemBuilder: (context, index) {
                               return Container(
-                                width: 100, // Set the width of each item
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
+                                width: 100,
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
                                 child: Skeleton(
                                   height: 10,
                                   width: 100,
@@ -121,7 +118,9 @@ class HeaderWidget extends HookWidget {
                             itemCount: provider.categoriesList.length,
                             itemBuilder: (context, index) {
                               return CategoryButton(
+                                profileViewModel: profileViewModel,
                                 category: provider.categoriesList[index],
+                                provider: provider,
                                 onTap: () {
                                   provider.setActiveState(
                                     context,

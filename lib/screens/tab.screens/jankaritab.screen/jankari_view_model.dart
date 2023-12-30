@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/jankari_subcategory_post_model.dart';
 import 'package:agriChikitsa/repository/jankari.repo/jankari_repository.dart';
 import 'package:agriChikitsa/repository/stats.repo/stats_tab_repository.dart';
@@ -11,12 +12,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import '../../../model/jankari_card_modal.dart';
 import '../../../model/jankari_subcategory_model.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class JankariViewModel with ChangeNotifier {
   final _jankariRepository = JankariRepository();
   final _statsRepository = StatsTabRepository();
   List<JankariCategoryModal> jankaricardList = [];
+  List trendingCropsList = [];
   List<JankariSubCategoryModel> jankariSubcategoryList = [];
   List<JankariSubCategoryPostModel> jankariSubcategoryPostList = [];
   var _loading = true;
@@ -104,7 +105,40 @@ class JankariViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
+  }
+
+  void updateTapCount(BuildContext context, String cropId) async {
+    try {
+      _statsRepository.updateTapCount(cropId);
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
+  }
+
+  void fetchTrendingCrops(BuildContext context) async {
+    setloading(true);
+    try {
+      final data = await _jankariRepository.fetchTrendingCrops();
+      trendingCropsList = data['crops'];
+      setloading(false);
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -120,7 +154,9 @@ class JankariViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -134,8 +170,7 @@ class JankariViewModel with ChangeNotifier {
   void getJankariSubCategory(BuildContext context, String id) async {
     setJankariSubCategoryLoader(true);
     try {
-      final data =
-          await _jankariRepository.getJankariSubCategory(selectedCategory);
+      final data = await _jankariRepository.getJankariSubCategory(id);
       jankariSubcategoryList = mapJankariSubCategory(data['subCategories']);
       setJankariSubCategoryLoader(false);
       notifyListeners();
@@ -143,7 +178,9 @@ class JankariViewModel with ChangeNotifier {
       setJankariSubCategoryLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -158,8 +195,7 @@ class JankariViewModel with ChangeNotifier {
     setJankariSubCategoryLoaderPost(true);
     try {
       jankariSubcategoryPostList.clear();
-      final data = await _jankariRepository
-          .getJankariSubCategoryPost(selectedSubCategory);
+      final data = await _jankariRepository.getJankariSubCategoryPost(selectedSubCategory);
       jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
       if (jankariSubcategoryPostList.length > 1) {
         changeActiveButtonState(true);
@@ -171,20 +207,20 @@ class JankariViewModel with ChangeNotifier {
       setJankariSubCategoryLoaderPost(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
-  List<JankariSubCategoryPostModel> mapJankariSubCategoryPost(
-      dynamic categories) {
+  List<JankariSubCategoryPostModel> mapJankariSubCategoryPost(dynamic categories) {
     return List<JankariSubCategoryPostModel>.from(categories.map((category) {
       return JankariSubCategoryPostModel.fromJson(category);
     }));
   }
 
-  void togglePostLike(
-      BuildContext context, String postId, String type, dynamic post) async {
+  void togglePostLike(BuildContext context, String postId, String type, dynamic post) async {
     try {
       if (type == 'like') {
         if (!post.isLiked) {
@@ -216,7 +252,9 @@ class JankariViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

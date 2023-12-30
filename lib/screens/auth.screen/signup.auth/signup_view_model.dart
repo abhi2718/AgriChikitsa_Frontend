@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/states_district_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../repository/auth.repo/auth_repository.dart';
@@ -86,7 +86,8 @@ class SignUpViewModel with ChangeNotifier {
       stateList = mapStates(data['states']);
       notifyListeners();
     } catch (error) {
-      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(), context);
     }
   }
 
@@ -107,7 +108,9 @@ class SignUpViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -125,14 +128,20 @@ class SignUpViewModel with ChangeNotifier {
     }
     if (selectedState.isEmpty || selectedDistrictHi.isEmpty || village.isEmpty) {
       if (selectedState.isEmpty) {
-        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
-            AppLocalizations.of(context)!.warningSelectState, context);
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateState").toString(),
+            context);
       } else if (village.isEmpty) {
-        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
-            AppLocalizations.of(context)!.selectVillagehi, context);
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateVillage").toString(),
+            context);
       } else {
-        Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
-            AppLocalizations.of(context)!.warningSelectDistrict, context);
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateDistrict").toString(),
+            context);
       }
       return;
     }
@@ -170,14 +179,14 @@ class SignUpViewModel with ChangeNotifier {
 
   String? nameFieldValidator(BuildContext context, value) {
     if (value!.isEmpty) {
-      return AppLocalizations.of(context)!.validateNamehi;
+      return AppLocalization.of(context).getTranslatedValue("validateName").toString();
     }
     return null;
   }
 
   String? villageFieldValidator(BuildContext context, value) {
     if (value!.isEmpty) {
-      return AppLocalizations.of(context)!.validateVillagehi;
+      return AppLocalization.of(context).getTranslatedValue("validateVillage").toString();
     }
     return null;
   }
@@ -208,7 +217,7 @@ class SignUpViewModel with ChangeNotifier {
     if (value != null && value.isNotEmpty) {
       bool isValid = validateEmail(value);
       if (!isValid) {
-        return AppLocalizations.of(context)!.validateEmailhi;
+        return AppLocalization.of(context).getTranslatedValue("validateEmail").toString();
       }
     }
     return null;
@@ -231,6 +240,10 @@ class SignUpViewModel with ChangeNotifier {
         final localStorage = await SharedPreferences.getInstance();
         final profile = {
           'user': data["newUser"],
+          'language': {
+            "language": AppLocalization.of(context).locale.toString(),
+            "country": AppLocalization.of(context).locale.toString() == "en" ? "US" : "IN"
+          },
           'token': data["token"],
         };
         await localStorage.setString("profile", jsonEncode(profile));
@@ -240,7 +253,9 @@ class SignUpViewModel with ChangeNotifier {
         disposeValues();
       } catch (error) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
         setloading(false);
       }
     }

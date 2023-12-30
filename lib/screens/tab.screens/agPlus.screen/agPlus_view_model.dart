@@ -1,41 +1,41 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/plots.dart';
-import 'package:agriChikitsa/repository/AG+.repo/agPlus_repository.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/getLocation.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/helper/addFieldStatusScreen.dart';
-import 'package:agriChikitsa/services/auth.dart';
+import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/addFieldStatusScreen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/select_crop.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../model/category_model.dart';
 import '../../../model/select_crop_model.dart';
 import '../../../utils/utils.dart';
-import 'widgets/selectCrop.dart';
+import 'widgets/agplus_home.dart';
+import 'widgets/plot_details.dart';
 
 class AGPlusViewModel with ChangeNotifier {
   final _agPlusRepository = AGPlusRepository();
-  Completer<GoogleMapController> controller = Completer();
-  CameraPosition intialCameraPosition =
-      const CameraPosition(target: LatLng(28.45038087587045, 77.28519398730188), zoom: 15);
+  List cropCategoriesList = [];
   List<SelectCrop> cropList = [];
   List userPlotList = [];
   dynamic selectedPlot;
   var plotImagePath = "";
-  var mapLocation = {"latitude": "28.45038087587045", "longitude": "77.28519398730188"};
+  var mapLocation = {"latitude": "", "longitude": ""};
   var selectedCrop = "";
   TextEditingController fieldNamecontroller = TextEditingController();
   String fieldName = "";
   TextEditingController fieldSizecontroller = TextEditingController();
   String fieldSize = "";
-  String location = "जगह का नाम:";
+  String soilType = "";
+  String areaUnit = "";
+  late dynamic sowingDate;
   String phoneNumber = '';
+  String currentSelectedCategory = 'All';
   bool fieldImageLoader = false;
   bool getFieldLoader = false;
   bool addFieldLoader = false;
@@ -44,9 +44,12 @@ class AGPlusViewModel with ChangeNotifier {
   late bool fieldStatus;
   bool requestStatus = false;
   bool requestLoader = false;
+  bool notPlantedCheck = true;
   final plotSizeFocusNode = FocusNode();
   void reinitialize() {
     fieldName = "";
+    soilType = "";
+    areaUnit = "";
     currentSelectTab = 0;
     fieldImageLoader = false;
     getFieldLoader = false;
@@ -54,21 +57,27 @@ class AGPlusViewModel with ChangeNotifier {
     getCropListLoader = false;
     fieldStatus = false;
     selectedCrop = "";
+    fieldSize = "";
     plotImagePath = "";
+    sowingDate = null;
+    currentSelectedCategory = "All";
     phoneNumber = '';
-    resetLocation();
     userPlotList = [];
+    cropCategoriesList = [];
     cropList = [];
     requestStatus = false;
     requestLoader = false;
+    notPlantedCheck = true;
   }
 
   void resetLoader() {
-    resetLocation();
     fieldName = "";
+    soilType = "";
+    areaUnit = "";
     fieldSize = "";
+    sowingDate = null;
     plotImagePath = "";
-    location = "जगह का नाम:";
+    currentSelectedCategory = "All";
     getFieldLoader = false;
     addFieldLoader = false;
     getCropListLoader = false;
@@ -76,8 +85,16 @@ class AGPlusViewModel with ChangeNotifier {
     fieldStatus = false;
     requestStatus = false;
     requestLoader = false;
+    notPlantedCheck = true;
     fieldNamecontroller.clear();
     fieldSizecontroller.clear();
+  }
+
+  void disposeValues() {
+    userPlotList = [];
+    selectedPlot = null;
+    mapLocation = {"latitude": "", "longitude": ""};
+    reinitialize();
   }
 
   setSelectedTab(int value) {
@@ -88,8 +105,33 @@ class AGPlusViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  setActiveState(BuildContext context, CategoryHome category, bool value) {
+    if (currentSelectedCategory == category.id) {
+      return;
+    }
+    selectedCrop = "";
+    currentSelectedCategory = category.id;
+    notifyListeners();
+    getCropList(context);
+  }
+
   setGetFieldLoader(value) {
     getFieldLoader = value;
+  }
+
+  setSoilType(value) {
+    soilType = value;
+    notifyListeners();
+  }
+
+  setAreaUnit(value) {
+    areaUnit = value;
+    notifyListeners();
+  }
+
+  setNotPlantedCheck(value) {
+    notPlantedCheck = value;
+    notifyListeners();
   }
 
   setAddFieldLoader(value) {
@@ -118,66 +160,77 @@ class AGPlusViewModel with ChangeNotifier {
     phoneNumber = profile['user']['phoneNumber'].toString();
   }
 
-  void resetLocation() {
-    getCropListLoader = false;
-    intialCameraPosition =
-        const CameraPosition(target: LatLng(28.45038087587045, 77.28519398730188), zoom: 15);
-    mapLocation = {"latitude": "28.45038087587045", "longitude": "77.28519398730188"};
-    location = "जगह का नाम:";
-  }
-
   Future<Position> getCurrentLocation() async {
-    await Geolocator.requestPermission()
-        .then((value) => print(value))
-        .onError((error, stackTrace) => print(error.toString()));
+    setFieldImageLoader(true);
+    await Geolocator.requestPermission();
+    setFieldImageLoader(true);
     return await Geolocator.getCurrentPosition();
   }
 
-  moveToCurrentLocation() {
-    getCurrentLocation().then((value) async {
+  mapCurrentLocation(context) {
+    getCurrentLocation().then((value) {
       mapLocation["latitude"] = value.latitude.toString();
       mapLocation["longitude"] = value.longitude.toString();
-      CameraPosition cameraPosition =
-          CameraPosition(target: LatLng(value.latitude, value.longitude), zoom: 15);
-      GoogleMapController mapController = await controller.future;
-      mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      notifyListeners();
+      uploadImage(context);
     });
   }
 
-  void setMapLocation(CameraPosition cameraPosition) {
-    mapLocation["latitude"] = cameraPosition.target.latitude.toString();
-    mapLocation["longitude"] = cameraPosition.target.longitude.toString();
+  void fetchCropCategories(BuildContext context) async {
+    setCropListLoader(true);
+    try {
+      cropCategoriesList.clear();
+      selectedCrop = "";
+      currentSelectedCategory = "All";
+      final data = await _agPlusRepository.fetchCropsCategoryList();
+      cropCategoriesList = [
+        CategoryHome(
+          name: "All",
+          nameHi: "सभी",
+          id: "All",
+          isActive: false,
+        ),
+        ...mapCategories(data)
+      ];
+      getCropList(context);
+    } catch (error) {
+      setCropListLoader(false);
+      notifyListeners();
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
   }
 
-  void shwowLocationName() async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        double.parse(mapLocation["latitude"]!), double.parse(mapLocation["longitude"]!));
-    location = "${placemarks.first.administrativeArea}, ${placemarks.first.street}";
-    notifyListeners();
+  List<CategoryHome> mapCategories(dynamic categories) {
+    return List<CategoryHome>.from(categories.map((category) {
+      return CategoryHome(
+        name: category['name'],
+        nameHi: category['name_hi'],
+        id: category['_id'],
+        isActive: false,
+      );
+    }));
   }
 
   void getCropList(BuildContext context) async {
-    setCropListLoader(true);
     try {
       cropList.clear();
-      final data = await _agPlusRepository.getCropsList();
+      final data = await _agPlusRepository.getCropsList(currentSelectedCategory);
       cropList = mapCropList(data["crops"]);
       setCropListLoader(false);
-      if (cropList.isEmpty) {
-        Navigator.pop(context);
-        Utils.model(context, FieldStatusScreen());
-      } else {
-        Navigator.pop(context);
-        Utils.model(context, CropSelection());
-      }
     } catch (error) {
       setCropListLoader(false);
       Navigator.pop(context);
-      Utils.model(context, FieldStatusScreen());
+      fieldStatus = false;
+      addPlotStatus(context);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -217,9 +270,12 @@ class AGPlusViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setGetFieldLoader(false);
+      notifyListeners();
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -231,40 +287,72 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   void createPlot(BuildContext context) async {
+    fieldName = fieldNamecontroller.text.toString().trim();
+    fieldSize = fieldSizecontroller.text.toString().trim();
+    if (fieldSize.trim().isEmpty || areaUnit.isEmpty) {
+      Utils.toastMessage(
+          AppLocalization.of(context).getTranslatedValue("warningSelectAreaUnit").toString());
+      return;
+    }
+    if (sowingDate == null && notPlantedCheck == false) {
+      Utils.toastMessage(
+          AppLocalization.of(context).getTranslatedValue("checkSowingDate").toString());
+      return;
+    }
     setAddFieldLoader(true);
     try {
-      Plots newPlot = Plots(
+      final payload = {
+        "feildName": fieldName,
+        "cropName": selectedCrop,
+        "cropImage": plotImagePath,
+        "cordinates": mapLocation,
+        "area": "$fieldSize $areaUnit",
+        "soilType": soilType,
+        "sowingDate": sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
+      };
+      final data = await _agPlusRepository.createPlot(payload);
+      if (data['message'] == "Data added Successfully") {
+        Plots newPlot = Plots(
+          id: data['data']['_id'],
           fieldName: fieldName,
           cropName: selectedCrop,
           cropImage: plotImagePath,
           latitude: mapLocation['latitude'].toString(),
           longitude: mapLocation['longitude'].toString(),
           agristick: null,
-          area: location);
-      userPlotList.insert(0, newPlot);
-      setSelectedField(newPlot);
-      final payload = {
-        "feildName": fieldName,
-        "cropName": selectedCrop,
-        "cropImage": plotImagePath,
-        "cordinates": mapLocation,
-        "area": fieldSize
-      };
-      final data = await _agPlusRepository.createPlot(payload);
-      if (data['message'] == "Data added Successfully") {
-        userPlotList[0].id = data['data']['_id'];
+          area: "$fieldSize $areaUnit",
+          soilType: soilType,
+          sowingDate: sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
+        );
+        userPlotList.add(newPlot);
+        setSelectedField(newPlot);
         fieldStatus = true;
         setAddFieldLoader(false);
-        Utils.model(context, FieldStatusScreen());
+        addPlotStatus(context);
+        Timer(const Duration(seconds: 3), () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Utils.model(
+              context,
+              AGPlusHome(
+                plotNumber: userPlotList.length,
+              ));
+        });
       }
     } catch (error) {
       userPlotList.removeAt(0);
       fieldStatus = false;
       setAddFieldLoader(false);
-      Utils.model(context, FieldStatusScreen());
+      addPlotStatus(context);
+      Timer(const Duration(seconds: 3), () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -276,18 +364,16 @@ class AGPlusViewModel with ChangeNotifier {
       if (selectedIndex != -1) {
         userPlotList.removeAt(selectedIndex);
         Navigator.pop(context);
-        if (userPlotList.isNotEmpty) {
-          userPlotList[0].isSelected = true;
-          selectedPlot = userPlotList[0];
-        } else {
-          selectedPlot = null;
-        }
+        Navigator.pop(context);
+        selectedPlot = null;
       }
       notifyListeners();
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -308,60 +394,84 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   void setFieldName() {
-    fieldName = fieldNamecontroller.text.toString();
+    fieldName = fieldNamecontroller.text.toString().trim();
   }
 
   void validateFieldName(BuildContext context) {
     if (fieldNamecontroller.text.isEmpty) {
-      Utils.flushBarErrorMessage("Alert", "Please Add Field Name details", context);
-    } else {
-      FocusScope.of(context).requestFocus(plotSizeFocusNode);
+      Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          AppLocalization.of(context).getTranslatedValue("warningEnterPlotName").toString(),
+          context);
     }
   }
 
   void setFieldSize() {
-    fieldSize = fieldSizecontroller.text.toString();
+    fieldSize = fieldSizecontroller.text.toString().trim();
   }
 
   void validateFieldSize(BuildContext context) {
     if (fieldSizecontroller.text.isEmpty) {
-      Utils.flushBarErrorMessage("Alert", "Please Add Field Size details", context);
-    } else {
-      checkPlotDetails(context);
+      Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          AppLocalization.of(context).getTranslatedValue("warningSelectAreaUnit").toString(),
+          context);
     }
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: sowingDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      sowingDate = picked;
+    }
+    notifyListeners();
   }
 
   void checkPlotDetails(BuildContext context) {
-    fieldName = fieldNamecontroller.text.toString();
-    fieldSize = fieldSizecontroller.text.toString();
-    if (fieldName.isEmpty || fieldSize.isEmpty) {
-      Utils.flushBarErrorMessage("Alert", "Please Complete all details", context);
-    } else {
-      FocusScope.of(context).unfocus();
-      createPlot(context);
+    fieldName = fieldNamecontroller.text.toString().trim();
+    if (soilType.isEmpty) {
+      Utils.toastMessage(
+          AppLocalization.of(context).getTranslatedValue("warningSelectSoilType").toString());
+      return;
     }
+    fetchCropCategories(context);
+    Navigator.pop(context);
+    Utils.model(context, const CropSelection());
   }
 
   void uploadImage(context) async {
+    if (mapLocation["latitude"]!.isEmpty || mapLocation["longitude"]!.isEmpty) {
+      Utils.toastMessage("Error!");
+      return;
+    }
     setFieldImageLoader(true);
     try {
       final imageFile = await Utils.capturePhoto();
       if (imageFile != null) {
         final data = await Utils.uploadImage(imageFile);
         plotImagePath = data["imgurl"];
-        setFieldImageLoader(false);
         Navigator.pop(context);
-        Utils.model(context, GetLocation());
+        Utils.model(context, const PlotDetails());
+        setFieldImageLoader(false);
       } else {
         setFieldImageLoader(false);
       }
     } catch (error) {
+      Navigator.pop(context);
       setFieldImageLoader(false);
       fieldStatus = false;
-      Utils.model(context, FieldStatusScreen());
+      addPlotStatus(context);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -377,7 +487,20 @@ class AGPlusViewModel with ChangeNotifier {
     } catch (error) {
       requestStatus = false;
       setRequestLoader(false);
-      Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(), context);
     }
+  }
+
+  Future<bool> checkPremium(BuildContext context) async {
+    final localStorage = await SharedPreferences.getInstance();
+    final mapString = localStorage.getString('profile');
+    final profile = jsonDecode(mapString!);
+    if (!profile['user']['isPremiumUser']) {
+      Utils.toastMessage(
+          AppLocalization.of(context).getTranslatedValue("premiumWarningMessage").toString());
+      return false;
+    }
+    return true;
   }
 }

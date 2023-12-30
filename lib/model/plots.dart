@@ -6,6 +6,8 @@ class Plots {
   String latitude;
   String longitude;
   String area;
+  String soilType;
+  dynamic sowingDate;
   bool isSelected;
   dynamic agristick;
 
@@ -17,6 +19,8 @@ class Plots {
     required this.longitude,
     required this.cropImage,
     required this.area,
+    required this.soilType,
+    required this.sowingDate,
     this.isSelected = false,
     this.agristick = null,
   });
@@ -29,6 +33,8 @@ class Plots {
         latitude: json['cordinates']['latitude'],
         longitude: json['cordinates']['longitude'],
         fieldName: json['feildName'],
+        soilType: json['soilType'],
+        sowingDate: json['sowingDate'],
         id: json['_id'],
         agristick: json['agristick']);
   }

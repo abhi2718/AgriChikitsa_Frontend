@@ -1,4 +1,4 @@
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agPlus_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_landing.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -19,12 +19,14 @@ class TabScreen extends HookWidget {
       const HomeTabScreen(),
       const JankariHomeTab(),
       // const MyProfileScreen(),
-      const AGPlus(),
+      // const AGPlus(),
+      const AGPlusLanding(),
       const ProfileTabScreen()
     ];
     return Scaffold(
       body: tabs[currentIndex.value],
       floatingActionButton: FloatingActionButton(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           backgroundColor: Colors.white,
           elevation: 10.0,
           child: Image.asset(
@@ -41,6 +43,7 @@ class TabScreen extends HookWidget {
         color: AppColor.notificationBgColor,
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
+        height: 70,
         child: SizedBox(
           height: 60,
           child: Row(

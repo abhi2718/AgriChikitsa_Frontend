@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +18,7 @@ class OtpVerification extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel =
-        useMemoized(() => Provider.of<SignInViewModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<SignInViewModel>(context, listen: false));
     Timer? timer;
     useEffect(() {
       useViewModel.resetTimer();
@@ -59,7 +58,9 @@ class OtpVerification extends HookWidget {
                     child: Row(
                       children: [
                         SubHeadingText(
-                          AppLocalizations.of(context)!.verifyDetailshi,
+                          AppLocalization.of(context)
+                              .getTranslatedValue("verifyDetailsHeader")
+                              .toString(),
                         ),
                       ],
                     ),
@@ -70,9 +71,9 @@ class OtpVerification extends HookWidget {
                       margin: const EdgeInsets.only(top: 12),
                       child: Row(
                         children: [
-                          ParagraphText(
-                            AppLocalizations.of(context)!.otpsenttohi,
-                          ),
+                          ParagraphText(AppLocalization.of(context)
+                              .getTranslatedValue("verifyDetailsSubHeader")
+                              .toString()),
                           const SizedBox(
                             width: 5,
                           ),
@@ -96,13 +97,14 @@ class OtpVerification extends HookWidget {
                   Row(
                     children: [
                       ParagraphHeadingText(
-                          AppLocalizations.of(context)!.enterOtphi)
+                          AppLocalization.of(context).getTranslatedValue("enterOtp").toString())
                     ],
                   ),
                   OtpTextField(
                     numberOfFields: 6,
                     borderColor: AppColor.darkColor,
                     focusedBorderColor: AppColor.darkColor,
+                    cursorColor: AppColor.darkColor,
                     //set to true to show as box or false to show as dash
                     showFieldAsBox: !true,
                     //runs when a code is typed in
@@ -121,24 +123,21 @@ class OtpVerification extends HookWidget {
                   ),
                   Row(
                     children: [
-                      Consumer<SignInViewModel>(
-                          builder: (context, provider, child) {
+                      Consumer<SignInViewModel>(builder: (context, provider, child) {
                         return !provider.showResendOTPButton
                             ? ParagraphText(
-                                '${AppLocalizations.of(context)!.didnottreceivetheOtphi} ${AppLocalizations.of(context)!.retryIn}${useViewModel.countDown}',
+                                '${AppLocalization.of(context).getTranslatedValue("otpNotRecieved").toString()} ${AppLocalization.of(context).getTranslatedValue("retryIn").toString()}${useViewModel.countDown}',
                               )
-                            : ParagraphText(
-                                AppLocalizations.of(context)!
-                                    .didnottreceivetheOtphi,
-                              );
+                            : ParagraphText(AppLocalization.of(context)
+                                .getTranslatedValue("otpNotRecieved")
+                                .toString());
                       }),
                     ],
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<SignInViewModel>(
-                      builder: (context, provider, child) {
+                  Consumer<SignInViewModel>(builder: (context, provider, child) {
                     return provider.showResendOTPButton
                         ? InkWell(
                             onTap: () => provider.reSendOTP(context),
@@ -157,11 +156,10 @@ class OtpVerification extends HookWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<SignInViewModel>(
-                      builder: (context, provider, child) {
+                  Consumer<SignInViewModel>(builder: (context, provider, child) {
                     return CustomElevatedButton(
                       loading: provider.loading,
-                      title: AppLocalizations.of(context)!.continueTexthi,
+                      title: AppLocalization.of(context).getTranslatedValue("continue").toString(),
                       width: dimension["width"]! - 32,
                       onPress: () => provider.verifyOTPCode(
                           provider.verificationIdToken, provider.otp, context),

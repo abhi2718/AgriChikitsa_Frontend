@@ -1,8 +1,10 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 
@@ -10,7 +12,6 @@ import '../../../../../res/color.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/skeleton/skeleton.dart';
 import '../../../../../widgets/text.widgets/text.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatDescription extends HookWidget {
   const ChatDescription({super.key, required this.chat});
@@ -33,8 +34,9 @@ class ChatDescription extends HookWidget {
                 InkWell(
                     onTap: () => Navigator.of(context).pop(), child: const Icon(Icons.arrow_back)),
                 BaseText(
-                  title: AppLocalizations.of(context)!.chatHistory,
-                  style: const TextStyle(fontSize: 20),
+                  title:
+                      AppLocalization.of(context).getTranslatedValue("chatHistoryTitle").toString(),
+                  style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
                 InkWell(
                   onTap: () => Navigator.of(context).pop(),
@@ -48,13 +50,18 @@ class ChatDescription extends HookWidget {
               return provider.chatHistoryLoader
                   ? SizedBox(
                       height: dimension['height']! - 300,
-                      child: const Center(child: CircularProgressIndicator()))
+                      child: const Center(
+                          child: CircularProgressIndicator(
+                        color: AppColor.extraDark,
+                      )))
                   : useViewModel.chatMessagesList.isEmpty
                       ? SizedBox(
                           height: dimension['height']! - 180,
                           child: Center(
                             child: BaseText(
-                                title: AppLocalizations.of(context)!.noChatHistoryhi,
+                                title: AppLocalization.of(context)
+                                    .getTranslatedValue("noChatHistoryFound")
+                                    .toString(),
                                 style: const TextStyle()),
                           ),
                         )
@@ -66,8 +73,10 @@ class ChatDescription extends HookWidget {
                                 itemBuilder: (context, index) {
                                   final chatItem = useViewModel.chatMessagesList['allChats'][index];
                                   return chatItem['answer'] == "None"
-                                      ? const BubbleSpecialThree(
-                                          text: "Pending Reply...",
+                                      ? BubbleSpecialThree(
+                                          text: AppLocalization.of(context)
+                                              .getTranslatedValue("pendingReplyText")
+                                              .toString(),
                                           color: Colors.transparent,
                                           tail: true,
                                           isSender: false,

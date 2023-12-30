@@ -1,10 +1,10 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import '../../../../widgets/Input.widgets/input.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/text.widgets/text.dart';
@@ -60,22 +60,25 @@ class RegisterUser extends HookWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 32),
                         child: Row(
-                          children: [SubHeadingText(AppLocalizations.of(context)!.createAccounthi)],
+                          children: [
+                            SubHeadingText(AppLocalization.of(context)
+                                .getTranslatedValue("signupTitle")
+                                .toString())
+                          ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 32),
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 12),
-                          child: Row(
-                            children: [
-                              ParagraphText(
-                                AppLocalizations.of(context)!.joinAgrichikitsahi,
-                              )
-                            ],
-                          ),
+                        padding: const EdgeInsets.only(left: 32, right: 32),
+                        child: Text(
+                          AppLocalization.of(context)
+                              .getTranslatedValue("signupSubtitle")
+                              .toString(),
+                          style: const TextStyle(
+                              color: AppColor.midBlackColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -92,7 +95,9 @@ class RegisterUser extends HookWidget {
                           children: [
                             Consumer<SignUpViewModel>(
                               builder: (context, provider, child) => Input(
-                                labelText: AppLocalizations.of(context)!.namehi,
+                                labelText: AppLocalization.of(context)
+                                    .getTranslatedValue("signupFormName")
+                                    .toString(),
                                 focusNode: useViewModel.nameFocusNode,
                                 keyboardType: TextInputType.name,
                                 textInputAction: TextInputAction.next,
@@ -111,7 +116,9 @@ class RegisterUser extends HookWidget {
                               height: 20,
                             ),
                             Input(
-                              labelText: AppLocalizations.of(context)!.emailhi,
+                              labelText: AppLocalization.of(context)
+                                  .getTranslatedValue("signupFormEmail")
+                                  .toString(),
                               focusNode: useViewModel.emailFocusNode,
                               suffixIcon: useViewModel.suffixIconForEmail(),
                               keyboardType: TextInputType.emailAddress,
@@ -136,7 +143,9 @@ class RegisterUser extends HookWidget {
                                     underline: Container(),
                                     isExpanded: true,
                                     hint: BaseText(
-                                      title: AppLocalizations.of(context)!.selectState,
+                                      title: AppLocalization.of(context)
+                                          .getTranslatedValue("signupFormSelectState")
+                                          .toString(),
                                       style: const TextStyle(),
                                     ),
                                     value: provider.selectedState.isEmpty
@@ -148,7 +157,10 @@ class RegisterUser extends HookWidget {
                                       return DropdownMenuItem<String>(
                                         value: value.state,
                                         child: BaseText(
-                                          title: value.stateHi,
+                                          title:
+                                              AppLocalization.of(context).locale.toString() == "en"
+                                                  ? value.state
+                                                  : value.stateHi,
                                           style: const TextStyle(fontSize: 14),
                                         ),
                                       );
@@ -164,7 +176,10 @@ class RegisterUser extends HookWidget {
                             useViewModel.districtList.isEmpty
                                 ? InkWell(
                                     onTap: () => Utils.snackbar(
-                                        AppLocalizations.of(context)!.warningSelectState, context),
+                                        AppLocalization.of(context)
+                                            .getTranslatedValue("validateState")
+                                            .toString(),
+                                        context),
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10),
                                       width: dimension['width']! * 0.90,
@@ -176,7 +191,9 @@ class RegisterUser extends HookWidget {
                                           underline: Container(),
                                           isExpanded: true,
                                           hint: BaseText(
-                                            title: AppLocalizations.of(context)!.selectDistrict,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectDistrict")
+                                                .toString(),
                                             style: const TextStyle(),
                                           ),
                                           value: null,
@@ -197,7 +214,9 @@ class RegisterUser extends HookWidget {
                                           underline: Container(),
                                           isExpanded: true,
                                           hint: BaseText(
-                                            title: AppLocalizations.of(context)!.selectDistrict,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectDistrict")
+                                                .toString(),
                                             style: const TextStyle(),
                                           ),
                                           value: provider.selectedDistrictHi.isEmpty
@@ -210,9 +229,17 @@ class RegisterUser extends HookWidget {
                                               onTap: () {
                                                 provider.setSelectedDistrictEn(value);
                                               },
-                                              value: value.nameHi,
+                                              value:
+                                                  AppLocalization.of(context).locale.toString() ==
+                                                          "en"
+                                                      ? value.name
+                                                      : value.nameHi,
                                               child: BaseText(
-                                                title: value.nameHi,
+                                                title:
+                                                    AppLocalization.of(context).locale.toString() ==
+                                                            "en"
+                                                        ? value.name
+                                                        : value.nameHi,
                                                 style: const TextStyle(fontSize: 14),
                                               ),
                                             );
@@ -227,7 +254,9 @@ class RegisterUser extends HookWidget {
                             ),
                             Consumer<SignUpViewModel>(
                               builder: (context, provider, child) => Input(
-                                labelText: AppLocalizations.of(context)!.villagehi,
+                                labelText: AppLocalization.of(context)
+                                    .getTranslatedValue("signupFormVillage")
+                                    .toString(),
                                 keyboardType: TextInputType.name,
                                 textInputAction: TextInputAction.done,
                                 suffixIcon: useViewModel.suffixIconForVillage(),
@@ -245,7 +274,9 @@ class RegisterUser extends HookWidget {
                             ),
                             Consumer<SignUpViewModel>(
                               builder: (context, provider, child) => CustomElevatedButton(
-                                title: AppLocalizations.of(context)!.registerhi,
+                                title: AppLocalization.of(context)
+                                    .getTranslatedValue("register")
+                                    .toString(),
                                 width: dimension["width"]! - 32,
                                 loading: provider.loading,
                                 onPress: () => provider.saveRegisterUserForm(context),

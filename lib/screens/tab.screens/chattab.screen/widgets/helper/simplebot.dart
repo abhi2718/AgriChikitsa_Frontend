@@ -1,8 +1,11 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_loader.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -15,6 +18,7 @@ class ChatScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
+    final profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
       useViewModel.initialTask(context);
@@ -36,12 +40,17 @@ class ChatScreen extends HookWidget {
                         children: [
                           provider.chatMessages.length > 1
                               ? BubbleSpecialThree(
-                                  text: message["question_hi"],
+                                  text: profileViewModel.locale["language"] == "en"
+                                      ? message["question_en"]
+                                      : message["question_hi"],
                                   color: AppColor.botText,
                                   tail: true,
                                   isSender: message["isMe"],
-                                  textStyle:
-                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      color: AppColor.darkBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 )
                               : Container(
                                   margin: const EdgeInsets.only(left: 18),
@@ -55,10 +64,14 @@ class ChatScreen extends HookWidget {
                                   child: AnimatedTextKit(
                                     animatedTexts: [
                                       TyperAnimatedText(
-                                        message["question_hi"],
-                                        textStyle: const TextStyle(
+                                        profileViewModel.locale["language"] == "en"
+                                            ? message["question_en"]
+                                            : message["question_hi"],
+                                        textStyle: GoogleFonts.inter(
                                             color: AppColor.darkBlackColor,
-                                            fontSize: 16,
+                                            fontSize: profileViewModel.locale["language"] == "en"
+                                                ? 14
+                                                : 16,
                                             fontWeight: FontWeight.w500),
                                       ),
                                     ],
@@ -78,12 +91,16 @@ class ChatScreen extends HookWidget {
                       return Column(
                         children: [
                           BubbleSpecialThree(
-                            text: message["question_hi"],
+                            text: profileViewModel.locale["language"] == "en"
+                                ? message["question_en"]
+                                : message["question_hi"],
                             color: AppColor.botText,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                            textStyle: GoogleFonts.inter(
+                                color: AppColor.darkBlackColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: profileViewModel.locale["language"] == "en" ? 14 : 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -96,12 +113,16 @@ class ChatScreen extends HookWidget {
                       return Column(
                         children: [
                           BubbleSpecialThree(
-                            text: message["question_hi"],
+                            text: profileViewModel.locale["language"] == "en"
+                                ? message["question_en"]
+                                : message["question_hi"],
                             color: AppColor.botText,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                            textStyle: GoogleFonts.inter(
+                                color: AppColor.darkBlackColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: profileViewModel.locale["language"] == "en" ? 14 : 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -115,25 +136,37 @@ class ChatScreen extends HookWidget {
                                 height: dimension['height']! * 0.06,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: message["options_hi"].length,
+                                    itemCount: profileViewModel.locale["language"] == "en"
+                                        ? message["options_en"].length
+                                        : message["options_hi"].length,
                                     itemBuilder: (context, index) {
                                       return InkWell(
                                         onTap: message["isAnswerSelected"]
                                             ? null
                                             : () {
-                                                provider.selectAge(context,
-                                                    message["options_hi"][index], message["id"]);
+                                                provider.selectAge(
+                                                    context,
+                                                    profileViewModel.locale["language"] == "en"
+                                                        ? message["options_en"][index]
+                                                        : message["options_hi"][index],
+                                                    message["id"]);
                                               },
                                         child: BubbleSpecialThree(
-                                          text: message["options_hi"][index],
+                                          text: profileViewModel.locale["language"] == "en"
+                                              ? message["options_en"][index]
+                                              : message["options_hi"][index],
                                           color:
                                               provider.selectedAge == message["options_hi"][index]
                                                   ? AppColor.selectedOptionChatBot
                                                   : AppColor.chatSent,
                                           tail: false,
                                           isSender: false,
-                                          textStyle: const TextStyle(
-                                              color: AppColor.darkBlackColor, fontSize: 16),
+                                          textStyle: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColor.darkBlackColor,
+                                              fontSize: profileViewModel.locale["language"] == "en"
+                                                  ? 14
+                                                  : 16),
                                         ),
                                       );
                                     }),
@@ -149,8 +182,11 @@ class ChatScreen extends HookWidget {
                                   color: AppColor.userText,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
-                                  textStyle:
-                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColor.darkBlackColor,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 )
                               : Container(),
                           const SizedBox(
@@ -164,12 +200,16 @@ class ChatScreen extends HookWidget {
                       return Column(
                         children: [
                           BubbleSpecialThree(
-                            text: message["question_hi"],
+                            text: profileViewModel.locale["language"] == "en"
+                                ? message["question_en"]
+                                : message["question_hi"],
                             color: AppColor.botText,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                            textStyle: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: AppColor.darkBlackColor,
+                                fontSize: profileViewModel.locale["language"] == "en" ? 14 : 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -184,9 +224,13 @@ class ChatScreen extends HookWidget {
                                     height: dimension['height']! * 0.06,
                                     child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: message["options_hi"].length > 10
-                                            ? 10
-                                            : message["options_hi"].length,
+                                        itemCount: profileViewModel.locale["language"] == "en"
+                                            ? message["options_en"].length > 10
+                                                ? 10
+                                                : message["options_en"].length
+                                            : message["options_hi"].length > 10
+                                                ? 10
+                                                : message["options_hi"].length,
                                         itemBuilder: (context, index) {
                                           return InkWell(
                                             onTap: message["isAnswerSelected"]
@@ -194,32 +238,46 @@ class ChatScreen extends HookWidget {
                                                 : () {
                                                     provider.handleSelctCrop(
                                                         context,
-                                                        message["options_hi"][index],
+                                                        profileViewModel.locale["language"] == "en"
+                                                            ? message["options_en"][index]
+                                                            : message["options_hi"][index],
                                                         message["id"]);
                                                   },
                                             child: BubbleSpecialThree(
-                                              text: message["options_hi"][index],
+                                              text: profileViewModel.locale["language"] == "en"
+                                                  ? message["options_en"][index]
+                                                  : message["options_hi"][index],
                                               color: provider.selectedCrop ==
-                                                      message["options_hi"][index]
+                                                      (profileViewModel.locale["language"] == "en"
+                                                          ? message["options_en"][index]
+                                                          : message["options_hi"][index])
                                                   ? AppColor.selectedOptionChatBot
                                                   : AppColor.chatSent,
                                               tail: false,
                                               isSender: false,
-                                              textStyle: const TextStyle(
-                                                  color: AppColor.darkBlackColor, fontSize: 16),
+                                              textStyle: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppColor.darkBlackColor,
+                                                  fontSize:
+                                                      profileViewModel.locale["language"] == "en"
+                                                          ? 14
+                                                          : 16),
                                             ),
                                           );
                                         }),
                                   ),
                                 ),
-                                message["options_hi"].length > 10
+                                message["options_en"].length > 10 ||
+                                        message["options_hi"].length > 10
                                     ? SingleChildScrollView(
                                         child: SizedBox(
                                           width: dimension['width']! - 32,
                                           height: dimension['height']! * 0.06,
                                           child: ListView.builder(
                                               scrollDirection: Axis.horizontal,
-                                              itemCount: message["options_hi"].length - 10,
+                                              itemCount: profileViewModel.locale["language"] == "en"
+                                                  ? message["options_en"].length - 10
+                                                  : message["options_hi"].length - 10,
                                               itemBuilder: (context, index) {
                                                 int currentIndex = index + 10;
                                                 return InkWell(
@@ -228,20 +286,38 @@ class ChatScreen extends HookWidget {
                                                       : () {
                                                           provider.handleSelctCrop(
                                                               context,
-                                                              message["options_hi"][currentIndex],
+                                                              profileViewModel.locale["language"] ==
+                                                                      "en"
+                                                                  ? message["options_en"]
+                                                                      [currentIndex]
+                                                                  : message["options_hi"]
+                                                                      [currentIndex],
                                                               message["id"]);
                                                         },
                                                   child: BubbleSpecialThree(
-                                                    text: message["options_hi"][currentIndex],
+                                                    text:
+                                                        profileViewModel.locale["language"] == "en"
+                                                            ? message["options_en"][currentIndex]
+                                                            : message["options_hi"][currentIndex],
                                                     color: provider.selectedCrop ==
-                                                            message["options_hi"][currentIndex]
+                                                            (profileViewModel.locale["language"] ==
+                                                                    "en"
+                                                                ? message["options_en"]
+                                                                    [currentIndex]
+                                                                : message["options_hi"]
+                                                                    [currentIndex])
                                                         ? AppColor.selectedOptionChatBot
                                                         : AppColor.chatSent,
                                                     tail: false,
                                                     isSender: false,
-                                                    textStyle: const TextStyle(
+                                                    textStyle: GoogleFonts.inter(
+                                                        fontWeight: FontWeight.w500,
                                                         color: AppColor.darkBlackColor,
-                                                        fontSize: 16),
+                                                        fontSize:
+                                                            profileViewModel.locale["language"] ==
+                                                                    "en"
+                                                                ? 14
+                                                                : 16),
                                                   ),
                                                 );
                                               }),
@@ -260,8 +336,11 @@ class ChatScreen extends HookWidget {
                                   color: AppColor.userText,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
-                                  textStyle:
-                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColor.darkBlackColor,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 )
                               : Container(),
                           const SizedBox(
@@ -275,12 +354,16 @@ class ChatScreen extends HookWidget {
                       return Column(
                         children: [
                           BubbleSpecialThree(
-                            text: message["question_hi"],
+                            text: profileViewModel.locale["language"] == "en"
+                                ? message["question_en"]
+                                : message["question_hi"],
                             color: AppColor.botText,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                            textStyle: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: AppColor.darkBlackColor,
+                                fontSize: profileViewModel.locale["language"] == "en" ? 14 : 16),
                           ),
                           const SizedBox(
                             height: 16,
@@ -294,25 +377,40 @@ class ChatScreen extends HookWidget {
                                 height: 40,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: message["options_hi"].length,
+                                    itemCount: profileViewModel.locale["language"] == "en"
+                                        ? message["options_en"].length
+                                        : message["options_hi"].length,
                                     itemBuilder: (context, index) {
                                       return InkWell(
                                         onTap: message["isAnswerSelected"]
                                             ? null
                                             : () {
-                                                provider.selectCropDisease(context,
-                                                    message["options_hi"][index], message["id"]);
+                                                provider.selectCropDisease(
+                                                    context,
+                                                    profileViewModel.locale["language"] == "en"
+                                                        ? message["options_en"][index]
+                                                        : message["options_hi"][index],
+                                                    message["options_hi"][index],
+                                                    message["id"]);
                                               },
                                         child: BubbleSpecialThree(
-                                          text: message["options_hi"][index],
+                                          text: profileViewModel.locale["language"] == "en"
+                                              ? message["options_en"][index]
+                                              : message["options_hi"][index],
                                           color: provider.selectedReason ==
-                                                  message["options_hi"][index]
+                                                  (profileViewModel.locale["language"] == "en"
+                                                      ? message["options_en"][index]
+                                                      : message["options_hi"][index])
                                               ? AppColor.selectedOptionChatBot
                                               : AppColor.chatSent,
                                           tail: false,
                                           isSender: false,
-                                          textStyle: const TextStyle(
-                                              color: AppColor.darkBlackColor, fontSize: 16),
+                                          textStyle: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColor.darkBlackColor,
+                                              fontSize: profileViewModel.locale["language"] == "en"
+                                                  ? 14
+                                                  : 16),
                                         ),
                                       );
                                     }),
@@ -328,8 +426,11 @@ class ChatScreen extends HookWidget {
                                   color: AppColor.userText,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
-                                  textStyle:
-                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColor.darkBlackColor,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 )
                               : Container(),
                           provider.showFifthBubbleLoader ? const ChatLoader() : Container()
@@ -339,20 +440,28 @@ class ChatScreen extends HookWidget {
                     if (index == 5) {
                       return Column(
                         children: [
-                          message["question_hi"] == ""
+                          (profileViewModel.locale["language"] == "en"
+                                      ? message["question_en"]
+                                      : message["question_hi"]) ==
+                                  ""
                               ? Container()
                               : BubbleSpecialThree(
-                                  text: message["question_hi"],
+                                  text: profileViewModel.locale["language"] == "en"
+                                      ? message["question_en"]
+                                      : message["question_hi"],
                                   color: AppColor.botText,
                                   tail: true,
                                   isSender: message["isMe"],
-                                  textStyle:
-                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColor.darkBlackColor,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 ),
                           const SizedBox(
                             height: 16,
                           ),
-                          message["options_hi"].length > 0
+                          message["options_en"].length > 0 || message["options_hi"].length > 0
                               ? SizedBox(
                                   width: dimension['width']! - 32,
                                   height: 40,
@@ -362,17 +471,26 @@ class ChatScreen extends HookWidget {
                                       height: 40,
                                       child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: message["options_hi"].length,
+                                          itemCount: profileViewModel.locale["language"] == "en"
+                                              ? message["options_en"].length
+                                              : message["options_hi"].length,
                                           itemBuilder: (context, index) {
                                             return InkWell(
                                               onTap: message["isAnswerSelected"] ? null : null,
                                               child: BubbleSpecialThree(
-                                                text: message["options_hi"][index],
+                                                text: profileViewModel.locale["language"] == "en"
+                                                    ? message["options_en"][index]
+                                                    : message["options_hi"][index],
                                                 color: AppColor.chatSent,
                                                 tail: false,
                                                 isSender: false,
-                                                textStyle: const TextStyle(
-                                                    color: AppColor.darkBlackColor, fontSize: 16),
+                                                textStyle: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: AppColor.darkBlackColor,
+                                                    fontSize:
+                                                        profileViewModel.locale["language"] == "en"
+                                                            ? 14
+                                                            : 16),
                                               ),
                                             );
                                           }),
@@ -389,7 +507,11 @@ class ChatScreen extends HookWidget {
                                   color: AppColor.userText,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
-                                  textStyle: const TextStyle(color: Colors.black, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 )
                               : Container(),
                           provider.showSixthBubbleLoader ? const ChatLoader() : Container(),
@@ -400,17 +522,21 @@ class ChatScreen extends HookWidget {
                       return Column(
                         children: [
                           BubbleSpecialThree(
-                            text: message["question_hi"],
+                            text: profileViewModel.locale["language"] == "en"
+                                ? message["question_en"]
+                                : message["question_hi"],
                             color: AppColor.botText,
                             tail: true,
                             isSender: message["isMe"],
-                            textStyle:
-                                const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                            textStyle: GoogleFonts.inter(
+                                fontWeight: FontWeight.w500,
+                                color: AppColor.darkBlackColor,
+                                fontSize: profileViewModel.locale["language"] == "en" ? 14 : 16),
                           ),
                           const SizedBox(
                             height: 16,
                           ),
-                          message["options_hi"].length > 0
+                          message["options_en"].length > 0 || message["options_hi"].length > 0
                               ? SizedBox(
                                   width: dimension['width']! - 32,
                                   height: 40,
@@ -420,17 +546,26 @@ class ChatScreen extends HookWidget {
                                       height: 40,
                                       child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: message["options_hi"].length,
+                                          itemCount: profileViewModel.locale["language"] == "en"
+                                              ? message["options_en"].length
+                                              : message["options_hi"].length,
                                           itemBuilder: (context, index) {
                                             return InkWell(
                                               onTap: message["isAnswerSelected"] ? null : null,
                                               child: BubbleSpecialThree(
-                                                text: message["options_hi"][index],
+                                                text: profileViewModel.locale["language"] == "en"
+                                                    ? message["options_en"][index]
+                                                    : message["options_hi"][index],
                                                 color: AppColor.chatSent,
                                                 tail: false,
                                                 isSender: false,
-                                                textStyle: const TextStyle(
-                                                    color: AppColor.darkBlackColor, fontSize: 16),
+                                                textStyle: GoogleFonts.inter(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: AppColor.darkBlackColor,
+                                                    fontSize:
+                                                        profileViewModel.locale["language"] == "en"
+                                                            ? 14
+                                                            : 16),
                                               ),
                                             );
                                           }),
@@ -444,8 +579,11 @@ class ChatScreen extends HookWidget {
                                   color: AppColor.errorColor,
                                   tail: false,
                                   isSender: message["isAnswerSelected"],
-                                  textStyle:
-                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColor.darkBlackColor,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 )
                               : Container(),
                           provider.showFifthBubbleLoader ? const ChatLoader() : Container(),
@@ -520,12 +658,17 @@ class ChatScreen extends HookWidget {
                           provider.showSeventhBubbleLoader ? const ChatLoader() : Container(),
                           message["question_hi"].isNotEmpty
                               ? BubbleSpecialThree(
-                                  text: message["question_hi"],
+                                  text: profileViewModel.locale["language"] == "en"
+                                      ? message["question_en"]
+                                      : message["question_hi"],
                                   color: AppColor.botText,
                                   tail: true,
                                   isSender: message["isMe"],
-                                  textStyle:
-                                      const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
+                                  textStyle: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColor.darkBlackColor,
+                                      fontSize:
+                                          profileViewModel.locale["language"] == "en" ? 14 : 16),
                                 )
                               : Container(),
                           const SizedBox(
@@ -535,9 +678,13 @@ class ChatScreen extends HookWidget {
                               ? AnimatedTextKit(
                                   animatedTexts: [
                                     TyperAnimatedText(
-                                      "फसलों की सुरक्षा एग्री-चिकित्सा",
-                                      textStyle: const TextStyle(
-                                          fontSize: 16, fontWeight: FontWeight.w500),
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue("chatBotEndTagline")
+                                          .toString(),
+                                      textStyle: GoogleFonts.inter(
+                                          fontSize:
+                                              profileViewModel.locale["language"] == "en" ? 14 : 16,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   ],
                                   onTap: null,
@@ -552,7 +699,13 @@ class ChatScreen extends HookWidget {
                           provider.isChatCompleted
                               ? ElevatedButton(
                                   onPressed: () => provider.initialTask(context),
-                                  child: const Text("Restart Chat"))
+                                  child: Text(
+                                    AppLocalization.of(context)
+                                        .getTranslatedValue("restartChat")
+                                        .toString(),
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500, color: AppColor.extraDark),
+                                  ))
                               : Container(),
                           const SizedBox(
                             height: 8,

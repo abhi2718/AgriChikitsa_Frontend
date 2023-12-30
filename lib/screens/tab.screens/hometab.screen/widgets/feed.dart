@@ -25,8 +25,8 @@ class Feed extends HookWidget {
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
     final useViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
-    final myProfileViewModel = useMemoized(
-        () => Provider.of<MyProfileViewModel>(context, listen: false));
+    final myProfileViewModel =
+        useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: false));
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
@@ -45,8 +45,8 @@ class Feed extends HookWidget {
     }
 
     void handleLike() {
-      useViewModel.toggleLike(context, feed["_id"], myProfileViewModel,
-          isLiked.value, userInfo.sId!);
+      useViewModel.toggleLike(
+          context, feed["_id"], myProfileViewModel, isLiked.value, userInfo.sId!);
       if (isLiked.value == true) {
         isLiked.value = false;
         numberOfLikes.value = numberOfLikes.value - 1;
@@ -57,8 +57,8 @@ class Feed extends HookWidget {
     }
 
     void handleBookMark() {
-      useViewModel.toggleTimeline(context, feed['_id'], userInfo.sId!,
-          isBookMarked.value, myProfileViewModel);
+      useViewModel.toggleTimeline(
+          context, feed['_id'], userInfo.sId!, isBookMarked.value, myProfileViewModel);
       isBookMarked.value = !isBookMarked.value;
     }
 
@@ -80,11 +80,8 @@ class Feed extends HookWidget {
     return Container(
       margin: EdgeInsets.only(
           top: 10,
-          bottom: feed ==
-                  useViewModel.feedList
-                      .elementAt(useViewModel.feedList.length - 1)
-              ? 30
-              : 0),
+          bottom:
+              feed == useViewModel.feedList.elementAt(useViewModel.feedList.length - 1) ? 30 : 0),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Card(
@@ -107,15 +104,13 @@ class Feed extends HookWidget {
                                 borderRadius: BorderRadius.circular(20),
                                 child: CachedNetworkImage(
                                   imageUrl: user['profileImage'],
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          Skeleton(
+                                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                      Skeleton(
                                     height: 40,
                                     width: 40,
                                     radius: 0,
                                   ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                  errorWidget: (context, url, error) => const Icon(Icons.error),
                                   width: 40,
                                   fit: BoxFit.cover,
                                   height: 40,
@@ -132,13 +127,11 @@ class Feed extends HookWidget {
                           children: [
                             BaseText(
                               title: user['name'],
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w700),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                             ),
                             BaseText(
                               title: user['userHandler'] ?? "@username",
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w400),
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                             ),
                           ],
                         ),
@@ -152,8 +145,7 @@ class Feed extends HookWidget {
                 width: dimension["width"]! - 16,
                 child: CachedNetworkImage(
                   imageUrl: feed['imgurl'],
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Skeleton(
+                  progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                     height: dimension["width"]! - 16,
                     width: dimension["width"]! - 16,
                     radius: 0,
@@ -164,57 +156,51 @@ class Feed extends HookWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: handleLike,
-                            child: Icon(
-                              isLiked.value
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_outline_rounded,
-                              color: AppColor.iconHeartColor,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(numberOfLikes.value.toString())
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Utils.model(
-                                  context,
-                                  UserComment(
-                                    feedId: feed["_id"],
-                                    setNumberOfComment: setNumberOfComment,
-                                  ));
-                            },
-                            child: const Icon(Remix.chat_4_line),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(numberOfComments.value.toString())
-                        ],
-                      ),
                       InkWell(
-                        onTap: handleBookMark,
+                        onTap: handleLike,
                         child: Icon(
-                          isBookMarked.value
-                              ? Remix.bookmark_fill
-                              : Remix.bookmark_line,
-                          color: AppColor.darkColor,
+                          isLiked.value ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                          color: AppColor.iconHeartColor,
                         ),
-                      )
-                    ]),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(numberOfLikes.value.toString())
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Utils.model(
+                              context,
+                              UserComment(
+                                feedId: feed["_id"],
+                                setNumberOfComment: setNumberOfComment,
+                              ));
+                        },
+                        child: const Icon(Remix.chat_4_line),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(numberOfComments.value.toString())
+                    ],
+                  ),
+                  InkWell(
+                    onTap: handleBookMark,
+                    child: Icon(
+                      isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
+                      color: AppColor.darkColor,
+                    ),
+                  )
+                ]),
               ),
               feed["hindiCaption"] != null
                   ? Padding(
@@ -228,19 +214,16 @@ class Feed extends HookWidget {
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
                             ),
-                            maxLines:
-                                useViewModel.isExpanded(feed['_id']) ? null : 2,
+                            maxLines: useViewModel.isExpanded(feed['_id']) ? null : 2,
                           ),
                           if (feed["hindiCaption"].length > 140)
                             InkWell(
-                              onTap: () =>
-                                  useViewModel.toggleExpand(feed['_id']),
+                              onTap: () => useViewModel.toggleExpand(feed['_id']),
                               child: useViewModel.isExpanded(feed['_id'])
                                   ? Container()
                                   : const BaseText(
                                       title: "Read More",
-                                      style: TextStyle(
-                                          color: AppColor.hyperlinkColor),
+                                      style: TextStyle(color: AppColor.hyperlinkColor),
                                     ),
                             ),
                         ],

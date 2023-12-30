@@ -1,8 +1,9 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_history.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 
@@ -37,7 +38,8 @@ class ChatTabScreen extends HookWidget {
               },
               child: const Icon(Icons.arrow_back)),
           title: BaseText(
-              title: AppLocalizations.of(context)!.chatPanchamhi, style: const TextStyle()),
+              title: AppLocalization.of(context).getTranslatedValue("chatBotTitle").toString(),
+              style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 18)),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16),
@@ -45,7 +47,11 @@ class ChatTabScreen extends HookWidget {
                   onTap: () {
                     useViewModel.isChatCompleted
                         ? Utils.model(context, const ChatHistory1())
-                        : Utils.snackbar("Uh! Chat Active, Try later!", context);
+                        : Utils.snackbar(
+                            AppLocalization.of(context)
+                                .getTranslatedValue("chatActiveWarning")
+                                .toString(),
+                            context);
                   },
                   child: const Icon(Remix.chat_history_line)),
             )
@@ -128,7 +134,9 @@ class ChatTabScreen extends HookWidget {
                                   ),
                                   contentPadding:
                                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                                  hintText: AppLocalizations.of(context)!.typeHerehi,
+                                  hintText: AppLocalization.of(context)
+                                      .getTranslatedValue("typeHere")
+                                      .toString(),
                                   hintStyle: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,

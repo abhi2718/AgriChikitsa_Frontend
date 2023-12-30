@@ -1,27 +1,30 @@
 import 'dart:io';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/category_button.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import './widgets/post_category_button.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
-import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
 
 class CreatePostScreen extends HookWidget {
-  const CreatePostScreen({super.key});
+  const CreatePostScreen({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel =
-        useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
-    final hometabViewModel = useMemoized(
-        () => Provider.of<HomeTabViewModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
+    final profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
+    final hometabViewModel =
+        useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
       useViewModel.fetchFeedsCategory(context, hometabViewModel);
@@ -32,15 +35,12 @@ class CreatePostScreen extends HookWidget {
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
         centerTitle: true,
-        leading: InkWell(
-            onTap: () => useViewModel.goBack(context),
-            child: const Icon(Icons.arrow_back)),
+        leading:
+            InkWell(onTap: () => useViewModel.goBack(context), child: const Icon(Icons.arrow_back)),
         title: BaseText(
-          title: AppLocalizations.of(context)!.createPosthi,
-          style: const TextStyle(
-              color: AppColor.darkBlackColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w500),
+          title: AppLocalization.of(context).getTranslatedValue("createPost").toString(),
+          style: GoogleFonts.inter(
+              color: AppColor.darkBlackColor, fontSize: 16, fontWeight: FontWeight.w500),
         ),
         elevation: 0.0,
       ),
@@ -57,9 +57,8 @@ class CreatePostScreen extends HookWidget {
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     height: dimension['width']! - 16,
                     width: dimension['width']! - 16,
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: AppColor.darkColor, width: 2.0)),
+                    decoration:
+                        BoxDecoration(border: Border.all(color: AppColor.darkColor, width: 2.0)),
                     child: useViewModel.imagePath.isEmpty
                         ? Center(
                             child: Column(
@@ -74,8 +73,9 @@ class CreatePostScreen extends HookWidget {
                                   height: 10,
                                 ),
                                 BaseText(
-                                    title: AppLocalizations.of(context)!
-                                        .clickImageUploadhi,
+                                    title: AppLocalization.of(context)
+                                        .getTranslatedValue("imageUploadCaptionPost")
+                                        .toString(),
                                     style: const TextStyle()),
                               ],
                             ),
@@ -94,22 +94,20 @@ class CreatePostScreen extends HookWidget {
                 maxLength: 225,
                 controller: useViewModel.captionController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.enterCaptionhi,
+                  labelText:
+                      AppLocalization.of(context).getTranslatedValue("enterCaption").toString(),
                   border: const OutlineInputBorder(),
                   enabledBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: AppColor.darkColor, width: 2.0),
+                    borderSide: BorderSide(color: AppColor.darkColor, width: 2.0),
                   ),
                 ),
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
                   useViewModel.onSavedCaptionField(value);
                 },
-                onTapOutside: (_) =>
-                    FocusManager.instance.primaryFocus?.unfocus(),
+                onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
                 onSubmitted: (_) {
-                  useViewModel
-                      .onSavedCaptionField(useViewModel.captionController.text);
+                  useViewModel.onSavedCaptionField(useViewModel.captionController.text);
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
                 onEditingComplete: () {
@@ -120,7 +118,9 @@ class CreatePostScreen extends HookWidget {
                 height: 8,
               ),
               BaseText(
-                  title: AppLocalizations.of(context)!.selectCategoeyhi,
+                  title: AppLocalization.of(context)
+                      .getTranslatedValue("selectCategoryPost")
+                      .toString(),
                   style: const TextStyle()),
               const SizedBox(
                 height: 10,
@@ -136,6 +136,8 @@ class CreatePostScreen extends HookWidget {
                           itemCount: provider.categoriesList.length,
                           itemBuilder: (context, index) {
                             return CategoryButton(
+                              profileViewModel: profileViewModel,
+                              provider: provider,
                               category: provider.categoriesList[index],
                               onTap: () {
                                 provider.setActiveState(
@@ -155,7 +157,7 @@ class CreatePostScreen extends HookWidget {
               ),
               Consumer<CreatePostModel>(
                 builder: (context, provider, child) => CustomElevatedButton(
-                    title: AppLocalizations.of(context)!.updatehi,
+                    title: AppLocalization.of(context).getTranslatedValue("updateTitle").toString(),
                     loading: provider.buttonloading,
                     width: dimension["width"]! - 32,
                     onPress: () {
