@@ -130,6 +130,9 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   setNotPlantedCheck(value) {
+    if (sowingDate != null) {
+      sowingDate = null;
+    }
     notPlantedCheck = value;
     notifyListeners();
   }
@@ -340,7 +343,6 @@ class AGPlusViewModel with ChangeNotifier {
         });
       }
     } catch (error) {
-      userPlotList.removeAt(0);
       fieldStatus = false;
       setAddFieldLoader(false);
       addPlotStatus(context);
@@ -425,10 +427,11 @@ class AGPlusViewModel with ChangeNotifier {
       context: context,
       initialDate: sowingDate,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      lastDate: DateTime.now(),
     );
     if (picked != null) {
       sowingDate = picked;
+      notPlantedCheck = false;
     }
     notifyListeners();
   }
