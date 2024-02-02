@@ -173,5 +173,6 @@
     "successfullySubmit":"Your Request has been submitted successfully",
     "deleteField":"Delete Field",
     "confirmDeleteField":"Are you sure you want to delete this field?",
-    "comingSoon":"Coming Soon"
+    "comingSoon":"Coming Soon",
+    "cropReport":"Crop Report"
 }

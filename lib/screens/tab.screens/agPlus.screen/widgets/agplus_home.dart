@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/crop_report_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/features_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/pest_management.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/selected_plot_details.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../res/color.dart';
-import '../agPlus_view_model.dart';
+import '../ag_plus_view_model.dart';
 import '../weather.screen/weather_view_model.dart';
 import '../helper/current_selected_plot.dart';
 
@@ -43,7 +44,7 @@ class AGPlusHome extends HookWidget {
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(
                 onTap: () => showDeleteFieldDialog(context, useViewModel),
-                child: Icon(Icons.delete)),
+                child: const Icon(Icons.delete)),
           )
         ],
       ),
@@ -94,7 +95,6 @@ class AGPlusHome extends HookWidget {
                         ));
                   }),
               FeaturesCard(
-                  // title: "Pest\nManagement",
                   title: AppLocalization.of(context)
                       .getTranslatedValue("pestManagementTitle")
                       .toString(),
@@ -108,6 +108,13 @@ class AGPlusHome extends HookWidget {
                           selectedPlots: useViewModel.selectedPlot,
                           agPlusViewModel: useViewModel,
                         ));
+                  }),
+              FeaturesCard(
+                  title: AppLocalization.of(context).getTranslatedValue("cropReport").toString(),
+                  image:
+                      "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  ontap: () {
+                    Utils.model(context, CropReportScreen());
                   }),
             ],
           ),

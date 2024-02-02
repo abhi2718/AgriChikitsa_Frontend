@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/utils.dart';
-import 'agPlus_view_model.dart';
+import 'ag_plus_view_model.dart';
 
 class AGPlusLanding extends HookWidget {
   const AGPlusLanding({super.key});

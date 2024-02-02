@@ -1,5 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agPlus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/agplus_home.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/take_photo_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -160,7 +160,7 @@ class AllPlotsScreen extends HookWidget {
                                                   height: 4,
                                                 ),
                                                 Text(
-                                                  "${AppLocalization.of(context).getTranslatedValue("plotCropTitle").toString()} - ${plot.value.cropName}",
+                                                  "${AppLocalization.of(context).getTranslatedValue("plotCropTitle").toString()} - ${AppLocalization.of(context).locale.toString() == 'en' ? plot.value.cropName : plot.value.cropNameHi}",
                                                   style: GoogleFonts.inter(
                                                       fontSize: 22,
                                                       fontWeight: FontWeight.w600,

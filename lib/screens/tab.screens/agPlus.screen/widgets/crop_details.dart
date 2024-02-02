@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
-import '../agPlus_view_model.dart';
+import '../ag_plus_view_model.dart';
 
 class CropDetails extends StatelessWidget {
   const CropDetails({super.key});

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../model/select_crop_model.dart';
 import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';
-import '../agPlus_view_model.dart';
+import '../ag_plus_view_model.dart';
 
 class CropItem extends StatelessWidget {
   const CropItem({

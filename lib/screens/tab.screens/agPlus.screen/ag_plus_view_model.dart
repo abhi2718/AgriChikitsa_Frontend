@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/addFieldStatusScreen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/add_field_status_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/select_crop.dart';
 
 import 'package:flutter/foundation.dart';
@@ -26,7 +26,8 @@ class AGPlusViewModel with ChangeNotifier {
   dynamic selectedPlot;
   var plotImagePath = "";
   var mapLocation = {"latitude": "", "longitude": ""};
-  var selectedCrop = "";
+  late SelectCrop selectedCrop;
+  var selectedCropId = '';
   TextEditingController fieldNamecontroller = TextEditingController();
   String fieldName = "";
   TextEditingController fieldSizecontroller = TextEditingController();
@@ -56,7 +57,7 @@ class AGPlusViewModel with ChangeNotifier {
     addFieldLoader = false;
     getCropListLoader = false;
     fieldStatus = false;
-    selectedCrop = "";
+    selectedCropId = "";
     fieldSize = "";
     plotImagePath = "";
     sowingDate = null;
@@ -109,7 +110,7 @@ class AGPlusViewModel with ChangeNotifier {
     if (currentSelectedCategory == category.id) {
       return;
     }
-    selectedCrop = "";
+    selectedCropId = "";
     currentSelectedCategory = category.id;
     notifyListeners();
     getCropList(context);
@@ -182,7 +183,7 @@ class AGPlusViewModel with ChangeNotifier {
     setCropListLoader(true);
     try {
       cropCategoriesList.clear();
-      selectedCrop = "";
+      selectedCropId = "";
       currentSelectedCategory = "All";
       final data = await _agPlusRepository.fetchCropsCategoryList();
       cropCategoriesList = [
@@ -247,10 +248,11 @@ class AGPlusViewModel with ChangeNotifier {
   void setSelectedCrop(BuildContext context, SelectCrop cropItem) {
     if (cropItem.isSelected) {
       cropItem.isSelected = false;
-      selectedCrop = "";
+      selectedCropId = '';
     } else {
       cropItem.isSelected = true;
-      selectedCrop = cropItem.name;
+      selectedCrop = cropItem;
+      selectedCropId = cropItem.id;
       for (final crop in cropList) {
         if (crop != cropItem) {
           crop.isSelected = false;
@@ -306,7 +308,7 @@ class AGPlusViewModel with ChangeNotifier {
     try {
       final payload = {
         "feildName": fieldName,
-        "cropName": selectedCrop,
+        "cropId": selectedCropId,
         "cropImage": plotImagePath,
         "cordinates": mapLocation,
         "area": "$fieldSize $areaUnit",
@@ -318,7 +320,8 @@ class AGPlusViewModel with ChangeNotifier {
         Plots newPlot = Plots(
           id: data['data']['_id'],
           fieldName: fieldName,
-          cropName: selectedCrop,
+          cropName: selectedCrop.name,
+          cropNameHi: selectedCrop.name_hi,
           cropImage: plotImagePath,
           latitude: mapLocation['latitude'].toString(),
           longitude: mapLocation['longitude'].toString(),

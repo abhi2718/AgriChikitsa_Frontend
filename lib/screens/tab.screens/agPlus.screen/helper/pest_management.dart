@@ -1,5 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agPlus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';

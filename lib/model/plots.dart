@@ -2,6 +2,7 @@ class Plots {
   String id;
   String fieldName;
   String cropName;
+  String cropNameHi;
   String cropImage;
   String latitude;
   String longitude;
@@ -15,6 +16,7 @@ class Plots {
     this.id = "1",
     required this.fieldName,
     required this.cropName,
+    required this.cropNameHi,
     required this.latitude,
     required this.longitude,
     required this.cropImage,
@@ -28,7 +30,8 @@ class Plots {
   factory Plots.fromJson(Map<String, dynamic> json) {
     return Plots(
         cropImage: json['cropImage'],
-        cropName: json['cropName'],
+        cropName: json['crop']['name'],
+        cropNameHi: json['crop']['name_hi'],
         area: json['area'],
         latitude: json['cordinates']['latitude'],
         longitude: json['cordinates']['longitude'],

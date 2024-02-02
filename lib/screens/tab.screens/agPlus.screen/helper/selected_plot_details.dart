@@ -56,7 +56,9 @@ class SelectedPlotDetails extends StatelessWidget {
               children: [
                 Text(
                   // "Paddy",
-                  selectedPlot.cropName,
+                  AppLocalization.of(context).locale.toString() == "en"
+                      ? selectedPlot.cropName
+                      : selectedPlot.cropNameHi,
                   style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w500, fontSize: 28, color: AppColor.whiteColor),
                 ),

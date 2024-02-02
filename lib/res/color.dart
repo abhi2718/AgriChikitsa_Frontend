@@ -22,4 +22,5 @@ class AppColor {
   static const chatUserColor = Color(0xffEFF4FF);
   static const hyperlinkColor = Colors.blue;
   static const pdfBgColor = Color(0xff1f1f1f);
+  static const cropReportTextColor = Color(0xff667085);
 }
