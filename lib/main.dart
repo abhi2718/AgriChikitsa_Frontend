@@ -1,6 +1,9 @@
-import 'package:agriChikitsa/l10n/l10n.dart';
+import 'package:agriChikitsa/screens/auth.screen/language_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandiPricesViewModel.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandi_prices_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'l10n/app_localizations.dart';
 import 'routes/routes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import './screens/auth.screen/signin.auth/signin_view_model.dart';
 import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import './res/primary_swatch.dart';
@@ -57,14 +60,12 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<ProfileViewModel>(
           create: (_) => ProfileViewModel(),
         ),
-        //EditProfileViewModel
         ChangeNotifierProvider<ChatTabViewModel>(
           create: (_) => ChatTabViewModel(),
         ),
         ChangeNotifierProvider<EditProfileViewModel>(
           create: (_) => EditProfileViewModel(),
         ),
-        //
         ChangeNotifierProvider<JankariViewModel>(
           create: (_) => JankariViewModel(),
         ),
@@ -83,6 +84,18 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<MandiPricesModel>(
           create: (_) => MandiPricesModel(),
         ),
+        ChangeNotifierProvider<AGPlusViewModel>(
+          create: (_) => AGPlusViewModel(),
+        ),
+        ChangeNotifierProvider<AgristickViewModel>(
+          create: (_) => AgristickViewModel(),
+        ),
+        ChangeNotifierProvider<WeatherViewModel>(
+          create: (_) => WeatherViewModel(),
+        ),
+        ChangeNotifierProvider<LanguageViewModel>(
+          create: (_) => LanguageViewModel(),
+        ),
       ],
       child: Consumer<ProfileViewModel>(
         builder: (context, provider, child) {
@@ -90,11 +103,13 @@ class App extends StatelessWidget {
             title: 'Agrichikitsa',
             theme: ThemeData(primarySwatch: primaryswatch),
             routes: Routes().routes,
-            locale: Locale(
-                provider.locale["language"]!, provider.locale["country"]!),
-            supportedLocales: L10n.all,
+            locale: Locale(provider.locale["language"]!, provider.locale["country"]!),
+            supportedLocales: const [
+              Locale('en'),
+              Locale('hi'),
+            ],
             localizationsDelegates: const [
-              AppLocalizations.delegate,
+              AppLocalization.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate

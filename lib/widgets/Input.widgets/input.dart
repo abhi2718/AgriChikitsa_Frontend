@@ -54,6 +54,7 @@ class Input extends StatelessWidget {
         suffixIcon: suffixIcon,
         suffixIconColor: AppColor.darkColor,
         labelText: labelText,
+        labelStyle: const TextStyle(color: AppColor.extraDark),
         disabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.darkColor,

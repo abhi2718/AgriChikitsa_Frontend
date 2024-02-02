@@ -1,9 +1,10 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/notification_tile.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import '../../../res/color.dart';
@@ -21,8 +22,8 @@ class NotificationScreen extends HookWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
     double availableHeight = screenHeight - (appBarHeight + statusBarHeight + 50);
 
-    final useViewModel = useMemoized(
-        () => Provider.of<NotificationViewModel>(context, listen: false));
+    final useViewModel =
+        useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
     useEffect(() {
       useViewModel.fetchNotifications(context);
     }, []);
@@ -30,8 +31,8 @@ class NotificationScreen extends HookWidget {
       backgroundColor: AppColor.notificationBgColor,
       appBar: AppBar(
         title: BaseText(
-          title: AppLocalizations.of(context)!.notificationhi,
-          style: const TextStyle(color: Colors.black),
+          title: AppLocalization.of(context).getTranslatedValue("notificationHeader").toString(),
+          style: GoogleFonts.inter(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
         backgroundColor: AppColor.whiteColor,
@@ -44,48 +45,50 @@ class NotificationScreen extends HookWidget {
               color: AppColor.darkBlackColor,
             )),
       ),
-      body: Column(
-        children: [
-          Consumer<NotificationViewModel>(builder: (context, provider, child) {
-            final notificationList = provider.notificationsList;
-            return provider.notificationsList.isEmpty
-                ? SizedBox(
-                    height: availableHeight,
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.notificationNotAvaiablehi,
-                      ),
-                    ),
-                  )
-                : useViewModel.loading
-                    ? SizedBox(
-                        height: availableHeight,
-                        child: ListView.builder(
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 20, left: 10, right: 10),
-                              child: Skeleton(
-                                  height: dimension['height']! * 0.11,
-                                  width: dimension['width']!),
-                            );
-                          },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Consumer<NotificationViewModel>(builder: (context, provider, child) {
+              final notificationList = provider.notificationsList;
+              return provider.notificationsList.isEmpty
+                  ? SizedBox(
+                      height: availableHeight,
+                      child: Center(
+                        child: Text(
+                          AppLocalization.of(context)
+                              .getTranslatedValue("notificationEmpty")
+                              .toString(),
                         ),
-                      )
-                    : SizedBox(
-                        height: availableHeight,
-                        child: ListView.builder(
-                            itemCount: notificationList.length,
+                      ),
+                    )
+                  : useViewModel.loading
+                      ? SizedBox(
+                          height: availableHeight,
+                          child: ListView.builder(
+                            itemCount: 10,
                             itemBuilder: (context, index) {
-                              final notificationItem =
-                                  useViewModel.notificationsList[index];
-                              return NotificationTile(
-                                notificationItem: notificationItem,
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                                child: Skeleton(
+                                    height: dimension['height']! * 0.11,
+                                    width: dimension['width']!),
                               );
-                            }));
-          })
-        ],
+                            },
+                          ),
+                        )
+                      : SizedBox(
+                          height: availableHeight,
+                          child: ListView.builder(
+                              itemCount: notificationList.length,
+                              itemBuilder: (context, index) {
+                                final notificationItem = useViewModel.notificationsList[index];
+                                return NotificationTile(
+                                  notificationItem: notificationItem,
+                                );
+                              }));
+            })
+          ],
+        ),
       ),
     );
   }

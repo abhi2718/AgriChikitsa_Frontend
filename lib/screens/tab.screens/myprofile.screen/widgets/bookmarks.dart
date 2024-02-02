@@ -56,10 +56,8 @@ class BookmarkFeed extends HookWidget {
     }
 
     final user = feed['user'];
-    final imageName = feed['imgurl'].split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-    final profileImage = user['profileImage'].split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final imageName = feed['imgurl'];
+    final profileImage = user['profileImage'];
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
       if (homeViewModel.toogleLikeBookMarkedFeed["id"] == feed['_id'] &&
@@ -113,8 +111,7 @@ class BookmarkFeed extends HookWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
                                 child: CachedNetworkImage(
-                                  imageUrl:
-                                      'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                  imageUrl: profileImage,
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) =>
                                           Skeleton(
@@ -162,7 +159,7 @@ class BookmarkFeed extends HookWidget {
                 height: dimension["width"]! - 16,
                 width: dimension["width"]! - 16,
                 child: CachedNetworkImage(
-                  imageUrl: 'https://d336izsd4bfvcs.cloudfront.net/$imageName',
+                  imageUrl: imageName,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       Skeleton(
                     height: dimension["width"]! - 16,

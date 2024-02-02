@@ -1,5 +1,5 @@
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_landing.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
-import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,12 +18,15 @@ class TabScreen extends HookWidget {
     List<Widget> tabs = [
       const HomeTabScreen(),
       const JankariHomeTab(),
-      const MyProfileScreen(),
+      // const MyProfileScreen(),
+      // const AGPlus(),
+      const AGPlusLanding(),
       const ProfileTabScreen()
     ];
     return Scaffold(
       body: tabs[currentIndex.value],
       floatingActionButton: FloatingActionButton(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           backgroundColor: Colors.white,
           elevation: 10.0,
           child: Image.asset(
@@ -32,15 +35,16 @@ class TabScreen extends HookWidget {
             width: 40,
           ),
           onPressed: () {
-            Utils.model(context, ChatTabScreen());
+            Utils.model(context, const ChatTabScreen());
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         elevation: 6.0,
         color: AppColor.notificationBgColor,
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 10,
-        child: Container(
+        height: 70,
+        child: SizedBox(
           height: 60,
           child: Row(
             //children inside bottom appbar
@@ -66,6 +70,7 @@ class TabScreen extends HookWidget {
               ),
               Container(
                 margin: const EdgeInsets.only(right: 20),
+                // margin: const EdgeInsets.only(right: 80),
                 child: IconButton(
                   icon: currentIndex.value == 1
                       ? SvgPicture.asset(
@@ -88,12 +93,12 @@ class TabScreen extends HookWidget {
                 child: IconButton(
                   icon: currentIndex.value == 2
                       ? SvgPicture.asset(
-                          'assets/svg/timeline-filled.svg',
+                          'assets/svg/agPlus_filled.svg',
                           width: 23,
                           height: 22,
                         )
                       : SvgPicture.asset(
-                          'assets/svg/timeline.svg',
+                          'assets/svg/agPlus.svg',
                           width: 23,
                           height: 22,
                         ),
@@ -137,3 +142,25 @@ class TabViewModel with ChangeNotifier {
     screenIndex = 0;
   }
 }
+
+
+// Container(
+//                 // margin: const EdgeInsets.only(left: 20),
+//                 margin: const EdgeInsets.only(right: 40),
+//                 child: IconButton(
+//                   icon: currentIndex.value == 3
+//                       ? SvgPicture.asset(
+//                           'assets/svg/timeline-filled.svg',
+//                           width: 23,
+//                           height: 22,
+//                         )
+//                       : SvgPicture.asset(
+//                           'assets/svg/timeline.svg',
+//                           width: 23,
+//                           height: 22,
+//                         ),
+//                   onPressed: () {
+//                     currentIndex.value = 3;
+//                   },
+//                 ),
+//               ),

@@ -44,4 +44,14 @@ class JankariRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> fetchTrendingCrops() async {
+    try {
+      const url = '${AppUrl.jankariEndPoint}/getTrendingCrops';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

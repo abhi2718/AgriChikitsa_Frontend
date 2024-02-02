@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
@@ -5,7 +6,6 @@ import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprof
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/post_pre_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -25,10 +25,8 @@ class MyProfileScreen extends HookWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     double availableHeight = screenHeight - (2 * appBarHeight + statusBarHeight);
-    final useViewModel = useMemoized(
-        () => Provider.of<MyProfileViewModel>(context, listen: true));
-    final createPostModel =
-        useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
+    final useViewModel = useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: true));
+    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
 
     useEffect(() {
       if (useViewModel.feedList.isEmpty) {
@@ -54,102 +52,115 @@ class MyProfileScreen extends HookWidget {
       length: 2,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: AppColor.notificationBgColor,
           appBar: AppBar(
-            systemOverlayStyle:
-                const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-            backgroundColor: AppColor.whiteColor,
+            automaticallyImplyLeading: true,
+            elevation: 0.0,
+            systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+            backgroundColor: AppColor.notificationBgColor,
             foregroundColor: AppColor.darkBlackColor,
-            flexibleSpace: TabBar(
-                onTap: (index) {
-                  useViewModel.setActiveTabIndex(true);
-                },
-                padding: const EdgeInsets.only(top: 10),
-                tabs: [
-                  Tab(
-                      child: BaseText(
-                          title: AppLocalizations.of(context)!.myPosthi,
-                          style: const TextStyle(color: Colors.black))),
-                  Tab(
-                      child: BaseText(
-                          title: AppLocalizations.of(context)!.bookmarkhi,
-                          style: const TextStyle(color: Colors.black))),
-                ]),
           ),
-          body: TabBarView(
+          body: Column(
             children: [
-              Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.loading
-                    ? const PreLoader()
-                    : provider.feedList.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              BaseText(
-                                title:
-                                    AppLocalizations.of(context)!.nopostYethi,
-                                style: const TextStyle(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              InkWell(
-                                onTap: () => Navigator.pushNamed(
-                                    context, RouteName.createPostRoute),
-                                child: Container(
-                                    height: dimension['height']! * 0.07,
-                                    width: dimension['width']! * 0.30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: AppColor.darkColor,
+              TabBar(
+                  indicatorColor: AppColor.extraDark,
+                  onTap: (index) {
+                    useViewModel.setActiveTabIndex(true);
+                  },
+                  tabs: [
+                    Tab(
+                        child: BaseText(
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("myPostHeader")
+                                .toString(),
+                            style: const TextStyle(color: Colors.black))),
+                    Tab(
+                        child: BaseText(
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("bookmarkhHeader")
+                                .toString(),
+                            style: const TextStyle(color: Colors.black))),
+                  ]),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    Consumer<MyProfileViewModel>(builder: (context, provider, child) {
+                      return provider.loading
+                          ? const PreLoader()
+                          : provider.feedList.isEmpty
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    BaseText(
+                                      title: AppLocalization.of(context)
+                                          .getTranslatedValue("noPostYet")
+                                          .toString(),
+                                      style: const TextStyle(),
                                     ),
-                                    child: Center(
-                                        child: BaseText(
-                                      title: AppLocalizations.of(context)!
-                                          .createOnehi,
-                                      style: const TextStyle(
-                                          color: AppColor.whiteColor),
-                                    ))),
-                              )
-                            ],
-                          )
-                        : RefreshIndicator(
-                            onRefresh: refresh,
-                            child: SizedBox(
-                              height: availableHeight,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: provider.feedList.length,
-                                itemBuilder: (context, index) {
-                                  final feed = provider.feedList[index];
-                                  return MyProfileFeed(feed: feed);
-                                },
-                              ),
-                            ),
-                          );
-              }),
-              Consumer<MyProfileViewModel>(builder: (context, provider, child) {
-                return provider.bookMarkLoader
-                    ? const PreLoader()
-                    : provider.bookMarkFeedList.isEmpty
-                        ? Center(
-                            child: Text(
-                                AppLocalizations.of(context)!.noBookMarkAddhi))
-                        : SizedBox(
-                            height: availableHeight,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: provider.bookMarkFeedList.reversed
-                                    .map((feed) {
-                                  return BookmarkFeed(
-                                    key: ObjectKey(feed["_id"]),
-                                    feed: feed,
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          );
-              })
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    InkWell(
+                                      onTap: () =>
+                                          Navigator.pushNamed(context, RouteName.createPostRoute),
+                                      child: Container(
+                                          height: dimension['height']! * 0.07,
+                                          width: dimension['width']! * 0.30,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(8),
+                                            color: AppColor.darkColor,
+                                          ),
+                                          child: Center(
+                                              child: BaseText(
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("createNewPost")
+                                                .toString(),
+                                            style: const TextStyle(color: AppColor.whiteColor),
+                                          ))),
+                                    )
+                                  ],
+                                )
+                              : RefreshIndicator(
+                                  onRefresh: refresh,
+                                  child: SizedBox(
+                                    height: availableHeight,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: provider.feedList.length,
+                                      itemBuilder: (context, index) {
+                                        final feed = provider.feedList[index];
+                                        return MyProfileFeed(feed: feed);
+                                      },
+                                    ),
+                                  ),
+                                );
+                    }),
+                    Consumer<MyProfileViewModel>(builder: (context, provider, child) {
+                      return provider.bookMarkLoader
+                          ? const PreLoader()
+                          : provider.bookMarkFeedList.isEmpty
+                              ? Center(
+                                  child: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("noBookMarkAdd")
+                                      .toString()))
+                              : SizedBox(
+                                  height: availableHeight,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: provider.bookMarkFeedList.reversed.map((feed) {
+                                        return BookmarkFeed(
+                                          key: ObjectKey(feed["_id"]),
+                                          feed: feed,
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                );
+                    })
+                  ],
+                ),
+              ),
             ],
           ),
         ),

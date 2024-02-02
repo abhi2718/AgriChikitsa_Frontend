@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
@@ -13,7 +14,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../model/comment.dart';
 import '../myprofile.screen/myprofile_view_model.dart';
 
@@ -152,7 +152,9 @@ class HomeTabViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -175,7 +177,9 @@ class HomeTabViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -191,12 +195,8 @@ class HomeTabViewModel with ChangeNotifier {
     }));
   }
 
-  void toggleLike(
-      BuildContext context,
-      String id,
-      MyProfileViewModel myProfileViewModel,
-      bool isLiked,
-      String userId) async {
+  void toggleLike(BuildContext context, String id, MyProfileViewModel myProfileViewModel,
+      bool isLiked, String userId) async {
     try {
       int index = feedList.indexWhere((feed) => feed['_id'] == id);
       if (index != -1) {
@@ -211,19 +211,17 @@ class HomeTabViewModel with ChangeNotifier {
         };
         feedList.replaceRange(index, index + 1, [updatedFeed]);
 
-        int indexMyPost =
-            myProfileViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+        int indexMyPost = myProfileViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
         if (indexMyPost != -1) {
           setToogleMyPostFeed(!isLiked, id);
-          myProfileViewModel.feedList
-              .replaceRange(indexMyPost, indexMyPost + 1, [updatedFeed]);
+          myProfileViewModel.feedList.replaceRange(indexMyPost, indexMyPost + 1, [updatedFeed]);
         }
-        int indexMyBookMarked = myProfileViewModel.bookMarkFeedList
-            .indexWhere((feed) => feed['_id'] == id);
+        int indexMyBookMarked =
+            myProfileViewModel.bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
         if (indexMyBookMarked != -1) {
           setToogleLikeBookMarkedFeed(!isLiked, id);
-          myProfileViewModel.bookMarkFeedList.replaceRange(
-              indexMyBookMarked, indexMyBookMarked + 1, [updatedFeed]);
+          myProfileViewModel.bookMarkFeedList
+              .replaceRange(indexMyBookMarked, indexMyBookMarked + 1, [updatedFeed]);
         }
       }
       await _homeTabRepository.toggleLike(id);
@@ -231,13 +229,15 @@ class HomeTabViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
-  void toggleTimeline(BuildContext context, String id, String userId,
-      bool isbookmarked, MyProfileViewModel myProfileViewModel) async {
+  void toggleTimeline(BuildContext context, String id, String userId, bool isbookmarked,
+      MyProfileViewModel myProfileViewModel) async {
     try {
       int index = feedList.indexWhere((feed) => feed['_id'] == id);
       if (index != -1) {
@@ -262,7 +262,9 @@ class HomeTabViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -279,7 +281,9 @@ class HomeTabViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -290,8 +294,7 @@ class HomeTabViewModel with ChangeNotifier {
     }));
   }
 
-  Future<bool> createPost(
-      BuildContext context, String id, String caption, String imageUrl) async {
+  Future<bool> createPost(BuildContext context, String id, String caption, String imageUrl) async {
     try {
       final payload = caption == ""
           ? {"categoryId": id, "imgurl": imageUrl}
@@ -302,7 +305,9 @@ class HomeTabViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
       return false;
     }
@@ -311,8 +316,7 @@ class HomeTabViewModel with ChangeNotifier {
   void addComment(BuildContext context, String id, String comment, User user,
       MyProfileViewModel myProfileViewModel) async {
     if (comment.isNotEmpty) {
-      final newComment =
-          Comment(id: "newComment", user: user, comment: comment);
+      final newComment = Comment(id: "newComment", user: user, comment: comment);
       commentsList = [...commentsList, newComment];
       notifyListeners();
       try {
@@ -326,19 +330,17 @@ class HomeTabViewModel with ChangeNotifier {
             "comments": updatedFeed["comments"],
           };
           feedList.replaceRange(index, index + 1, [update]);
-          final myPostIndex = myProfileViewModel.feedList
-              .indexWhere((feed) => feed['_id'] == id);
+          final myPostIndex = myProfileViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
           if (myPostIndex != -1) {
             setIncreaseCommentNumber(commentsList.length, id);
-            myProfileViewModel.feedList
-                .replaceRange(myPostIndex, myPostIndex + 1, [update]);
+            myProfileViewModel.feedList.replaceRange(myPostIndex, myPostIndex + 1, [update]);
           }
-          final myBookMarkedIndex = myProfileViewModel.bookMarkFeedList
-              .indexWhere((feed) => feed['_id'] == id);
+          final myBookMarkedIndex =
+              myProfileViewModel.bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
           if (myBookMarkedIndex != -1) {
             setIncreaseCommentNumber(commentsList.length, id);
-            myProfileViewModel.bookMarkFeedList.replaceRange(
-                myBookMarkedIndex, myBookMarkedIndex + 1, [update]);
+            myProfileViewModel.bookMarkFeedList
+                .replaceRange(myBookMarkedIndex, myBookMarkedIndex + 1, [update]);
           }
         }
         textEditingController.clear();
@@ -367,7 +369,9 @@ class HomeTabViewModel with ChangeNotifier {
       setWeatherPDFLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

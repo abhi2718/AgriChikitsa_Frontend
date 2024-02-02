@@ -1,8 +1,7 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/repository/notification.repo/notification_tab_repository.dart';
-import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/chat_history.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../utils/utils.dart';
 
@@ -32,32 +31,33 @@ class NotificationViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
-  void toggleNotifications(
-      BuildContext context, String id, bool readStatus) async {
+  void toggleNotifications(BuildContext context, String id, bool readStatus) async {
     try {
       if (!readStatus) {
         await _notificationTabRepository.toggleNotifications(id, {});
         notificationCount--;
-        final index =
-            notificationsList.indexWhere((element) => element['_id'] == id);
+        final index = notificationsList.indexWhere((element) => element['_id'] == id);
         final oldItem = notificationsList[index];
         dynamic updatedNotificationItem = {
           ...oldItem,
           "read": true,
         };
-        notificationsList
-            .replaceRange(index, index + 1, [updatedNotificationItem]);
+        notificationsList.replaceRange(index, index + 1, [updatedNotificationItem]);
       }
       notifyListeners();
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -87,7 +87,9 @@ class NotificationViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -103,7 +105,9 @@ class NotificationViewModel with ChangeNotifier {
       setChatLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

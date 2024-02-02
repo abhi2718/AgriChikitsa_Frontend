@@ -1,13 +1,15 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../res/app_url.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
@@ -16,17 +18,18 @@ import '../jankari_view_model.dart';
 class JankariPost extends HookWidget {
   final int index;
   final String subCategoryTitle;
+  final ProfileViewModel profileViewModel;
   const JankariPost({
     super.key,
     required this.index,
     required this.subCategoryTitle,
+    required this.profileViewModel,
   });
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
-    final useViewModel = useMemoized(
-        () => Provider.of<JankariViewModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: false));
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.getJankariSubCategoryPost(context);
@@ -50,6 +53,11 @@ class JankariPost extends HookWidget {
         width: dimension['width'],
         child: Consumer<JankariViewModel>(
           builder: (context, provider, child) {
+            String html = provider.jankariSubcategoryPostList.isNotEmpty
+                ? profileViewModel.locale["language"] == "en"
+                    ? provider.jankariSubcategoryPostList[index].description
+                    : provider.jankariSubcategoryPostList[index].hindiDescription
+                : "";
             return provider.jankariSubCategoryPostLoader
                 ? SizedBox(
                     height: dimension['height']! - 180,
@@ -65,9 +73,7 @@ class JankariPost extends HookWidget {
                           const SizedBox(
                             height: 10,
                           ),
-                          Skeleton(
-                              height: dimension['height']! * 0.40,
-                              width: dimension['width']!),
+                          Skeleton(height: dimension['height']! * 0.40, width: dimension['width']!),
                           const SizedBox(
                             height: 23,
                           ),
@@ -75,9 +81,7 @@ class JankariPost extends HookWidget {
                           const SizedBox(
                             height: 10,
                           ),
-                          Skeleton(
-                              height: dimension['height']!,
-                              width: dimension['width']!),
+                          Skeleton(height: dimension['height']!, width: dimension['width']!),
                         ],
                       ),
                     ),
@@ -85,7 +89,9 @@ class JankariPost extends HookWidget {
                 : provider.jankariSubcategoryPostList.isEmpty
                     ? Center(
                         child: BaseText(
-                            title: AppLocalizations.of(context)!.nopostYethi,
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("noPostYet")
+                                .toString(),
                             style: const TextStyle()),
                       )
                     : SizedBox(
@@ -103,8 +109,7 @@ class JankariPost extends HookWidget {
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w300)),
+                                          fontSize: 20, fontWeight: FontWeight.w300)),
                                 ),
                                 Row(
                                   children: [
@@ -112,38 +117,26 @@ class JankariPost extends HookWidget {
                                         onTap: () {
                                           provider.togglePostLike(
                                               context,
-                                              provider
-                                                  .jankariSubcategoryPostList[
-                                                      index]
-                                                  .id,
+                                              provider.jankariSubcategoryPostList[index].id,
                                               'like',
-                                              provider.jankariSubcategoryPostList[
-                                                  index]);
+                                              provider.jankariSubcategoryPostList[index]);
                                         },
-                                        child: Container(
-                                          // color: Colors.red,
+                                        child: SizedBox(
                                           height: 40,
                                           width: 40,
                                           child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Icon(provider
-                                                      .jankariSubcategoryPostList[
-                                                          index]
-                                                      .isLiked
-                                                  ? Remix.thumb_up_fill
-                                                  : Remix.thumb_up_line),
+                                              Icon(
+                                                  provider.jankariSubcategoryPostList[index].isLiked
+                                                      ? Remix.thumb_up_fill
+                                                      : Remix.thumb_up_line),
                                               BaseText(
                                                 title: provider
-                                                    .jankariSubcategoryPostList[
-                                                        index]
-                                                    .likesCount
+                                                    .jankariSubcategoryPostList[index].likesCount
                                                     .toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 16),
+                                                style: const TextStyle(fontSize: 16),
                                               ),
                                             ],
                                           ),
@@ -155,37 +148,26 @@ class JankariPost extends HookWidget {
                                         onTap: () {
                                           provider.togglePostLike(
                                               context,
-                                              provider
-                                                  .jankariSubcategoryPostList[
-                                                      index]
-                                                  .id,
+                                              provider.jankariSubcategoryPostList[index].id,
                                               'dislike',
-                                              provider.jankariSubcategoryPostList[
-                                                  index]);
+                                              provider.jankariSubcategoryPostList[index]);
                                         },
                                         child: SizedBox(
                                           height: 40,
                                           width: 40,
                                           child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Icon(provider
-                                                      .jankariSubcategoryPostList[
-                                                          index]
-                                                      .isDisLiked
+                                                      .jankariSubcategoryPostList[index].isDisLiked
                                                   ? Remix.thumb_down_fill
                                                   : Remix.thumb_down_line),
                                               BaseText(
                                                 title: provider
-                                                    .jankariSubcategoryPostList[
-                                                        index]
-                                                    .dislikesCount
+                                                    .jankariSubcategoryPostList[index].dislikesCount
                                                     .toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 16),
+                                                style: const TextStyle(fontSize: 16),
                                               )
                                             ],
                                           ),
@@ -196,15 +178,13 @@ class JankariPost extends HookWidget {
                                     InkWell(
                                         onTap: () async {
                                           final xfile = await provider.shareFiles(
-                                              'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}');
+                                              provider.jankariSubcategoryPostList[index].imageUrl);
                                           await Share.shareXFiles([xfile],
                                               text:
                                                   "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
                                         },
                                         child: const SizedBox(
-                                            height: 40,
-                                            width: 40,
-                                            child: Icon(Remix.share_line))),
+                                            height: 40, width: 40, child: Icon(Remix.share_line))),
                                   ],
                                 ),
                               ],
@@ -222,13 +202,10 @@ class JankariPost extends HookWidget {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        if (provider
-                                            .jankariSubcategoryPostList[index]
-                                            .youtubeUrl
+                                        if (provider.jankariSubcategoryPostList[index].youtubeUrl
                                             .isNotEmpty) {
                                           launchUrl(Uri.parse(provider
-                                              .jankariSubcategoryPostList[index]
-                                              .youtubeUrl));
+                                              .jankariSubcategoryPostList[index].youtubeUrl));
                                         }
                                       },
                                       child: Container(
@@ -240,41 +217,29 @@ class JankariPost extends HookWidget {
                                             ),
                                           ),
                                           child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
+                                              borderRadius: BorderRadius.circular(16),
                                               child: Stack(
                                                 children: [
                                                   CachedNetworkImage(
-                                                    imageUrl:
-                                                        'https://d336izsd4bfvcs.cloudfront.net/${provider.jankariSubcategoryPostList[index].imageUrl.split('https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1]}',
+                                                    imageUrl: provider
+                                                        .jankariSubcategoryPostList[index].imageUrl,
                                                     progressIndicatorBuilder:
-                                                        (context, url,
-                                                                downloadProgress) =>
+                                                        (context, url, downloadProgress) =>
                                                             Skeleton(
-                                                      height:
-                                                          dimension['height']! *
-                                                              0.40,
-                                                      width:
-                                                          dimension['width']!,
+                                                      height: dimension['height']! * 0.40,
+                                                      width: dimension['width']!,
                                                       radius: 16,
                                                     ),
-                                                    errorWidget: (context, url,
-                                                            error) =>
+                                                    errorWidget: (context, url, error) =>
                                                         const Icon(Icons.error),
-                                                    height:
-                                                        dimension['height']! *
-                                                            0.40,
+                                                    height: dimension['height']! * 0.40,
                                                     width: dimension['width'],
                                                     fit: BoxFit.fill,
                                                   ),
-                                                  if (provider
-                                                      .jankariSubcategoryPostList[
-                                                          index]
-                                                      .youtubeUrl
-                                                      .isNotEmpty)
+                                                  if (provider.jankariSubcategoryPostList[index]
+                                                      .youtubeUrl.isNotEmpty)
                                                     const Align(
-                                                      alignment:
-                                                          Alignment.center,
+                                                      alignment: Alignment.center,
                                                       child: Icon(
                                                         Icons.play_circle_fill,
                                                         size: 74,
@@ -287,22 +252,18 @@ class JankariPost extends HookWidget {
                                       height: 23,
                                     ),
                                     BaseText(
-                                        title: provider
-                                            .jankariSubcategoryPostList[index]
-                                            .hindiTitle,
+                                        title: profileViewModel.locale["language"] == "en"
+                                            ? provider.jankariSubcategoryPostList[index].title
+                                            : provider.jankariSubcategoryPostList[index].hindiTitle,
                                         style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
+                                            fontSize: 20, fontWeight: FontWeight.bold)),
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    BaseText(
-                                        title: provider
-                                            .jankariSubcategoryPostList[index]
-                                            .hindiDescription,
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w300)),
+                                    HtmlWidget(
+                                      html,
+                                      textStyle: const TextStyle(fontSize: 18),
+                                    ),
                                   ],
                                 ),
                               ),

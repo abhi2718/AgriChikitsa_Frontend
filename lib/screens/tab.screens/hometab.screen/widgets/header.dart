@@ -1,8 +1,11 @@
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../notifications.screen/notification_view_model.dart';
@@ -13,13 +16,13 @@ import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
 class HeaderWidget extends HookWidget {
-  const HeaderWidget({Key? key});
-
+  const HeaderWidget({Key? key, required this.profileViewModel});
+  final ProfileViewModel profileViewModel;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel = useMemoized(
-        () => Provider.of<NotificationViewModel>(context, listen: false));
+    final useViewModel =
+        useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
     useEffect(() {
       useViewModel.fetchNotifications(context);
     }, [useViewModel.notificationCount]);
@@ -38,30 +41,21 @@ class HeaderWidget extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Image.asset(
-                  //   "assets/images/logoagrichikitsa.png",
-                  //   height: 40,
-                  //   width: 40,
-                  // ),
                   Consumer<AuthService>(builder: (context, provider, child) {
                     if (provider.userInfo != null) {
                       final user = provider.userInfo["user"];
-                      final profileImage = user['profileImage'].split(
-                          'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                      final profileImage = user['profileImage'];
                       return SizedBox(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: CachedNetworkImage(
-                            imageUrl:
-                                'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Skeleton(
+                            imageUrl: profileImage,
+                            progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                               height: 40,
                               width: 40,
                               radius: 0,
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
                             width: 40,
                             fit: BoxFit.cover,
                             height: 40,
@@ -71,15 +65,29 @@ class HeaderWidget extends HookWidget {
                     }
                     return Container();
                   }),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Consumer<NotificationViewModel>(
-                      builder: (context, provider, child) {
-                    return NotificationIndicatorButton(
-                      notificationCount: provider.notificationCount,
-                    );
-                  }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Utils.model(context, const MyProfileScreen());
+                        },
+                        child: SvgPicture.asset(
+                          'assets/svg/timeline.svg',
+                          width: 23,
+                          height: 22,
+                        ),
+                      ),
+                      SizedBox(
+                        width: dimension['width']! * 0.04,
+                      ),
+                      Consumer<NotificationViewModel>(builder: (context, provider, child) {
+                        return NotificationIndicatorButton(
+                          notificationCount: provider.notificationCount,
+                        );
+                      }),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -96,9 +104,8 @@ class HeaderWidget extends HookWidget {
                             itemCount: 10,
                             itemBuilder: (context, index) {
                               return Container(
-                                width: 100, // Set the width of each item
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
+                                width: 100,
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
                                 child: Skeleton(
                                   height: 10,
                                   width: 100,
@@ -111,7 +118,9 @@ class HeaderWidget extends HookWidget {
                             itemCount: provider.categoriesList.length,
                             itemBuilder: (context, index) {
                               return CategoryButton(
+                                profileViewModel: profileViewModel,
                                 category: provider.categoriesList[index],
+                                provider: provider,
                                 onTap: () {
                                   provider.setActiveState(
                                     context,

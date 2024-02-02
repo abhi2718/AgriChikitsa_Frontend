@@ -1,14 +1,21 @@
 import 'dart:async';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../repository/chat_tab.repo/chat_tab_repository.dart';
+import '../../../repository/notification.repo/notification_tab_repository.dart';
 
 class ChatTabViewModel with ChangeNotifier {
   final _chatTabRepository = ChatTabRepository();
   final textEditingController = TextEditingController();
+  ScrollController scrollController = ScrollController();
   dynamic timmerInstances = [];
+  dynamic chatHistoryList = [];
+  dynamic chatMessagesList = [];
+  bool isChatCompleted = false;
+  bool chatHistoryLoader = false;
+  bool chatLoader = false;
   bool showFirstBubbleLoader = false;
   bool showSecondBubbleLoader = false;
   bool showThirdLoader = false;
@@ -20,6 +27,9 @@ class ChatTabViewModel with ChangeNotifier {
   bool showCropImageLoader = false;
   bool showCameraButton = false;
   bool enableKeyBoard = false;
+  String selectedAge = "";
+  String selectedCrop = "";
+  String selectedReason = "";
   var questionAsked = "";
   var cropImage = "";
   var questionIndex = 0;
@@ -59,6 +69,9 @@ class ChatTabViewModel with ChangeNotifier {
     questionIndex = 0;
     textEditingController.clear();
     timmerInstances.clear();
+    chatHistoryLoader = false;
+    chatLoader = false;
+    isChatCompleted = false;
     showFirstBubbleLoader = false;
     showSecondBubbleLoader = false;
     showThirdLoader = false;
@@ -72,11 +85,60 @@ class ChatTabViewModel with ChangeNotifier {
     cropImage = "";
     selectedDisease = '';
     cameraQuestionId = '';
+    selectedAge = "";
+    selectedCrop = "";
+    selectedReason = "";
   }
 
   void enableKeyboard(bool value) {
     enableKeyBoard = value;
     notifyListeners();
+  }
+
+  setChatHistoryLoader(value) {
+    chatHistoryLoader = value;
+  }
+
+  setChatLoader(value) {
+    chatLoader = value;
+  }
+
+  void getAllChatHistory(BuildContext context) async {
+    setChatLoader(true);
+    try {
+      final data = await _chatTabRepository.getChatHistory();
+      chatHistoryList = data;
+      setChatLoader(false);
+      notifyListeners();
+    } catch (error) {
+      setChatLoader(false);
+      Utils.flushBarErrorMessage("Umm!", "Some Error Occured", context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
+  }
+
+  void fetchChatHistory(BuildContext context, String id) async {
+    setChatHistoryLoader(true);
+    try {
+      chatMessagesList.clear();
+      final data = await NotificationTabRepository().fetchChatScript(id);
+      chatMessagesList = data;
+      setChatHistoryLoader(false);
+      notifyListeners();
+    } catch (error) {
+      setChatHistoryLoader(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
   }
 
   void initialTask(context) {
@@ -91,16 +153,14 @@ class ChatTabViewModel with ChangeNotifier {
     }
   }
 
-  void sendQuestion(
-      String id, String scriptQuestion, String answer, String imgurl) async {
+  void sendQuestion(String id, String scriptQuestion, String answer, String imgurl) async {
     final payloadStructure = {
       "id": id,
       "question": scriptQuestion,
       "answer": answer,
     };
-    final finalPayload = imgurl == ""
-        ? payloadStructure
-        : {...payloadStructure, "imageQuestion": imgurl};
+    final finalPayload =
+        imgurl == "" ? payloadStructure : {...payloadStructure, "imageQuestion": imgurl};
     await _chatTabRepository.postChatQuestion(finalPayload);
   }
 
@@ -108,6 +168,9 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showFirstBubbleLoader = false;
       showSecondBubbleLoader = true;
       notifyListeners();
@@ -119,7 +182,9 @@ class ChatTabViewModel with ChangeNotifier {
       showSecondBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -128,13 +193,18 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showSecondBubbleLoader = false;
       notifyListeners();
     } catch (error) {
       showSecondBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -142,7 +212,13 @@ class ChatTabViewModel with ChangeNotifier {
   void selectAge(context, String age, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
-        sendQuestion(id, item['question_hi'], age, "");
+        sendQuestion(
+            id,
+            AppLocalization.of(context).locale.toString() == "en"
+                ? item['question_en']
+                : item['question_hi'],
+            age,
+            "");
         return {
           ...item,
           "isAnswerSelected": true,
@@ -151,7 +227,11 @@ class ChatTabViewModel with ChangeNotifier {
       }
       return item;
     });
+    selectedAge = age;
     chatMessages = updatedChatMessages.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     notifyListeners();
     loadQuestionFour(context);
   }
@@ -171,13 +251,18 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showThirdLoader = false;
       notifyListeners();
     } catch (error) {
       showThirdLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -185,7 +270,13 @@ class ChatTabViewModel with ChangeNotifier {
   void handleSelctCrop(context, String crop, String id) {
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
-        sendQuestion(id, item['question_hi'], crop, "");
+        sendQuestion(
+            id,
+            AppLocalization.of(context).locale.toString() == "en"
+                ? item['question_en']
+                : item['question_hi'],
+            crop,
+            "");
         return {
           ...item,
           "isAnswerSelected": true,
@@ -194,8 +285,12 @@ class ChatTabViewModel with ChangeNotifier {
       }
       return item;
     });
+    selectedCrop = crop;
     questionIndex = 4;
     chatMessages = updatedChatMessages.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     showFourthLoader = true;
     notifyListeners();
     final t5 = Timer(const Duration(seconds: 1), () {
@@ -210,32 +305,47 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showFourthLoader = false;
       notifyListeners();
     } catch (error) {
       showFourthLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
-  void selectCropDisease(context, String disease, String id) {
+  void selectCropDisease(context, String selectedOption, String disease, String id) {
     selectedDisease = disease;
     var updatedChatMessages = chatMessages.map((item) {
       if (item['id'] == id) {
-        sendQuestion(id, item['question_hi'], selectedDisease, "");
+        sendQuestion(
+            id,
+            AppLocalization.of(context).locale.toString() == "en"
+                ? item['question_en']
+                : item['question_hi'],
+            selectedOption,
+            "");
         return {
           ...item,
           "isAnswerSelected": true,
-          "answer": disease,
+          "answer": selectedOption,
         };
       }
       return item;
     });
+    selectedReason = disease;
     questionIndex = 6;
     chatMessages = updatedChatMessages.toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     showFifthBubbleLoader = true;
     notifyListeners();
     final t6 = Timer(const Duration(seconds: 1), () {
@@ -248,12 +358,14 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showFifthBubbleLoader = false;
       final question = data["question"];
       final checkList = ['अन्य', 'खरपतवार'];
       if (!checkList.contains(id)) {
-        final isToShowCameraIcon =
-            question["showCameraIcon"] == null ? false : true;
+        final isToShowCameraIcon = question["showCameraIcon"] == null ? false : true;
         if (!isToShowCameraIcon) {
           showSixthBubbleLoader = true;
           final t7 = Timer(const Duration(seconds: 1), () {
@@ -269,7 +381,9 @@ class ChatTabViewModel with ChangeNotifier {
       showFifthBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -278,10 +392,12 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       final data = await _chatTabRepository.fetchBotQuestion(id);
       chatMessages.add(data["question"]);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
       showSixthBubbleLoader = false;
       final question = data["question"];
-      final isToShowCameraIcon =
-          question["showCameraIcon"] == null ? false : true;
+      final isToShowCameraIcon = question["showCameraIcon"] == null ? false : true;
       if (isToShowCameraIcon) {
         setShowCameraButton(true);
         cameraQuestionId = id;
@@ -292,7 +408,9 @@ class ChatTabViewModel with ChangeNotifier {
       showSixthBubbleLoader = false;
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -302,8 +420,7 @@ class ChatTabViewModel with ChangeNotifier {
       unfocusKeyboard();
       if (questionIndex == 3) {
         final currentQuestion = chatMessages[questionIndex];
-        handleSelctCrop(
-            context, textEditingController.text, currentQuestion["id"]);
+        handleSelctCrop(context, textEditingController.text, currentQuestion["id"]);
         textEditingController.clear();
         questionIndex = 4;
         showFourthLoader = true;
@@ -320,7 +437,12 @@ class ChatTabViewModel with ChangeNotifier {
         var updatedChatMessages = chatMessages.map((item) {
           if (item['id'] == chatMessages[chatMessages.length - 1]['id']) {
             sendQuestion(
-                'अन्य', item['question_hi'], textEditingController.text, "");
+                'अन्य',
+                AppLocalization.of(context).locale.toString() == "en"
+                    ? item['question_en']
+                    : item['question_hi'],
+                textEditingController.text,
+                "");
             return {
               ...item,
               "isAnswerSelected": true,
@@ -330,17 +452,18 @@ class ChatTabViewModel with ChangeNotifier {
           return item;
         });
         chatMessages = updatedChatMessages.toList();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
         selectedDisease = '';
         textEditingController.clear();
         showSixthBubbleLoader = true;
-        showLastMessage = true;
         notifyListeners();
         final t7 = Timer(const Duration(seconds: 1), () {
           chatMessages.add(
             {
               "id": "7",
-              "question_hi":
-                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
               "question_en": "Know about your crop with Agrichikitsa",
               "options_hi": [],
               "options_en": [],
@@ -349,7 +472,16 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          chatMessages.add({
+            "question_hi": "",
+            "isMe": false,
+          });
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          });
           showSixthBubbleLoader = false;
+          showLastMessage = true;
+          isChatCompleted = true;
           notifyListeners();
         });
         timmerInstances.add(t7);
@@ -360,17 +492,27 @@ class ChatTabViewModel with ChangeNotifier {
   void uploadImage(context) async {
     try {
       final imageFile = await Utils.capturePhoto();
+      setShowCameraButton(false);
       if (imageFile != null) {
         showCropImageLoader = true;
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
         cropImage = data["imgurl"];
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
         final index = chatMessages.indexWhere((chatMessage) {
           return chatMessage['id'] == cameraQuestionId;
         });
         if (index != -1) {
           final item = chatMessages[index];
-          sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
+          sendQuestion(
+              cameraQuestionId,
+              AppLocalization.of(context).locale.toString() == "en"
+                  ? item['question_en']
+                  : item['question_hi'],
+              "",
+              cropImage);
         }
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
@@ -379,8 +521,7 @@ class ChatTabViewModel with ChangeNotifier {
           chatMessages.add(
             {
               "id": "8",
-              "question_hi":
-                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
               "question_en": "Know about your crop with Agrichikitsa",
               "options_hi": [],
               "options_en": [],
@@ -389,9 +530,12 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
-          setShowCameraButton(false);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          });
           showSeventhBubbleLoader = false;
           showLastMessage = true;
+          isChatCompleted = true;
           notifyListeners();
         });
         timmerInstances.add(t8);
@@ -399,7 +543,9 @@ class ChatTabViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -407,17 +553,27 @@ class ChatTabViewModel with ChangeNotifier {
   void uploadGallery(context) async {
     try {
       final imageFile = await Utils.pickImage();
+      setShowCameraButton(false);
       if (imageFile != null) {
         showCropImageLoader = true;
         notifyListeners();
         final data = await Utils.uploadImage(imageFile);
         cropImage = data["imgurl"];
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
         final index = chatMessages.indexWhere((chatMessage) {
           return chatMessage['id'] == cameraQuestionId;
         });
         if (index != -1) {
           final item = chatMessages[index];
-          sendQuestion(cameraQuestionId, item['question_hi'], "", cropImage);
+          sendQuestion(
+              cameraQuestionId,
+              AppLocalization.of(context).locale.toString() == "en"
+                  ? item['question_en']
+                  : item['question_hi'],
+              "",
+              cropImage);
         }
         showCropImageLoader = false;
         showSeventhBubbleLoader = true;
@@ -426,8 +582,7 @@ class ChatTabViewModel with ChangeNotifier {
           chatMessages.add(
             {
               "id": "8",
-              "question_hi":
-                  "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
               "question_en": "Know about your crop with Agrichikitsa",
               "options_hi": [],
               "options_en": [],
@@ -436,9 +591,13 @@ class ChatTabViewModel with ChangeNotifier {
               "isMe": false,
             },
           );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            scrollController.jumpTo(scrollController.position.maxScrollExtent);
+          });
           setShowCameraButton(false);
           showSeventhBubbleLoader = false;
           showLastMessage = true;
+          isChatCompleted = true;
           notifyListeners();
         });
         timmerInstances.add(t8);
@@ -446,7 +605,9 @@ class ChatTabViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

@@ -1,17 +1,32 @@
+import 'dart:convert';
+
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../routes/routes_name.dart';
 
 class ProfileViewModel with ChangeNotifier {
   final authRepository = AuthRepository();
   bool deleteLoader = false;
   String deleteReason = '';
-  var locale = {"language": 'en', "country": "US"};
+  var locale = {"language": 'hi', "country": "IN"};
+
+  void getLocaleLanguage() async {
+    final localStorage = await SharedPreferences.getInstance();
+    final mapString = localStorage.getString('profile');
+    if (mapString != null) {
+      final profile = jsonDecode(mapString);
+      locale = {
+        "language": profile["language"]["language"],
+        "country": profile["language"]["country"]
+      };
+      notifyListeners();
+    }
+  }
+
   Future<void> clearLocalStorage() async {
     final localStorage = await SharedPreferences.getInstance();
     await localStorage.clear();
@@ -26,12 +41,27 @@ class ProfileViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void handleLocaleChange() {
-    locale = {
-      "language": locale["language"] == "en" ? "hi" : "en",
-      "country": locale["country"] == "US" ? "IN" : "US"
-    };
+  void handleLocaleChange(BuildContext context, String selectedLocaleLanguage,
+      String selectedLocaleCountry, String phoneNumber, String firebaseId) async {
+    final localStorage = await SharedPreferences.getInstance();
+    final mapString = localStorage.getString('profile');
+    locale = {"language": selectedLocaleLanguage, "country": selectedLocaleCountry};
     notifyListeners();
+    if (mapString != null) {
+      Navigator.pop(context);
+      final profile = jsonDecode(mapString);
+      final updatedProfile = {
+        ...profile,
+        "language": {"language": locale["language"], "country": locale["country"]}
+      };
+      await localStorage.setString('profile', jsonEncode(updatedProfile));
+    } else {
+      Navigator.pop(context);
+      Navigator.of(context).pushNamed(RouteName.signUpRoute, arguments: {
+        "phoneNumber": phoneNumber,
+        "uid": firebaseId,
+      });
+    }
   }
 
   void handleLogOut(BuildContext context, disposableProvider) {
@@ -51,35 +81,36 @@ class ProfileViewModel with ChangeNotifier {
 
   void openTermsAndConditions(BuildContext context) {
     try {
-      final Uri toLaunch = Uri(
-          scheme: 'https',
-          host: 'agrichikitsa.org',
-          path: '/termsAndCondition');
+      final Uri toLaunch =
+          Uri(scheme: 'https', host: 'agrichikitsa.org', path: '/termsAndCondition');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
   void openPrivacyPolicy(BuildContext context) {
     try {
-      final Uri toLaunch = Uri(
-          scheme: 'https', host: 'agrichikitsa.org', path: '/privicyPolicy');
+      final Uri toLaunch = Uri(scheme: 'https', host: 'agrichikitsa.org', path: '/privicyPolicy');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
   String? nameFieldValidator(BuildContext context, value) {
     if (value!.isEmpty || value.trim().isEmpty) {
-      return AppLocalizations.of(context)!.nameReuiredhi;
+      return AppLocalization.of(context).getTranslatedValue("deleteReasonRequired").toString();
     }
     return null;
   }
@@ -94,7 +125,9 @@ class ProfileViewModel with ChangeNotifier {
       setDeleteLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

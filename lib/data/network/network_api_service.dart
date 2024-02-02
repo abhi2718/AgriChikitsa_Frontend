@@ -30,9 +30,16 @@ class NetworkApiService extends BaseApiServices {
   Future<dynamic> getGetApiResponse(String url) async {
     final headers = await getHeaders();
     final response = await retry(
-      () => http
-          .get(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 4)),
+      () => http.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
+  Future<dynamic> getWeatherApiResponse(String url) async {
+    final response = await retry(
+      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);
@@ -42,12 +49,7 @@ class NetworkApiService extends BaseApiServices {
   @override
   Future getPostApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
-    final response = await retry(
-      () => http
-          .post(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 4)),
-      retryIf: (e) => e is SocketException || e is TimeoutException,
-    );
+    final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(payload));
     _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
@@ -66,12 +68,18 @@ class NetworkApiService extends BaseApiServices {
   }
 
   @override
+  Future getPutApiResponse(String url) async {
+    final headers = await getHeaders();
+    final response = await http.put(Uri.parse(url), headers: headers);
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
+  @override
   Future getDeleteApiResponse(String url) async {
     final headers = await getHeaders();
     final response = await retry(
-      () => http
-          .delete(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 4)),
+      () => http.delete(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 4)),
       retryIf: (e) => e is SocketException || e is TimeoutException,
     );
     _jsonResponse = returnResponse(response);

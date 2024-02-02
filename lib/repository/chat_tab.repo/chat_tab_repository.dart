@@ -22,4 +22,14 @@ class ChatTabRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> getChatHistory() async {
+    try {
+      const url = AppUrl.chatHistoryEndPoint;
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -1,10 +1,10 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import '../../../../widgets/Input.widgets/input.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/text.widgets/text.dart';
@@ -27,8 +27,7 @@ class RegisterUser extends HookWidget {
     }, []);
 
     Future<bool> onWillPop() async {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          RouteName.authLandingRoute, (route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil(RouteName.authLandingRoute, (route) => false);
       return false;
     }
 
@@ -62,25 +61,24 @@ class RegisterUser extends HookWidget {
                         padding: const EdgeInsets.only(left: 32),
                         child: Row(
                           children: [
-                            SubHeadingText(
-                                AppLocalizations.of(context)!.createAccounthi)
+                            SubHeadingText(AppLocalization.of(context)
+                                .getTranslatedValue("signupTitle")
+                                .toString())
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 32),
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 12),
-                          child: Row(
-                            children: [
-                              ParagraphText(
-                                AppLocalizations.of(context)!
-                                    .joinAgrichikitsahi,
-                              )
-                            ],
-                          ),
+                        padding: const EdgeInsets.only(left: 32, right: 32),
+                        child: Text(
+                          AppLocalization.of(context)
+                              .getTranslatedValue("signupSubtitle")
+                              .toString(),
+                          style: const TextStyle(
+                              color: AppColor.midBlackColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -88,8 +86,7 @@ class RegisterUser extends HookWidget {
                   height: 40,
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                   child: Column(
                     children: [
                       Form(
@@ -98,19 +95,19 @@ class RegisterUser extends HookWidget {
                           children: [
                             Consumer<SignUpViewModel>(
                               builder: (context, provider, child) => Input(
-                                labelText: AppLocalizations.of(context)!.namehi,
+                                labelText: AppLocalization.of(context)
+                                    .getTranslatedValue("signupFormName")
+                                    .toString(),
                                 focusNode: useViewModel.nameFocusNode,
                                 keyboardType: TextInputType.name,
                                 textInputAction: TextInputAction.next,
                                 suffixIcon: useViewModel.suffixIconForName(),
                                 initialValue: provider.userName,
-                                validator: (value) => useViewModel
-                                    .nameFieldValidator(context, value),
+                                validator: (value) =>
+                                    useViewModel.nameFieldValidator(context, value),
                                 onSaved: useViewModel.onSavedNameField,
                                 onFieldSubmitted: (_) {
-                                  Utils.fieldFocusChange(
-                                      context,
-                                      useViewModel.nameFocusNode,
+                                  Utils.fieldFocusChange(context, useViewModel.nameFocusNode,
                                       useViewModel.emailFocusNode);
                                 },
                               ),
@@ -119,36 +116,36 @@ class RegisterUser extends HookWidget {
                               height: 20,
                             ),
                             Input(
-                              labelText: AppLocalizations.of(context)!.emailhi,
+                              labelText: AppLocalization.of(context)
+                                  .getTranslatedValue("signupFormEmail")
+                                  .toString(),
                               focusNode: useViewModel.emailFocusNode,
                               suffixIcon: useViewModel.suffixIconForEmail(),
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.done,
-                              validator: (value) => useViewModel
-                                  .emailFieldValidator(context, value),
+                              validator: (value) =>
+                                  useViewModel.emailFieldValidator(context, value),
                               onSaved: useViewModel.onSavedEmailField,
                               onFieldSubmitted: (_) {},
                             ),
                             const SizedBox(
                               height: 20,
                             ),
-                            Consumer<SignUpViewModel>(
-                                builder: (context, provider, child) {
+                            Consumer<SignUpViewModel>(builder: (context, provider, child) {
                               return Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
                                 width: dimension['width']! * 0.90,
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: AppColor.extraDark, width: 2.0),
+                                  border: Border.all(color: AppColor.extraDark, width: 2.0),
                                   color: Colors.white,
                                 ),
                                 child: DropdownButton(
                                     underline: Container(),
                                     isExpanded: true,
                                     hint: BaseText(
-                                      title: AppLocalizations.of(context)!
-                                          .selectState,
+                                      title: AppLocalization.of(context)
+                                          .getTranslatedValue("signupFormSelectState")
+                                          .toString(),
                                       style: const TextStyle(),
                                     ),
                                     value: provider.selectedState.isEmpty
@@ -156,19 +153,20 @@ class RegisterUser extends HookWidget {
                                         : provider.selectedState,
                                     alignment: AlignmentDirectional.centerStart,
                                     items: provider.stateList
-                                        .map<DropdownMenuItem<String>>(
-                                            (dynamic value) {
+                                        .map<DropdownMenuItem<String>>((dynamic value) {
                                       return DropdownMenuItem<String>(
                                         value: value.state,
                                         child: BaseText(
-                                          title: value.stateHi,
+                                          title:
+                                              AppLocalization.of(context).locale.toString() == "en"
+                                                  ? value.state
+                                                  : value.stateHi,
                                           style: const TextStyle(fontSize: 14),
                                         ),
                                       );
                                     }).toList(),
                                     onChanged: (value) {
-                                      provider.setSelectedState(
-                                          context, value!);
+                                      provider.setSelectedState(context, value!);
                                     }),
                               );
                             }),
@@ -178,79 +176,76 @@ class RegisterUser extends HookWidget {
                             useViewModel.districtList.isEmpty
                                 ? InkWell(
                                     onTap: () => Utils.snackbar(
-                                        AppLocalizations.of(context)!
-                                            .warningSelectState,
+                                        AppLocalization.of(context)
+                                            .getTranslatedValue("validateState")
+                                            .toString(),
                                         context),
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
                                       width: dimension['width']! * 0.90,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColor.extraDark,
-                                            width: 2.0),
+                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
                                         color: Colors.white,
                                       ),
                                       child: DropdownButton(
                                           underline: Container(),
                                           isExpanded: true,
                                           hint: BaseText(
-                                            title: AppLocalizations.of(context)!
-                                                .selectDistrict,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectDistrict")
+                                                .toString(),
                                             style: const TextStyle(),
                                           ),
                                           value: null,
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                          items: [],
+                                          alignment: AlignmentDirectional.centerStart,
+                                          items: const [],
                                           onChanged: (_) {}),
                                     ),
                                   )
-                                : Consumer<SignUpViewModel>(
-                                    builder: (context, provider, child) {
+                                : Consumer<SignUpViewModel>(builder: (context, provider, child) {
                                     return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
                                       width: dimension['width']! * 0.90,
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColor.extraDark,
-                                            width: 2.0),
+                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
                                         color: Colors.white,
                                       ),
                                       child: DropdownButton(
                                           underline: Container(),
                                           isExpanded: true,
                                           hint: BaseText(
-                                            title: AppLocalizations.of(context)!
-                                                .selectDistrict,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectDistrict")
+                                                .toString(),
                                             style: const TextStyle(),
                                           ),
-                                          value: provider
-                                                  .selectedDistrictHi.isEmpty
+                                          value: provider.selectedDistrictHi.isEmpty
                                               ? null
                                               : provider.selectedDistrictHi,
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
+                                          alignment: AlignmentDirectional.centerStart,
                                           items: provider.districtList
-                                              .map<DropdownMenuItem<String>>(
-                                                  (value) {
+                                              .map<DropdownMenuItem<String>>((value) {
                                             return DropdownMenuItem<String>(
                                               onTap: () {
-                                                provider.setSelectedDistrictEn(
-                                                    value);
+                                                provider.setSelectedDistrictEn(value);
                                               },
-                                              value: value.nameHi,
+                                              value:
+                                                  AppLocalization.of(context).locale.toString() ==
+                                                          "en"
+                                                      ? value.name
+                                                      : value.nameHi,
                                               child: BaseText(
-                                                title: value.nameHi,
-                                                style: const TextStyle(
-                                                    fontSize: 14),
+                                                title:
+                                                    AppLocalization.of(context).locale.toString() ==
+                                                            "en"
+                                                        ? value.name
+                                                        : value.nameHi,
+                                                style: const TextStyle(fontSize: 14),
                                               ),
                                             );
                                           }).toList(),
                                           onChanged: (value) {
-                                            provider
-                                                .setSelectedDistrict(value!);
+                                            provider.setSelectedDistrict(value!);
                                           }),
                                     );
                                   }),
@@ -259,16 +254,16 @@ class RegisterUser extends HookWidget {
                             ),
                             Consumer<SignUpViewModel>(
                               builder: (context, provider, child) => Input(
-                                labelText:
-                                    AppLocalizations.of(context)!.villagehi,
+                                labelText: AppLocalization.of(context)
+                                    .getTranslatedValue("signupFormVillage")
+                                    .toString(),
                                 keyboardType: TextInputType.name,
                                 textInputAction: TextInputAction.done,
                                 suffixIcon: useViewModel.suffixIconForVillage(),
-                                validator: (value) => useViewModel
-                                    .villageFieldValidator(context, value),
+                                validator: (value) =>
+                                    useViewModel.villageFieldValidator(context, value),
                                 onSaved: useViewModel.onSavedvillageField,
-                                onChanged: (value) =>
-                                    useViewModel.onSavedvillageField(value),
+                                onChanged: (value) => useViewModel.onSavedvillageField(value),
                                 onFieldSubmitted: (value) {
                                   useViewModel.setVillage(value);
                                 },
@@ -278,13 +273,13 @@ class RegisterUser extends HookWidget {
                               height: 40,
                             ),
                             Consumer<SignUpViewModel>(
-                              builder: (context, provider, child) =>
-                                  CustomElevatedButton(
-                                title: AppLocalizations.of(context)!.registerhi,
+                              builder: (context, provider, child) => CustomElevatedButton(
+                                title: AppLocalization.of(context)
+                                    .getTranslatedValue("register")
+                                    .toString(),
                                 width: dimension["width"]! - 32,
                                 loading: provider.loading,
-                                onPress: () =>
-                                    provider.saveRegisterUserForm(context),
+                                onPress: () => provider.saveRegisterUserForm(context),
                               ),
                             )
                           ],

@@ -1,8 +1,8 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -26,11 +26,9 @@ class UserComment extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
     final textEditingController = TextEditingController();
-    final useViewModel = useMemoized(
-        () => Provider.of<HomeTabViewModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
-    final myProfileViewModel =
-        Provider.of<MyProfileViewModel>(context, listen: false);
+    final myProfileViewModel = Provider.of<MyProfileViewModel>(context, listen: false);
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.fetchComments(context, feedId);
@@ -58,8 +56,7 @@ class UserComment extends HookWidget {
                 builder: (context, provider, child) {
                   return provider.commentLoading
                       ? Padding(
-                          padding: const EdgeInsets.only(
-                              left: 28, right: 32, top: 16),
+                          padding: const EdgeInsets.only(left: 28, right: 32, top: 16),
                           child: ListView.builder(
                               itemCount: 10,
                               itemBuilder: (context, index) {
@@ -76,8 +73,7 @@ class UserComment extends HookWidget {
                                         width: 10,
                                       ),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Skeleton(height: 10, width: 140),
                                           const SizedBox(
@@ -93,8 +89,9 @@ class UserComment extends HookWidget {
                         )
                       : provider.commentsList.isEmpty
                           ? Center(
-                              child: Text(
-                                  AppLocalizations.of(context)!.noCommenthi),
+                              child: Text(AppLocalization.of(context)
+                                  .getTranslatedValue("noCommentFeed")
+                                  .toString()),
                             )
                           : SingleChildScrollView(
                               child: Column(
@@ -102,46 +99,33 @@ class UserComment extends HookWidget {
                                   Container(
                                     margin: const EdgeInsets.only(top: 16),
                                     child: SizedBox(
-                                      height:
-                                          (dimension["height"]! - 100) * 0.9,
+                                      height: (dimension["height"]! - 100) * 0.9,
                                       child: ListView.builder(
                                         itemCount: provider.commentsList.length,
                                         itemBuilder: (context, index) {
-                                          final comment =
-                                              provider.commentsList[index];
-                                          final profileImage =
-                                              comment.user.profileImage.split(
-                                                  'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                          final comment = provider.commentsList[index];
+                                          final profileImage = comment.user.profileImage;
                                           return Column(
                                             children: [
                                               Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Column(
                                                     children: [
                                                       ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20),
-                                                        child:
-                                                            CachedNetworkImage(
-                                                          imageUrl:
-                                                              'https://d336izsd4bfvcs.cloudfront.net/$profileImage',
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: profileImage,
                                                           progressIndicatorBuilder:
-                                                              (context, url,
-                                                                      downloadProgress) =>
+                                                              (context, url, downloadProgress) =>
                                                                   Skeleton(
                                                             height: 40,
                                                             width: 40,
                                                             radius: 0,
                                                           ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              const Icon(
-                                                                  Icons.error),
+                                                          errorWidget: (context, url, error) =>
+                                                              const Icon(Icons.error),
                                                           width: 40,
                                                           fit: BoxFit.cover,
                                                           height: 40,
@@ -153,36 +137,25 @@ class UserComment extends HookWidget {
                                                     width: 10,
                                                   ),
                                                   SizedBox(
-                                                    width: dimension['width']! -
-                                                        98,
+                                                    width: dimension['width']! - 98,
                                                     child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         BaseText(
-                                                          title:
-                                                              comment.user.name,
+                                                          title: comment.user.name,
                                                           style: const TextStyle(
                                                               fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700),
+                                                              fontWeight: FontWeight.w700),
                                                         ),
                                                         const SizedBox(
                                                           height: 4,
                                                         ),
                                                         BaseText(
-                                                          title:
-                                                              comment.comment,
+                                                          title: comment.comment,
                                                           style: const TextStyle(
                                                               fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
+                                                              fontWeight: FontWeight.w400),
                                                         ),
                                                       ],
                                                     ),
@@ -205,7 +178,6 @@ class UserComment extends HookWidget {
               ),
             ),
             SizedBox(
-              height: (dimension["height"]! - 60) * 0.09,
               child: InkWell(
                 onTap: () {
                   Utils.model(
@@ -235,33 +207,26 @@ class UserComment extends HookWidget {
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Consumer<AuthService>(
-                                      builder: (context, provider, child) {
+                                  Consumer<AuthService>(builder: (context, provider, child) {
                                     if (provider.userInfo != null) {
                                       final user = provider.userInfo["user"];
-                                      final userImage = user['profileImage'].split(
-                                          'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                      final userImage = user['profileImage'];
                                       return SizedBox(
                                         child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(20),
                                           child: CachedNetworkImage(
-                                            imageUrl:
-                                                'https://d336izsd4bfvcs.cloudfront.net/$userImage',
-                                            progressIndicatorBuilder: (context,
-                                                    url, downloadProgress) =>
-                                                Skeleton(
+                                            imageUrl: userImage,
+                                            progressIndicatorBuilder:
+                                                (context, url, downloadProgress) => Skeleton(
                                               height: 40,
                                               width: 40,
                                               radius: 0,
                                             ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(Icons.error),
+                                            errorWidget: (context, url, error) =>
+                                                const Icon(Icons.error),
                                             width: 40,
                                             fit: BoxFit.cover,
                                             height: 40,
@@ -276,13 +241,22 @@ class UserComment extends HookWidget {
                                     child: TextField(
                                       decoration: InputDecoration(
                                         contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 8, horizontal: 10),
-                                        hintText: AppLocalizations.of(context)!
-                                            .addACommenthi,
+                                            const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                        hintText: AppLocalization.of(context)
+                                            .getTranslatedValue("addCommentFeed"),
                                         hintStyle: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: AppColor.extraDark,
+                                          ),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: AppColor.extraDark,
+                                          ),
                                         ),
                                         border: const OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
@@ -296,8 +270,7 @@ class UserComment extends HookWidget {
                                       autofocus: true,
                                     ),
                                   ),
-                                  Consumer<HomeTabViewModel>(
-                                      builder: (context, provider, child) {
+                                  Consumer<HomeTabViewModel>(builder: (context, provider, child) {
                                     return InkWell(
                                       onTap: () {
                                         useViewModel.addComment(
@@ -308,8 +281,7 @@ class UserComment extends HookWidget {
                                               authService.userInfo["user"],
                                             ),
                                             myProfileViewModel);
-                                        setNumberOfComment(
-                                            provider.commentsList.length);
+                                        setNumberOfComment(provider.commentsList.length);
                                         Navigator.pop(context);
                                       },
                                       child: Image.asset(
@@ -329,10 +301,8 @@ class UserComment extends HookWidget {
                 child: SizedBox(
                   width: dimension['width'],
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 26, vertical: 16),
-                    margin:
-                        const EdgeInsets.only(right: 10, left: 10, bottom: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
+                    margin: const EdgeInsets.only(right: 10, left: 10, bottom: 14),
                     decoration: const BoxDecoration(
                       color: AppColor.notificationBgColor,
                       borderRadius: BorderRadius.all(
@@ -344,9 +314,10 @@ class UserComment extends HookWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BaseText(
-                          title: AppLocalizations.of(context)!.addACommenthi,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w700),
+                          title: AppLocalization.of(context)
+                              .getTranslatedValue("addCommentFeed")
+                              .toString(),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
