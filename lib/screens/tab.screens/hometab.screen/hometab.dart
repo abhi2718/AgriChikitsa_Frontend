@@ -7,6 +7,7 @@ import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import './hometab_view_model.dart';
@@ -85,6 +86,12 @@ class HomeTabScreen1 extends HookWidget {
       useViewModel.fetchFeeds(context);
     }
 
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColor.notificationBgColor,

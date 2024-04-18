@@ -174,5 +174,6 @@
     "deleteField":"खेत डिलीट प्रक्रिया",
     "confirmDeleteField":"क्या आप अपना यह खेत डिलीट करना चाहते है?",
     "comingSoon":"जल्दी ही आपके निकट",
-    "cropReport":"फसल रिपोर्ट"
+    "cropReport":"फसल रिपोर्ट",
+    "uploadPhotoChat": "कृपया फोटो अपलोड करें.."
 }

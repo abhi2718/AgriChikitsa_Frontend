@@ -1,7 +1,9 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/chat_history.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -89,22 +91,24 @@ class NotificationTile extends HookWidget {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
                                       )),
-                                  InkWell(
-                                    onTap: () {
-                                      launchUrl(Uri.parse(notificationItem['url']));
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                                      width: dimension['width']! * 0.65,
-                                      child: Text(
-                                        "${notificationItem['url']}",
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColor.hyperlinkColor),
-                                        textWidthBasis: TextWidthBasis.parent,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                  Flexible(
+                                    child: InkWell(
+                                      onTap: () {
+                                        launchUrl(Uri.parse(notificationItem['url']));
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                        width: dimension['width']! * 0.65,
+                                        child: Text(
+                                          "${notificationItem['url']}",
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColor.hyperlinkColor),
+                                          textWidthBasis: TextWidthBasis.parent,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
                                   ),

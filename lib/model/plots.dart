@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class Plots {
   String id;
   String fieldName;
@@ -28,6 +30,7 @@ class Plots {
   });
 
   factory Plots.fromJson(Map<String, dynamic> json) {
+    log(json.toString());
     return Plots(
         cropImage: json['cropImage'],
         cropName: json['crop']['name'],

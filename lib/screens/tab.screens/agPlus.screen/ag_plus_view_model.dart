@@ -266,6 +266,7 @@ class AGPlusViewModel with ChangeNotifier {
     setGetFieldLoader(true);
     try {
       final data = await _agPlusRepository.getFields();
+      print(data);
       if (data.length > 0) {
         userPlotList = mapFields(data);
         userPlotList[0].isSelected = true;
@@ -315,7 +316,9 @@ class AGPlusViewModel with ChangeNotifier {
         "soilType": soilType,
         "sowingDate": sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
       };
+      print(payload);
       final data = await _agPlusRepository.createPlot(payload);
+      print(data);
       if (data['message'] == "Data added Successfully") {
         Plots newPlot = Plots(
           id: data['data']['_id'],

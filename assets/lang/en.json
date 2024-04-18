@@ -174,5 +174,6 @@
     "deleteField":"Delete Field",
     "confirmDeleteField":"Are you sure you want to delete this field?",
     "comingSoon":"Coming Soon",
-    "cropReport":"Crop Report"
+    "cropReport":"Crop Report",
+    "uploadPhotoChat": "Please upload relevant images.."
 }

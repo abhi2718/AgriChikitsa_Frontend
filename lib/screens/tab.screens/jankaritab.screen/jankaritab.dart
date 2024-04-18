@@ -218,7 +218,8 @@ class JankariHomeTab extends HookWidget {
                                         Utils.model(
                                             context,
                                             ShortsPlayer(
-                                              videoUrl: crop['shortsUrl'],
+                                              videoUrl: crop['shortsUrl'] ??
+                                                  "https://youtube.com/shorts/lqukErpcPjc?si=1oWqktpZ-TNgABhF",
                                               aspectRatio: 9 / 16,
                                             ));
                                       });
