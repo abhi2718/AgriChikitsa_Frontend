@@ -3,6 +3,7 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/crop_repor
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/features_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/pest_management.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/selected_plot_details.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/soilHealthCard.screen/soil_health_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/widgets/weather_details_Screen.dart';
@@ -45,6 +46,12 @@ class AGPlusHome extends HookWidget {
             child: InkWell(
                 onTap: () => showDeleteFieldDialog(context, useViewModel),
                 child: const Icon(Icons.delete)),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: InkWell(
+                onTap: () => Utils.model(context, const PlotHistoryScreen()),
+                child: const Icon(Icons.history)),
           )
         ],
       ),
@@ -57,9 +64,11 @@ class AGPlusHome extends HookWidget {
                 plotNumber: plotNumber,
                 selectedPlot: useViewModel.selectedPlot,
               ),
-              SelectedPlotDetails(
-                selectedPlot: useViewModel.selectedPlot,
-              ),
+              Consumer<AGPlusViewModel>(builder: (context, provider, child) {
+                return SelectedPlotDetails(
+                  selectedPlot: provider.selectedPlot,
+                );
+              }),
               Consumer<WeatherViewModel>(builder: (context, provider, child) {
                 return provider.getWeatherDataLoader
                     ? Skeleton(height: dimension["height"]! * 0.3, width: dimension["width"]!)
@@ -114,7 +123,9 @@ class AGPlusHome extends HookWidget {
                   image:
                       "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                   ontap: () {
-                    Utils.model(context, CropReportScreen());
+                    // Utils.model(context, CropReportScreen());
+                    Utils.toastMessage(
+                        AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
                   }),
             ],
           ),

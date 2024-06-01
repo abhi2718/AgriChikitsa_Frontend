@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
@@ -22,7 +23,6 @@ Future<void> handleBackgorundMessage(RemoteMessage message) async {}
 class HomeTabViewModel with ChangeNotifier {
   final _authTabRepo = AuthRepository();
   final _homeTabRepository = HomeTabRepository();
-
   final textEditingController = TextEditingController();
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   dynamic feedList = [];
@@ -38,12 +38,37 @@ class HomeTabViewModel with ChangeNotifier {
   var toogleMyPostFeed = {"isLiked": false, "id": ""};
   var increaseCommentNumber = {'count': 0, "id": ""};
   List<String> expandedPosts = [];
+  bool reportPostLoader = false;
+  bool reportPostStatus = false;
   bool get loading {
     return _loading;
   }
 
   bool isExpanded(String id) {
     return expandedPosts.contains(id);
+  }
+
+  String getTimeAgo(String dateString, BuildContext context) {
+    DateTime createdAt = DateTime.parse(dateString);
+    DateTime now = DateTime.now();
+
+    Duration difference = now.difference(createdAt);
+    int daysDifference = difference.inDays;
+    final bool isEnglish = AppLocalization.of(context).locale.toString() == 'en';
+    if (daysDifference < 1) {
+      int hoursDifference = difference.inHours;
+      if (hoursDifference < 1) {
+        int minutesDifference = difference.inMinutes;
+        return '$minutesDifference ${isEnglish ? '${AppLocalization.of(context).getTranslatedValue('mintueFeed')}${minutesDifference == 1 ? '' : 's'}' : '${AppLocalization.of(context).getTranslatedValue('mintueFeed')}'}  ${AppLocalization.of(context).getTranslatedValue('agoFeed')}';
+      } else {
+        return '$hoursDifference ${isEnglish ? '${AppLocalization.of(context).getTranslatedValue('hourFeed')}${hoursDifference == 1 ? '' : 's'}' : '${AppLocalization.of(context).getTranslatedValue('hourFeed')}'}  ${AppLocalization.of(context).getTranslatedValue('agoFeed')}';
+      }
+    } else if (daysDifference < 31) {
+      return '$daysDifference ${isEnglish ? '${AppLocalization.of(context).getTranslatedValue('daysFeed')}${daysDifference == 1 ? '' : 's'}' : '${AppLocalization.of(context).getTranslatedValue('daysFeed')}'}  ${AppLocalization.of(context).getTranslatedValue('agoFeed')}';
+    } else {
+      int monthsDifference = (daysDifference / 30).floor();
+      return '$monthsDifference ${isEnglish ? '${AppLocalization.of(context).getTranslatedValue('monthsFeed')}${monthsDifference == 1 ? '' : 's'}' : '${AppLocalization.of(context).getTranslatedValue('monthsFeed')}'}  ${AppLocalization.of(context).getTranslatedValue('agoFeed')}';
+    }
   }
 
   setWeatherPDFLoader(value) {
@@ -78,6 +103,8 @@ class HomeTabViewModel with ChangeNotifier {
   void disposeValues() {
     feedList = [];
     categoriesList = [];
+    reportPostLoader = false;
+    reportPostStatus = false;
     commentsList = [];
     currentSelectedCategory = "All";
     expandedPosts.clear();
@@ -97,6 +124,39 @@ class HomeTabViewModel with ChangeNotifier {
   setloading(bool value) {
     _loading = value;
     notifyListeners();
+  }
+
+  setReportPostloading(bool value) {
+    reportPostLoader = value;
+    notifyListeners();
+  }
+
+  void reportPost(String reason, String userId, BuildContext context) async {
+    reportPostLoader = false;
+    reportPostStatus = false;
+    setReportPostloading(true);
+    try {
+      final payload = {"reason": reason, "reportedUserId": userId};
+      final response = await _homeTabRepository.reportPost(payload);
+      setReportPostloading(false);
+      if (response['status']) {
+        reportPostStatus = true;
+        notifyListeners();
+        Timer(const Duration(seconds: 2), () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
+      }
+    } catch (error) {
+      reportPostStatus = false;
+      setReportPostloading(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
   }
 
   void updateProfile(String fcmToken) async {
@@ -294,11 +354,53 @@ class HomeTabViewModel with ChangeNotifier {
     }));
   }
 
-  Future<bool> createPost(BuildContext context, String id, String caption, String imageUrl) async {
+  List<String> extractHashtags(String caption) {
+    final List<String> words = caption.split(' ');
+    final List<String> hashtags = [];
+
+    for (final String word in words) {
+      if (word.startsWith('#')) {
+        String hashtag = word.substring(1);
+        if (hashtag.length <= 15) {
+          hashtags.add(hashtag);
+        }
+      }
+    }
+    return hashtags;
+  }
+
+  Future<bool> createPost(
+      BuildContext context, String id, String caption, String imageUrl, bool isImgUploaded) async {
     try {
-      final payload = caption == ""
-          ? {"categoryId": id, "imgurl": imageUrl}
-          : {"categoryId": id, "hindiCaption": caption, "imgurl": imageUrl};
+      Map<String, dynamic> payload = {};
+      if (caption == "") {
+        payload = {"categoryId": id};
+        if (isImgUploaded) {
+          payload["imgurl"] = imageUrl;
+          payload["mediaType"] = "image";
+        } else {
+          payload["videoUrl"] = imageUrl;
+          if (imageUrl.contains("https://youtu")) {
+            payload["mediaType"] = "youtube";
+          } else {
+            payload["mediaType"] = "video";
+          }
+        }
+      } else {
+        List<String> tags = extractHashtags(caption);
+        payload = {"categoryId": id, "hindiCaption": caption, "tags": tags};
+        if (isImgUploaded) {
+          payload["imgurl"] = imageUrl;
+          payload["mediaType"] = "image";
+        } else {
+          payload["videoUrl"] = imageUrl;
+          if (imageUrl.contains("https://youtu")) {
+            payload["mediaType"] = "youtube";
+          } else {
+            payload["mediaType"] = "video";
+          }
+        }
+      }
       await _homeTabRepository.createPost(payload);
       return true;
     } catch (error) {
@@ -372,6 +474,21 @@ class HomeTabViewModel with ChangeNotifier {
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
             context);
+      }
+    }
+  }
+
+  void increaseViews(BuildContext context, String feedId) async {
+    try {
+      await _homeTabRepository.increaseView(feedId);
+    } catch (error) {
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

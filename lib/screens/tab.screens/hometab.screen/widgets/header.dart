@@ -12,7 +12,6 @@ import '../../notifications.screen/notification_view_model.dart';
 import './category_button.dart';
 import './notification_widget.dart';
 import '../../../../res/color.dart';
-import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 
 class HeaderWidget extends HookWidget {
@@ -41,53 +40,35 @@ class HeaderWidget extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Consumer<AuthService>(builder: (context, provider, child) {
-                    if (provider.userInfo != null) {
-                      final user = provider.userInfo["user"];
-                      final profileImage = user['profileImage'];
-                      return SizedBox(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: CachedNetworkImage(
-                            imageUrl: profileImage,
-                            progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                              height: 40,
-                              width: 40,
-                              radius: 0,
-                            ),
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
-                            width: 40,
-                            fit: BoxFit.cover,
-                            height: 40,
-                          ),
-                        ),
-                      );
-                    }
-                    return Container();
-                  }),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Utils.model(context, const MyProfileScreen());
-                        },
-                        child: SvgPicture.asset(
-                          'assets/svg/timeline.svg',
-                          width: 23,
-                          height: 22,
-                        ),
-                      ),
-                      SizedBox(
-                        width: dimension['width']! * 0.04,
-                      ),
-                      Consumer<NotificationViewModel>(builder: (context, provider, child) {
-                        return NotificationIndicatorButton(
-                          notificationCount: provider.notificationCount,
-                        );
-                      }),
-                    ],
-                  )
+                  InkWell(
+                    onTap: () {
+                      Utils.model(context, const MyProfileScreen());
+                    },
+                    child: SvgPicture.asset(
+                      'assets/svg/timeline.svg',
+                      width: 23,
+                      height: 22,
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    'assets/svg/homeScreenLogo.svg',
+                    height: 40,
+                    width: 80,
+                  ),
+                  Consumer<NotificationViewModel>(builder: (context, provider, child) {
+                    return NotificationIndicatorButton(
+                      notificationCount: provider.notificationCount,
+                    );
+                  })
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     SizedBox(
+                  //       width: dimension['width']! * 0.04,
+                  //     ),
+                  //     ,
+                  //   ],
+                  // )
                 ],
               ),
             ),

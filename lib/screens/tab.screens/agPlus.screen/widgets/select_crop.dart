@@ -14,16 +14,24 @@ import '../ag_plus_view_model.dart';
 import '../helper/crop_item.dart';
 
 class CropSelection extends HookWidget {
-  const CropSelection({super.key});
-
+  const CropSelection({super.key, this.fieldId, this.isFromFieldScreen = false});
+  final bool isFromFieldScreen;
+  final String? fieldId;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<AGPlusViewModel>(context, listen: false);
     final profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
+
+    useEffect(() {
+      if (isFromFieldScreen) {
+        useViewModel.unselectAllCrop();
+      }
+    }, []);
+
     Future<bool> onWillPop() async {
       Navigator.pop(context);
-      Utils.model(context, const PlotDetails());
+      isFromFieldScreen ? Navigator.pop(context) : Utils.model(context, const PlotDetails());
       return true;
     }
 
@@ -93,6 +101,7 @@ class CropSelection extends HookWidget {
                                       .map((e) => CropItem(
                                             crop: e,
                                             profileViewModel: profileViewModel,
+                                            isfromFieldScreen: isFromFieldScreen,
                                           ))
                                       .toList(),
                                 ],
@@ -106,12 +115,21 @@ class CropSelection extends HookWidget {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
           onPressed: () {
-            if (useViewModel.selectedCropId.isEmpty) {
-              Utils.toastMessage(
-                  AppLocalization.of(context).getTranslatedValue("warningSelectCrop").toString());
+            if (isFromFieldScreen) {
+              if (useViewModel.selectedChangeCrop == null) {
+                Utils.toastMessage(
+                    AppLocalization.of(context).getTranslatedValue("warningSelectCrop").toString());
+              } else {
+                useViewModel.changeCropFromField(context, fieldId!);
+              }
             } else {
-              Navigator.pop(context);
-              Utils.model(context, const CropDetails());
+              if (useViewModel.selectedCropId.isEmpty) {
+                Utils.toastMessage(
+                    AppLocalization.of(context).getTranslatedValue("warningSelectCrop").toString());
+              } else {
+                Navigator.pop(context);
+                Utils.model(context, const CropDetails());
+              }
             }
           },
           child: const Icon(

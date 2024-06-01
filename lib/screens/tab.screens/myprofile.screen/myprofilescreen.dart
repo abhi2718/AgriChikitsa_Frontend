@@ -88,38 +88,49 @@ class MyProfileScreen extends HookWidget {
                       return provider.loading
                           ? const PreLoader()
                           : provider.feedList.isEmpty
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    BaseText(
-                                      title: AppLocalization.of(context)
-                                          .getTranslatedValue("noPostYet")
-                                          .toString(),
-                                      style: const TextStyle(),
+                              ? GestureDetector(
+                                  onTap: () =>
+                                      Navigator.pushNamed(context, RouteName.createPostRoute),
+                                  child: Container(
+                                    margin: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(color: AppColor.extraDark),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      // crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        BaseText(
+                                          title: AppLocalization.of(context)
+                                              .getTranslatedValue("noPostYet")
+                                              .toString(),
+                                          style: const TextStyle(),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        InkWell(
+                                          // onTap: () =>
+                                          //     Navigator.pushNamed(context, RouteName.createPostRoute),
+                                          child: Container(
+                                              height: dimension['height']! * 0.07,
+                                              width: dimension['width']! * 0.30,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                color: AppColor.darkColor,
+                                              ),
+                                              child: Center(
+                                                  child: BaseText(
+                                                title: AppLocalization.of(context)
+                                                    .getTranslatedValue("createNewPost")
+                                                    .toString(),
+                                                style: const TextStyle(color: AppColor.whiteColor),
+                                              ))),
+                                        )
+                                      ],
                                     ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    InkWell(
-                                      onTap: () =>
-                                          Navigator.pushNamed(context, RouteName.createPostRoute),
-                                      child: Container(
-                                          height: dimension['height']! * 0.07,
-                                          width: dimension['width']! * 0.30,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(8),
-                                            color: AppColor.darkColor,
-                                          ),
-                                          child: Center(
-                                              child: BaseText(
-                                            title: AppLocalization.of(context)
-                                                .getTranslatedValue("createNewPost")
-                                                .toString(),
-                                            style: const TextStyle(color: AppColor.whiteColor),
-                                          ))),
-                                    )
-                                  ],
+                                  ),
                                 )
                               : RefreshIndicator(
                                   onRefresh: refresh,

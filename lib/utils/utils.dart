@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
@@ -16,10 +17,8 @@ class Utils {
     Fluttertoast.showToast(msg: message);
   }
 
-  static Map<String, double> getDimensions(
-      BuildContext context, bool includeAppBarHeight) {
-    final appBarHeight =
-        includeAppBarHeight ? AppBar().preferredSize.height : 0;
+  static Map<String, double> getDimensions(BuildContext context, bool includeAppBarHeight) {
+    final appBarHeight = includeAppBarHeight ? AppBar().preferredSize.height : 0;
     final deviceHeight = MediaQuery.of(context).size.height -
         appBarHeight -
         MediaQuery.of(context).padding.top -
@@ -74,8 +73,7 @@ class Utils {
     }
   }
 
-  static void flushBarErrorMessage(
-      String title, String message, BuildContext context) {
+  static void flushBarErrorMessage(String title, String message, BuildContext context) {
     showFlushbar(
       context: context,
       flushbar: Flushbar(
@@ -100,8 +98,7 @@ class Utils {
     );
   }
 
-  static void fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  static void fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
@@ -138,10 +135,42 @@ class Utils {
     }
   }
 
+  static Future<dynamic> uploadVideo(String video) async {
+    try {
+      final localStorage = await SharedPreferences.getInstance();
+      final mapString = localStorage.getString('profile');
+      if (mapString == null) {
+        return AppException("Token does not exist");
+      }
+      final profile = jsonDecode(mapString);
+      final url = Uri.parse(AppUrl.uploadVideoEndPoint);
+      final headers = {'Authorization': 'Bearer ${profile["token"]}'};
+      final request = http.MultipartRequest('POST', url)
+        ..headers.addAll(headers)
+        ..files.add(await http.MultipartFile.fromPath('video', video,
+            contentType: MediaType('video', 'mp4')));
+      final response = await http.Response.fromStream(await request.send());
+      final body = jsonDecode(response.body);
+      switch (response.statusCode) {
+        case 200:
+          return body;
+        case 201:
+          return body;
+        case 400:
+          throw BadRequestException(body["message"].toString());
+        case 404:
+          throw UnAuthorisedException(body["message"].toString());
+        default:
+          throw FetchDataException(body["message"].toString());
+      }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   static Future<dynamic> capturePhoto() async {
     try {
-      final XFile? photo =
-          await ImagePicker().pickImage(source: ImageSource.camera);
+      final XFile? photo = await ImagePicker().pickImage(source: ImageSource.camera);
       if (photo == null) {
         return null;
       }
@@ -153,10 +182,19 @@ class Utils {
 
   static Future<dynamic> pickImage() async {
     try {
-      final XFile? image =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
+      final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return null;
       return image;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  static Future<dynamic> pickVideo() async {
+    try {
+      final XFile? video = await ImagePicker().pickVideo(source: ImageSource.gallery);
+      if (video == null) return null;
+      return video;
     } catch (error) {
       rethrow;
     }

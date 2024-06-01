@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/comment.dart';
 import 'package:agriChikitsa/model/jankari_subcategory_post_model.dart';
 import 'package:agriChikitsa/repository/jankari.repo/jankari_repository.dart';
 import 'package:agriChikitsa/repository/stats.repo/stats_tab_repository.dart';
@@ -16,16 +17,19 @@ import '../../../model/jankari_subcategory_model.dart';
 class JankariViewModel with ChangeNotifier {
   final _jankariRepository = JankariRepository();
   final _statsRepository = StatsTabRepository();
+  final textEditingController = TextEditingController();
   List<JankariCategoryModal> jankaricardList = [];
   List trendingCropsList = [];
   List<JankariSubCategoryModel> jankariSubcategoryList = [];
   List<JankariSubCategoryPostModel> jankariSubcategoryPostList = [];
+  List<Comment> commentsList = [];
   var _loading = true;
   var jankariSubCategoryLoader = false;
   var jankariSubCategoryPostLoader = false;
   var selectedCategory = "";
   var selectedSubCategory = "";
   var showSubCategoryModal = false;
+  var commentLoading = true;
   int currentPostIndex = 0;
   bool showActiveButton = false;
   bool get loading {
@@ -82,7 +86,9 @@ class JankariViewModel with ChangeNotifier {
     selectedSubCategory = "";
     showSubCategoryModal = false;
     currentPostIndex = 0;
+    commentsList.clear();
     showActiveButton = true;
+    commentLoading = true;
     _loading = false;
   }
 
@@ -268,5 +274,57 @@ class JankariViewModel with ChangeNotifier {
     File(path).writeAsBytesSync(bytes);
     final xfile = XFile(path);
     return xfile;
+  }
+
+  List<Comment> mapComments(dynamic comments) {
+    return List<Comment>.from(comments.map((comment) {
+      return Comment.fromJson(comment);
+    }));
+  }
+
+  void fetchComments(BuildContext context, String id) async {
+    commentLoading = true;
+    notifyListeners();
+    try {
+      final data = await _jankariRepository.fetchComments(id);
+      commentLoading = false;
+      commentsList = mapComments(data["comments"]);
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
+      }
+    }
+  }
+
+  void addComment(BuildContext context, String id, String comment, User user) async {
+    if (comment.isNotEmpty) {
+      final newComment = Comment(id: "newComment", user: user, comment: comment);
+      commentsList = [...commentsList, newComment];
+      notifyListeners();
+      try {
+        final payload = {"comment": comment, "PostId": id};
+        await _jankariRepository.addComments(id, payload);
+        int index = jankariSubcategoryPostList.indexWhere((post) => post.id == id);
+        if (index != -1) {
+          jankariSubcategoryPostList[index].comments.length++;
+        }
+        textEditingController.clear();
+        notifyListeners();
+      } catch (error) {
+        setloading(false);
+        if (kDebugMode) {
+          if (context.mounted) {
+            Utils.flushBarErrorMessage('Alert', error.toString(), context);
+          }
+        }
+      }
+    }
   }
 }

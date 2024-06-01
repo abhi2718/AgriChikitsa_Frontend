@@ -94,4 +94,24 @@ class AGPlusRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> raiseInfoRequest(dynamic payload) async {
+    const url = AppUrl.infoRequestEndpoint;
+    try {
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> changeCrop(dynamic payload) async {
+    const url = AppUrl.changeCropEndPoint;
+    try {
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

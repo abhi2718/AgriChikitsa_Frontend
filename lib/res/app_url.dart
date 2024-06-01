@@ -10,6 +10,7 @@ class AppUrl {
   static const String userEndPoint = '$baseUrl/users';
   static const String updateProfileEndPoint = '$baseUrl/auth/update';
   static const String uploadImageEndPoint = '$baseUrl/upload';
+  static const String uploadVideoEndPoint = '$baseUrl/upload/video';
   static const String feedEndPoint = '$baseUrl/feed';
   static const String jankariEndPoint = '$baseUrl/jankari';
   static const String mandiStatesEndPoint = '$baseUrl/mandi/states';
@@ -27,11 +28,16 @@ class AppUrl {
   static const String deleteFieldEndPoint = '$baseUrl/agristick/feild';
   static const String createPlotEndPoint = '$baseUrl/agristick/addFeild';
   static const String getCropsListEndPoint = '$baseUrl/agristick/crops';
+  static const String changeCropEndPoint = '$baseUrl/agristick/changeCropOnField';
   static const String getCropsCategoryListEndPoint = '$baseUrl/agristick/cropCategory';
   static const String activateAgriStickEndPoint = '$baseUrl/agristick/activateAgristick';
   static const String graphDataEndPoint = '$baseUrl/agristick/averageFeildData';
+  static const String infoRequestEndpoint = '$baseUrl/agristick/intrest';
   static const String weatherAPIEndPoint =
       'http://api.weatherapi.com/v1/current.json?key=94488ccb442e4337ad735838231309';
   static const String chatHistoryEndPoint = '$baseUrl/chat/chatHistory';
   static const String raiseTestingRequestEndPoint = '$baseUrl/soilTesting/request';
+  static const String reportPostEndPoint = '$baseUrl/report';
+  static const String profileDetailsEndPoint = '$baseUrl/users/profile';
+  static const String connectionsEndPoint = '$baseUrl/connection';
 }

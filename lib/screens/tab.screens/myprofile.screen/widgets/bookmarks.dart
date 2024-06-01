@@ -1,4 +1,11 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/comment_widget.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_test_widget.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_video_player.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/report_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -7,11 +14,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 import '../../hometab.screen/hometab_view_model.dart';
-import 'timeline_comment_widget.dart';
 
 class BookmarkFeed extends HookWidget {
   final feed;
@@ -24,10 +31,8 @@ class BookmarkFeed extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
-    final useViewModel =
-        Provider.of<MyProfileViewModel>(context, listen: false);
-    final homeViewModel =
-        useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: true));
+    final useViewModel = Provider.of<MyProfileViewModel>(context, listen: false);
+    final homeViewModel = useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: true));
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(feed['likes'].length);
     final isLiked = useState(feed['likes'].contains(userInfo.sId));
@@ -38,8 +43,7 @@ class BookmarkFeed extends HookWidget {
     }
 
     void handleLike() {
-      useViewModel.toggleLike(
-          context, feed["_id"], isLiked.value, userInfo.sId!, homeViewModel);
+      useViewModel.toggleLike(context, feed["_id"], isLiked.value, userInfo.sId!, homeViewModel);
       if (isLiked.value) {
         isLiked.value = false;
         numberOfLikes.value = numberOfLikes.value - 1;
@@ -50,8 +54,7 @@ class BookmarkFeed extends HookWidget {
     }
 
     void handleBookMark() {
-      useViewModel.toggleTimeline(
-          context, feed['_id'], userInfo.sId!, homeViewModel);
+      useViewModel.toggleTimeline(context, feed['_id'], userInfo.sId!, homeViewModel);
       isBookMarked.value = !isBookMarked.value;
     }
 
@@ -103,78 +106,110 @@ class BookmarkFeed extends HookWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            SizedBox(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: CachedNetworkImage(
-                                  imageUrl: profileImage,
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          Skeleton(
-                                    height: 40,
-                                    width: 40,
-                                    radius: 0,
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                  width: 40,
-                                  fit: BoxFit.cover,
-                                  height: 40,
+                    GestureDetector(
+                      onTap: () => Utils.model(
+                          context,
+                          FeedUserProfile(
+                            account: user,
+                          )),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: CachedNetworkImage(
+                              imageUrl: user['profileImage'],
+                              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                  Skeleton(
+                                height: 40,
+                                width: 40,
+                                radius: 0,
+                              ),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
+                              width: 40,
+                              fit: BoxFit.cover,
+                              height: 40,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              BaseText(
+                                title: user['name'],
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                              ),
+                              BaseText(
+                                title: user['userHandler'] ?? "@username",
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // GestureDetector(child: Icon(Icons.more_vert)),
+                    Builder(
+                      builder: (context) => PopupMenuButton(
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'report',
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslatedValue('reportPost')
+                                  .toString(),
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                        onSelected: (value) {
+                          if (value == 'report') {
+                            showModalBottomSheet(
+                              context: context,
+                              useSafeArea: true,
+                              enableDrag: true,
+                              builder: (BuildContext context) => ReportScreen(
+                                userId: user['_id'],
+                              ),
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            BaseText(
-                              title: user['name'],
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w700),
-                            ),
-                            BaseText(
-                              title: user['userHandler'] ?? "@username",
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w400),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const InkWell(
-                      child: Icon(Remix.more_2_line),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: dimension["width"]! - 16,
-                width: dimension["width"]! - 16,
-                child: CachedNetworkImage(
-                  imageUrl: imageName,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Skeleton(
-                    height: dimension["width"]! - 16,
-                    width: dimension["width"]! - 16,
-                    radius: 0,
-                  ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  fit: BoxFit.fill,
-                ),
-              ),
+              feed['mediaType'] == 'image'
+                  ? SizedBox(
+                      height: dimension["width"]! - 16,
+                      width: dimension["width"]! - 16,
+                      child: CachedNetworkImage(
+                        imageUrl: feed['imgurl'],
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                          height: dimension["width"]! - 16,
+                          width: dimension["width"]! - 16,
+                          radius: 0,
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                        fit: BoxFit.fill,
+                      ),
+                    )
+                  : feed['mediaType'] == 'video'
+                      ? PostWidget(videoUrl: feed['videoUrl'])
+                      : Player(videoUrl: feed['videoUrl'], aspectRatio: 16 / 9),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -193,6 +228,9 @@ class BookmarkFeed extends HookWidget {
                           Text(numberOfLikes.value.toString())
                         ],
                       ),
+                      const SizedBox(
+                        width: 12,
+                      ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -200,7 +238,7 @@ class BookmarkFeed extends HookWidget {
                             onTap: () {
                               Utils.model(
                                   context,
-                                  TimelineUserComment(
+                                  UserComment(
                                     feedId: feed["_id"],
                                     setNumberOfComment: setNumberOfComment,
                                   ));
@@ -213,47 +251,59 @@ class BookmarkFeed extends HookWidget {
                           Text(numberOfComments.value.toString())
                         ],
                       ),
+                      const SizedBox(
+                        width: 12,
+                      ),
                       InkWell(
                         onTap: handleBookMark,
                         child: Icon(
-                          isBookMarked.value
-                              ? Remix.bookmark_fill
-                              : Remix.bookmark_line,
+                          isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
                           color: AppColor.darkColor,
                         ),
                       )
                     ]),
+                    GestureDetector(
+                        onTap: () {
+                          Share.share(
+                              "Check out what ${user['name']} posted!\n ${feed["hindiCaption"]}");
+                        },
+                        child: const Icon(Icons.reply_all)),
+                  ],
+                ),
               ),
+              feed['views'] != 0
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text("${feed['views']} Views"),
+                    )
+                  : const SizedBox.shrink(),
               feed["hindiCaption"] != null
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            feed["hindiCaption"],
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            maxLines:
-                                useViewModel.isExpandedBookMarkFeed(feed['_id'])
-                                    ? null
-                                    : 2,
+                          CustomTextWidget(
+                            text: feed["hindiCaption"],
+                            textStyle: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black),
+                            maxLines: useViewModel.isExpandedBookMarkFeed(feed['_id']) ? null : 2,
                           ),
                           if (feed["hindiCaption"].length > 140)
                             InkWell(
-                              onTap: () => useViewModel
-                                  .toggleExpandBookMarkFeed(feed['_id']),
-                              child: useViewModel
-                                      .isExpandedBookMarkFeed(feed['_id'])
+                              onTap: () => useViewModel.toggleExpandBookMarkFeed(feed['_id']),
+                              child: useViewModel.isExpandedBookMarkFeed(feed['_id'])
                                   ? Container()
                                   : const BaseText(
                                       title: "Read More",
-                                      style: TextStyle(
-                                          color: AppColor.hyperlinkColor),
+                                      style: TextStyle(color: AppColor.hyperlinkColor),
                                     ),
                             ),
+                          Text(
+                            homeViewModel.getTimeAgo(feed['createdAt'], context),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.6)),
+                          ),
                         ],
                       ),
                     )

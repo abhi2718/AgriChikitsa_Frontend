@@ -5,16 +5,13 @@ import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/c
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/custom_text_bubble.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:chat_bubbles/chat_bubbles.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/skeleton/skeleton.dart';
 import '../../chat_tab_view_model.dart';

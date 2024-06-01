@@ -192,7 +192,7 @@ class AllPlotsScreen extends HookWidget {
                                                           .getTranslatedValue("goButton")
                                                           .toString(),
                                                       style: GoogleFonts.inter(
-                                                          color: Color(0xff383737),
+                                                          color: const Color(0xff383737),
                                                           fontWeight: FontWeight.w600),
                                                     ),
                                                   ),

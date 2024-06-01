@@ -14,6 +14,7 @@ class NetworkApiService extends BaseApiServices {
     final mapString = localStorage.getString('profile');
     if (mapString != null) {
       final profile = jsonDecode(mapString);
+      print(profile['token']);
       return {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

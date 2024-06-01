@@ -3,6 +3,7 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_mode
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandi_prices_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
@@ -95,6 +96,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<LanguageViewModel>(
           create: (_) => LanguageViewModel(),
+        ),
+        ChangeNotifierProvider<FeedUserProfileViewModel>(
+          create: (_) => FeedUserProfileViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(

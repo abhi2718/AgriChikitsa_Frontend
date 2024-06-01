@@ -46,6 +46,8 @@ class AGPlusViewModel with ChangeNotifier {
   bool requestStatus = false;
   bool requestLoader = false;
   bool notPlantedCheck = true;
+  bool infoRequestRaised = false;
+  late SelectCrop? selectedChangeCrop;
   final plotSizeFocusNode = FocusNode();
   void reinitialize() {
     fieldName = "";
@@ -57,6 +59,7 @@ class AGPlusViewModel with ChangeNotifier {
     addFieldLoader = false;
     getCropListLoader = false;
     fieldStatus = false;
+    selectedChangeCrop = null;
     selectedCropId = "";
     fieldSize = "";
     plotImagePath = "";
@@ -95,6 +98,7 @@ class AGPlusViewModel with ChangeNotifier {
     userPlotList = [];
     selectedPlot = null;
     mapLocation = {"latitude": "", "longitude": ""};
+    infoRequestRaised = false;
     reinitialize();
   }
 
@@ -511,5 +515,61 @@ class AGPlusViewModel with ChangeNotifier {
       return false;
     }
     return true;
+  }
+
+  Future<bool> raiseInfoRequest(BuildContext context, String type) async {
+    if (infoRequestRaised) {
+      Utils.toastMessage("You have already raised one request!");
+      return false;
+    }
+    try {
+      final payload = {'product': type};
+      await _agPlusRepository.raiseInfoRequest(payload);
+      infoRequestRaised = true;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      infoRequestRaised = true;
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(), context);
+      return true;
+    }
+  }
+
+  void setSelectedChangedCrop(BuildContext context, SelectCrop selectedCrop) {
+    selectedChangeCrop = selectedCrop;
+    setSelectedCrop(context, selectedCrop);
+    notifyListeners();
+  }
+
+  void unselectAllCrop() {
+    selectedCropId = '';
+    for (final crop in cropList) {
+      crop.isSelected = false;
+    }
+  }
+
+  void changeCropFromField(BuildContext context, String fieldId) async {
+    setCropListLoader(true);
+    try {
+      final payload = {
+        'cropId': selectedChangeCrop!.id,
+        'cropImage': selectedChangeCrop!.backgroundImage,
+        'feildId': fieldId
+      };
+      await _agPlusRepository.changeCrop(payload);
+      selectedPlot.cropName = selectedChangeCrop!.name;
+      selectedPlot.cropNameHi = selectedChangeCrop!.name_hi;
+      if (context.mounted) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
+      unselectAllCrop();
+      setCropListLoader(false);
+    } catch (error) {
+      setCropListLoader(false);
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(), context);
+    }
   }
 }

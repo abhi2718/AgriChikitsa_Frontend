@@ -5,6 +5,7 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../model/plots.dart';
@@ -135,7 +136,77 @@ class PestManagement extends StatelessWidget {
                               GoogleFonts.inter(fontWeight: FontWeight.w500, color: Colors.white),
                         )),
               );
-            })
+            }),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.25),
+                  blurRadius: 25,
+                  spreadRadius: -7,
+                  offset: const Offset(0, 10),
+                )
+              ], color: Colors.white, borderRadius: BorderRadius.circular(8)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Want to know more about this?"),
+                  TextButton(
+                      onPressed: () async {
+                        await agPlusViewModel
+                            .raiseInfoRequest(
+                                context, isIrrigationCardTapped ? "Irrigation" : "Pest Management")
+                            .then((value) {
+                          if (value) {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext dialogContext) {
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20)),
+                                    child: Consumer<AGPlusViewModel>(
+                                      builder: (context, provider, child) {
+                                        return Container(
+                                          padding: const EdgeInsets.all(16.0),
+                                          height: dimension["height"]! * 0.3,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child: Image.asset(
+                                                  'assets/images/plot_success.png',
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              const Text(
+                                                "Our team will reach you out soon!",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                });
+                          }
+                        });
+                      },
+                      child: const Text(
+                        "Yes",
+                        style: TextStyle(color: AppColor.darkColor),
+                      ))
+                ],
+              ),
+            ),
           ],
         ),
       ),

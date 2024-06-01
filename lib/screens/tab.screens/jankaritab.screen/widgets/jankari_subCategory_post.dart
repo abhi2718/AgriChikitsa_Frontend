@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/post_comments.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -166,6 +167,34 @@ class JankariPost extends HookWidget {
                                               BaseText(
                                                 title: provider
                                                     .jankariSubcategoryPostList[index].dislikesCount
+                                                    .toString(),
+                                                style: const TextStyle(fontSize: 16),
+                                              )
+                                            ],
+                                          ),
+                                        )),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          Utils.model(
+                                              context,
+                                              PostComments(
+                                                  postId: provider
+                                                      .jankariSubcategoryPostList[index].id));
+                                        },
+                                        child: SizedBox(
+                                          height: 40,
+                                          width: 40,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Icon(Remix.discuss_line),
+                                              BaseText(
+                                                title: provider.jankariSubcategoryPostList[index]
+                                                    .comments.length
                                                     .toString(),
                                                 style: const TextStyle(fontSize: 16),
                                               )

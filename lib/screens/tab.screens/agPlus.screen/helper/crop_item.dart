@@ -10,13 +10,14 @@ import '../../../../utils/utils.dart';
 import '../ag_plus_view_model.dart';
 
 class CropItem extends StatelessWidget {
-  const CropItem({
-    super.key,
-    required this.crop,
-    required this.profileViewModel,
-  });
+  const CropItem(
+      {super.key,
+      required this.crop,
+      required this.profileViewModel,
+      this.isfromFieldScreen = false});
   final SelectCrop crop;
   final ProfileViewModel profileViewModel;
+  final bool isfromFieldScreen;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -24,7 +25,9 @@ class CropItem extends StatelessWidget {
     return Consumer<AGPlusViewModel>(
       builder: (context, provider, child) {
         return InkWell(
-          onTap: () => useViewModel.setSelectedCrop(context, crop),
+          onTap: () => isfromFieldScreen
+              ? useViewModel.setSelectedChangedCrop(context, crop)
+              : useViewModel.setSelectedCrop(context, crop),
           child: Container(
             decoration: BoxDecoration(
                 color: AppColor.whiteColor,
