@@ -75,4 +75,24 @@ class HomeTabRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> reportPost(dynamic payload) async {
+    try {
+      const url = AppUrl.reportPostEndPoint;
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> increaseView(String feedId) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/views/$feedId';
+      final response = await _apiServices.getPutApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

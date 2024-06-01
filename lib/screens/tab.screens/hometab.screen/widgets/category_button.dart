@@ -1,52 +1,51 @@
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../model/category_model.dart';
 import '../../../../res/color.dart';
 
 class CategoryButton extends StatelessWidget {
-  final CategoryHome category;
+  final dynamic category;
   final Function()? onTap;
+  final dynamic provider;
+  final ProfileViewModel profileViewModel;
   const CategoryButton(
-      {super.key, required this.category, required this.onTap});
+      {super.key,
+      required this.category,
+      required this.onTap,
+      required this.provider,
+      required this.profileViewModel});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeTabViewModel>(builder: (context, provider, child) {
-      return SizedBox(
-        height: 30,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            margin: const EdgeInsets.only(right: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            decoration: BoxDecoration(
+    return SizedBox(
+      height: 30,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.only(right: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+          decoration: BoxDecoration(
+            color: provider.currentSelectedCategory == category.id ? AppColor.darkColor : null,
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(
               color: provider.currentSelectedCategory == category.id
                   ? AppColor.darkColor
-                  : null,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: provider.currentSelectedCategory == category.id
-                    ? AppColor.darkColor
-                    : AppColor.darkColor,
-                width: category.isActive ? 1 : 1,
-              ),
+                  : AppColor.darkBlackColor,
+              width: category.isActive ? 0 : 1,
             ),
-            child: Center(
-              child: Text(
-                category.nameHi,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: provider.currentSelectedCategory == category.id
-                      ? Colors.white
-                      : Colors.black,
-                ),
+          ),
+          child: Center(
+            child: Text(
+              profileViewModel.locale["language"] == "en" ? category.name : category.nameHi,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color:
+                    provider.currentSelectedCategory == category.id ? Colors.white : Colors.black,
               ),
             ),
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }

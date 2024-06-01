@@ -13,4 +13,14 @@ class StatsTabRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> updateTapCount(String cropId) async {
+    try {
+      final url = '${AppUrl.jankariEndPoint}/trackCropTapCount/$cropId';
+      final response = await _apiServices.getPutApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

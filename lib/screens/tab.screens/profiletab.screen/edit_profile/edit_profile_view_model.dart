@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../model/user_model.dart';
@@ -55,7 +55,7 @@ class EditProfileViewModel with ChangeNotifier {
 
   String? nameFieldValidator(BuildContext context, value) {
     if (value!.isEmpty || value.trim().isEmpty) {
-      return AppLocalizations.of(context)!.nameReuiredhi;
+      return AppLocalization.of(context).getTranslatedValue("editProfileNameRequired").toString();
     }
     return null;
   }
@@ -79,7 +79,7 @@ class EditProfileViewModel with ChangeNotifier {
     if (value != null && value.isNotEmpty) {
       bool isValid = validateEmail(value);
       if (!isValid) {
-        return AppLocalizations.of(context)!.validateEmailhi;
+        return AppLocalization.of(context).getTranslatedValue("validateEmail").toString();
       }
     }
     return null;
@@ -114,26 +114,30 @@ class EditProfileViewModel with ChangeNotifier {
     try {
       setloading(true);
       final user = User.fromJson(authService.userInfo["user"]);
-      final data =
-          await _authRepository.updateProfile(user.sId!, userInfo);
+      final data = await _authRepository.updateProfile(user.sId!, userInfo);
       final localStorage = await SharedPreferences.getInstance();
-      final profile = {
-        'user': data["user"],
+      final mapString = localStorage.getString('profile');
+      final profile = jsonDecode(mapString!);
+      final updatedProfile = {
+        ...profile,
+        "user": data["user"],
         'token': data["token"],
       };
-      await localStorage.setString("profile", jsonEncode(profile));
+      await localStorage.setString("profile", jsonEncode(updatedProfile));
       setloading(false);
       if (imageLoading) {
         setImageLoading(false);
       }
-      authService.setUser(profile);
+      authService.setUser(updatedProfile);
       Utils.toastMessage(
-          AppLocalizations.of(context)!.profileUpdateSuccesfulhi);
+          AppLocalization.of(context).getTranslatedValue("updateSuccessful").toString());
     } catch (error) {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -150,8 +154,8 @@ class EditProfileViewModel with ChangeNotifier {
       }
     } catch (error) {
       setImageLoading(false);
-      Utils.flushBarErrorMessage(
-          AppLocalizations.of(context)!.alerthi, error.toString(), context);
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(), context);
     }
   }
 
@@ -169,7 +173,9 @@ class EditProfileViewModel with ChangeNotifier {
       setImageLoading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

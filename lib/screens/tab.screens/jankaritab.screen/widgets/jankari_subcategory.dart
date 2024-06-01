@@ -1,11 +1,13 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_category_button.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_subCategory_details.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 
@@ -14,7 +16,8 @@ import '../../../../widgets/skeleton/skeleton.dart';
 import '../jankari_view_model.dart';
 
 class SubCategoryContainer extends HookWidget {
-  const SubCategoryContainer({super.key});
+  final ProfileViewModel profileViewModel;
+  const SubCategoryContainer({super.key, required this.profileViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +47,7 @@ class SubCategoryContainer extends HookWidget {
                             onTap: () => Navigator.of(context).pop(),
                             child: const Icon(Icons.arrow_back)),
                         InkWell(
-                          onTap: () => Navigator.of(context)
-                              .popUntil((route) => route.isFirst),
+                          onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
                           child: const Icon(
                             Remix.close_circle_line,
                           ),
@@ -56,9 +58,10 @@ class SubCategoryContainer extends HookWidget {
                       height: 10,
                     ),
                     BaseText(
-                      title: AppLocalizations.of(context)!.selectyourcrophi,
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.w300),
+                      title: AppLocalization.of(context)
+                          .getTranslatedValue("jankariSubcategoryTitle")
+                          .toString(),
+                      style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.start,
                     ),
                     const SizedBox(
@@ -74,6 +77,7 @@ class SubCategoryContainer extends HookWidget {
                               itemCount: provider.jankaricardList.length,
                               itemBuilder: (context, index) {
                                 return JankariSubCategoryButton(
+                                  profileViewModel: profileViewModel,
                                   category: provider.jankaricardList[index],
                                   onTap: () {
                                     provider.setActiveState(
@@ -96,23 +100,19 @@ class SubCategoryContainer extends HookWidget {
                   builder: (context, provider, child) {
                     return provider.jankariSubCategoryLoader
                         ? Container(
-                            padding: const EdgeInsets.only(
-                                left: 16, right: 16, top: 17.5),
+                            padding: const EdgeInsets.only(left: 16, right: 16, top: 17.5),
                             child: GridView.builder(
                               padding: const EdgeInsets.all(10),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 10.0,
-                                childAspectRatio:
-                                    ((dimension['width']! - 10) / 2) / 147,
+                                childAspectRatio: ((dimension['width']! - 10) / 2) / 147,
                               ),
                               itemCount: 10,
                               itemBuilder: (context, index) {
                                 return Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 6, right: 6),
+                                  padding: const EdgeInsets.only(left: 6, right: 6),
                                   child: Skeleton(
                                     height: 100,
                                     width: 150,
@@ -127,76 +127,61 @@ class SubCategoryContainer extends HookWidget {
                                 padding: const EdgeInsets.only(bottom: 100),
                                 child: Center(
                                   child: BaseText(
-                                      title: AppLocalizations.of(context)!
-                                          .nopostYethi,
+                                      title: AppLocalization.of(context)
+                                          .getTranslatedValue("noPostYet")
+                                          .toString(),
                                       style: const TextStyle(fontSize: 15)),
                                 ),
                               )
                             : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
                                 child: GridView.builder(
-                                  itemCount:
-                                      provider.jankariSubcategoryList.length,
+                                  itemCount: provider.jankariSubcategoryList.length,
                                   padding: const EdgeInsets.only(top: 27),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
                                     crossAxisSpacing: 10.0,
                                     mainAxisSpacing: 10.0,
-                                    childAspectRatio:
-                                        ((dimension['width']! - 8) / 2) / 143,
+                                    childAspectRatio: ((dimension['width']! - 8) / 2) / 143,
                                   ),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final subCategory =
-                                        provider.jankariSubcategoryList[index];
-                                    final backgroundImage =
-                                        subCategory.backgroundImage.split(
-                                            'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final subCategory = provider.jankariSubcategoryList[index];
+                                    final backgroundImage = subCategory.backgroundImage;
                                     return InkWell(
                                       onTap: () {
-                                        provider.updateStats(
-                                            context,
-                                            'subcategory',
-                                            provider
-                                                .jankariSubcategoryList[index]
-                                                .id);
-                                        provider.setSelectedSubCategory(provider
-                                            .jankariSubcategoryList[index].id);
-                                        provider
-                                            .getJankariSubCategoryPost(context);
+                                        provider.updateStats(context, 'subcategory',
+                                            provider.jankariSubcategoryList[index].id);
+                                        provider.setSelectedSubCategory(
+                                            provider.jankariSubcategoryList[index].id);
+                                        provider.getJankariSubCategoryPost(context);
                                         Utils.model(
                                             context,
                                             JankariSubCategoryPost(
-                                              subCategoryTitle: provider
-                                                  .jankariSubcategoryList[index]
-                                                  .hindiName,
+                                              profileViewModel: profileViewModel,
+                                              subCategoryTitle:
+                                                  profileViewModel.locale["language"] == "en"
+                                                      ? provider.jankariSubcategoryList[index].name
+                                                      : provider
+                                                          .jankariSubcategoryList[index].hindiName,
                                             ));
                                       },
                                       child: Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 6, right: 6),
+                                        margin: const EdgeInsets.only(left: 6, right: 6),
                                         child: Stack(
                                           fit: StackFit.expand,
                                           children: [
                                             ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                              borderRadius: BorderRadius.circular(12),
                                               child: CachedNetworkImage(
-                                                imageUrl:
-                                                    'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage',
+                                                imageUrl: backgroundImage,
                                                 progressIndicatorBuilder:
-                                                    (context, url,
-                                                            downloadProgress) =>
-                                                        Skeleton(
+                                                    (context, url, downloadProgress) => Skeleton(
                                                   height: 40,
                                                   width: 40,
                                                   radius: 0,
                                                 ),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Icon(Icons.error),
+                                                errorWidget: (context, url, error) =>
+                                                    const Icon(Icons.error),
                                                 width: 40,
                                                 fit: BoxFit.fill,
                                                 height: 40,
@@ -205,10 +190,8 @@ class SubCategoryContainer extends HookWidget {
                                             Positioned.fill(
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  color: Colors.black
-                                                      .withOpacity(0.3),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
+                                                  color: Colors.black.withOpacity(0.3),
+                                                  borderRadius: const BorderRadius.all(
                                                     Radius.circular(12),
                                                   ),
                                                 ),
@@ -217,36 +200,32 @@ class SubCategoryContainer extends HookWidget {
                                             Container(
                                               alignment: Alignment.center,
                                               child: Center(
-                                                child: subCategory
-                                                            .hindiName.length >
-                                                        8
+                                                child: subCategory.hindiName.length > 8
                                                     ? Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 20),
+                                                        padding: const EdgeInsets.symmetric(
+                                                            horizontal: 20),
                                                         child: BaseText(
-                                                          title: subCategory
-                                                              .hindiName,
+                                                          title:
+                                                              profileViewModel.locale["language"] ==
+                                                                      "en"
+                                                                  ? subCategory.name
+                                                                  : subCategory.hindiName,
                                                           style: const TextStyle(
-                                                              color: AppColor
-                                                                  .whiteColor,
+                                                              color: AppColor.whiteColor,
                                                               fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600),
+                                                              fontWeight: FontWeight.w600),
                                                         ),
                                                       )
                                                     : BaseText(
-                                                        title: subCategory
-                                                            .hindiName,
+                                                        title:
+                                                            profileViewModel.locale["language"] ==
+                                                                    "en"
+                                                                ? subCategory.name
+                                                                : subCategory.hindiName,
                                                         style: const TextStyle(
-                                                            color: AppColor
-                                                                .whiteColor,
+                                                            color: AppColor.whiteColor,
                                                             fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600),
+                                                            fontWeight: FontWeight.w600),
                                                       ),
                                               ),
                                             ),

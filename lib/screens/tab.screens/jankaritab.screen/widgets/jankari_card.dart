@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,28 +14,24 @@ import 'jankari_subcategory.dart';
 
 class JankariCard extends HookWidget {
   final JankariCategoryModal jankari;
-
-  const JankariCard({
-    Key? key,
-    required this.jankari,
-  }) : super(key: key);
+  final ProfileViewModel profileViewModel;
+  const JankariCard({Key? key, required this.jankari, required this.profileViewModel})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel = useMemoized(
-        () => Provider.of<JankariViewModel>(context, listen: false));
-    final backgroundImage = jankari.backgroundImage.split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-    final iconImage = jankari.icon.split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-
+    final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: false));
     return InkWell(
       onTap: () {
         useViewModel.updateStats(context, 'category', jankari.id);
         useViewModel.setCategory(jankari.id);
         useViewModel.getJankariSubCategory(context, jankari.id);
-        Utils.model(context, const SubCategoryContainer());
+        Utils.model(
+            context,
+            SubCategoryContainer(
+              profileViewModel: profileViewModel,
+            ));
       },
       child: ClipRRect(
         clipBehavior: Clip.antiAlias,
@@ -47,8 +44,7 @@ class JankariCard extends HookWidget {
               fit: StackFit.expand,
               children: [
                 CachedNetworkImage(
-                  imageUrl:
-                      'https://d336izsd4bfvcs.cloudfront.net/$backgroundImage',
+                  imageUrl: jankari.backgroundImage,
                   fit: BoxFit.fill,
                   placeholder: (context, url) => Skeleton(
                     height: dimension['height']! * 0.16,
@@ -68,49 +64,55 @@ class JankariCard extends HookWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8),
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                  ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CachedNetworkImage(
-                        imageUrl:
-                            'https://d336izsd4bfvcs.cloudfront.net/$iconImage',
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) => Skeleton(
+                        imageUrl: jankari.icon,
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: 50,
                           width: 50,
                           radius: 0,
                         ),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
                         width: 50,
                         fit: BoxFit.cover,
                         height: 50,
                       ),
                       const SizedBox(width: 20),
-                      SizedBox(
+                      Container(
+                        padding: const EdgeInsets.only(right: 2, top: 2, bottom: 2),
                         width: dimension["width"]! - 110,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             BaseText(
-                              title: jankari.hindiName,
+                              title: profileViewModel.locale["language"] == "en"
+                                  ? jankari.name
+                                  : jankari.hindiName,
                               style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                                color: AppColor.whiteColor,
-                              ),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColor.whiteColor,
+                                  overflow: TextOverflow.ellipsis),
                             ),
                             const SizedBox(height: 5),
-                            BaseText(
-                              title: jankari.hindiDescription,
+                            Text(
+                              profileViewModel.locale["language"] == "en"
+                                  ? jankari.description
+                                  : jankari.hindiDescription,
                               style: const TextStyle(
+                                overflow: TextOverflow.ellipsis,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: AppColor.whiteColor,
                               ),
+                              maxLines: 3,
                             ),
                           ],
                         ),

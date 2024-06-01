@@ -44,4 +44,34 @@ class JankariRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> fetchTrendingCrops() async {
+    try {
+      const url = '${AppUrl.jankariEndPoint}/getTrendingCrops';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchComments(String id) async {
+    try {
+      final url = '${AppUrl.jankariEndPoint}/commentOnPost/$id';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> addComments(String id, dynamic payload) async {
+    try {
+      const url = '${AppUrl.jankariEndPoint}/commentOnPost';
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

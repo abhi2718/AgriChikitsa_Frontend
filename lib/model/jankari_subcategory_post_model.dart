@@ -13,6 +13,7 @@ class JankariSubCategoryPostModel {
   bool isDisLiked;
   int likesCount;
   int dislikesCount;
+  List<dynamic> comments;
 
   JankariSubCategoryPostModel(
       {required this.id,
@@ -25,6 +26,7 @@ class JankariSubCategoryPostModel {
       this.youtubeUrl = "",
       required this.createdAt,
       required this.updatedAt,
+      required this.comments,
       this.isLiked = false,
       this.isDisLiked = false,
       this.likesCount = 0,
@@ -45,6 +47,7 @@ class JankariSubCategoryPostModel {
         isLiked: json['isLike'],
         isDisLiked: json['isDisLike'],
         likesCount: json['likes'],
+        comments: json.containsKey('comments') ? json['comments'] : [],
         dislikesCount: json['disLikes']);
   }
 }

@@ -1,27 +1,32 @@
 import 'dart:io';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/category_button.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import './widgets/post_category_button.dart';
+import 'package:video_player/video_player.dart';
 import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
-import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
 
 class CreatePostScreen extends HookWidget {
-  const CreatePostScreen({super.key});
+  const CreatePostScreen({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel =
-        useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
-    final hometabViewModel = useMemoized(
-        () => Provider.of<HomeTabViewModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
+    final profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
+    final hometabViewModel =
+        useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
       useViewModel.fetchFeedsCategory(context, hometabViewModel);
@@ -32,15 +37,12 @@ class CreatePostScreen extends HookWidget {
         backgroundColor: AppColor.whiteColor,
         foregroundColor: AppColor.darkBlackColor,
         centerTitle: true,
-        leading: InkWell(
-            onTap: () => useViewModel.goBack(context),
-            child: const Icon(Icons.arrow_back)),
+        leading:
+            InkWell(onTap: () => useViewModel.goBack(context), child: const Icon(Icons.arrow_back)),
         title: BaseText(
-          title: AppLocalizations.of(context)!.createPosthi,
-          style: const TextStyle(
-              color: AppColor.darkBlackColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w500),
+          title: AppLocalization.of(context).getTranslatedValue("createPost").toString(),
+          style: GoogleFonts.inter(
+              color: AppColor.darkBlackColor, fontSize: 16, fontWeight: FontWeight.w500),
         ),
         elevation: 0.0,
       ),
@@ -52,15 +54,201 @@ class CreatePostScreen extends HookWidget {
             children: [
               Consumer<CreatePostModel>(builder: (context, provider, child) {
                 return InkWell(
-                  onTap: () => provider.pickPostImage(context, authService),
+                  onTap: provider.isPostPicked
+                      ? null
+                      : () {
+                          Utils.model(
+                              context,
+                              Container(
+                                padding:
+                                    const EdgeInsets.only(top: 32, left: 22, right: 22, bottom: 16),
+                                height: dimension['height']! * 0.15,
+                                width: dimension['width']!,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () => provider.pickPostImage(context, authService),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.collections,
+                                            color: AppColor.extraDark,
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          Text(AppLocalization.of(context)
+                                              .getTranslatedValue("uploadImagePost")
+                                              .toString()),
+                                        ],
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () => Utils.model(
+                                          context,
+                                          Container(
+                                            padding: const EdgeInsets.only(
+                                                top: 32, left: 22, right: 22, bottom: 16),
+                                            height: dimension['height']! * 0.25,
+                                            width: dimension['width']!,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  AppLocalization.of(context)
+                                                      .getTranslatedValue("pickVideoFrom")
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 18, fontWeight: FontWeight.bold),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () =>
+                                                      provider.pickPostVideo(context, authService),
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.video_library,
+                                                        color: AppColor.extraDark,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 8,
+                                                      ),
+                                                      Text(AppLocalization.of(context)
+                                                          .getTranslatedValue("gallery")
+                                                          .toString()),
+                                                    ],
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext dialogContext) {
+                                                        return Dialog(
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(20)),
+                                                          child: IntrinsicHeight(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(16.0),
+                                                              child: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment.start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    AppLocalization.of(context)
+                                                                        .getTranslatedValue(
+                                                                            "youtubeLink")
+                                                                        .toString(),
+                                                                    style: const TextStyle(
+                                                                        fontSize: 20,
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                  ),
+                                                                  const SizedBox(height: 16),
+                                                                  TextField(
+                                                                    controller: provider
+                                                                        .youtubeUrlController,
+                                                                    decoration: InputDecoration(
+                                                                      hintText: AppLocalization.of(
+                                                                              context)
+                                                                          .getTranslatedValue(
+                                                                              "enterHere")
+                                                                          .toString(),
+                                                                      enabledBorder:
+                                                                          OutlineInputBorder(
+                                                                        borderSide:
+                                                                            const BorderSide(
+                                                                                color: Colors.grey),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                8.0),
+                                                                      ),
+                                                                      focusedBorder:
+                                                                          OutlineInputBorder(
+                                                                        borderSide:
+                                                                            const BorderSide(
+                                                                                color:
+                                                                                    Colors.green),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                8.0),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed: () {
+                                                                      provider
+                                                                          .addYoutubeUrl(context);
+                                                                    },
+                                                                    child: Text(
+                                                                      AppLocalization.of(context)
+                                                                          .getTranslatedValue(
+                                                                              "submitButton")
+                                                                          .toString(),
+                                                                      style: const TextStyle(
+                                                                          color: Colors.green),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.smart_display,
+                                                        color: AppColor.extraDark,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 8,
+                                                      ),
+                                                      Text(AppLocalization.of(context)
+                                                          .getTranslatedValue("youtube")
+                                                          .toString()),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.video_library,
+                                            color: AppColor.extraDark,
+                                          ),
+                                          const SizedBox(
+                                            width: 8,
+                                          ),
+                                          Text(AppLocalization.of(context)
+                                              .getTranslatedValue("uploadVideoPost")
+                                              .toString()),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                        },
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 10),
-                    height: dimension['width']! - 16,
+                    height:
+                        useViewModel.youtubeVideoPath.isNotEmpty ? 200 : dimension['width']! - 16,
                     width: dimension['width']! - 16,
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: AppColor.darkColor, width: 2.0)),
-                    child: useViewModel.imagePath.isEmpty
+                    decoration:
+                        BoxDecoration(border: Border.all(color: AppColor.darkColor, width: 2.0)),
+                    child: !useViewModel.isPostPicked
                         ? Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -74,16 +262,30 @@ class CreatePostScreen extends HookWidget {
                                   height: 10,
                                 ),
                                 BaseText(
-                                    title: AppLocalizations.of(context)!
-                                        .clickImageUploadhi,
+                                    title: AppLocalization.of(context)
+                                        .getTranslatedValue("imageUploadCaptionPost")
+                                        .toString(),
                                     style: const TextStyle()),
                               ],
                             ),
                           )
-                        : Image.file(
-                            File(provider.imagePath),
-                            fit: BoxFit.cover,
-                          ),
+                        : useViewModel.imagePath.isEmpty
+                            ? useViewModel.youtubeVideoPath.isNotEmpty
+                                ? Player(
+                                    videoUrl: useViewModel.youtubeVideoPath, aspectRatio: 16 / 9)
+                                // ? Text("Hey")
+                                : useViewModel.videoController.value.isInitialized
+                                    ? VideoPlayer(useViewModel
+                                        .videoController) // Show video player once initialized
+                                    : const Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColor.extraDark,
+                                        ),
+                                      )
+                            : Image.file(
+                                File(provider.imagePath),
+                                fit: BoxFit.cover,
+                              ),
                   ),
                 );
               }),
@@ -94,22 +296,20 @@ class CreatePostScreen extends HookWidget {
                 maxLength: 225,
                 controller: useViewModel.captionController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.enterCaptionhi,
+                  labelText:
+                      AppLocalization.of(context).getTranslatedValue("enterCaption").toString(),
                   border: const OutlineInputBorder(),
                   enabledBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: AppColor.darkColor, width: 2.0),
+                    borderSide: BorderSide(color: AppColor.darkColor, width: 2.0),
                   ),
                 ),
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
                   useViewModel.onSavedCaptionField(value);
                 },
-                onTapOutside: (_) =>
-                    FocusManager.instance.primaryFocus?.unfocus(),
+                onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
                 onSubmitted: (_) {
-                  useViewModel
-                      .onSavedCaptionField(useViewModel.captionController.text);
+                  useViewModel.onSavedCaptionField(useViewModel.captionController.text);
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
                 onEditingComplete: () {
@@ -120,7 +320,9 @@ class CreatePostScreen extends HookWidget {
                 height: 8,
               ),
               BaseText(
-                  title: AppLocalizations.of(context)!.selectCategoeyhi,
+                  title: AppLocalization.of(context)
+                      .getTranslatedValue("selectCategoryPost")
+                      .toString(),
                   style: const TextStyle()),
               const SizedBox(
                 height: 10,
@@ -136,6 +338,8 @@ class CreatePostScreen extends HookWidget {
                           itemCount: provider.categoriesList.length,
                           itemBuilder: (context, index) {
                             return CategoryButton(
+                              profileViewModel: profileViewModel,
+                              provider: provider,
                               category: provider.categoriesList[index],
                               onTap: () {
                                 provider.setActiveState(
@@ -155,7 +359,7 @@ class CreatePostScreen extends HookWidget {
               ),
               Consumer<CreatePostModel>(
                 builder: (context, provider, child) => CustomElevatedButton(
-                    title: AppLocalizations.of(context)!.updatehi,
+                    title: AppLocalization.of(context).getTranslatedValue("updateTitle").toString(),
                     loading: provider.buttonloading,
                     width: dimension["width"]! - 32,
                     onPress: () {

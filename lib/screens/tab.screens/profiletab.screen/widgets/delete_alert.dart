@@ -1,13 +1,14 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../widgets/Input.widgets/input.dart';
 
-void showDeleteAccountDialog(BuildContext context,
-    ProfileViewModel useViewModel, List<dynamic> disposableProvider) {
+void showDeleteAccountDialog(
+    BuildContext context, ProfileViewModel useViewModel, List<dynamic> disposableProvider) {
   final dimension = Utils.getDimensions(context, true);
   showDialog(
     context: context,
@@ -16,33 +17,42 @@ void showDeleteAccountDialog(BuildContext context,
           ? AlertDialog(
               content: SizedBox(
                 width: dimension['width'],
-                height: dimension['height']! * 0.18,
+                height: dimension['height']! * 0.23,
                 child: const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: AppColor.extraDark,
+                  ),
                 ),
               ),
             )
           : AlertDialog(
               title: BaseText(
-                  title: AppLocalizations.of(context)!.deleteAccounthi,
+                  title: AppLocalization.of(context)
+                      .getTranslatedValue("accountDeleteTitle")
+                      .toString(),
                   style: const TextStyle()),
               content: SizedBox(
                 width: dimension['width'],
-                height: dimension['height']! * 0.18,
+                height: dimension['height']! * 0.23,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BaseText(
-                        title: AppLocalizations.of(context)!.confirmDeletehi,
-                        style: const TextStyle()),
+                      title: AppLocalization.of(context)
+                          .getTranslatedValue("confirmDelete")
+                          .toString(),
+                      style: const TextStyle(),
+                      textAlign: TextAlign.start,
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
                     Input(
-                      labelText: AppLocalizations.of(context)!.validReasonhi,
+                      labelText:
+                          AppLocalization.of(context).getTranslatedValue("validReason").toString(),
                       keyboardType: TextInputType.name,
                       textInputAction: TextInputAction.done,
-                      validator: (value) =>
-                          useViewModel.nameFieldValidator(context, value),
+                      validator: (value) => useViewModel.nameFieldValidator(context, value),
                       onChanged: (value) {
                         useViewModel.onSavedReasonField(value);
                       },
@@ -50,8 +60,7 @@ void showDeleteAccountDialog(BuildContext context,
                         useViewModel.onSavedReasonField;
                       },
                       onSaved: useViewModel.onSavedReasonField,
-                      onTapOutside: (_) =>
-                          FocusManager.instance.primaryFocus?.unfocus(),
+                      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
                       onFieldSubmitted: (value) {
                         useViewModel.onSavedReasonField(value);
                       },
@@ -62,24 +71,24 @@ void showDeleteAccountDialog(BuildContext context,
               actions: <Widget>[
                 TextButton(
                   child: BaseText(
-                      title: AppLocalizations.of(context)!.yeshi,
-                      style: const TextStyle(fontSize: 16)),
+                      title: AppLocalization.of(context).getTranslatedValue("yes").toString(),
+                      style: const TextStyle(fontSize: 16, color: AppColor.extraDark)),
                   onPressed: () {
                     if (useViewModel.deleteReason.isNotEmpty &&
                         useViewModel.deleteReason.length > 3) {
                       useViewModel.handleDelete(context, disposableProvider);
                     } else {
                       Utils.flushBarErrorMessage(
-                          AppLocalizations.of(context)!.alerthi,
-                          AppLocalizations.of(context)!.validReasonhi,
+                          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+                          AppLocalization.of(context).getTranslatedValue("validReason").toString(),
                           context);
                     }
                   },
                 ),
                 TextButton(
                   child: BaseText(
-                      title: AppLocalizations.of(context)!.nohi,
-                      style: const TextStyle(fontSize: 16)),
+                      title: AppLocalization.of(context).getTranslatedValue("no").toString(),
+                      style: const TextStyle(fontSize: 16, color: AppColor.extraDark)),
                   onPressed: () {
                     Navigator.of(dialogContext).pop();
                   },

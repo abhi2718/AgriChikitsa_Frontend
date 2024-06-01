@@ -1,5 +1,4 @@
 import 'package:agriChikitsa/res/color.dart';
-import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +13,6 @@ class NotificationIndicatorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        //Navigator.pushNamed(context, RouteName.notificationScreenRoute)
         Utils.model(context, const NotificationScreen());
       },
       child: Stack(

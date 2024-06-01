@@ -1,8 +1,8 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/repository/myprofile.repo/myprofile_tab_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../utils/utils.dart';
 import '../hometab.screen/hometab_view_model.dart';
 
@@ -96,7 +96,9 @@ class MyProfileViewModel with ChangeNotifier {
       setloading(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
@@ -110,13 +112,14 @@ class MyProfileViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
-  dynamic generateUpdatedFeed(
-      int index, dynamic feedList, bool isLiked, String userId) {
+  dynamic generateUpdatedFeed(int index, dynamic feedList, bool isLiked, String userId) {
     final feedItem = feedList[index];
     final oldLikes = feedItem['likes'];
     if (isLiked) {
@@ -135,22 +138,18 @@ class MyProfileViewModel with ChangeNotifier {
       int indexFeed = feedList.indexWhere((feed) => feed['_id'] == id);
       int indexBook = bookMarkFeedList.indexWhere((feed) => feed['_id'] == id);
       if (indexFeed != -1) {
-        final updatedFeed =
-            generateUpdatedFeed(indexFeed, feedList, isLiked, userId);
+        final updatedFeed = generateUpdatedFeed(indexFeed, feedList, isLiked, userId);
         feedList.replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
-        int indexHomeFeed =
-            homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+        int indexHomeFeed = homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
         if (indexHomeFeed != -1) {
           setToogleHomeFeed(!isLiked, id);
           homeTabViewModel.setUpdatedFeedList(indexHomeFeed, updatedFeed);
         }
       }
       if (indexBook != -1) {
-        final updatedFeed =
-            generateUpdatedFeed(indexBook, bookMarkFeedList, isLiked, userId);
+        final updatedFeed = generateUpdatedFeed(indexBook, bookMarkFeedList, isLiked, userId);
         bookMarkFeedList.replaceRange(indexBook, indexBook + 1, [updatedFeed]);
-        int indexHomeFeed =
-            homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+        int indexHomeFeed = homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
         if (indexHomeFeed != -1) {
           setToogleHomeFeed(!isLiked, id);
           homeTabViewModel.setUpdatedFeedList(indexHomeFeed, updatedFeed);
@@ -161,18 +160,19 @@ class MyProfileViewModel with ChangeNotifier {
     } catch (error) {
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }
 
-  void toggleTimeline(BuildContext context, String id, String userId,
-      HomeTabViewModel homeTabViewModel) async {
+  void toggleTimeline(
+      BuildContext context, String id, String userId, HomeTabViewModel homeTabViewModel) async {
     try {
       bookMarkFeedList.removeWhere((element) => element["_id"] == id);
       notifyListeners();
-      int indexFeed =
-          homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
+      int indexFeed = homeTabViewModel.feedList.indexWhere((feed) => feed['_id'] == id);
       if (indexFeed != -1) {
         setRemoveFeedFromHome(true, id);
         expandedBookMarkFeeds.remove(id);
@@ -180,15 +180,16 @@ class MyProfileViewModel with ChangeNotifier {
         final oldBookmarks = feedItem['bookmarks'];
         oldBookmarks.removeWhere((item) => item == userId);
         dynamic updatedFeed = {...feedItem, "bookmarks": oldBookmarks};
-        homeTabViewModel.feedList
-            .replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
+        homeTabViewModel.feedList.replaceRange(indexFeed, indexFeed + 1, [updatedFeed]);
       }
       await HomeTabRepository().toggleTimeline(id);
     } catch (error) {
       setBookMarkLoader(false);
       if (kDebugMode) {
         Utils.flushBarErrorMessage(
-            AppLocalizations.of(context)!.alerthi, error.toString(), context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
       }
     }
   }

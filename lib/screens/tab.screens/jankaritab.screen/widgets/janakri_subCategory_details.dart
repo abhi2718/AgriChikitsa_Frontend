@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -10,13 +11,14 @@ import 'jankari_subCategory_post.dart';
 
 class JankariSubCategoryPost extends HookWidget {
   final String subCategoryTitle;
-  const JankariSubCategoryPost({super.key, required this.subCategoryTitle});
+  final ProfileViewModel profileViewModel;
+  const JankariSubCategoryPost(
+      {super.key, required this.subCategoryTitle, required this.profileViewModel});
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
-    final useViewModel =
-        useMemoized(() => Provider.of<JankariViewModel>(context, listen: true));
+    final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: true));
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.reinitalize();
@@ -45,8 +47,7 @@ class JankariSubCategoryPost extends HookWidget {
                           child: const Icon(Icons.arrow_back)),
                       InkWell(
                         onTap: () {
-                          Navigator.of(context)
-                              .popUntil((route) => route.isFirst);
+                          Navigator.of(context).popUntil((route) => route.isFirst);
                         },
                         child: const Icon(
                           Remix.close_circle_line,
@@ -65,18 +66,17 @@ class JankariSubCategoryPost extends HookWidget {
                 child: Stack(
                   children: [
                     JankariPost(
+                      profileViewModel: profileViewModel,
                       subCategoryTitle: subCategoryTitle,
                       index: provider.currentPostIndex,
                     ),
-                    if (provider.currentPostIndex != 0 &&
-                        provider.showActiveButton)
+                    if (provider.currentPostIndex != 0 && provider.showActiveButton)
                       Positioned(
                           bottom: 0,
                           left: 0,
                           child: InkWell(
                             onTap: () {
-                              provider.updateCurrentPostIndex(
-                                  provider.currentPostIndex - 1);
+                              provider.updateCurrentPostIndex(provider.currentPostIndex - 1);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -84,8 +84,7 @@ class JankariSubCategoryPost extends HookWidget {
                                 color: AppColor.whiteColor,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColor.darkBlackColor
-                                        .withOpacity(0.4),
+                                    color: AppColor.darkBlackColor.withOpacity(0.4),
                                     blurRadius: 5,
                                     spreadRadius: 2,
                                   ),
@@ -108,8 +107,7 @@ class JankariSubCategoryPost extends HookWidget {
                         right: 0,
                         child: InkWell(
                           onTap: () {
-                            useViewModel.updateCurrentPostIndex(
-                                provider.currentPostIndex + 1);
+                            useViewModel.updateCurrentPostIndex(provider.currentPostIndex + 1);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -117,8 +115,7 @@ class JankariSubCategoryPost extends HookWidget {
                               color: AppColor.whiteColor,
                               boxShadow: [
                                 BoxShadow(
-                                  color:
-                                      AppColor.darkBlackColor.withOpacity(0.4),
+                                  color: AppColor.darkBlackColor.withOpacity(0.4),
                                   blurRadius: 5,
                                   spreadRadius: 2,
                                 ),

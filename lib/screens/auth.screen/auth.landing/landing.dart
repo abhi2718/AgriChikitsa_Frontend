@@ -1,8 +1,8 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../widgets/text.widgets/text.dart';
@@ -23,36 +23,35 @@ class LandingAuthScreen extends HookWidget {
 
     void handleLogin() {
       if (!isTermsAndConditions.value) {
-        return Utils.flushBarErrorMessage(AppLocalizations.of(context)!.alerthi,
-            AppLocalizations.of(context)!.pleasecheckhi, context);
+        return Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("warningCheckTerms").toString(),
+            context);
       }
       Utils.model(context, const SignInScreen());
     }
 
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: dimension["height"]! * 0.7,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/landing.png",
-                      height: (dimension["height"]! * 0.7) - 100,
-                      width: dimension["width"]! - 32,
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                color: AppColor.lightColor,
-                height: dimension["height"]! * 0.3,
+          body: SizedBox(
+        height: dimension["height"],
+        child: Stack(
+          children: [
+            Container(
+              height: dimension["height"]! * 0.75,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/loginGif.gif"), fit: BoxFit.cover)),
+            ),
+            Positioned(
+              top: dimension["height"]! * 0.70,
+              child: Container(
+                height: dimension["height"]! * 0.30,
+                width: dimension["width"],
+                decoration: const BoxDecoration(
+                    color: AppColor.lightColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(18), topRight: Radius.circular(18))),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: SizedBox(
@@ -65,19 +64,21 @@ class LandingAuthScreen extends HookWidget {
                           children: [
                             SizedBox(
                               width: double.infinity,
-                              child: HeadingText(
-                                  AppLocalizations.of(context)!.accounthi),
+                              child: HeadingText(AppLocalization.of(context)
+                                  .getTranslatedValue("accountHeading")
+                                  .toString()),
                             ),
                             SizedBox(
                               width: double.infinity,
-                              child: ParagraphText(AppLocalizations.of(context)!
-                                  .loginCreateAccounthi),
+                              child: ParagraphText(AppLocalization.of(context)
+                                  .getTranslatedValue("loginCreateAccount")
+                                  .toString()),
                             ),
                           ],
                         ),
                         CustomElevatedButton(
                           width: dimension["width"]! - 32,
-                          title: AppLocalizations.of(context)!.loginhi,
+                          title: AppLocalization.of(context).getTranslatedValue("login").toString(),
                           onPress: handleLogin,
                         ),
                         Row(
@@ -85,11 +86,13 @@ class LandingAuthScreen extends HookWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Checkbox(
+                              activeColor: AppColor.extraDark,
                               value: isTermsAndConditions.value,
                               onChanged: handleToggle,
                             ),
-                            ParagraphText(
-                                AppLocalizations.of(context)!.iagreewithi),
+                            ParagraphText(AppLocalization.of(context)
+                                .getTranslatedValue("iAgreeWith")
+                                .toString()),
                             const SizedBox(
                               width: 5,
                             ),
@@ -100,18 +103,19 @@ class LandingAuthScreen extends HookWidget {
                                       scheme: 'https',
                                       host: 'agrichikitsa.org',
                                       path: '/termsAndCondition');
-                                  Utils.launchInWebViewWithoutJavaScript(
-                                      toLaunch);
+                                  Utils.launchInWebViewWithoutJavaScript(toLaunch);
                                 } catch (error) {
                                   Utils.flushBarErrorMessage(
-                                      AppLocalizations.of(context)!.alerthi,
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue("alert")
+                                          .toString(),
                                       error.toString(),
                                       context);
                                 }
                               },
-                              child: ParagraphHeadingText(
-                                  AppLocalizations.of(context)!
-                                      .termsandConditionhi),
+                              child: ParagraphHeadingText(AppLocalization.of(context)
+                                  .getTranslatedValue("termsAndCondition")
+                                  .toString()),
                             ),
                           ],
                         )
@@ -119,11 +123,11 @@ class LandingAuthScreen extends HookWidget {
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
-      ),
+      )),
     );
   }
 }

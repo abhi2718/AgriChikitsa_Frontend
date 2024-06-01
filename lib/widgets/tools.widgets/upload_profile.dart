@@ -1,10 +1,10 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_model.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth.dart';
@@ -22,8 +22,7 @@ class ProfilePicture extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final user = User.fromJson(authService.userInfo["user"]);
-    final profileImage = user.profileImage!.split(
-        'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
+    final profileImage = user.profileImage!;
     return GestureDetector(onTap: () {
       showModalBottomSheet(
         context: context,
@@ -33,8 +32,8 @@ class ProfilePicture extends HookWidget {
               children: <Widget>[
                 ListTile(
                   leading: const Icon(Icons.camera_alt),
-                  title:
-                      ParagraphText(AppLocalizations.of(context)!.takePhotohi),
+                  title: ParagraphText(
+                      AppLocalization.of(context).getTranslatedValue("takePhoto").toString()),
                   onTap: () {
                     captureImage(context, authService);
                     Navigator.of(context).pop();
@@ -42,8 +41,9 @@ class ProfilePicture extends HookWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library),
-                  title: ParagraphText(
-                      AppLocalizations.of(context)!.chooseFromGalleryhi),
+                  title: ParagraphText(AppLocalization.of(context)
+                      .getTranslatedValue("chooseFromGallery")
+                      .toString()),
                   onTap: () {
                     picImage(context, authService);
                     Navigator.of(context).pop();
@@ -54,15 +54,13 @@ class ProfilePicture extends HookWidget {
           );
         },
       );
-    }, child:
-        Consumer<EditProfileViewModel>(builder: (context, provider, child) {
+    }, child: Consumer<EditProfileViewModel>(builder: (context, provider, child) {
       return provider.imageLoading
           ? Container(
               width: 110,
               height: 110,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: AppColor.lightColor),
-              child: const Center(child: CircularProgressIndicator()),
+              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColor.lightColor),
+              child: const Center(child: CircularProgressIndicator(color: AppColor.extraDark)),
             )
           : Container(
               alignment: Alignment.bottomRight,
@@ -73,8 +71,7 @@ class ProfilePicture extends HookWidget {
                 color: Colors.grey[300],
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(
-                      'https://d336izsd4bfvcs.cloudfront.net/$profileImage'),
+                  image: CachedNetworkImageProvider(profileImage),
                 ),
               ),
               child: Container(
