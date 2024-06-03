@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../model/user_model.dart';
 import '../../../../services/auth.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
@@ -123,8 +124,76 @@ class MyProfileFeed extends HookWidget {
                         ),
                       ],
                     ),
-                    const InkWell(
-                      child: Icon(Remix.more_2_line),
+                    InkWell(
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (BuildContext dialogContext) {
+                          return useViewModel.deleteLoader
+                              ? AlertDialog(
+                                  content: SizedBox(
+                                    width: dimension['width'],
+                                    height: dimension['height']! * 0.23,
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColor.extraDark,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : AlertDialog(
+                                  title: BaseText(
+                                      title: AppLocalization.of(context)
+                                          .getTranslatedValue("postDeleteTitle")
+                                          .toString(),
+                                      style: const TextStyle()),
+                                  content: SizedBox(
+                                    width: dimension['width'],
+                                    height: dimension['height']! * 0.05,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        BaseText(
+                                          title: AppLocalization.of(context)
+                                              .getTranslatedValue("postDeleteSubTitle")
+                                              .toString(),
+                                          style: const TextStyle(),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: BaseText(
+                                          title: AppLocalization.of(context)
+                                              .getTranslatedValue("yes")
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 16, color: AppColor.extraDark)),
+                                      onPressed: () {
+                                        useViewModel.postDelete(
+                                            context, feed['_id'], homeViewModel);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: BaseText(
+                                          title: AppLocalization.of(context)
+                                              .getTranslatedValue("no")
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontSize: 16, color: AppColor.extraDark)),
+                                      onPressed: () {
+                                        Navigator.of(dialogContext).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                        },
+                      ),
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
                     ),
                   ],
                 ),

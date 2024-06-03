@@ -2,6 +2,7 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/create_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -45,6 +46,8 @@ class HomeTabScreen1 extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final appLifecycleState = useState(AppLifecycleState.resumed);
     final useViewModel = useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
+    final myProfileViewModel =
+        useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
     final notificationViewModel =
         useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
@@ -127,6 +130,7 @@ class HomeTabScreen1 extends HookWidget {
                 ),
                 RefreshIndicator(
                   onRefresh: refresh,
+                  color: AppColor.darkColor,
                   child: Consumer<HomeTabViewModel>(builder: (context, provider, child) {
                     return provider.loading
                         ? SizedBox(
@@ -217,9 +221,6 @@ class HomeTabScreen1 extends HookWidget {
                                             return Feed(feed: provider.feedList[index]);
                                           }),
                                     )
-                                    // ...provider.feedList.map((feed) {
-                                    //   return Feed(feed: feed);
-                                    // }).toList(),
                                   ],
                                 ),
                               );

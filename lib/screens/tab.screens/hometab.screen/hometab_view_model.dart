@@ -40,6 +40,7 @@ class HomeTabViewModel with ChangeNotifier {
   List<String> expandedPosts = [];
   bool reportPostLoader = false;
   bool reportPostStatus = false;
+  bool hasIncreasedViewForImage = false;
   bool get loading {
     return _loading;
   }
@@ -104,6 +105,7 @@ class HomeTabViewModel with ChangeNotifier {
     feedList = [];
     categoriesList = [];
     reportPostLoader = false;
+    hasIncreasedViewForImage = false;
     reportPostStatus = false;
     commentsList = [];
     currentSelectedCategory = "All";
@@ -128,6 +130,11 @@ class HomeTabViewModel with ChangeNotifier {
 
   setReportPostloading(bool value) {
     reportPostLoader = value;
+    notifyListeners();
+  }
+
+  void removeUserDeletedPost(String feedId) {
+    feedList.removeWhere((e) => e["_id"] == feedId);
     notifyListeners();
   }
 
@@ -481,6 +488,7 @@ class HomeTabViewModel with ChangeNotifier {
   void increaseViews(BuildContext context, String feedId) async {
     try {
       await _homeTabRepository.increaseView(feedId);
+      hasIncreasedViewForImage = true;
     } catch (error) {
       if (kDebugMode) {
         if (context.mounted) {

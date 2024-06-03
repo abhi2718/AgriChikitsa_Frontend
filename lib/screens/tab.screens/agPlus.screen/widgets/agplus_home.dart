@@ -50,7 +50,10 @@ class AGPlusHome extends HookWidget {
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(
-                onTap: () => Utils.model(context, const PlotHistoryScreen()),
+                onTap: () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                    builder: (context) => PlotHistoryScreen(
+                          selectedPlot: useViewModel.selectedPlot,
+                        ))),
                 child: const Icon(Icons.history)),
           )
         ],

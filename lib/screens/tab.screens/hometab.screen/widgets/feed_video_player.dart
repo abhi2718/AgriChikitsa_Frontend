@@ -1,11 +1,15 @@
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../../../widgets/skeleton/skeleton.dart';
+
 class PostWidget extends StatefulWidget {
   final String videoUrl;
-
-  const PostWidget({required this.videoUrl, Key? key}) : super(key: key);
+  final String? postId;
+  const PostWidget({required this.videoUrl, this.postId, Key? key}) : super(key: key);
 
   @override
   _PostWidgetState createState() => _PostWidgetState();
@@ -13,14 +17,22 @@ class PostWidget extends StatefulWidget {
 
 class _PostWidgetState extends State<PostWidget> {
   late VideoPlayerController _controller;
-  bool _isManuallyPaused = false; // Flag to track manual pause
+  late HomeTabViewModel homeTabViewModel;
+  bool _isManuallyPaused = true; // Flag to track manual pause
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
+    widget.postId != null
+        ? homeTabViewModel = Provider.of<HomeTabViewModel>(context, listen: false)
+        : null;
+    var temp = widget.videoUrl.split('/');
+    _controller = VideoPlayerController.networkUrl(
+        Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"))
       ..initialize().then((_) {
-        setState(() {});
+        setState(() {
+          _controller.pause();
+        });
       });
   }
 
@@ -30,6 +42,7 @@ class _PostWidgetState extends State<PostWidget> {
         _controller.pause();
         _isManuallyPaused = true;
       } else {
+        widget.postId != null ? homeTabViewModel.increaseViews(context, widget.postId!) : null;
         _controller.play();
         _isManuallyPaused = false;
       }
@@ -39,14 +52,13 @@ class _PostWidgetState extends State<PostWidget> {
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
-      key: Key(widget.videoUrl), // Unique key for each post
+      key: Key(widget.videoUrl),
       onVisibilityChanged: (info) {
         if (info.visibleFraction == 0) {
-          _controller.pause(); // Pause video when out of view
+          _controller.pause();
         } else if (!_isManuallyPaused) {
-          _controller.play(); // Play video when in view if not manually paused
+          _controller.play();
         }
-        setState(() {});
       },
       child: _controller.value.isInitialized
           ? Stack(
@@ -60,13 +72,17 @@ class _PostWidgetState extends State<PostWidget> {
                   icon: Icon(
                     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
                     color: Colors.white,
-                    size: 50.0, // Adjust size as needed
+                    size: 50.0,
                   ),
                   onPressed: _togglePlayPause,
                 ),
               ],
             )
-          : Container(), // Placeholder while video is loading
+          : Skeleton(
+              height: MediaQuery.sizeOf(context).width - 16,
+              width: MediaQuery.sizeOf(context).width - 16,
+              radius: 0,
+            ),
     );
   }
 

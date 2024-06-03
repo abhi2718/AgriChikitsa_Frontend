@@ -33,6 +33,7 @@ class AppUrl {
   static const String activateAgriStickEndPoint = '$baseUrl/agristick/activateAgristick';
   static const String graphDataEndPoint = '$baseUrl/agristick/averageFeildData';
   static const String infoRequestEndpoint = '$baseUrl/agristick/intrest';
+  static const String cropHistoryEndpoint = '$baseUrl/agristick/cropHistory';
   static const String weatherAPIEndPoint =
       'http://api.weatherapi.com/v1/current.json?key=94488ccb442e4337ad735838231309';
   static const String chatHistoryEndPoint = '$baseUrl/chat/chatHistory';

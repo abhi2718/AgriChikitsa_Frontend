@@ -114,4 +114,14 @@ class AGPlusRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> fetchPlotHistory(String fieldId) async {
+    try {
+      final url = "${AppUrl.cropHistoryEndpoint}/$fieldId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

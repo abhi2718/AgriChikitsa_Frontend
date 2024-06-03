@@ -23,4 +23,14 @@ class MyProfileTabRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> deletePost(String feedId) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/$feedId';
+      final response = await _apiServices.getDeleteApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

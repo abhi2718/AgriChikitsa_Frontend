@@ -44,7 +44,8 @@ class JankariSubCategoryPost extends HookWidget {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Icon(Icons.arrow_back)),
+                          child:
+                              const SizedBox(height: 40, width: 30, child: Icon(Icons.arrow_back))),
                       InkWell(
                         onTap: () {
                           Navigator.of(context).popUntil((route) => route.isFirst);

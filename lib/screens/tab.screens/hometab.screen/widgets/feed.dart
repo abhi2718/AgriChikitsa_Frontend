@@ -87,115 +87,117 @@ class Feed extends HookWidget {
     // }, [myProfileViewModel.toogleHomeFeed]);
     final user = feed['user'];
     final dimension = Utils.getDimensions(context, true);
-    return VisibilityDetector(
-      key: Key(feed['_id']), // Unique key for each post
-      onVisibilityChanged: (info) {
-        if (info.visibleFraction == 0) {
-          return; // Pause video when out of view
-        } else {
-          useViewModel.increaseViews(context, feed['_id']);
-        }
-      },
-      child: Container(
-        margin: EdgeInsets.only(
-            top: 10,
-            bottom:
-                feed == useViewModel.feedList.elementAt(useViewModel.feedList.length - 1) ? 30 : 0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Card(
-            elevation: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () => Utils.model(
-                            context,
-                            FeedUserProfile(
-                              account: user,
-                            )),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: CachedNetworkImage(
-                                imageUrl: user['profileImage'],
-                                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                    Skeleton(
-                                  height: 40,
-                                  width: 40,
-                                  radius: 0,
-                                ),
-                                errorWidget: (context, url, error) => const Icon(Icons.error),
-                                width: 40,
-                                fit: BoxFit.cover,
+    return Container(
+      margin: EdgeInsets.only(
+          top: 10,
+          bottom:
+              feed == useViewModel.feedList.elementAt(useViewModel.feedList.length - 1) ? 30 : 0),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Card(
+          elevation: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Utils.model(
+                          context,
+                          FeedUserProfile(
+                            account: user,
+                          )),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: CachedNetworkImage(
+                              imageUrl: user['profileImage'],
+                              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                  Skeleton(
                                 height: 40,
+                                width: 40,
+                                radius: 0,
                               ),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
+                              width: 40,
+                              fit: BoxFit.cover,
+                              height: 40,
                             ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                BaseText(
-                                  title: user['name'],
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                                ),
-                                BaseText(
-                                  title: user['userHandler'] ?? "@username",
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      // GestureDetector(child: Icon(Icons.more_vert)),
-                      Builder(
-                        builder: (context) => PopupMenuButton(
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: 'report',
-                              child: Text(
-                                AppLocalization.of(context)
-                                    .getTranslatedValue('reportPost')
-                                    .toString(),
-                                style: const TextStyle(color: Colors.red),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              BaseText(
+                                title: user['name'],
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                               ),
-                            ),
-                          ],
-                          onSelected: (value) {
-                            if (value == 'report') {
-                              showModalBottomSheet(
-                                context: context,
-                                useSafeArea: true,
-                                enableDrag: true,
-                                builder: (BuildContext context) => ReportScreen(
-                                  userId: user['_id'],
-                                ),
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
+                              BaseText(
+                                title: user['userHandler'] ?? "@username",
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    // GestureDetector(child: Icon(Icons.more_vert)),
+                    Builder(
+                      builder: (context) => PopupMenuButton(
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'report',
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslatedValue('reportPost')
+                                  .toString(),
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                        onSelected: (value) {
+                          if (value == 'report') {
+                            showModalBottomSheet(
+                              context: context,
+                              useSafeArea: true,
+                              enableDrag: true,
+                              builder: (BuildContext context) => ReportScreen(
+                                userId: user['_id'],
+                              ),
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                feed['mediaType'] == 'image'
-                    ? SizedBox(
+              ),
+              feed['mediaType'] == 'image'
+                  ? VisibilityDetector(
+                      key: Key(feed['_id']),
+                      onVisibilityChanged: (info) {
+                        if (info.visibleFraction == 0) {
+                          return;
+                        } else {
+                          if (!useViewModel.hasIncreasedViewForImage) {
+                            useViewModel.increaseViews(context, feed['_id']);
+                          }
+                        }
+                      },
+                      child: SizedBox(
                         height: dimension["width"]! - 16,
                         width: dimension["width"]! - 16,
                         child: CachedNetworkImage(
@@ -208,120 +210,126 @@ class Feed extends HookWidget {
                           errorWidget: (context, url, error) => const Icon(Icons.error),
                           fit: BoxFit.fill,
                         ),
-                      )
-                    : feed['mediaType'] == 'video'
-                        ? PostWidget(videoUrl: feed['videoUrl'])
-                        : Player(videoUrl: feed['videoUrl'], aspectRatio: 16 / 9),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: handleLike,
-                              child: Icon(
-                                isLiked.value
-                                    ? Icons.favorite_rounded
-                                    : Icons.favorite_outline_rounded,
-                                color: AppColor.iconHeartColor,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 6,
-                            ),
-                            Text(numberOfLikes.value.toString())
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Utils.model(
-                                    context,
-                                    UserComment(
-                                      feedId: feed["_id"],
-                                      setNumberOfComment: setNumberOfComment,
-                                    ));
-                              },
-                              child: const Icon(Remix.chat_4_line),
-                            ),
-                            const SizedBox(
-                              width: 6,
-                            ),
-                            Text(numberOfComments.value.toString())
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        InkWell(
-                          onTap: handleBookMark,
-                          child: Icon(
-                            isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
-                            color: AppColor.darkColor,
-                          ),
+                      ),
+                    )
+                  : feed['mediaType'] == 'video'
+                      ? PostWidget(
+                          videoUrl: feed['videoUrl'],
+                          postId: feed['_id'],
                         )
-                      ]),
-                      GestureDetector(
-                          onTap: () {
-                            Share.share(
-                                "Check out what ${user['name']} posted!\n ${feed["hindiCaption"]}");
-                          },
-                          child: const Icon(Icons.reply_all)),
-                    ],
-                  ),
-                ),
-                feed['views'] != 0
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text("${feed['views']} Views"),
-                      )
-                    : const SizedBox.shrink(),
-                feed["hindiCaption"] != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomTextWidget(
-                              text: feed["hindiCaption"],
-                              textStyle: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black),
-                              maxLines: useViewModel.isExpanded(feed['_id']) ? null : 2,
+                      : Player(
+                          videoUrl: feed['videoUrl'],
+                          aspectRatio: 16 / 9,
+                          feedId: feed['_id'],
+                        ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: handleLike,
+                            child: Icon(
+                              isLiked.value
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_outline_rounded,
+                              color: AppColor.iconHeartColor,
                             ),
-                            if (feed["hindiCaption"].length > 140)
-                              InkWell(
-                                onTap: () => useViewModel.toggleExpand(feed['_id']),
-                                child: useViewModel.isExpanded(feed['_id'])
-                                    ? Container()
-                                    : const BaseText(
-                                        title: "Read More",
-                                        style: TextStyle(color: AppColor.hyperlinkColor),
-                                      ),
-                              ),
-                            Text(
-                              useViewModel.getTimeAgo(feed['createdAt'], context),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black.withOpacity(0.6)),
-                            ),
-                          ],
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(numberOfLikes.value.toString())
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Utils.model(
+                                  context,
+                                  UserComment(
+                                    feedId: feed["_id"],
+                                    setNumberOfComment: setNumberOfComment,
+                                  ));
+                            },
+                            child: const Icon(Remix.chat_4_line),
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(numberOfComments.value.toString())
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      InkWell(
+                        onTap: handleBookMark,
+                        child: Icon(
+                          isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
+                          color: AppColor.darkColor,
                         ),
                       )
-                    : Container(),
-                const SizedBox(
-                  height: 16,
+                    ]),
+                    GestureDetector(
+                        onTap: () {
+                          Share.share(
+                              "Check out what ${user['name']} posted!\n ${feed["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa");
+                        },
+                        child: const Icon(Icons.reply_all)),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              feed['views'] != 0
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text("${feed['views']} Views"),
+                    )
+                  : const SizedBox.shrink(),
+              feed["hindiCaption"] != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextWidget(
+                            text: feed["hindiCaption"],
+                            textStyle: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black),
+                            maxLines: useViewModel.isExpanded(feed['_id']) ? null : 2,
+                          ),
+                          if (feed["hindiCaption"].length > 140)
+                            InkWell(
+                              onTap: () => useViewModel.toggleExpand(feed['_id']),
+                              child: useViewModel.isExpanded(feed['_id'])
+                                  ? Container()
+                                  : const BaseText(
+                                      title: "Read More",
+                                      style: TextStyle(color: AppColor.hyperlinkColor),
+                                    ),
+                            ),
+                          Text(
+                            useViewModel.getTimeAgo(feed['createdAt'], context),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.6)),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(),
+              const SizedBox(
+                height: 16,
+              ),
+            ],
           ),
         ),
       ),
