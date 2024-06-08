@@ -34,6 +34,14 @@ class _PostWidgetState extends State<PostWidget> {
           _controller.pause();
         });
       });
+    _controller.addListener(() {
+      if (_controller.value.position == _controller.value.duration) {
+        setState(() {
+          _controller.pause();
+          _isManuallyPaused = true;
+        });
+      }
+    });
   }
 
   void _togglePlayPause() {

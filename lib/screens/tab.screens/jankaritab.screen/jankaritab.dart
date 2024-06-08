@@ -4,7 +4,7 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandi_prices.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
-import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/trending_crop_card.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/trending_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -34,7 +34,8 @@ class JankariHomeTab extends HookWidget {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (useViewModel.jankaricardList.isEmpty) {
           useViewModel.getJankariCategory(context);
-          useViewModel.fetchTrendingCrops(context);
+          // useViewModel.fetchTrendingCrops(context);
+          useViewModel.fetchTrendingPosts(context);
         }
       });
     }, []);
@@ -155,7 +156,7 @@ class JankariHomeTab extends HookWidget {
                       style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                     InkWell(
-                      onTap: () => useViewModel.fetchTrendingCrops(context),
+                      onTap: () => useViewModel.fetchTrendingPosts(context),
                       child: const SizedBox(
                         height: 50,
                         width: 50,
@@ -171,60 +172,44 @@ class JankariHomeTab extends HookWidget {
                   builder: (context, provider, child) {
                     return provider.loading
                         ? SizedBox(
-                            height: dimension['height']! * 0.22,
+                            height: dimension['height']! * 0.1,
                             width: dimension['width'],
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Skeleton(
-                                    height: dimension['height']! * 0.22,
-                                    width: dimension['width']! * 0.28,
-                                    radius: 10,
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Skeleton(
-                                    height: dimension['height']! * 0.22,
-                                    width: dimension['width']! * 0.28,
-                                    radius: 10,
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Skeleton(
-                                    height: dimension['height']! * 0.22,
-                                    width: dimension['width']! * 0.28,
-                                    radius: 10,
-                                  ),
-                                ],
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    Skeleton(
+                                      height: dimension['height']! * 0.07,
+                                      width: dimension['width']! * 0.4,
+                                      radius: 10,
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Skeleton(
+                                      height: dimension['height']! * 0.07,
+                                      width: dimension['width']! * 0.4,
+                                      radius: 10,
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Skeleton(
+                                      height: dimension['height']! * 0.07,
+                                      width: dimension['width']! * 0.4,
+                                      radius: 10,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           )
                         : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            child: Row(
-                              children: [
-                                ...provider.trendingCropsList.map((crop) {
-                                  return TrendingCropCard(
-                                      dimension: dimension,
-                                      title: profileViewModel.locale["language"] == "en"
-                                          ? crop['name']
-                                          : crop['name_hi'],
-                                      url: crop['image'],
-                                      onTap: () {
-                                        provider.updateTapCount(context, crop['_id']);
-                                        Utils.model(
-                                            context,
-                                            ShortsPlayer(
-                                              videoUrl: crop['shortsUrl'] ??
-                                                  "https://youtube.com/shorts/lqukErpcPjc?si=1oWqktpZ-TNgABhF",
-                                              aspectRatio: 9 / 16,
-                                            ));
-                                      });
-                                }).toList(),
-                              ],
+                            child: CustomCarousel(
+                              trendingPosts: provider.trendingPostsList,
                             ),
                           );
                   },

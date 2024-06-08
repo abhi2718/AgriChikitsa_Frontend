@@ -44,10 +44,10 @@ class JankariSubCategoryPostModel {
         youtubeUrl: json.containsKey('youtubeUrl') ? json['youtubeUrl'] : "",
         createdAt: DateTime.parse(json['createdAt']),
         updatedAt: DateTime.parse(json['updatedAt']),
-        isLiked: json['isLike'],
-        isDisLiked: json['isDisLike'],
-        likesCount: json['likes'],
+        isLiked: json.containsKey('isLike') ? json['isLike'] : false,
+        isDisLiked: json.containsKey('isDisLike') ? json['isDisLike'] : false,
+        likesCount: json['likes'] is List ? json['likes'].length : json['likes'],
         comments: json.containsKey('comments') ? json['comments'] : [],
-        dislikesCount: json['disLikes']);
+        dislikesCount: json['disLikes'] is List ? json['disLikes'].length : json['disLikes']);
   }
 }

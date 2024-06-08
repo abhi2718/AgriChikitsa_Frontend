@@ -55,6 +55,16 @@ class JankariRepository {
     }
   }
 
+  Future<dynamic> fetchTrendingPosts() async {
+    try {
+      const url = '${AppUrl.jankariEndPoint}/trendingPosts';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> fetchComments(String id) async {
     try {
       final url = '${AppUrl.jankariEndPoint}/commentOnPost/$id';
