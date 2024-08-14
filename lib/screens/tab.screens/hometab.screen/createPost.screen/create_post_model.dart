@@ -39,6 +39,15 @@ class CreatePostModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setFeedData(dynamic feed) {
+    isPostPicked = true;
+    caption = feed['hindiCaption'] ?? "";
+    captionController.text = feed['hindiCaption'] ?? "";
+    imagePath = feed['mediaType'] == "image" ? feed['imgurl'] : "";
+    currentSelectedCategory = feed.containsKey('categoryRef') ? feed['categoryRef'] : "";
+    // notifyListeners();
+  }
+
   setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
     notifyListeners();
@@ -135,7 +144,6 @@ class CreatePostModel with ChangeNotifier {
           })
           ..setLooping(true)
           ..initialize().then((value) {
-            print(videoController.value.isInitialized);
             // notifyListeners();
             videoController.play();
           });
@@ -207,6 +215,39 @@ class CreatePostModel with ChangeNotifier {
               context);
         }
       }
+    } else {
+      setloading(false);
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          AppLocalization.of(context).getTranslatedValue("fillAllDetails").toString(), context);
+    }
+  }
+
+  void updatePost(BuildContext context, String feedId) async {
+    if (currentSelectedCategory.isNotEmpty) {
+      setloading(true);
+      FocusManager.instance.primaryFocus?.unfocus();
+      final data =
+          await _homeTabViewModel.updatePost(context, currentSelectedCategory, caption, feedId);
+      setfetchMyPost(true);
+      if (data) {
+        await Future.delayed(const Duration(seconds: 1), () {
+          goBack(context);
+          setloading(false);
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
+              context);
+          reinitialize();
+        });
+      }
+      // } else {
+      //   if (context.mounted) {
+      //     Utils.flushBarErrorMessage(
+      //         AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+      //         AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+      //         context);
+      //   }
+      // }
     } else {
       setloading(false);
       Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),

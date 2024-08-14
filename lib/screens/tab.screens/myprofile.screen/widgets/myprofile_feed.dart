@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_test_widget.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_video_player.dart';
@@ -124,76 +125,95 @@ class MyProfileFeed extends HookWidget {
                         ),
                       ],
                     ),
-                    InkWell(
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (BuildContext dialogContext) {
-                          return useViewModel.deleteLoader
-                              ? AlertDialog(
-                                  content: SizedBox(
-                                    width: dimension['width'],
-                                    height: dimension['height']! * 0.23,
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppColor.extraDark,
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Utils.model(
+                                context,
+                                CreatePostScreen(
+                                  feed: feed,
+                                ));
+                          },
+                          child: const Icon(
+                            Icons.edit,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        InkWell(
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (BuildContext dialogContext) {
+                              return useViewModel.deleteLoader
+                                  ? AlertDialog(
+                                      content: SizedBox(
+                                        width: dimension['width'],
+                                        height: dimension['height']! * 0.23,
+                                        child: const Center(
+                                          child: CircularProgressIndicator(
+                                            color: AppColor.extraDark,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                )
-                              : AlertDialog(
-                                  title: BaseText(
-                                      title: AppLocalization.of(context)
-                                          .getTranslatedValue("postDeleteTitle")
-                                          .toString(),
-                                      style: const TextStyle()),
-                                  content: SizedBox(
-                                    width: dimension['width'],
-                                    height: dimension['height']! * 0.05,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        BaseText(
+                                    )
+                                  : AlertDialog(
+                                      title: BaseText(
                                           title: AppLocalization.of(context)
-                                              .getTranslatedValue("postDeleteSubTitle")
+                                              .getTranslatedValue("postDeleteTitle")
                                               .toString(),
-                                          style: const TextStyle(),
-                                          textAlign: TextAlign.start,
+                                          style: const TextStyle()),
+                                      content: SizedBox(
+                                        width: dimension['width'],
+                                        height: dimension['height']! * 0.05,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            BaseText(
+                                              title: AppLocalization.of(context)
+                                                  .getTranslatedValue("postDeleteSubTitle")
+                                                  .toString(),
+                                              style: const TextStyle(),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: BaseText(
+                                              title: AppLocalization.of(context)
+                                                  .getTranslatedValue("yes")
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 16, color: AppColor.extraDark)),
+                                          onPressed: () {
+                                            useViewModel.postDelete(
+                                                context, feed['_id'], homeViewModel);
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: BaseText(
+                                              title: AppLocalization.of(context)
+                                                  .getTranslatedValue("no")
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 16, color: AppColor.extraDark)),
+                                          onPressed: () {
+                                            Navigator.of(dialogContext).pop();
+                                          },
                                         ),
                                       ],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: BaseText(
-                                          title: AppLocalization.of(context)
-                                              .getTranslatedValue("yes")
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontSize: 16, color: AppColor.extraDark)),
-                                      onPressed: () {
-                                        useViewModel.postDelete(
-                                            context, feed['_id'], homeViewModel);
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: BaseText(
-                                          title: AppLocalization.of(context)
-                                              .getTranslatedValue("no")
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontSize: 16, color: AppColor.extraDark)),
-                                      onPressed: () {
-                                        Navigator.of(dialogContext).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                        },
-                      ),
-                      child: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
+                                    );
+                            },
+                          ),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

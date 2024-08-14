@@ -49,17 +49,16 @@ class _PlayerState extends State<Player> {
     widget.feedId != null
         ? homeTabViewModel = Provider.of<HomeTabViewModel>(context, listen: false)
         : null;
-    var temp = widget.videoUrl.split('/');
     _controller = YoutubePlayerController(
-      initialVideoId: YoutubePlayer.convertUrlToId(
-              "https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}")
-          .toString(),
+      // initialVideoId: YoutubePlayer.convertUrlToId(
+      //         "https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}")
+      //     .toString(),
+      initialVideoId: YoutubePlayer.convertUrlToId(widget.videoUrl).toString(),
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
       ),
     );
-
     _controller.addListener(() {
       if (_controller.value.isPlaying && !_hasIncreasedView && widget.feedId != null) {
         homeTabViewModel.increaseViews(context, widget.feedId!);
@@ -71,27 +70,30 @@ class _PlayerState extends State<Player> {
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
-      key: Key(widget.videoUrl), // Unique key for each post
-      onVisibilityChanged: (info) {
-        if (info.visibleFraction == 0) {
-          _controller.pause();
-        } else {
-          _controller.play(); // Play video when in view
-        }
-      },
-      child: _controller.value.isReady
-          ? YoutubePlayer(
-              aspectRatio: widget.aspectRatio,
-              controller: _controller,
-              bottomActions: const [],
-              showVideoProgressIndicator: true,
-              progressIndicatorColor: Colors.amber,
-            )
-          : Skeleton(
-              height: MediaQuery.sizeOf(context).width - 16,
-              width: MediaQuery.sizeOf(context).width - 16,
-              radius: 0,
-            ),
-    );
+        key: Key(widget.videoUrl), // Unique key for each post
+        onVisibilityChanged: (info) {
+          if (info.visibleFraction == 0) {
+            _controller.pause();
+          } else {
+            // _controller.play(); // Play video when in view
+          }
+        },
+        child:
+            // _controller.value.isReady
+            // ?
+            YoutubePlayer(
+          aspectRatio: widget.aspectRatio,
+          controller: _controller,
+          bottomActions: const [],
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: Colors.amber,
+          onReady: () {},
+        )
+        // : Skeleton(
+        //     height: MediaQuery.sizeOf(context).width - 16,
+        //     width: MediaQuery.sizeOf(context).width - 16,
+        //     radius: 0,
+        //   ),
+        );
   }
 }

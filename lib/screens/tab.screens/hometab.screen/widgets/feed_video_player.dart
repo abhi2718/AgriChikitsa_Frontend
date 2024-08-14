@@ -73,7 +73,7 @@ class _PostWidgetState extends State<PostWidget> {
               alignment: Alignment.center,
               children: [
                 AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
+                  aspectRatio: 16 / 9,
                   child: VideoPlayer(_controller),
                 ),
                 IconButton(

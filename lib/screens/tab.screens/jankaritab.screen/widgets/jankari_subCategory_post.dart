@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/post_comments.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -229,54 +230,52 @@ class JankariPost extends HookWidget {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    InkWell(
-                                      onTap: () {
-                                        if (provider.jankariSubcategoryPostList[index].youtubeUrl
-                                            .isNotEmpty) {
-                                          launchUrl(Uri.parse(provider
-                                              .jankariSubcategoryPostList[index].youtubeUrl));
-                                        }
-                                      },
-                                      child: Container(
-                                          height: dimension['height']! * 0.40,
-                                          width: dimension['width'],
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(12),
+                                    provider.jankariSubcategoryPostList[index].youtubeUrl.isNotEmpty
+                                        ? Player(
+                                            videoUrl: provider
+                                                .jankariSubcategoryPostList[index].youtubeUrl,
+                                            aspectRatio: 16 / 9,
+                                          )
+                                        : Container(
+                                            height: dimension['height']! * 0.40,
+                                            width: dimension['width'],
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(12),
+                                              ),
                                             ),
-                                          ),
-                                          child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(16),
-                                              child: Stack(
-                                                children: [
-                                                  CachedNetworkImage(
-                                                    imageUrl: provider
-                                                        .jankariSubcategoryPostList[index].imageUrl,
-                                                    progressIndicatorBuilder:
-                                                        (context, url, downloadProgress) =>
-                                                            Skeleton(
-                                                      height: dimension['height']! * 0.40,
-                                                      width: dimension['width']!,
-                                                      radius: 16,
-                                                    ),
-                                                    errorWidget: (context, url, error) =>
-                                                        const Icon(Icons.error),
-                                                    height: dimension['height']! * 0.40,
-                                                    width: dimension['width'],
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                  if (provider.jankariSubcategoryPostList[index]
-                                                      .youtubeUrl.isNotEmpty)
-                                                    const Align(
-                                                      alignment: Alignment.center,
-                                                      child: Icon(
-                                                        Icons.play_circle_fill,
-                                                        size: 74,
+                                            child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(16),
+                                                child: Stack(
+                                                  children: [
+                                                    CachedNetworkImage(
+                                                      imageUrl: provider
+                                                          .jankariSubcategoryPostList[index]
+                                                          .imageUrl,
+                                                      progressIndicatorBuilder:
+                                                          (context, url, downloadProgress) =>
+                                                              Skeleton(
+                                                        height: dimension['height']! * 0.40,
+                                                        width: dimension['width']!,
+                                                        radius: 16,
                                                       ),
-                                                    )
-                                                ],
-                                              ))),
-                                    ),
+                                                      errorWidget: (context, url, error) =>
+                                                          const Icon(Icons.error),
+                                                      height: dimension['height']! * 0.40,
+                                                      width: dimension['width'],
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    if (provider.jankariSubcategoryPostList[index]
+                                                        .youtubeUrl.isNotEmpty)
+                                                      const Align(
+                                                        alignment: Alignment.center,
+                                                        child: Icon(
+                                                          Icons.play_circle_fill,
+                                                          size: 74,
+                                                        ),
+                                                      )
+                                                  ],
+                                                ))),
                                     const SizedBox(
                                       height: 23,
                                     ),

@@ -422,6 +422,25 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
+  Future<bool> updatePost(BuildContext context, String id, String caption, String feedId) async {
+    try {
+      Map<String, dynamic> payload = {};
+      List<String> tags = extractHashtags(caption);
+      payload = {"feedId": feedId, "categoryId": id, "hindiCaption": caption, "tags": tags};
+      await _homeTabRepository.updatePost(payload);
+      return true;
+    } catch (error) {
+      setloading(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+      return false;
+    }
+  }
+
   void addComment(BuildContext context, String id, String comment, User user,
       MyProfileViewModel myProfileViewModel) async {
     if (comment.isNotEmpty) {
