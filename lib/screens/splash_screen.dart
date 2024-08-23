@@ -31,11 +31,10 @@ class SplashScreen extends HookWidget {
       final timmer = Timer(duration, () {
         isAuthenticated().then((isAuth) {
           if (isAuth) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+            Navigator.of(context).pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
           } else {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                RouteName.authLandingRoute, (route) => false);
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil(RouteName.authLandingRoute, (route) => false);
           }
         });
       });
@@ -62,8 +61,7 @@ class SplashScreen extends HookWidget {
               animatedTexts: [
                 TyperAnimatedText(
                   'फसलो की सुरक्षा',
-                  textStyle: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.w500),
+                  textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
                 ),
               ],
               onTap: null,
@@ -76,9 +74,7 @@ class SplashScreen extends HookWidget {
                   'AGRICHIKITSA',
                   speed: const Duration(milliseconds: 100),
                   textStyle: const TextStyle(
-                      fontSize: 40,
-                      color: AppColor.extraDark,
-                      fontWeight: FontWeight.w800),
+                      fontSize: 40, color: AppColor.extraDark, fontWeight: FontWeight.w800),
                 ),
               ],
               onTap: null,

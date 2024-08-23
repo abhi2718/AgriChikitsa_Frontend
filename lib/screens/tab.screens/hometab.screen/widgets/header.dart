@@ -25,98 +25,94 @@ class HeaderWidget extends HookWidget {
     useEffect(() {
       useViewModel.fetchNotifications(context);
     }, [useViewModel.notificationCount]);
-    return Card(
-      margin: const EdgeInsets.all(0),
-      child: Container(
-        color: AppColor.lightFeedContainerColor,
-        height: 100,
-        width: dimension["width"],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Utils.model(context, const MyProfileScreen());
-                    },
-                    child: SvgPicture.asset(
-                      'assets/svg/timeline.svg',
-                      width: 23,
-                      height: 22,
-                    ),
-                  ),
-                  SvgPicture.asset(
-                    'assets/svg/homeScreenLogo.svg',
-                    height: 40,
-                    width: 80,
-                  ),
-                  Consumer<NotificationViewModel>(builder: (context, provider, child) {
-                    return NotificationIndicatorButton(
-                      notificationCount: provider.notificationCount,
-                    );
-                  })
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     SizedBox(
-                  //       width: dimension['width']! * 0.04,
-                  //     ),
-                  //     ,
-                  //   ],
-                  // )
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 8),
-              width: dimension["width"],
-              child: SizedBox(
-                height: 30,
-                child: Consumer<HomeTabViewModel>(
-                  builder: (context, provider, child) {
-                    return provider.categoryLoading
-                        ? ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                width: 100,
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Skeleton(
-                                  height: 10,
-                                  width: 100,
-                                  radius: 10,
-                                ),
-                              );
-                            })
-                        : ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.categoriesList.length,
-                            itemBuilder: (context, index) {
-                              return CategoryButton(
-                                profileViewModel: profileViewModel,
-                                category: provider.categoriesList[index],
-                                provider: provider,
-                                onTap: () {
-                                  provider.setActiveState(
-                                    context,
-                                    provider.categoriesList[index],
-                                    provider.categoriesList[index].isActive,
-                                  );
-                                },
-                              );
-                            });
+    return Container(
+      color: AppColor.whiteColor,
+      height: 100,
+      width: dimension["width"],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Utils.model(context, const MyProfileScreen());
                   },
+                  child: SvgPicture.asset(
+                    'assets/svg/timeline.svg',
+                    width: 23,
+                    height: 22,
+                  ),
                 ),
-              ),
+                SvgPicture.asset(
+                  'assets/svg/homeScreenLogo.svg',
+                  height: 40,
+                  width: 80,
+                ),
+                Consumer<NotificationViewModel>(builder: (context, provider, child) {
+                  return NotificationIndicatorButton(
+                    notificationCount: provider.notificationCount,
+                  );
+                })
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     SizedBox(
+                //       width: dimension['width']! * 0.04,
+                //     ),
+                //     ,
+                //   ],
+                // )
+              ],
             ),
-          ],
-        ),
+          ),
+          SizedBox(
+            height: 30,
+            child: Consumer<HomeTabViewModel>(
+              builder: (context, provider, child) {
+                return provider.categoryLoading
+                    ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: 100,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Skeleton(
+                              height: 10,
+                              width: 100,
+                              radius: 10,
+                            ),
+                          );
+                        })
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: provider.categoriesList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(left: index == 0 ? 8 : 0),
+                            child: CategoryButton(
+                              profileViewModel: profileViewModel,
+                              category: provider.categoriesList[index],
+                              provider: provider,
+                              onTap: () {
+                                provider.setActiveState(
+                                  context,
+                                  provider.categoriesList[index],
+                                  provider.categoriesList[index].isActive,
+                                );
+                              },
+                            ),
+                          );
+                        });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

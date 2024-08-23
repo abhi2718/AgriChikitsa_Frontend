@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../l10n/app_localizations.dart';
 import '../../../../res/color.dart';
 import '../../../../services/auth.dart';
@@ -20,86 +19,82 @@ class CreatePostCard extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final authService = Provider.of<AuthService>(context, listen: false);
     final profileImage = authService.userInfo['user']['profileImage'];
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-      ),
-      child: GestureDetector(
-        onTap: () {
-          Utils.model(context, const CreatePostScreen());
-        },
-        child: Card(
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-            height: dimension['height']! * 0.16,
-            width: dimension['width'],
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: CachedNetworkImage(
-                          imageUrl: profileImage,
-                          progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                            height: 40,
-                            width: 40,
-                            radius: 0,
-                          ),
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
-                          width: 40,
-                          fit: BoxFit.cover,
-                          height: 40,
-                        ),
+    return GestureDetector(
+      onTap: () {
+        Utils.model(context, const CreatePostScreen());
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        height: dimension['height']! * 0.16,
+        width: dimension['width'],
+        color: AppColor.whiteColor,
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: [
+                SizedBox(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      imageUrl: profileImage,
+                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                        height: 40,
+                        width: 40,
+                        radius: 0,
                       ),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                      width: 40,
+                      fit: BoxFit.cover,
+                      height: 40,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: BaseText(
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("createPost")
-                              .toString(),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w400, color: AppColor.darkBlackColor)),
-                    )
-                  ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 5, bottom: 2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: dimension['width']! * 0.30,
-                      height: dimension['height']! * 0.055,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          16.0,
-                        ),
-                      ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                        onPressed: () {
-                          Utils.model(context, const CreatePostScreen());
-                        },
-                        child: BaseText(
-                          title: AppLocalization.of(context).getTranslatedValue("post").toString(),
-                          style: const TextStyle(fontSize: 15, color: AppColor.extraDark),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ]),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: BaseText(
+                      title:
+                          AppLocalization.of(context).getTranslatedValue("createPost").toString(),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w400, color: AppColor.darkBlackColor)),
+                )
+              ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, right: 5, bottom: 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  width: dimension['width']! * 0.30,
+                  height: dimension['height']! * 0.055,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      16.0,
+                    ),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.extraDark,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      Utils.model(context, const CreatePostScreen());
+                    },
+                    child: BaseText(
+                      title: AppLocalization.of(context).getTranslatedValue("post").toString(),
+                      style: const TextStyle(fontSize: 15, color: AppColor.whiteColor),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ]),
       ),
     );
   }

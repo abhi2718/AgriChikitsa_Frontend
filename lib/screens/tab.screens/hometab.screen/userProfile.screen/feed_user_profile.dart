@@ -377,7 +377,7 @@ class UserProfileFeed extends StatelessWidget {
                               context: context,
                               useSafeArea: true,
                               enableDrag: true,
-                              builder: (BuildContext context) => ReportScreen(
+                              builder: (BuildContext context) => ReportPostScreen(
                                 userId: account['_id'],
                               ),
                               isScrollControlled: true,

@@ -1,11 +1,11 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
+import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
-import '../../../../widgets/skeleton/skeleton.dart';
 
 class ShortsPlayer extends StatelessWidget {
   const ShortsPlayer({super.key, required this.videoUrl, required this.aspectRatio});
@@ -73,9 +73,13 @@ class _PlayerState extends State<Player> {
         key: Key(widget.videoUrl), // Unique key for each post
         onVisibilityChanged: (info) {
           if (info.visibleFraction == 0) {
-            _controller.pause();
+            setState(() {
+              _controller.pause();
+            });
           } else {
-            // _controller.play(); // Play video when in view
+            setState(() {
+              _controller.play(); // Play video when in view
+            });
           }
         },
         child:
@@ -84,10 +88,38 @@ class _PlayerState extends State<Player> {
             YoutubePlayer(
           aspectRatio: widget.aspectRatio,
           controller: _controller,
-          bottomActions: const [],
+          bottomActions: [
+            CurrentPosition(),
+            ProgressBar(isExpanded: true),
+            IconButton(
+              icon: const Icon(
+                Icons.fullscreen,
+                color: Colors.white,
+                size: 30.0,
+              ),
+              onPressed: () {
+                // setState(() {
+                //   _controller.pause();
+                // });
+                // Utils.model(context, FullScreenYoutube());
+                setState(() {
+                  _controller.pause(); // Pause the video before entering fullscreen
+                });
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FullScreenYoutube(
+                      url: widget.videoUrl,
+                    ),
+                  ),
+                );
+              },
+            ),
+            // FullScreenButton()
+          ],
           showVideoProgressIndicator: true,
           progressIndicatorColor: Colors.amber,
-          onReady: () {},
         )
         // : Skeleton(
         //     height: MediaQuery.sizeOf(context).width - 16,

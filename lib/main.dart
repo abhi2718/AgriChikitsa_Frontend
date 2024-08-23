@@ -109,6 +109,7 @@ class App extends StatelessWidget {
         builder: (context, provider, child) {
           return MaterialApp(
             title: 'Agrichikitsa',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData(primarySwatch: primaryswatch),
             routes: Routes().routes,
             locale: Locale(provider.locale["language"]!, provider.locale["country"]!),
