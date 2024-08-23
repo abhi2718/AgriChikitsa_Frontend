@@ -39,6 +39,15 @@ class CreatePostModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setFeedData(dynamic feed) {
+    isPostPicked = true;
+    caption = feed['hindiCaption'] ?? "";
+    captionController.text = feed['hindiCaption'] ?? "";
+    imagePath = feed['mediaType'] == "image" ? feed['imgurl'] : "";
+    currentSelectedCategory = feed.containsKey('categoryRef') ? feed['categoryRef'] : "";
+    // notifyListeners();
+  }
+
   setActiveState(BuildContext context, CategoryHome category, bool value) {
     currentSelectedCategory = category.id;
     notifyListeners();
@@ -67,6 +76,7 @@ class CreatePostModel with ChangeNotifier {
       imageUrl = "";
       youtubeVideoPath = '';
       isPostPicked = false;
+      videoPicked = null;
       videoController.dispose();
       caption = "";
       currentSelectedCategory = "";
@@ -134,7 +144,6 @@ class CreatePostModel with ChangeNotifier {
           })
           ..setLooping(true)
           ..initialize().then((value) {
-            print(videoController.value.isInitialized);
             // notifyListeners();
             videoController.play();
           });
@@ -170,7 +179,6 @@ class CreatePostModel with ChangeNotifier {
   void createPost(
     BuildContext context,
   ) async {
-    print("WE are inside createPost() method! $videoPicked $currentSelectedCategory");
     if (currentSelectedCategory.isNotEmpty &&
         (imagePath.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
       setloading(true);
@@ -200,11 +208,46 @@ class CreatePostModel with ChangeNotifier {
           });
         }
       } else {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-            AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-            context);
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+              context);
+        }
       }
+    } else {
+      setloading(false);
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          AppLocalization.of(context).getTranslatedValue("fillAllDetails").toString(), context);
+    }
+  }
+
+  void updatePost(BuildContext context, String feedId) async {
+    if (currentSelectedCategory.isNotEmpty) {
+      setloading(true);
+      FocusManager.instance.primaryFocus?.unfocus();
+      final data =
+          await _homeTabViewModel.updatePost(context, currentSelectedCategory, caption, feedId);
+      setfetchMyPost(true);
+      if (data) {
+        await Future.delayed(const Duration(seconds: 1), () {
+          goBack(context);
+          setloading(false);
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
+              context);
+          reinitialize();
+        });
+      }
+      // } else {
+      //   if (context.mounted) {
+      //     Utils.flushBarErrorMessage(
+      //         AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+      //         AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+      //         context);
+      //   }
+      // }
     } else {
       setloading(false);
       Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),

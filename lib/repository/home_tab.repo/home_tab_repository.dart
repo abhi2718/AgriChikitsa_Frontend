@@ -22,6 +22,7 @@ class HomeTabRepository {
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
+      print(e);
       rethrow;
     }
   }
@@ -60,6 +61,16 @@ class HomeTabRepository {
     try {
       const url = '${AppUrl.feedEndPoint}/';
       final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> updatePost(dynamic payload) async {
+    try {
+      const url = '${AppUrl.feedEndPoint}/';
+      final response = await _apiServices.getPutFeedApiResponse(url, payload);
       return response;
     } catch (e) {
       rethrow;

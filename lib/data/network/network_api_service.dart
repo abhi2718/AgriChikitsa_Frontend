@@ -77,6 +77,14 @@ class NetworkApiService extends BaseApiServices {
   }
 
   @override
+  Future getPutFeedApiResponse(String url, dynamic payload) async {
+    final headers = await getHeaders();
+    final response = await http.put(Uri.parse(url), headers: headers, body: jsonEncode(payload));
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
+  @override
   Future getDeleteApiResponse(String url) async {
     final headers = await getHeaders();
     final response = await retry(

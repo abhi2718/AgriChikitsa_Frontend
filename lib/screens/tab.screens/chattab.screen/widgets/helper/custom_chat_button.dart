@@ -3,14 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomChatButton extends StatelessWidget {
-  const CustomChatButton({super.key, required this.text, required this.isSelected});
+  const CustomChatButton(
+      {super.key, required this.text, required this.isSelected, this.isCrops = false});
   final String text;
   final bool isSelected;
+  final bool isCrops;
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: isCrops ? 100 : null,
       alignment: Alignment.center,
-      margin: EdgeInsets.only(right: 8),
+      margin: const EdgeInsets.only(
+        right: 8,
+      ),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: isSelected ? const Color(0xff4BA859) : AppColor.whiteColor,

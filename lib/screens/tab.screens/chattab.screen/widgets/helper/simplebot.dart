@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_loader.dart';
@@ -200,6 +202,7 @@ class ChatScreen extends HookWidget {
                                                         message["id"]);
                                                   },
                                             child: CustomChatButton(
+                                              isCrops: true,
                                               text: profileViewModel.locale["language"] == "en"
                                                   ? message["options_en"][index]
                                                   : message["options_hi"][index],
@@ -222,7 +225,7 @@ class ChatScreen extends HookWidget {
                                     ? SingleChildScrollView(
                                         child: SizedBox(
                                           width: dimension['width']! - 32,
-                                          height: dimension['height']! * 0.06,
+                                          height: dimension['height']! * 0.065,
                                           child: ListView.builder(
                                               scrollDirection: Axis.horizontal,
                                               itemCount: profileViewModel.locale["language"] == "en"
@@ -245,6 +248,7 @@ class ChatScreen extends HookWidget {
                                                               message["id"]);
                                                         },
                                                   child: CustomChatButton(
+                                                    isCrops: true,
                                                     text:
                                                         profileViewModel.locale["language"] == "en"
                                                             ? message["options_en"][currentIndex]
@@ -320,25 +324,6 @@ class ChatScreen extends HookWidget {
                                                     message["options_hi"][index],
                                                     message["id"]);
                                               },
-                                        // child: BubbleSpecialThree(
-                                        //   text: profileViewModel.locale["language"] == "en"
-                                        //       ? message["options_en"][index]
-                                        //       : message["options_hi"][index],
-                                        //   color: provider.selectedReason ==
-                                        //           (profileViewModel.locale["language"] == "en"
-                                        //               ? message["options_en"][index]
-                                        //               : message["options_hi"][index])
-                                        //       ? AppColor.selectedOptionChatBot
-                                        //       : AppColor.chatSent,
-                                        //   tail: false,
-                                        //   isSender: false,
-                                        //   textStyle: GoogleFonts.inter(
-                                        //       fontWeight: FontWeight.w500,
-                                        //       color: AppColor.darkBlackColor,
-                                        //       fontSize: profileViewModel.locale["language"] == "en"
-                                        //           ? 14
-                                        //           : 16),
-                                        // ),
                                         child: CustomChatButton(
                                           text: profileViewModel.locale["language"] == "en"
                                               ? message["options_en"][index]
@@ -516,16 +501,16 @@ class ChatScreen extends HookWidget {
                                       ),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
-                                        child: CachedNetworkImage(
-                                          imageUrl: provider.cropImage,
-                                          progressIndicatorBuilder:
-                                              (context, url, downloadProgress) => Skeleton(
-                                            height: dimension['height']! * 0.40,
-                                            width: dimension['width']! * 0.6,
-                                            radius: 8,
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
+                                        child: Image.file(
+                                          File(provider.cropImage),
+                                          // progressIndicatorBuilder:
+                                          //     (context, url, downloadProgress) => Skeleton(
+                                          //   height: dimension['height']! * 0.40,
+                                          //   width: dimension['width']! * 0.6,
+                                          //   radius: 8,
+                                          // ),
+                                          // errorWidget: (context, url, error) =>
+                                          //     const Icon(Icons.error),
                                           fit: BoxFit.cover,
                                           height: dimension['height']! * 0.40,
                                           width: dimension['width']! * 0.6,
@@ -539,6 +524,82 @@ class ChatScreen extends HookWidget {
                       );
                     }
                     if (index == 7) {
+                      return Column(
+                        children: [
+                          CustomTextBubble(
+                            text: profileViewModel.locale["language"] == "en"
+                                ? message["question_en"]
+                                : message["question_hi"],
+                            isSender: message["isMe"],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 70.0),
+                            child: Row(
+                              children: [
+                                provider.isChatCompleted
+                                    ? const SizedBox.shrink()
+                                    : IconButton(
+                                        onPressed:
+                                            provider.showCameraButton || provider.isChatCompleted
+                                                ? null
+                                                : () {
+                                                    provider.setImageCheck(true, context);
+                                                  },
+                                        icon: const Icon(
+                                          Icons.check,
+                                          color: AppColor.extraDark,
+                                        ),
+                                        style: IconButton.styleFrom(
+                                            backgroundColor: AppColor.whiteColor),
+                                      ),
+                                provider.isChatCompleted
+                                    ? const SizedBox.shrink()
+                                    : IconButton(
+                                        onPressed:
+                                            provider.showCameraButton || provider.isChatCompleted
+                                                ? null
+                                                : () {
+                                                    provider.setImageCheck(false, context);
+                                                  },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: AppColor.whiteColor,
+                                        ),
+                                        style: IconButton.styleFrom(backgroundColor: Colors.red),
+                                      )
+                              ],
+                            ),
+                          ),
+                          if (provider.imageConfirm != null &&
+                              !provider.imageConfirm! &&
+                              provider.imageFile2 != null &&
+                              provider.imageFile2.path.isNotEmpty)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 16, bottom: 10),
+                                  height: dimension['height']! * 0.40,
+                                  width: dimension['width']! * 0.6,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      File(provider.imageFile2.path),
+                                      fit: BoxFit.cover,
+                                      height: dimension['height']! * 0.40,
+                                      width: dimension['width']! * 0.6,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                        ],
+                      );
+                    }
+                    if (index == 8) {
                       return Column(
                         children: [
                           provider.showSeventhBubbleLoader ? const ChatLoader() : Container(),

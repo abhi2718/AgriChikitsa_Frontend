@@ -4,8 +4,10 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/category_button.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_video_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,9 +19,8 @@ import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/text.widgets/text.dart';
 
 class CreatePostScreen extends HookWidget {
-  const CreatePostScreen({
-    super.key,
-  });
+  const CreatePostScreen({super.key, this.feed});
+  final dynamic feed;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -30,6 +31,9 @@ class CreatePostScreen extends HookWidget {
     final authService = Provider.of<AuthService>(context, listen: true);
     useEffect(() {
       useViewModel.fetchFeedsCategory(context, hometabViewModel);
+      if (feed != null) {
+        useViewModel.setFeedData(feed);
+      }
     }, []);
 
     return Scaffold(
@@ -270,22 +274,32 @@ class CreatePostScreen extends HookWidget {
                             ),
                           )
                         : useViewModel.imagePath.isEmpty
-                            ? useViewModel.youtubeVideoPath.isNotEmpty
-                                ? Player(
-                                    videoUrl: useViewModel.youtubeVideoPath, aspectRatio: 16 / 9)
-                                // ? Text("Hey")
-                                : useViewModel.videoController.value.isInitialized
-                                    ? VideoPlayer(useViewModel
-                                        .videoController) // Show video player once initialized
-                                    : const Center(
-                                        child: CircularProgressIndicator(
-                                          color: AppColor.extraDark,
-                                        ),
-                                      )
-                            : Image.file(
-                                File(provider.imagePath),
-                                fit: BoxFit.cover,
-                              ),
+                            ? feed != null
+                                ? feed['mediaType'] == 'video'
+                                    ? PostWidget(videoUrl: feed['videoUrl'])
+                                    : Player(videoUrl: feed['videoUrl'], aspectRatio: 16 / 9)
+                                : useViewModel.youtubeVideoPath.isNotEmpty
+                                    ? Player(
+                                        videoUrl: useViewModel.youtubeVideoPath,
+                                        aspectRatio: 16 / 9)
+                                    // ? Text("Hey")
+                                    : useViewModel.videoController.value.isInitialized
+                                        ? VideoPlayer(useViewModel
+                                            .videoController) // Show video player once initialized
+                                        : const Center(
+                                            child: CircularProgressIndicator(
+                                              color: AppColor.extraDark,
+                                            ),
+                                          )
+                            : feed != null
+                                ? CachedNetworkImage(
+                                    imageUrl: provider.imagePath,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.file(
+                                    File(provider.imagePath),
+                                    fit: BoxFit.cover,
+                                  ),
                   ),
                 );
               }),
@@ -363,7 +377,9 @@ class CreatePostScreen extends HookWidget {
                     loading: provider.buttonloading,
                     width: dimension["width"]! - 32,
                     onPress: () {
-                      useViewModel.createPost(context);
+                      feed != null
+                          ? useViewModel.updatePost(context, feed['_id'])
+                          : useViewModel.createPost(context);
                     }),
               )
             ],

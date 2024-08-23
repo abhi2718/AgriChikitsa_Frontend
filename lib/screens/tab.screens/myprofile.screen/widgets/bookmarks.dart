@@ -169,7 +169,7 @@ class BookmarkFeed extends HookWidget {
                               context: context,
                               useSafeArea: true,
                               enableDrag: true,
-                              builder: (BuildContext context) => ReportScreen(
+                              builder: (BuildContext context) => ReportPostScreen(
                                 userId: user['_id'],
                               ),
                               isScrollControlled: true,

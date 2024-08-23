@@ -2,6 +2,7 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/create_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -45,6 +46,8 @@ class HomeTabScreen1 extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final appLifecycleState = useState(AppLifecycleState.resumed);
     final useViewModel = useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
+    // final myProfileViewModel =
+    //     useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
     final notificationViewModel =
         useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
@@ -104,12 +107,12 @@ class HomeTabScreen1 extends HookWidget {
               TextButton(
                 child: const Text(
                   'Yes',
-                  style: TextStyle(color: AppColor.darkBlackColor),
+                  style: TextStyle(color: Colors.red),
                 ),
                 onPressed: () => Navigator.pop(c, true),
               ),
               TextButton(
-                child: const Text('No', style: TextStyle(color: Colors.red)),
+                child: const Text('No'),
                 onPressed: () => Navigator.pop(c, false),
               ),
             ],
@@ -119,114 +122,107 @@ class HomeTabScreen1 extends HookWidget {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: AppColor.notificationBgColor,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                HeaderWidget(
-                  profileViewModel: profileViewModel,
-                ),
-                RefreshIndicator(
+          body: Column(
+            children: [
+              // Fixed Header
+              HeaderWidget(
+                profileViewModel: profileViewModel,
+              ),
+              // Scrollable content
+              Expanded(
+                child: RefreshIndicator(
                   onRefresh: refresh,
-                  child: Consumer<HomeTabViewModel>(builder: (context, provider, child) {
-                    return provider.loading
-                        ? SizedBox(
-                            height: dimension['height']! - 100,
-                            child: SingleChildScrollView(
+                  color: AppColor.darkColor,
+                  child: SingleChildScrollView(
+                    child: Consumer<HomeTabViewModel>(builder: (context, provider, child) {
+                      if (provider.loading) {
+                        return Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                              height: dimension['height']! * 0.17,
+                              width: dimension['width'],
+                              color: AppColor.whiteColor,
                               child: Column(
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    child: Card(
-                                        child: Container(
-                                      padding:
-                                          const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                                      height: dimension['height']! * 0.17,
-                                      width: dimension['width'],
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                                            child: Row(
-                                              children: [
-                                                Skeleton(
-                                                  height: 40,
-                                                  width: 40,
-                                                  radius: 30,
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(horizontal: 10),
-                                                  child: Skeleton(
-                                                    height: 13,
-                                                    width: dimension['width']! - 250,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
+                                    child: Row(
+                                      children: [
+                                        Skeleton(
+                                          height: 40,
+                                          width: 40,
+                                          radius: 30,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          child: Skeleton(
+                                            height: 13,
+                                            width: dimension['width']! - 250,
                                           ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 10, right: 5, bottom: 2),
-                                                  child: Skeleton(
-                                                    width: dimension['width']! * 0.30,
-                                                    height: dimension['height']! * 0.055,
-                                                    radius: 10,
-                                                  )),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 12),
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: 10,
-                                      itemBuilder: (context, index) {
-                                        return const FeedLoader();
-                                      },
+                                        ),
+                                      ],
                                     ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 10, right: 5, bottom: 2),
+                                        child: Skeleton(
+                                          width: dimension['width']! * 0.30,
+                                          height: dimension['height']! * 0.055,
+                                          radius: 10,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ),
-                          )
-                        : provider.feedList.isEmpty
-                            ? SizedBox(
-                                height: dimension['height']! - 100,
-                                child: Center(
-                                  child: Text(AppLocalization.of(context)
-                                      .getTranslatedValue("noPostYet")
-                                      .toString()),
-                                ),
-                              )
-                            : SizedBox(
-                                height: dimension['height']! - 100,
-                                child: Column(
-                                  children: [
-                                    const CreatePostCard(),
-                                    Expanded(
-                                      child: ListView.builder(
-                                          itemCount: provider.feedList.length,
-                                          itemBuilder: (context, index) {
-                                            return Feed(feed: provider.feedList[index]);
-                                          }),
-                                    )
-                                    // ...provider.feedList.map((feed) {
-                                    //   return Feed(feed: feed);
-                                    // }).toList(),
-                                  ],
-                                ),
-                              );
-                  }),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 10,
+                                itemBuilder: (context, index) {
+                                  return const FeedLoader();
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      } else if (provider.feedList.isEmpty) {
+                        return SizedBox(
+                          height: dimension['height']! - 100,
+                          child: Center(
+                            child: Text(AppLocalization.of(context)
+                                .getTranslatedValue("noPostYet")
+                                .toString()),
+                          ),
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            const CreatePostCard(),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: provider.feedList.length,
+                              itemBuilder: (context, index) {
+                                return Feed(feed: provider.feedList[index]);
+                              },
+                            ),
+                          ],
+                        );
+                      }
+                    }),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

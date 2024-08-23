@@ -58,7 +58,7 @@
     "selectCategoryPost":"Select Category",
     "updateTitle":"Update",
     "postCreatedTitle":"Hurray! Post Ready",
-    "postCreatedSubtitle":"Our admin will soon verify your post",
+    "postCreatedSubtitle":"Please refresh to view your post.",
     "oopsTitle":"Oops..",
     "someErrorOccured":"Something went wrong..",
     "fillAllDetails":"Please fill all details",
@@ -74,7 +74,7 @@
     "pendingReplyText":"Pending Reply...",
     "checkWeather":"Check weather",
     "checkPrices":"Check Mandi Rates",
-    "trendingCropsTitle":"Trending Crops",
+    "trendingCropsTitle":"Trending Jankari",
     "otherInfo":"Other Info",
     "mandiFillDetails":"Fill the following details",
     "selectMandi":"Select Mandi",
@@ -195,5 +195,10 @@
     "enterHere":"Type here...",
     "youtubeUrlInvalid":"Please enter valid url!",
     "changeCrop": "Change Crop",
-    "plotHistoryTitle": "Plot History"
+    "plotHistoryTitle": "Plot History",
+    "postDeleteTitle": "Plot Delete",
+    "postDeleteSubTitle": "Are you sure you want to delete this post?",
+    "cropAddedTitle":"Added On",
+    "cropRemovedTitle":"Removed On",
+    "noCropHistoryTitle":"No Crop History Found!"
 }

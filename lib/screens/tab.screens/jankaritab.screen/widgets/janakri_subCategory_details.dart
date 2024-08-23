@@ -29,7 +29,7 @@ class JankariSubCategoryPost extends HookWidget {
       height: dimension['height']! - 100,
       width: dimension['width'],
       child: Padding(
-        padding: const EdgeInsets.only(top: 22, left: 29, right: 29),
+        padding: const EdgeInsets.only(top: 22),
         child: Column(
           children: [
             SizedBox(
@@ -37,23 +37,27 @@ class JankariSubCategoryPost extends HookWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const SizedBox(
+                                height: 40, width: 30, child: Icon(Icons.arrow_back))),
+                        InkWell(
                           onTap: () {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).popUntil((route) => route.isFirst);
                           },
-                          child: const Icon(Icons.arrow_back)),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).popUntil((route) => route.isFirst);
-                        },
-                        child: const Icon(
-                          Remix.close_circle_line,
+                          child: const Icon(
+                            Remix.close_circle_line,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

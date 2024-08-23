@@ -13,6 +13,8 @@ class MyProfileViewModel with ChangeNotifier {
   var commentLoading = true;
   var _loading = false;
   bool bookMarkLoader = false;
+  bool deleteLoader = false;
+  bool isAnyPostDeleted = false;
   var unBookMarkedFeedData = {"unBookMarked": false, "id": ""};
   var isUserSwitchTheTab = false;
   var toogleHomeFeed = {"isLiked": false, "id": ""};
@@ -76,11 +78,18 @@ class MyProfileViewModel with ChangeNotifier {
     expandedMyPosts.clear();
     commentLoading = true;
     _loading = false;
+    isAnyPostDeleted = false;
+    deleteLoader = false;
     bookMarkLoader = false;
   }
 
   setBookMarkLoader(bool value) {
     bookMarkLoader = value;
+    notifyListeners();
+  }
+
+  setDeleteLoader(bool value) {
+    deleteLoader = value;
     notifyListeners();
   }
 
@@ -99,6 +108,30 @@ class MyProfileViewModel with ChangeNotifier {
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
             context);
+      }
+    }
+  }
+
+  void postDelete(BuildContext context, String feedId, HomeTabViewModel homeTabViewModel) async {
+    setDeleteLoader(true);
+    try {
+      await _myProfileTabRepository.deletePost(feedId);
+      feedList.removeWhere((e) => e["_id"] == feedId);
+      homeTabViewModel.removeUserDeletedPost(feedId);
+      isAnyPostDeleted = true;
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+      setDeleteLoader(false);
+    } catch (error) {
+      setDeleteLoader(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

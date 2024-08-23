@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
@@ -20,6 +21,7 @@ class JankariViewModel with ChangeNotifier {
   final textEditingController = TextEditingController();
   List<JankariCategoryModal> jankaricardList = [];
   List trendingCropsList = [];
+  List trendingPostsList = [];
   List<JankariSubCategoryModel> jankariSubcategoryList = [];
   List<JankariSubCategoryPostModel> jankariSubcategoryPostList = [];
   List<Comment> commentsList = [];
@@ -145,6 +147,27 @@ class JankariViewModel with ChangeNotifier {
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
             context);
+      }
+    }
+  }
+
+  void fetchTrendingPosts(BuildContext context) async {
+    setloading(true);
+    try {
+      final data = await _jankariRepository.fetchTrendingPosts();
+      trendingPostsList = mapJankariSubCategoryPost(data['posts']);
+      print(trendingPostsList);
+      setloading(false);
+      notifyListeners();
+    } catch (error) {
+      setloading(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

@@ -25,13 +25,19 @@ class ChatTabViewModel with ChangeNotifier {
   bool showSeventhBubbleLoader = false;
   bool showLastMessage = false;
   bool showCropImageLoader = false;
+  bool showCropImage2Loader = false;
   bool showCameraButton = false;
   bool enableKeyBoard = false;
+  bool? imageConfirm;
+  bool isSecondTry = false;
+  dynamic imageFile;
+  dynamic imageFile2;
   String selectedAge = "";
   String selectedCrop = "";
   String selectedReason = "";
   var questionAsked = "";
   var cropImage = "";
+  var cropImage2 = "";
   var questionIndex = 0;
   var selectedDisease = '';
   var cameraQuestionId = '';
@@ -82,12 +88,18 @@ class ChatTabViewModel with ChangeNotifier {
     showLastMessage = false;
     showCameraButton = false;
     showCropImageLoader = false;
+    showCropImage2Loader = false;
     cropImage = "";
+    cropImage2 = "";
     selectedDisease = '';
     cameraQuestionId = '';
     selectedAge = "";
     selectedCrop = "";
     selectedReason = "";
+    imageConfirm = null;
+    imageFile = null;
+    imageFile2 = null;
+    isSecondTry = false;
   }
 
   void enableKeyboard(bool value) {
@@ -97,6 +109,21 @@ class ChatTabViewModel with ChangeNotifier {
 
   setChatHistoryLoader(value) {
     chatHistoryLoader = value;
+  }
+
+  setImageCheck(bool value, BuildContext context) {
+    imageConfirm = value;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
+    notifyListeners();
+    if (imageConfirm!) {
+      isSecondTry = false;
+      uploadImageToServer(context);
+    } else {
+      isSecondTry = true;
+      setShowCameraButton(true);
+    }
   }
 
   setChatLoader(value) {
@@ -491,54 +518,91 @@ class ChatTabViewModel with ChangeNotifier {
 
   void uploadImage(context) async {
     try {
-      final imageFile = await Utils.capturePhoto();
+      if (isSecondTry) {
+        imageFile2 = await Utils.capturePhoto();
+      } else {
+        imageFile = await Utils.capturePhoto();
+      }
       setShowCameraButton(false);
-      if (imageFile != null) {
-        showCropImageLoader = true;
-        notifyListeners();
-        final data = await Utils.uploadImage(imageFile);
-        cropImage = data["imgurl"];
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        });
-        final index = chatMessages.indexWhere((chatMessage) {
-          return chatMessage['id'] == cameraQuestionId;
-        });
-        if (index != -1) {
-          final item = chatMessages[index];
-          sendQuestion(
-              cameraQuestionId,
-              AppLocalization.of(context).locale.toString() == "en"
-                  ? item['question_en']
-                  : item['question_hi'],
-              "",
-              cropImage);
-        }
-        showCropImageLoader = false;
-        showSeventhBubbleLoader = true;
-        notifyListeners();
-        final t8 = Timer(const Duration(seconds: 1), () {
-          chatMessages.add(
-            {
-              "id": "8",
-              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
-              "question_en": "Know about your crop with Agrichikitsa",
-              "options_hi": [],
-              "options_en": [],
-              "isAnswerSelected": false,
-              "answer": "",
-              "isMe": false,
-            },
-          );
+      if (isSecondTry) {
+        if (imageFile2 != null) {
+          showCropImage2Loader = true;
+          notifyListeners();
+          showCropImage2Loader = false;
+          showSeventhBubbleLoader = true;
+          notifyListeners();
+          // final data = await Utils.uploadImage(imageFile);
+          // cropImage2 = data["imgurl"];
           WidgetsBinding.instance.addPostFrameCallback((_) {
             scrollController.jumpTo(scrollController.position.maxScrollExtent);
           });
-          showSeventhBubbleLoader = false;
-          showLastMessage = true;
-          isChatCompleted = true;
+          final index = chatMessages.indexWhere((chatMessage) {
+            return chatMessage['id'] == cameraQuestionId;
+          });
+          if (index != -1) {
+            final item = chatMessages[index];
+            sendQuestion(
+                cameraQuestionId,
+                AppLocalization.of(context).locale.toString() == "en"
+                    ? item['question_en']
+                    : item['question_hi'],
+                "",
+                cropImage);
+          }
+          showCropImage2Loader = false;
+          showSeventhBubbleLoader = true;
           notifyListeners();
-        });
-        timmerInstances.add(t8);
+          final t8 = Timer(const Duration(seconds: 1), () {
+            chatMessages.add(
+              {
+                "id": "8",
+                "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+                "question_en": "Know about your crop with Agrichikitsa",
+                "options_hi": [],
+                "options_en": [],
+                "isAnswerSelected": false,
+                "answer": "",
+                "isMe": false,
+              },
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              scrollController.jumpTo(scrollController.position.maxScrollExtent);
+            });
+            showSeventhBubbleLoader = false;
+            showLastMessage = true;
+            isChatCompleted = true;
+            notifyListeners();
+          });
+          timmerInstances.add(t8);
+        }
+      } else {
+        if (imageFile != null) {
+          cropImage = imageFile.path;
+          showCropImageLoader = true;
+          notifyListeners();
+          showCropImageLoader = false;
+          notifyListeners();
+
+          final t8 = Timer(const Duration(seconds: 1), () {
+            chatMessages.add(
+              {
+                "id": "8",
+                "question_hi": "क्या आप इस फोटो के साथ आगे बढ़ना चाहते हैं?",
+                "question_en": "Are you sure you want to proceed with this image?",
+                "options_hi": [],
+                "options_en": [],
+                "isAnswerSelected": false,
+                "answer": "",
+                "isMe": false,
+              },
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              scrollController.jumpTo(scrollController.position.maxScrollExtent);
+            });
+            notifyListeners();
+          });
+          timmerInstances.add(t8);
+        }
       }
     } catch (error) {
       if (kDebugMode) {
@@ -552,55 +616,91 @@ class ChatTabViewModel with ChangeNotifier {
 
   void uploadGallery(context) async {
     try {
-      final imageFile = await Utils.pickImage();
+      if (isSecondTry) {
+        imageFile2 = await Utils.pickImage();
+      } else {
+        imageFile = await Utils.pickImage();
+      }
       setShowCameraButton(false);
-      if (imageFile != null) {
-        showCropImageLoader = true;
-        notifyListeners();
-        final data = await Utils.uploadImage(imageFile);
-        cropImage = data["imgurl"];
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        });
-        final index = chatMessages.indexWhere((chatMessage) {
-          return chatMessage['id'] == cameraQuestionId;
-        });
-        if (index != -1) {
-          final item = chatMessages[index];
-          sendQuestion(
-              cameraQuestionId,
-              AppLocalization.of(context).locale.toString() == "en"
-                  ? item['question_en']
-                  : item['question_hi'],
-              "",
-              cropImage);
-        }
-        showCropImageLoader = false;
-        showSeventhBubbleLoader = true;
-        notifyListeners();
-        final t8 = Timer(const Duration(seconds: 1), () {
-          chatMessages.add(
-            {
-              "id": "8",
-              "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
-              "question_en": "Know about your crop with Agrichikitsa",
-              "options_hi": [],
-              "options_en": [],
-              "isAnswerSelected": false,
-              "answer": "",
-              "isMe": false,
-            },
-          );
+      if (isSecondTry) {
+        if (imageFile2 != null) {
+          showCropImage2Loader = true;
+          notifyListeners();
+          showCropImage2Loader = false;
+          showSeventhBubbleLoader = true;
+          notifyListeners();
+          // final data = await Utils.uploadImage(imageFile);
+          // cropImage2 = data["imgurl"];
           WidgetsBinding.instance.addPostFrameCallback((_) {
             scrollController.jumpTo(scrollController.position.maxScrollExtent);
           });
-          setShowCameraButton(false);
-          showSeventhBubbleLoader = false;
-          showLastMessage = true;
-          isChatCompleted = true;
+          final index = chatMessages.indexWhere((chatMessage) {
+            return chatMessage['id'] == cameraQuestionId;
+          });
+          if (index != -1) {
+            final item = chatMessages[index];
+            sendQuestion(
+                cameraQuestionId,
+                AppLocalization.of(context).locale.toString() == "en"
+                    ? item['question_en']
+                    : item['question_hi'],
+                "",
+                cropImage);
+          }
+          showCropImage2Loader = false;
+          showSeventhBubbleLoader = true;
           notifyListeners();
-        });
-        timmerInstances.add(t8);
+          final t8 = Timer(const Duration(seconds: 1), () {
+            chatMessages.add(
+              {
+                "id": "8",
+                "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+                "question_en": "Know about your crop with Agrichikitsa",
+                "options_hi": [],
+                "options_en": [],
+                "isAnswerSelected": false,
+                "answer": "",
+                "isMe": false,
+              },
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              scrollController.jumpTo(scrollController.position.maxScrollExtent);
+            });
+            showSeventhBubbleLoader = false;
+            showLastMessage = true;
+            isChatCompleted = true;
+            notifyListeners();
+          });
+          timmerInstances.add(t8);
+        }
+      } else {
+        if (imageFile != null) {
+          cropImage = imageFile.path;
+          showCropImageLoader = true;
+          notifyListeners();
+          showCropImageLoader = false;
+          notifyListeners();
+
+          final t8 = Timer(const Duration(seconds: 1), () {
+            chatMessages.add(
+              {
+                "id": "8",
+                "question_hi": "क्या आप इस फोटो के साथ आगे बढ़ना चाहते हैं?",
+                "question_en": "Are you sure you want to proceed with this image?",
+                "options_hi": [],
+                "options_en": [],
+                "isAnswerSelected": false,
+                "answer": "",
+                "isMe": false,
+              },
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              scrollController.jumpTo(scrollController.position.maxScrollExtent);
+            });
+            notifyListeners();
+          });
+          timmerInstances.add(t8);
+        }
       }
     } catch (error) {
       if (kDebugMode) {
@@ -608,6 +708,58 @@ class ChatTabViewModel with ChangeNotifier {
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
             context);
+      }
+    }
+  }
+
+  void uploadImageToServer(BuildContext context) async {
+    try {
+      showSeventhBubbleLoader = true;
+      notifyListeners();
+      final data = await Utils.uploadImage(imageFile);
+      final index = chatMessages.indexWhere((chatMessage) {
+        return chatMessage['id'] == cameraQuestionId;
+      });
+      if (index != -1) {
+        final item = chatMessages[index];
+        sendQuestion(
+            cameraQuestionId,
+            AppLocalization.of(context).locale.toString() == "en"
+                ? item['question_en']
+                : item['question_hi'],
+            "",
+            cropImage);
+      }
+      final t9 = Timer(const Duration(seconds: 1), () {
+        chatMessages.add(
+          {
+            "id": "9",
+            "question_hi": "धन्यवाद \n हमारे कृषि विशेषज्ञ जल्द ही आपकी समस्या देखेंगे",
+            "question_en": "Know about your crop with Agrichikitsa",
+            "options_hi": [],
+            "options_en": [],
+            "isAnswerSelected": false,
+            "answer": "",
+            "isMe": false,
+          },
+        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
+        showSeventhBubbleLoader = false;
+        showLastMessage = true;
+        isChatCompleted = true;
+        notifyListeners();
+      });
+      timmerInstances.add(t9);
+    } catch (error) {
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

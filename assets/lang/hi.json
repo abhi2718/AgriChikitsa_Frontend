@@ -58,7 +58,7 @@
     "selectCategoryPost":"श्रेणी चूने",
     "updateTitle":"अपडेट",
     "postCreatedTitle":"पोस्ट तैयार!",
-    "postCreatedSubtitle":"एडमिन जल्द ही इसका सत्यापन करेगा",
+    "postCreatedSubtitle":"कृपया अपनी पोस्ट देखने के लिए रीफ़्रेश करें",
     "oopsTitle":"क्षमा करें",
     "someErrorOccured":"कुछ गलत हो गया",
     "fillAllDetails":"कृपया सभी डिटेल्स भरें",
@@ -74,7 +74,7 @@
     "pendingReplyText":"उत्तर आना बाकी...",
     "checkWeather":"मौसम की जाँच करें",
     "checkPrices":"मंडी भाव जांचें",
-    "trendingCropsTitle":"ट्रेंडिंग फसलें",
+    "trendingCropsTitle":"ट्रेंडिंग जानकारी",
     "otherInfo":"अन्य जानकारी",
     "mandiFillDetails":"निम्नलिखित विवरण दर्ज करें",
     "selectMandi":"मंडी चूने",
@@ -195,5 +195,10 @@
     "enterHere":"यहाँ टाइप करें",
     "youtubeUrlInvalid":"कृपया मान्य यूआरएल दर्ज करें",
     "changeCrop":"फसल बदलें",
-    "plotHistoryTitle":"प्लाट हिस्ट्री"
+    "plotHistoryTitle":"प्लाट हिस्ट्री",
+    "postDeleteTitle":"पोस्ट हटाने की प्रक्रिया",
+    "postDeleteSubTitle":"क्या आप वाकई इस पोस्ट को हटाना चाहते हैं?",
+    "cropAddedTitle":"जोड़ा गया",
+    "cropRemovedTitle":"हटाया गया",
+    "noCropHistoryTitle":"कोई पुरानी फसल नहीं मिली!"
 }
