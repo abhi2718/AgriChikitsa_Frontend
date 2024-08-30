@@ -1,6 +1,7 @@
 {
     "settingPageTitle": "सेटिंग",
     "createPost":"पोस्ट बनाएं",
+    "editPostTitle":"पोस्ट संपादित करें",
     "post": "पोस्ट",
     "changeLanguageAppBar": "भाषा बदलें",
     "accountHeading": "खाता",
@@ -58,7 +59,8 @@
     "selectCategoryPost":"श्रेणी चूने",
     "updateTitle":"अपडेट",
     "postCreatedTitle":"पोस्ट तैयार!",
-    "postCreatedSubtitle":"कृपया अपनी पोस्ट देखने के लिए रीफ़्रेश करें",
+    "postCreatedSubtitle":"आपकी पोस्ट सफलतापूर्वक बना दी गई है",
+    "postEditedSubtitle":"आपकी पोस्ट सफलतापूर्वक संपादित की गई",
     "oopsTitle":"क्षमा करें",
     "someErrorOccured":"कुछ गलत हो गया",
     "fillAllDetails":"कृपया सभी डिटेल्स भरें",
@@ -200,5 +202,17 @@
     "postDeleteSubTitle":"क्या आप वाकई इस पोस्ट को हटाना चाहते हैं?",
     "cropAddedTitle":"जोड़ा गया",
     "cropRemovedTitle":"हटाया गया",
-    "noCropHistoryTitle":"कोई पुरानी फसल नहीं मिली!"
+    "noCropHistoryTitle":"कोई पुरानी फसल नहीं मिली!",
+    "postsTile": "पोस्ट्स", 
+    "videosTitle": "वीडियोस", 
+    "followTitle":"फॉलो", 
+    "followingTitle":"फॉलोइंग", 
+    "followersTitle":"फॉलोअर्स",
+    "sharePostApp":"पोस्ट को ऐप में शेयर करें",
+    "sharePostOutside":"पोस्ट को बाहर शेयर करें...",
+    "shareYourThoughts":"अपने विचार साझा करें...",
+    "warningTitle":"चेतावनी",
+    "editTitle":"एडिट",
+    "deleteTitle":"डिलीट",
+    "warningSubTitle":"क्या आप वाकई ऐप से बाहर निकलना चाहते हैं?"
 }

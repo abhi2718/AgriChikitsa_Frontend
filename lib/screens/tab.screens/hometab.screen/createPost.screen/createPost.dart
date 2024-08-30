@@ -19,8 +19,9 @@ import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/text.widgets/text.dart';
 
 class CreatePostScreen extends HookWidget {
-  const CreatePostScreen({super.key, this.feed});
+  const CreatePostScreen({super.key, this.feed, this.isEdit = false});
   final dynamic feed;
+  final bool isEdit;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -44,7 +45,9 @@ class CreatePostScreen extends HookWidget {
         leading:
             InkWell(onTap: () => useViewModel.goBack(context), child: const Icon(Icons.arrow_back)),
         title: BaseText(
-          title: AppLocalization.of(context).getTranslatedValue("createPost").toString(),
+          title: AppLocalization.of(context)
+              .getTranslatedValue(feed != null ? "editPostTitle" : "createPost")
+              .toString(),
           style: GoogleFonts.inter(
               color: AppColor.darkBlackColor, fontSize: 16, fontWeight: FontWeight.w500),
         ),
@@ -373,12 +376,14 @@ class CreatePostScreen extends HookWidget {
               ),
               Consumer<CreatePostModel>(
                 builder: (context, provider, child) => CustomElevatedButton(
-                    title: AppLocalization.of(context).getTranslatedValue("updateTitle").toString(),
+                    title: AppLocalization.of(context)
+                        .getTranslatedValue(feed != null ? "updateTitle" : "submitButton")
+                        .toString(),
                     loading: provider.buttonloading,
                     width: dimension["width"]! - 32,
                     onPress: () {
                       feed != null
-                          ? useViewModel.updatePost(context, feed['_id'])
+                          ? useViewModel.updatePost(context, feed['_id'], isEdit)
                           : useViewModel.createPost(context);
                     }),
               )

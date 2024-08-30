@@ -11,6 +11,7 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
@@ -70,33 +71,36 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 horizontal: 10,
                 vertical: 10,
               ),
-              color: AppColor.whiteColor,
-              // decoration: BoxDecoration(
-              //   color: Colors.white,
-              //   // borderRadius: BorderRadius.circular(20),
-              //   // boxShadow: const [
-              //   //   BoxShadow(
-              //   //     color: Colors.black26,
-              //   //     blurRadius: 10,
-              //   //     offset: Offset(0, 5),
-              //   //   ),
-              //   // ],
-              // ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                // boxShadow: const [
+                //   // BoxShadow(
+                //   //   color: Colors.black26,
+                //   //   blurRadius: 10,
+                //   //   offset: Offset(0, 0),
+                //   // ),
+                // ],
+              ),
               child: Column(
                 children: [
                   // CircleAvatar(
                   //   backgroundImage:
                   //       CachedNetworkImageProvider(widget.trendingPosts[index].imageUrl),
                   // ),
-                  CachedNetworkImage(
-                    imageUrl: widget.trendingPosts[index].imageUrl,
-                    fit: BoxFit.fill,
-                    progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                      height: 100,
-                      width: double.infinity,
-                      radius: 0,
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.trendingPosts[index].imageUrl,
+                      fit: BoxFit.fill,
+                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                        height: 100,
+                        width: double.infinity,
+                        radius: 0,
+                      ),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                     ),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
                   ),
                   const SizedBox(
                     width: 15,

@@ -164,24 +164,31 @@ class TabScreen extends HookWidget {
                         if (provider.userInfo != null) {
                           final user = provider.userInfo["user"];
                           final profileImage = user['profileImage'];
-                          return SizedBox(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: CachedNetworkImage(
-                                imageUrl: profileImage,
-                                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                    Skeleton(
-                                  height: 23,
-                                  width: 20,
-                                  radius: 0,
-                                ),
-                                errorWidget: (context, url, error) => const Icon(Icons.error),
-                                width: 23,
-                                fit: BoxFit.cover,
-                                height: 20,
-                              ),
-                            ),
+                          // return Container(
+                          //   decoration: BoxDecoration(shape: BoxShape.circle),
+                          //   // child: CachedNetworkImage(
+                          //   //   imageUrl: profileImage,
+                          //   //   progressIndicatorBuilder: (context, url, downloadProgress) =>
+                          //   //       Skeleton(
+                          //   //     height: 23,
+                          //   //     width: 20,
+                          //   //     radius: 0,
+                          //   //   ),
+                          //   //   errorWidget: (context, url, error) => const Icon(Icons.error),
+                          //   //   width: 23,
+                          //   //   fit: BoxFit.cover,
+                          //   //   height: 20,
+                          //   // ),
+                          //   child: Image.network(profileImage),
+                          // );
+                          return CircleAvatar(
+                            radius: 10,
+                            backgroundImage: NetworkImage(profileImage), // Profile image
                           );
+                          // return ImageIcon(
+                          //   NetworkImage(profileImage),
+                          //   size: 20,
+                          // );
                         }
                         return Container();
                       }),

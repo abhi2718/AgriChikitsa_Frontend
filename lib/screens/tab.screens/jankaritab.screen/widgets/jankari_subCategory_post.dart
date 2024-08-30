@@ -11,7 +11,6 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../res/app_url.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
@@ -61,30 +60,34 @@ class JankariPost extends HookWidget {
                     : provider.jankariSubcategoryPostList[index].hindiDescription
                 : "";
             return provider.jankariSubCategoryPostLoader
-                ? SizedBox(
-                    height: dimension['height']! - 180,
-                    width: dimension['width'],
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Skeleton(height: 20, width: 60),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Skeleton(height: dimension['height']! * 0.40, width: dimension['width']!),
-                          const SizedBox(
-                            height: 23,
-                          ),
-                          Skeleton(height: 10, width: 40),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Skeleton(height: dimension['height']!, width: dimension['width']!),
-                        ],
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: SizedBox(
+                      height: dimension['height']! - 180,
+                      width: dimension['width'],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Skeleton(height: 20, width: 60),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Skeleton(
+                                height: dimension['height']! * 0.40, width: dimension['width']!),
+                            const SizedBox(
+                              height: 23,
+                            ),
+                            Skeleton(height: 10, width: 40),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Skeleton(height: dimension['height']!, width: dimension['width']!),
+                          ],
+                        ),
                       ),
                     ),
                   )

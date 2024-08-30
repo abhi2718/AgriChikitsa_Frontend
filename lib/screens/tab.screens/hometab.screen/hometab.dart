@@ -1,14 +1,15 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/create_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dart';
-import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import './hometab_view_model.dart';
@@ -44,8 +45,10 @@ class HomeTabScreen1 extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final scrollController = useScrollController();
     final appLifecycleState = useState(AppLifecycleState.resumed);
     final useViewModel = useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
+    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
     // final myProfileViewModel =
     //     useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -84,6 +87,21 @@ class HomeTabScreen1 extends HookWidget {
         }
       });
     }, []);
+    useEffect(() {
+      if (createPostModel.fetchMyPost) {
+        Future.delayed(const Duration(seconds: 1), () {
+          useViewModel.fetchFeeds(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (scrollController.hasClients) {
+              scrollController.jumpTo(0.0); // Use jumpTo for instant scroll
+            }
+          });
+        });
+        Future.delayed(Duration.zero, () {
+          createPostModel.setfetchMyPost(false);
+        });
+      }
+    }, [createPostModel.fetchMyPost]);
 
     Future refresh() async {
       useViewModel.fetchFeeds(context);
@@ -101,18 +119,22 @@ class HomeTabScreen1 extends HookWidget {
         showDialog(
           context: context,
           builder: (c) => AlertDialog(
-            title: const Text('Warning'),
-            content: const Text('Do you really want to exit?'),
+            title: Text(AppLocalization.of(context).getTranslatedValue("warningTitle").toString()),
+            content:
+                Text(AppLocalization.of(context).getTranslatedValue("warningSubTitle").toString()),
             actions: [
               TextButton(
-                child: const Text(
-                  'Yes',
-                  style: TextStyle(color: Colors.red),
+                child: Text(
+                  AppLocalization.of(context).getTranslatedValue("yes").toString(),
+                  style: const TextStyle(color: Colors.red),
                 ),
-                onPressed: () => Navigator.pop(c, true),
+                onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
               ),
               TextButton(
-                child: const Text('No'),
+                child: Text(
+                  AppLocalization.of(context).getTranslatedValue("no").toString(),
+                  style: const TextStyle(color: Colors.black),
+                ),
                 onPressed: () => Navigator.pop(c, false),
               ),
             ],
@@ -134,6 +156,7 @@ class HomeTabScreen1 extends HookWidget {
                   onRefresh: refresh,
                   color: AppColor.darkColor,
                   child: SingleChildScrollView(
+                    controller: scrollController,
                     child: Consumer<HomeTabViewModel>(builder: (context, provider, child) {
                       if (provider.loading) {
                         return Column(
@@ -208,6 +231,7 @@ class HomeTabScreen1 extends HookWidget {
                           children: [
                             const CreatePostCard(),
                             ListView.builder(
+                              // controller: scrollController,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: provider.feedList.length,

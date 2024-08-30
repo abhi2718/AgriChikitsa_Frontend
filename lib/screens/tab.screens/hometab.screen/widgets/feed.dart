@@ -1,22 +1,20 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_test_widget.dart';
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_video_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/report_screen.dart';
-import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/reshare_post.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
-import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_player.dart';
 import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -163,40 +161,79 @@ class _FeedState extends State<Feed> {
                   // GestureDetector(child: Icon(Icons.more_vert)),
                   Row(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (widget.feed.containsKey("isFollowing")
-                              ? widget.feed["isFollowing"]
-                              : false) {
-                            feedProfileModel.followUser(context, widget.feed['user']['_id']);
-                          }
-                        },
-                        child: widget.feed.containsKey("isFollowing")
-                            ? widget.feed["isFollowing"]
-                                ? const Text("Following",
-                                    style: TextStyle(
-                                        color: AppColor.darkColor, fontWeight: FontWeight.bold))
-                                : const Text("Follow",
-                                    style: TextStyle(
-                                        color: AppColor.darkColor, fontWeight: FontWeight.bold))
-                            : const Text(
-                                "Follow",
-                                style: TextStyle(
-                                    color: AppColor.darkColor, fontWeight: FontWeight.bold),
-                              ),
-                      ),
+                      userInfo.sId == user["_id"]
+                          ? const SizedBox.shrink()
+                          : GestureDetector(
+                              onTap: () {
+                                // if (user.containsKey("isFollowing") ? user["isFollowing"] : false) {
+                                feedProfileModel.followUser(context, widget.feed['user']['_id']);
+                                setState(() {
+                                  user["isFollowing"] = !user["isFollowing"];
+                                });
+                                // }
+                              },
+                              child: user.containsKey("isFollowing")
+                                  ? user["isFollowing"]
+                                      ? Text(
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("followingTitle")
+                                              .toString(),
+                                          style: const TextStyle(
+                                              color: AppColor.darkColor,
+                                              fontWeight: FontWeight.bold))
+                                      : Text(
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("followTitle")
+                                              .toString(),
+                                          style: const TextStyle(
+                                              color: AppColor.darkColor,
+                                              fontWeight: FontWeight.bold))
+                                  : Text(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue("followTitle")
+                                          .toString(),
+                                      style: const TextStyle(
+                                          color: AppColor.darkColor, fontWeight: FontWeight.bold),
+                                    ),
+                            ),
                       Builder(
                         builder: (context) => PopupMenuButton(
+                          color: Colors.white,
+                          surfaceTintColor: Colors.white,
                           itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: 'report',
-                              child: Text(
-                                AppLocalization.of(context)
-                                    .getTranslatedValue('reportPost')
-                                    .toString(),
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ),
+                            userInfo.sId == user["_id"]
+                                ? const PopupMenuItem(height: 0, child: SizedBox.shrink())
+                                : PopupMenuItem(
+                                    value: 'report',
+                                    child: Text(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue('reportPost')
+                                          .toString(),
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                            userInfo.sId != user["_id"]
+                                ? const PopupMenuItem(height: 0, child: SizedBox.shrink())
+                                : PopupMenuItem(
+                                    value: 'edit',
+                                    child: Text(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue('editTitle')
+                                          .toString(),
+                                      style: const TextStyle(color: AppColor.darkBlackColor),
+                                    ),
+                                  ),
+                            userInfo.sId != user["_id"]
+                                ? const PopupMenuItem(height: 0, child: SizedBox.shrink())
+                                : PopupMenuItem(
+                                    value: 'delete',
+                                    child: Text(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue('deleteTitle')
+                                          .toString(),
+                                      style: const TextStyle(color: AppColor.darkBlackColor),
+                                    ),
+                                  ),
                           ],
                           onSelected: (value) {
                             if (value == 'report') {
@@ -213,6 +250,81 @@ class _FeedState extends State<Feed> {
                                     top: Radius.circular(16),
                                   ),
                                 ),
+                              );
+                            }
+                            if (value == 'edit') {
+                              Utils.model(
+                                  context,
+                                  CreatePostScreen(
+                                    feed: widget.feed,
+                                    isEdit: widget.feed.containsKey("repostedFrom") ? true : false,
+                                  ));
+                            }
+                            if (value == 'delete') {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext dialogContext) {
+                                  return myProfileViewModel.deleteLoader
+                                      ? AlertDialog(
+                                          content: SizedBox(
+                                            width: dimension['width'],
+                                            height: dimension['height']! * 0.23,
+                                            child: const Center(
+                                              child: CircularProgressIndicator(
+                                                color: AppColor.extraDark,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : AlertDialog(
+                                          title: BaseText(
+                                              title: AppLocalization.of(context)
+                                                  .getTranslatedValue("postDeleteTitle")
+                                                  .toString(),
+                                              style: const TextStyle()),
+                                          content: SizedBox(
+                                            width: dimension['width'],
+                                            height: dimension['height']! * 0.05,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                BaseText(
+                                                  title: AppLocalization.of(context)
+                                                      .getTranslatedValue("postDeleteSubTitle")
+                                                      .toString(),
+                                                  style: const TextStyle(),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: BaseText(
+                                                  title: AppLocalization.of(context)
+                                                      .getTranslatedValue("yes")
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 16, color: AppColor.extraDark)),
+                                              onPressed: () {
+                                                myProfileViewModel.postDelete(
+                                                    context, widget.feed['_id'], useViewModel);
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: BaseText(
+                                                  title: AppLocalization.of(context)
+                                                      .getTranslatedValue("no")
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontSize: 16, color: AppColor.extraDark)),
+                                              onPressed: () {
+                                                Navigator.of(dialogContext).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                },
                               );
                             }
                           },
@@ -237,7 +349,131 @@ class _FeedState extends State<Feed> {
             //         //     feedId: feed['_id'],
             //         //   ),
             //         : SizedBox.shrink(),
-            _buildPostMedia(context, widget.feed, dimension, useViewModel),
+            widget.feed.containsKey("repostedFrom")
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                        child: CustomTextWidget(
+                          text: widget.feed["repostDescription"],
+                          textStyle: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black),
+                          maxLines: useViewModel.isExpanded(widget.feed['_id']) ? null : 2,
+                        ),
+                      ),
+                      Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColor.chatSent, width: 2),
+                            borderRadius: BorderRadius.circular(6),
+                            color: AppColor.whiteColor,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: CachedNetworkImage(
+                                            imageUrl: widget.feed["repostedFrom"]["user"]
+                                                ['profileImage'],
+                                            progressIndicatorBuilder:
+                                                (context, url, downloadProgress) => Skeleton(
+                                              height: 40,
+                                              width: 40,
+                                              radius: 0,
+                                            ),
+                                            errorWidget: (context, url, error) =>
+                                                const Icon(Icons.error),
+                                            width: 40,
+                                            fit: BoxFit.cover,
+                                            height: 40,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 16,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            BaseText(
+                                              title: widget.feed["repostedFrom"]["user"]['name'],
+                                              style: const TextStyle(
+                                                  fontSize: 14, fontWeight: FontWeight.w700),
+                                            ),
+                                            BaseText(
+                                              title: widget.feed["repostedFrom"]["user"]
+                                                      ['userHandler'] ??
+                                                  "@username",
+                                              style: const TextStyle(
+                                                  fontSize: 14, fontWeight: FontWeight.w400),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _buildPostMedia(
+                                  context, widget.feed["repostedFrom"], dimension, useViewModel),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              widget.feed["repostedFrom"]["hindiCaption"] != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CustomTextWidget(
+                                            text: widget.feed["repostedFrom"]["hindiCaption"],
+                                            textStyle: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                            maxLines: useViewModel.isExpanded(widget.feed['_id'])
+                                                ? null
+                                                : 2,
+                                          ),
+                                          if (widget.feed["repostedFrom"]["hindiCaption"].length >
+                                              140)
+                                            InkWell(
+                                              onTap: () =>
+                                                  useViewModel.toggleExpand(widget.feed['_id']),
+                                              child: useViewModel.isExpanded(widget.feed['_id'])
+                                                  ? Container()
+                                                  : const BaseText(
+                                                      title: "Read More",
+                                                      style:
+                                                          TextStyle(color: AppColor.hyperlinkColor),
+                                                    ),
+                                            ),
+                                          Text(
+                                            useViewModel.getTimeAgo(
+                                                widget.feed["repostedFrom"]['createdAt'], context),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black.withOpacity(0.6)),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
+                          ))
+                    ],
+                  )
+                : _buildPostMedia(context, widget.feed, dimension, useViewModel),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -296,8 +532,101 @@ class _FeedState extends State<Feed> {
                   ]),
                   GestureDetector(
                       onTap: () {
-                        Share.share(
-                            "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa");
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      userInfo.sId == user["_id"] ||
+                                              widget.feed.containsKey("repostedFrom")
+                                          ? const SizedBox.shrink()
+                                          : ListTile(
+                                              title: Text(AppLocalization.of(context)
+                                                  .getTranslatedValue("sharePostApp")
+                                                  .toString()),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                Utils.model(
+                                                    context,
+                                                    ResharePost(
+                                                      feed: widget.feed,
+                                                    ));
+                                              },
+                                            ),
+                                      userInfo.sId == user["_id"] ||
+                                              widget.feed.containsKey("repostedFrom")
+                                          ? const SizedBox.shrink()
+                                          : const Divider(),
+                                      ListTile(
+                                          title: Text(AppLocalization.of(context)
+                                              .getTranslatedValue("sharePostOutside")
+                                              .toString()),
+                                          onTap: () async {
+                                            String text = "";
+                                            if (widget.feed.containsKey("imgurl") &&
+                                                widget.feed['imgurl'].isNotEmpty) {
+                                              final xfile = await JankariViewModel()
+                                                  .shareFiles(widget.feed['imgurl']);
+                                              if (widget.feed.containsKey("repostedFrom")) {
+                                                text =
+                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              } else {
+                                                if (widget.feed["hindiCaption"] == null) {
+                                                  text =
+                                                      "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                } else {
+                                                  text =
+                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                }
+                                              }
+                                              await Share.shareXFiles([xfile], text: text);
+                                            } else if (widget.feed['mediaType'] == "video") {
+                                              List<String> temp =
+                                                  widget.feed['videoUrl'].split('/');
+                                              if (widget.feed.containsKey("repostedFrom")) {
+                                                text =
+                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              } else {
+                                                if (widget.feed["hindiCaption"] == null) {
+                                                  text =
+                                                      "Check out what ${user['name']} posted!\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                } else {
+                                                  text =
+                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                }
+                                              }
+                                              Share.share(text);
+                                            } else {
+                                              if (widget.feed.containsKey("repostedFrom")) {
+                                                text =
+                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              } else {
+                                                if (widget.feed["hindiCaption"] == null) {
+                                                  text =
+                                                      "Check out what ${user['name']} posted!\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                } else {
+                                                  text =
+                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                }
+                                              }
+                                              Share.share(text);
+                                            }
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                            }
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
                       },
                       child: const Icon(Icons.reply_all)),
                 ],
@@ -385,7 +714,7 @@ class _FeedState extends State<Feed> {
     if (feed['mediaType'] == "youtube") {
       return _buildYoutubePlayer(feed['videoUrl'], useViewModel, feed["_id"]);
     } else {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
   }
 
@@ -395,74 +724,31 @@ class _FeedState extends State<Feed> {
         Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"));
 
     return VisibilityDetector(
-      key: Key(videoUrl),
-      onVisibilityChanged: (visibilityInfo) {
-        if (visibilityInfo.visibleFraction > 0.5) {
-          if (_currentVideoController != videoController) {
-            _currentVideoController?.pause();
-            _currentVideoController = videoController;
-            videoController.initialize().then((_) {
-              videoController.play();
-              homeTabViewModel.increaseViews(context, feedId);
-            });
+        key: Key(videoUrl),
+        onVisibilityChanged: (visibilityInfo) {
+          if (visibilityInfo.visibleFraction > 0.5) {
+            if (_currentVideoController != videoController) {
+              _currentVideoController?.pause();
+              _currentVideoController = videoController;
+              videoController.initialize().then((_) {
+                videoController.play();
+                homeTabViewModel.increaseViews(context, feedId);
+              });
+            }
+          } else if (_currentVideoController == videoController) {
+            videoController.pause();
           }
-        } else if (_currentVideoController == videoController) {
-          videoController.pause();
-        }
-      },
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Chewie(
-          controller: ChewieController(
-            videoPlayerController: videoController,
-            autoPlay: false,
-            looping: false,
+        },
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Chewie(
+            controller: ChewieController(
+              videoPlayerController: videoController,
+              autoPlay: false,
+              looping: false,
+            ),
           ),
-        ),
-      ),
-      // child: AspectRatio(
-      //   aspectRatio: 16 / 9,
-      //   child: Stack(
-      //     alignment: Alignment.bottomCenter,
-      //     children: <Widget>[
-      //       VideoPlayer(videoController),
-      //       // _ControlsOverlay(controller: _controller),
-      //       Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //         children: [
-      //           IconButton(
-      //             icon: Icon(
-      //               videoController.value.isPlaying ? Icons.play_arrow : Icons.pause,
-      //               color: Colors.white,
-      //               size: 30.0,
-      //             ),
-      //             onPressed: _togglePlayPause,
-      //           ),
-      //           IconButton(
-      //             icon: const Icon(
-      //               Icons.fullscreen,
-      //               color: Colors.white,
-      //               size: 30.0,
-      //             ),
-      //             onPressed: () {
-      //               setState(() {
-      //                 videoController.pause();
-      //               });
-      //               Utils.model(
-      //                   context,
-      //                   FullScreenPlayer(
-      //                     videoUrl: videoUrl,
-      //                     feed: widget.feed,
-      //                   ));
-      //             },
-      //           ),
-      //         ],
-      //       ),
-      //       VideoProgressIndicator(videoController, allowScrubbing: true),
-      //     ],
-      //   ),
-      // ),
-    );
+        ));
   }
 
   Widget _buildYoutubePlayer(String videoUrl, HomeTabViewModel homeTabViewModel, String feedId) {

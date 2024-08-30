@@ -6,6 +6,7 @@ import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -41,6 +42,7 @@ class HomeTabViewModel with ChangeNotifier {
   bool reportPostLoader = false;
   bool reportPostStatus = false;
   bool hasIncreasedViewForImage = false;
+  bool repostLoader = false;
   bool get loading {
     return _loading;
   }
@@ -74,6 +76,11 @@ class HomeTabViewModel with ChangeNotifier {
 
   setWeatherPDFLoader(value) {
     weatherPDFloader = value;
+    notifyListeners();
+  }
+
+  setRepostLoader(value) {
+    repostLoader = value;
     notifyListeners();
   }
 
@@ -145,13 +152,12 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final payload = {"reason": reason, "reportedUserId": userId};
       final response = await _homeTabRepository.reportPost(payload);
-      setReportPostloading(false);
       if (response['status']) {
         reportPostStatus = true;
         notifyListeners();
         Timer(const Duration(seconds: 2), () {
           Navigator.pop(context);
-          Navigator.pop(context);
+          setReportPostloading(false);
         });
       }
     } catch (error) {
@@ -422,11 +428,43 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  Future<bool> updatePost(BuildContext context, String id, String caption, String feedId) async {
+  void resharePost(
+      BuildContext context, String id, String caption, CreatePostModel createPostModel) async {
+    setRepostLoader(true);
+    try {
+      Map<String, dynamic> payload = {"repostDescription": caption};
+      await _homeTabRepository.resharePost(payload, id).then((value) {
+        createPostModel.setfetchMyPost(true);
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pop(context);
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
+              context);
+          setRepostLoader(false);
+        });
+      });
+    } catch (error) {
+      setRepostLoader(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
+  }
+
+  Future<bool> updatePost(
+      BuildContext context, String id, String caption, String feedId, bool isShared) async {
     try {
       Map<String, dynamic> payload = {};
       List<String> tags = extractHashtags(caption);
-      payload = {"feedId": feedId, "categoryId": id, "hindiCaption": caption, "tags": tags};
+      if (isShared) {
+        payload = {"feedId": feedId, "categoryId": id, "tags": tags, "repostDescription": caption};
+      } else {
+        payload = {"feedId": feedId, "categoryId": id, "hindiCaption": caption, "tags": tags};
+      }
       await _homeTabRepository.updatePost(payload);
       return true;
     } catch (error) {

@@ -96,15 +96,15 @@ class SubCategoryContainer extends HookWidget {
               child: Consumer<JankariViewModel>(
                 builder: (context, provider, child) {
                   return provider.jankariSubCategoryLoader
-                      ? Container(
-                          padding: const EdgeInsets.only(left: 16, right: 16, top: 17.5),
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: GridView.builder(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.only(top: 27, bottom: 27),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              childAspectRatio: ((dimension['width']! - 10) / 2) / 138,
+                              crossAxisSpacing: 6.0,
+                              mainAxisSpacing: 6.0,
+                              childAspectRatio: ((dimension['width']! - 10) / 2) / 148,
                             ),
                             itemCount: 10,
                             itemBuilder: (context, index) {

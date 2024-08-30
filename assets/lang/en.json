@@ -1,6 +1,7 @@
 {
     "settingPageTitle": "Settings",
     "createPost":"Create Post",
+    "editPostTitle":"Edit Post",
     "post": "Post",
     "changeLanguageAppBar": "Change Language",
     "warningCheckTerms":"Please confirm terms and conditions",
@@ -58,7 +59,8 @@
     "selectCategoryPost":"Select Category",
     "updateTitle":"Update",
     "postCreatedTitle":"Hurray! Post Ready",
-    "postCreatedSubtitle":"Please refresh to view your post.",
+    "postCreatedSubtitle":"Your post is created successfully.",
+    "postEditedSubtitle":"Your post was edited successfully",
     "oopsTitle":"Oops..",
     "someErrorOccured":"Something went wrong..",
     "fillAllDetails":"Please fill all details",
@@ -200,5 +202,17 @@
     "postDeleteSubTitle": "Are you sure you want to delete this post?",
     "cropAddedTitle":"Added On",
     "cropRemovedTitle":"Removed On",
-    "noCropHistoryTitle":"No Crop History Found!"
+    "noCropHistoryTitle":"No Crop History Found!",
+    "postsTile": "Posts", 
+    "videosTitle": "Videos", 
+    "followTitle":"Follow", 
+    "followingTitle":"Following", 
+    "followersTitle":"Followers",
+    "sharePostApp":"Share post in-app",
+    "sharePostOutside":"Share post via...",
+    "shareYourThoughts":"Share your thoughts...",
+    "warningTitle":"Warning",
+    "editTitle":"Edit",
+    "deleteTitle":"Delete",
+    "warningSubTitle":"Do you really want to exit?"
 }

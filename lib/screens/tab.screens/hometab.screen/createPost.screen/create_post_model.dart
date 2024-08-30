@@ -41,8 +41,13 @@ class CreatePostModel with ChangeNotifier {
 
   void setFeedData(dynamic feed) {
     isPostPicked = true;
-    caption = feed['hindiCaption'] ?? "";
-    captionController.text = feed['hindiCaption'] ?? "";
+    if (feed.containsKey("repostedFrom")) {
+      caption = feed["repostDescription"] ?? "";
+      captionController.text = feed['repostDescription'] ?? "";
+    } else {
+      caption = feed["hindiCaption"] ?? "";
+      captionController.text = feed['hindiCaption'] ?? "";
+    }
     imagePath = feed['mediaType'] == "image" ? feed['imgurl'] : "";
     currentSelectedCategory = feed.containsKey('categoryRef') ? feed['categoryRef'] : "";
     // notifyListeners();
@@ -77,7 +82,6 @@ class CreatePostModel with ChangeNotifier {
       youtubeVideoPath = '';
       isPostPicked = false;
       videoPicked = null;
-      videoController.dispose();
       caption = "";
       currentSelectedCategory = "";
       buttonloading = false;
@@ -222,12 +226,12 @@ class CreatePostModel with ChangeNotifier {
     }
   }
 
-  void updatePost(BuildContext context, String feedId) async {
+  void updatePost(BuildContext context, String feedId, bool isShared) async {
     if (currentSelectedCategory.isNotEmpty) {
       setloading(true);
       FocusManager.instance.primaryFocus?.unfocus();
-      final data =
-          await _homeTabViewModel.updatePost(context, currentSelectedCategory, caption, feedId);
+      final data = await _homeTabViewModel.updatePost(
+          context, currentSelectedCategory, caption, feedId, isShared);
       setfetchMyPost(true);
       if (data) {
         await Future.delayed(const Duration(seconds: 1), () {
@@ -235,7 +239,7 @@ class CreatePostModel with ChangeNotifier {
           setloading(false);
           Utils.flushBarErrorMessage(
               AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
-              AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("postEditedSubtitle").toString(),
               context);
           reinitialize();
         });

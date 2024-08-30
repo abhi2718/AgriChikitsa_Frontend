@@ -62,7 +62,6 @@ class FeedUserProfileViewModel extends ChangeNotifier {
     setloading(true);
     try {
       final data = await _feedProfileRepository.fetchPosts(userId);
-      print(data['connections']);
       feedList = data['feeds'];
       isFollowing = data['isFollowing'];
       connections = data['connections'];

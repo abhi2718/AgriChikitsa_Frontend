@@ -9,6 +9,7 @@ class HomeTabRepository {
       final url = id == "All"
           ? '${AppUrl.feedEndPoint}/*/1/*/approved'
           : '${AppUrl.feedEndPoint}/$id/1/*/approved';
+      print(url);
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
@@ -22,7 +23,6 @@ class HomeTabRepository {
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -60,6 +60,18 @@ class HomeTabRepository {
   Future<dynamic> createPost(dynamic payload) async {
     try {
       const url = '${AppUrl.feedEndPoint}/';
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> resharePost(dynamic payload, String feedId) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/repost/$feedId';
+      print(url);
+      print(payload);
       final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (e) {

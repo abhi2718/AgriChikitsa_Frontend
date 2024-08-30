@@ -156,7 +156,6 @@ class JankariViewModel with ChangeNotifier {
     try {
       final data = await _jankariRepository.fetchTrendingPosts();
       trendingPostsList = mapJankariSubCategoryPost(data['posts']);
-      print(trendingPostsList);
       setloading(false);
       notifyListeners();
     } catch (error) {
