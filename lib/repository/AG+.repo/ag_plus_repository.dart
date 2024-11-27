@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
+
 import '../../data/network/network_api_service.dart';
 import '../../res/app_url.dart';
 
@@ -6,6 +11,16 @@ class AGPlusRepository {
   Future<dynamic> getFields() async {
     try {
       const url = AppUrl.getFieldsEndPoint;
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getCropDuration(String cropId) async {
+    try {
+      final url = "${AppUrl.getCropsListEndPoint}/$cropId";
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
@@ -65,9 +80,24 @@ class AGPlusRepository {
     }
   }
 
-  Future<dynamic> getCurrentWeather(String latitude, String longitude) async {
+  Future<dynamic> getCurrentWeather(String latitude, String longitude, String lang) async {
     try {
-      final url = '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no';
+      // final lang1 = AppLocalization.of(context).locale.toString() == "en" ? "en" : "hi";
+      // log(lang1);
+      final url = lang == "en"
+          ? '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no'
+          : '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no&lang=hi';
+      final response = await _apiServices.getWeatherApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getPredictedWeather(String latitude, String longitude) async {
+    try {
+      final url =
+          'http://api.weatherapi.com/v1/forecast.json?key=94488ccb442e4337ad735838231309&q=$latitude,$longitude&aqi=no&days=3';
       final response = await _apiServices.getWeatherApiResponse(url);
       return response;
     } catch (e) {

@@ -6,7 +6,6 @@ import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/chat_loa
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/custom_chat_button.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/custom_text_bubble.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,7 +14,6 @@ import 'package:jumping_dot/jumping_dot.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import '../../../../../utils/utils.dart';
-import '../../../../../widgets/skeleton/skeleton.dart';
 import '../../chat_tab_view_model.dart';
 
 class ChatScreen extends HookWidget {
@@ -44,6 +42,7 @@ class ChatScreen extends HookWidget {
                 final message = provider.chatMessages[0];
                 return Container(
                   margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   alignment: Alignment.center,
                   color: const Color(0xff05921A),
                   width: dimension['width'],
@@ -54,6 +53,7 @@ class ChatScreen extends HookWidget {
                         profileViewModel.locale["language"] == "en"
                             ? message["question_en"]
                             : message["question_hi"],
+                        textAlign: TextAlign.center,
                         textStyle: GoogleFonts.inter(
                             color: AppColor.whiteColor,
                             fontSize: profileViewModel.locale["language"] == "en" ? 14 : 16,
@@ -423,6 +423,47 @@ class ChatScreen extends HookWidget {
                           const SizedBox(
                             height: 16,
                           ),
+                          provider.selectedUserMessage.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.only(left: 70.0),
+                                  child: Row(
+                                    children: [
+                                      provider.isChatCompleted
+                                          ? const SizedBox.shrink()
+                                          : IconButton(
+                                              onPressed: provider.showCameraButton ||
+                                                      provider.isChatCompleted
+                                                  ? null
+                                                  : () {
+                                                      provider.setImageAfterText(true, context);
+                                                    },
+                                              icon: const Icon(
+                                                Icons.check,
+                                                color: AppColor.extraDark,
+                                              ),
+                                              style: IconButton.styleFrom(
+                                                  backgroundColor: AppColor.whiteColor),
+                                            ),
+                                      provider.isChatCompleted
+                                          ? const SizedBox.shrink()
+                                          : IconButton(
+                                              onPressed: provider.showCameraButton ||
+                                                      provider.isChatCompleted
+                                                  ? null
+                                                  : () {
+                                                      provider.setImageAfterText(false, context);
+                                                    },
+                                              icon: const Icon(
+                                                Icons.close,
+                                                color: AppColor.whiteColor,
+                                              ),
+                                              style:
+                                                  IconButton.styleFrom(backgroundColor: Colors.red),
+                                            )
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
                           message["options_en"].length > 0 || message["options_hi"].length > 0
                               ? SizedBox(
                                   width: dimension['width']! - 32,
@@ -595,7 +636,7 @@ class ChatScreen extends HookWidget {
                                   ),
                                 ),
                               ],
-                            )
+                            ),
                         ],
                       );
                     }

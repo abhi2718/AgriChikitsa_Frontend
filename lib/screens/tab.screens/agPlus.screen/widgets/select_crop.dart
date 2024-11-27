@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop.helpers/change_crop_duration.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop_details.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/plot_details.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/category_button.dart';
@@ -120,7 +121,12 @@ class CropSelection extends HookWidget {
                 Utils.toastMessage(
                     AppLocalization.of(context).getTranslatedValue("warningSelectCrop").toString());
               } else {
-                useViewModel.changeCropFromField(context, fieldId!);
+                Navigator.pop(context);
+                Utils.model(
+                    context,
+                    ChangeCropDuration(
+                      fieldId: fieldId!,
+                    ));
               }
             } else {
               if (useViewModel.selectedCropId.isEmpty) {

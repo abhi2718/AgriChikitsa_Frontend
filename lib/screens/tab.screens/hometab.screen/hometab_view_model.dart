@@ -534,10 +534,12 @@ class HomeTabViewModel with ChangeNotifier {
     } catch (error) {
       setWeatherPDFLoader(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
-            context);
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

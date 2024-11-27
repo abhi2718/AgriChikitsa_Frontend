@@ -2,13 +2,10 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_landing.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
 import 'package:agriChikitsa/services/auth.dart';
-import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../utils/utils.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
@@ -49,7 +46,9 @@ class TabScreen extends HookWidget {
               width: 40,
             ),
             onPressed: () {
-              Utils.model(context, const ChatTabScreen());
+              // Utils.model(context, const ChatTabScreen());
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const ChatTabScreen()));
             }),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(

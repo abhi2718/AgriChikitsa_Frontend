@@ -216,7 +216,7 @@ class AGPlusLanding extends HookWidget {
                       ),
                     ),
                     InkWell(
-                        // onTap: () => Utils.model(context, const AllPlotsScreen()),
+                        onTap: () => Utils.model(context, const AllPlotsScreen()),
                         child: GradientButton(
                             height: dimension['height']! * 0.10,
                             width: dimension['width']!,

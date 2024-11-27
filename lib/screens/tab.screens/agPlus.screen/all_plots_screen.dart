@@ -98,12 +98,12 @@ class AllPlotsScreen extends HookWidget {
                                       return Container(
                                         alignment: Alignment.center,
                                         margin:
-                                            const EdgeInsets.only(left: 16, right: 16, bottom: 24),
+                                            const EdgeInsets.only(left: 8, right: 8, bottom: 24),
                                         height: dimension['height']! * 0.25,
                                         width: dimension['width']!,
                                         decoration: BoxDecoration(
                                             color: AppColor.whiteColor,
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius: BorderRadius.circular(12),
                                             boxShadow: [
                                               BoxShadow(
                                                   color: Colors.grey.shade500,
@@ -114,7 +114,7 @@ class AllPlotsScreen extends HookWidget {
                                           fit: StackFit.expand,
                                           children: [
                                             ClipRRect(
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius: BorderRadius.circular(12),
                                               child: CachedNetworkImage(
                                                 imageUrl:
                                                     "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",

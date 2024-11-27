@@ -8,6 +8,7 @@ class JankariSubCategoryModel {
   String icon;
   DateTime createdAt;
   DateTime updatedAt;
+  dynamic tags;
 
   JankariSubCategoryModel({
     required this.id,
@@ -17,6 +18,7 @@ class JankariSubCategoryModel {
     required this.description,
     required this.backgroundImage,
     required this.icon,
+    required this.tags,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -30,6 +32,7 @@ class JankariSubCategoryModel {
       description: json['description'],
       backgroundImage: json['backgroundImage'],
       icon: json['icon'],
+      tags: json['tags'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );

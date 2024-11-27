@@ -93,7 +93,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                         topLeft: Radius.circular(12), topRight: Radius.circular(12)),
                     child: CachedNetworkImage(
                       imageUrl: widget.trendingPosts[index].imageUrl,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.fitHeight,
                       progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                         height: 100,
                         width: double.infinity,

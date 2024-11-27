@@ -18,7 +18,7 @@ class FeaturesCard extends StatelessWidget {
     return InkWell(
       onTap: ontap,
       child: Container(
-        margin: const EdgeInsets.only(top: 8),
+        margin: const EdgeInsets.only(top: 4),
         height: dimension['height']! * 0.21,
         width: dimension['width']!,
         decoration: BoxDecoration(

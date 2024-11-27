@@ -224,7 +224,9 @@ class JankariViewModel with ChangeNotifier {
     try {
       jankariSubcategoryPostList.clear();
       final data = await _jankariRepository.getJankariSubCategoryPost(selectedSubCategory);
+      log(data.toString());
       jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
+
       if (jankariSubcategoryPostList.length > 1) {
         changeActiveButtonState(true);
       }
@@ -238,6 +240,38 @@ class JankariViewModel with ChangeNotifier {
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
             context);
+      }
+    }
+  }
+
+  void getJankariSubCategoryTagsPost(BuildContext context, String tagId) async {
+    // setJankariSubCategoryLoaderPost(true);
+    try {
+      log("Here");
+      jankariSubcategoryPostList.clear();
+      final data = await _jankariRepository.getJankariSubCategoryTagsPost(tagId);
+      if (data["posts"].isNotEmpty) {
+        jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
+        if (jankariSubcategoryPostList.length > 1) {
+          changeActiveButtonState(true);
+        }
+        setJankariSubCategoryLoaderPost(false);
+        notifyListeners();
+        if (context.mounted) {
+          updateStats(context, 'post', jankariSubcategoryPostList[0].id);
+        }
+      } else {
+        setJankariSubCategoryLoaderPost(false);
+      }
+    } catch (error) {
+      setJankariSubCategoryLoaderPost(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

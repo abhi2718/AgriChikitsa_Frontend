@@ -2,6 +2,7 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../model/plots.dart';
@@ -50,7 +51,7 @@ class WeatherCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     return Container(
-        margin: const EdgeInsets.only(top: 8),
+        margin: const EdgeInsets.only(top: 4),
         padding: const EdgeInsets.only(left: 24, right: 24, top: 14, bottom: 14),
         width: dimension["width"]!,
         decoration: BoxDecoration(
@@ -66,7 +67,7 @@ class WeatherCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  provider.date,
+                  provider.date.toString(),
                   style: const TextStyle(
                       color: AppColor.whiteColor, fontSize: 15, fontWeight: FontWeight.w500),
                 ),
@@ -78,10 +79,14 @@ class WeatherCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  SvgPicture.asset(
-                    'assets/svg/rainy.svg',
-                    height: dimension['height']! * 0.15,
-                  ),
+                  // SvgPicture.asset(
+                  //   'assets/svg/rainy.svg',
+                  //   height: dimension['height']! * 0.15,
+                  // ),
+                  SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Image.network("https:${provider.latestWeatherData.icon}")),
                   Expanded(
                     flex: 1,
                     child: Column(

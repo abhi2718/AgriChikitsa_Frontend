@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/plots.dart';
@@ -35,6 +36,10 @@ class AGPlusViewModel with ChangeNotifier {
   String soilType = "";
   String areaUnit = "";
   late dynamic sowingDate;
+  late dynamic selectedDuration;
+  late List<dynamic> durations;
+  String varietyName = "";
+  TextEditingController varietyNameController = TextEditingController();
   String phoneNumber = '';
   String currentSelectedCategory = 'All';
   bool fieldImageLoader = false;
@@ -51,6 +56,7 @@ class AGPlusViewModel with ChangeNotifier {
   final plotSizeFocusNode = FocusNode();
   void reinitialize() {
     fieldName = "";
+    varietyName = "";
     soilType = "";
     areaUnit = "";
     currentSelectTab = 0;
@@ -64,6 +70,7 @@ class AGPlusViewModel with ChangeNotifier {
     fieldSize = "";
     plotImagePath = "";
     sowingDate = null;
+    durations = [];
     currentSelectedCategory = "All";
     phoneNumber = '';
     userPlotList = [];
@@ -76,6 +83,7 @@ class AGPlusViewModel with ChangeNotifier {
 
   void resetLoader() {
     fieldName = "";
+    varietyName = "";
     soilType = "";
     areaUnit = "";
     fieldSize = "";
@@ -91,6 +99,7 @@ class AGPlusViewModel with ChangeNotifier {
     requestLoader = false;
     notPlantedCheck = true;
     fieldNamecontroller.clear();
+    varietyNameController.clear();
     fieldSizecontroller.clear();
   }
 
@@ -129,6 +138,11 @@ class AGPlusViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  setDuration(value) {
+    selectedDuration = value;
+    notifyListeners();
+  }
+
   setAreaUnit(value) {
     areaUnit = value;
     notifyListeners();
@@ -139,6 +153,9 @@ class AGPlusViewModel with ChangeNotifier {
       sowingDate = null;
     }
     notPlantedCheck = value;
+    selectedDuration = null;
+    varietyName = "";
+    varietyNameController.clear();
     notifyListeners();
   }
 
@@ -262,6 +279,7 @@ class AGPlusViewModel with ChangeNotifier {
           crop.isSelected = false;
         }
       }
+      setNotPlantedCheck(true);
     }
     notifyListeners();
   }
@@ -308,6 +326,12 @@ class AGPlusViewModel with ChangeNotifier {
           AppLocalization.of(context).getTranslatedValue("checkSowingDate").toString());
       return;
     }
+    if (sowingDate != null && (varietyName.isEmpty)) {
+      // (varietyName.isEmpty || selectedDuration == null || selectedDuration!.isEmpty)) {
+      Utils.toastMessage(
+          AppLocalization.of(context).getTranslatedValue("warningVarietyDuration").toString());
+      return;
+    }
     setAddFieldLoader(true);
     try {
       final payload = {
@@ -318,6 +342,8 @@ class AGPlusViewModel with ChangeNotifier {
         "area": "$fieldSize $areaUnit",
         "soilType": soilType,
         "sowingDate": sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
+        if (selectedDuration != null) "durationId": selectedDuration["_id"],
+        if (varietyName.isNotEmpty) "variety": varietyName,
       };
       final data = await _agPlusRepository.createPlot(payload);
       if (data['message'] == "Data added Successfully") {
@@ -372,9 +398,9 @@ class AGPlusViewModel with ChangeNotifier {
       final int selectedIndex = userPlotList.indexOf(selectedPlot);
       if (selectedIndex != -1) {
         userPlotList.removeAt(selectedIndex);
-        Navigator.pop(context);
-        Navigator.pop(context);
         selectedPlot = null;
+        Navigator.pop(context);
+        Navigator.pop(context);
       }
       notifyListeners();
     } catch (error) {
@@ -406,12 +432,23 @@ class AGPlusViewModel with ChangeNotifier {
     fieldName = fieldNamecontroller.text.toString().trim();
   }
 
+  void setVarietyName() {
+    varietyName = varietyNameController.text.toString().trim();
+  }
+
   void validateFieldName(BuildContext context) {
     if (fieldNamecontroller.text.isEmpty) {
       Utils.flushBarErrorMessage(
           AppLocalization.of(context).getTranslatedValue("alert").toString(),
           AppLocalization.of(context).getTranslatedValue("warningEnterPlotName").toString(),
           context);
+    }
+  }
+
+  void validateVarietyName(BuildContext context) {
+    if (varietyNameController.text.isEmpty) {
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          AppLocalization.of(context).getTranslatedValue("warningVariety").toString(), context);
     }
   }
 
@@ -439,8 +476,39 @@ class AGPlusViewModel with ChangeNotifier {
     if (picked != null) {
       sowingDate = picked;
       notPlantedCheck = false;
+      if (context.mounted) {
+        getDuration(context);
+      }
     }
     notifyListeners();
+  }
+
+  void getDuration(BuildContext context) async {
+    try {
+      durations = [];
+      varietyName = "";
+      varietyNameController.clear();
+      final data = await _agPlusRepository.getCropDuration(selectedCropId);
+      if (data.containsKey("durations")) {
+        if (data["durations"].isEmpty) {
+          durations = [];
+        } else if (data["durations"].length > 1) {
+          durations = data["durations"];
+        } else {
+          selectedDuration = data["durations"][0];
+        }
+      }
+      notifyListeners();
+    } catch (error) {
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
+      }
+    }
   }
 
   void checkPlotDetails(BuildContext context) {
@@ -466,6 +534,7 @@ class AGPlusViewModel with ChangeNotifier {
       if (imageFile != null) {
         final data = await Utils.uploadImage(imageFile);
         plotImagePath = data["imgurl"];
+        // plotImagePath = "testPAth";
         Navigator.pop(context);
         Utils.model(context, const PlotDetails());
         setFieldImageLoader(false);
@@ -535,6 +604,7 @@ class AGPlusViewModel with ChangeNotifier {
 
   void setSelectedChangedCrop(BuildContext context, SelectCrop selectedCrop) {
     selectedChangeCrop = selectedCrop;
+    sowingDate = null;
     setSelectedCrop(context, selectedCrop);
     notifyListeners();
   }
@@ -552,11 +622,16 @@ class AGPlusViewModel with ChangeNotifier {
       final payload = {
         'cropId': selectedChangeCrop!.id,
         'cropImage': selectedChangeCrop!.backgroundImage,
-        'feildId': fieldId
+        'feildId': fieldId,
+        "sowingDate": sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
+        if (selectedDuration != null) "durationId": selectedDuration["_id"],
+        if (varietyName.isNotEmpty) "verity": varietyName,
       };
       await _agPlusRepository.changeCrop(payload);
       selectedPlot.cropName = selectedChangeCrop!.name;
       selectedPlot.cropNameHi = selectedChangeCrop!.name_hi;
+      selectedPlot.sowingDate =
+          sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null;
       if (context.mounted) {
         Navigator.pop(context);
         Navigator.pop(context);

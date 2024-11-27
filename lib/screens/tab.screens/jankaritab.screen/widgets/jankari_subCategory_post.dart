@@ -20,27 +20,36 @@ class JankariPost extends HookWidget {
   final int index;
   final String subCategoryTitle;
   final ProfileViewModel profileViewModel;
-  const JankariPost({
-    super.key,
-    required this.index,
-    required this.subCategoryTitle,
-    required this.profileViewModel,
-  });
+  final bool isFromTagScreen;
+  final String? tagId;
+  const JankariPost(
+      {super.key,
+      required this.index,
+      required this.subCategoryTitle,
+      required this.profileViewModel,
+      this.isFromTagScreen = false,
+      this.tagId});
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
     final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: false));
     useEffect(() {
-      Future.delayed(Duration.zero, () {
-        useViewModel.getJankariSubCategoryPost(context);
-      });
+      if (!isFromTagScreen) {
+        Future.delayed(Duration.zero, () {
+          useViewModel.getJankariSubCategoryPost(context);
+        });
+      } else {
+        useViewModel.getJankariSubCategoryTagsPost(context, tagId!);
+      }
     }, []);
     useEffect(() {
-      if (useViewModel.jankariSubcategoryPostList.isEmpty) {
-      } else {
-        useViewModel.updateStats(
-            context, 'post', useViewModel.jankariSubcategoryPostList[index].id);
+      if (!isFromTagScreen) {
+        if (useViewModel.jankariSubcategoryPostList.isEmpty) {
+        } else {
+          useViewModel.updateStats(
+              context, 'post', useViewModel.jankariSubcategoryPostList[index].id);
+        }
       }
     }, [index]);
     return WillPopScope(

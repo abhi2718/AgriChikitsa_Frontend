@@ -12,8 +12,14 @@ import 'jankari_subCategory_post.dart';
 class JankariSubCategoryPost extends HookWidget {
   final String subCategoryTitle;
   final ProfileViewModel profileViewModel;
+  final bool isFromTagsScreen;
+  final String? tagId;
   const JankariSubCategoryPost(
-      {super.key, required this.subCategoryTitle, required this.profileViewModel});
+      {super.key,
+      required this.subCategoryTitle,
+      required this.profileViewModel,
+      this.isFromTagsScreen = false,
+      this.tagId});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +28,11 @@ class JankariSubCategoryPost extends HookWidget {
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.reinitalize();
-        useViewModel.getJankariSubCategoryPost(context);
+        if (!isFromTagsScreen) {
+          useViewModel.getJankariSubCategoryPost(context);
+        } else {
+          useViewModel.getJankariSubCategoryTagsPost(context, tagId!);
+        }
       });
     }, []);
     return Scaffold(
@@ -71,6 +81,8 @@ class JankariSubCategoryPost extends HookWidget {
                   child: Stack(
                     children: [
                       JankariPost(
+                        tagId: tagId,
+                        isFromTagScreen: isFromTagsScreen,
                         profileViewModel: profileViewModel,
                         subCategoryTitle: subCategoryTitle,
                         index: provider.currentPostIndex,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,6 +12,7 @@ import 'package:agriChikitsa/data/app_excaptions.dart';
 import 'package:agriChikitsa/res/app_url.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
 
 class Utils {
   static void toastMessage(String message) {
@@ -194,6 +196,13 @@ class Utils {
     try {
       final XFile? video = await ImagePicker().pickVideo(source: ImageSource.gallery);
       if (video == null) return null;
+      final VideoPlayerController videoController = VideoPlayerController.file(File(video.path));
+      await videoController.initialize();
+      final Duration videoDuration = videoController.value.duration;
+      videoController.dispose();
+      if (videoDuration.inSeconds > 60) {
+        return 'Video exceeds the maximum duration of 1 minute.';
+      }
       return video;
     } catch (error) {
       rethrow;

@@ -6,6 +6,7 @@ import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../../services/auth.dart';
@@ -137,21 +138,27 @@ class CreatePostModel with ChangeNotifier {
         return;
       }
       videoPicked = await Utils.pickVideo();
-      if (videoPicked != null) {
-        videoPicked = videoPicked.path;
-        Navigator.pop(context);
-        Navigator.pop(context);
-        isPostPicked = true;
-        videoController = VideoPlayerController.file(File(videoPicked))
-          ..addListener(() {
-            notifyListeners();
-          })
-          ..setLooping(true)
-          ..initialize().then((value) {
-            // notifyListeners();
-            videoController.play();
-          });
-        notifyListeners();
+      if (videoPicked is String) {
+        Fluttertoast.showToast(
+            msg: AppLocalization.of(context).getTranslatedValue("videoWarning").toString());
+        return;
+      } else {
+        if (videoPicked != null) {
+          videoPicked = videoPicked.path;
+          Navigator.pop(context);
+          Navigator.pop(context);
+          isPostPicked = true;
+          videoController = VideoPlayerController.file(File(videoPicked))
+            ..addListener(() {
+              notifyListeners();
+            })
+            ..setLooping(true)
+            ..initialize().then((value) {
+              // notifyListeners();
+              videoController.play();
+            });
+          notifyListeners();
+        }
       }
     } catch (error) {
       Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),

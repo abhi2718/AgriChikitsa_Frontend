@@ -60,7 +60,7 @@ class AGPlusHome extends HookWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
+          padding: const EdgeInsets.only(right: 8, left: 8, bottom: 16),
           child: Column(
             children: [
               CurrentSelectedPlot(
