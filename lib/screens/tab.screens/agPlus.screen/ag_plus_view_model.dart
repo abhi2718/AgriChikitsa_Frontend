@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
@@ -54,6 +53,13 @@ class AGPlusViewModel with ChangeNotifier {
   bool infoRequestRaised = false;
   late SelectCrop? selectedChangeCrop;
   final plotSizeFocusNode = FocusNode();
+
+  //Below variable are for reports
+  final List<dynamic> reportsList = [];
+  int currentReportsPage = 1;
+  int totalReportsPages = 1;
+  bool isReportsLoading = false;
+
   void reinitialize() {
     fieldName = "";
     varietyName = "";
@@ -79,6 +85,10 @@ class AGPlusViewModel with ChangeNotifier {
     requestStatus = false;
     requestLoader = false;
     notPlantedCheck = true;
+    reportsList.clear();
+    currentReportsPage = 1;
+    totalReportsPages = 1;
+    isReportsLoading = false;
   }
 
   void resetLoader() {
@@ -101,6 +111,10 @@ class AGPlusViewModel with ChangeNotifier {
     fieldNamecontroller.clear();
     varietyNameController.clear();
     fieldSizecontroller.clear();
+    reportsList.clear();
+    currentReportsPage = 1;
+    totalReportsPages = 1;
+    isReportsLoading = false;
   }
 
   void disposeValues() {
@@ -109,6 +123,12 @@ class AGPlusViewModel with ChangeNotifier {
     mapLocation = {"latitude": "", "longitude": ""};
     infoRequestRaised = false;
     reinitialize();
+  }
+
+  resetReportsPage() {
+    reportsList.clear();
+    totalReportsPages = 1;
+    isReportsLoading = false;
   }
 
   setSelectedTab(int value) {
@@ -532,9 +552,9 @@ class AGPlusViewModel with ChangeNotifier {
     try {
       final imageFile = await Utils.capturePhoto();
       if (imageFile != null) {
-        final data = await Utils.uploadImage(imageFile);
-        plotImagePath = data["imgurl"];
-        // plotImagePath = "testPAth";
+        // final data = await Utils.uploadImage(imageFile);
+        // plotImagePath = data["imgurl"];
+        plotImagePath = "testPAth";
         Navigator.pop(context);
         Utils.model(context, const PlotDetails());
         setFieldImageLoader(false);
@@ -555,32 +575,91 @@ class AGPlusViewModel with ChangeNotifier {
     }
   }
 
-  void raiseRequest(BuildContext context, String fieldName, String fieldId) async {
-    setRequestLoader(true);
-    try {
-      requestStatus = false;
-      final payload = {'name': fieldName, 'phoneNumber': phoneNumber, 'feildId': fieldId};
-      await _agPlusRepository.raiseSoilTestingRequest(payload);
-      requestStatus = true;
-      setRequestLoader(false);
-    } catch (error) {
-      requestStatus = false;
-      setRequestLoader(false);
-      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
-          error.toString(), context);
-    }
-  }
-
   Future<bool> checkPremium(BuildContext context) async {
     final localStorage = await SharedPreferences.getInstance();
     final mapString = localStorage.getString('profile');
     final profile = jsonDecode(mapString!);
     if (!profile['user']['isPremiumUser']) {
-      Utils.toastMessage(
-          AppLocalization.of(context).getTranslatedValue("premiumWarningMessage").toString());
+      if (context.mounted) {
+        Utils.toastMessage(
+            AppLocalization.of(context).getTranslatedValue("premiumWarningMessage").toString());
+      }
       return false;
     }
     return true;
+  }
+
+  //Below Methods are for Soil Testing Feature
+
+  setReportsLoader(bool value) {
+    isReportsLoading = value;
+    // notifyListeners();
+  }
+
+  void getSoilReportsList(BuildContext context, String fieldId, int pageNo) async {
+    resetReportsPage();
+    try {
+      setReportsLoader(true);
+      final response = await _agPlusRepository.getReportsList(fieldId, pageNo);
+      final data = response["data"];
+      reportsList.addAll(data);
+      currentReportsPage = response['page'];
+      totalReportsPages = response['pages'];
+      setReportsLoader(false);
+      notifyListeners();
+    } catch (error) {
+      setReportsLoader(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
+      }
+    }
+  }
+
+  void raiseRequest(BuildContext context, String fieldId) async {
+    setRequestLoader(true);
+    try {
+      final localStorage = await SharedPreferences.getInstance();
+      final mapString = localStorage.getString('profile');
+      final profile = jsonDecode(mapString!);
+      if (profile['user'] != null) {
+        final payload = {
+          "name": profile['user']['name'],
+          "phoneNumber": phoneNumber,
+          "requestSource": "Ag_app",
+          "village": profile['user']['village'],
+          "district": profile['user']['district_en'],
+          "irrigationMode": "Drip",
+          "block": "Central",
+          "cropName": selectedPlot.cropName,
+          "fieldId": fieldId
+        };
+        requestStatus = false;
+        await _agPlusRepository.raiseSoilTestingRequest(payload);
+        requestStatus = true;
+      } else {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+              context);
+        }
+      }
+      setRequestLoader(false);
+    } catch (error) {
+      requestStatus = false;
+      setRequestLoader(false);
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
   }
 
   Future<bool> raiseInfoRequest(BuildContext context, String type) async {
@@ -596,11 +675,17 @@ class AGPlusViewModel with ChangeNotifier {
       return true;
     } catch (error) {
       infoRequestRaised = true;
-      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
-          error.toString(), context);
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
       return true;
     }
   }
+
+  //---------------------------------------------------------------------------
 
   void setSelectedChangedCrop(BuildContext context, SelectCrop selectedCrop) {
     selectedChangeCrop = selectedCrop;
@@ -640,8 +725,12 @@ class AGPlusViewModel with ChangeNotifier {
       setCropListLoader(false);
     } catch (error) {
       setCropListLoader(false);
-      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
-          error.toString(), context);
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
     }
   }
 }

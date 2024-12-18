@@ -1,6 +1,6 @@
 class AppUrl {
-  // static const String baseUrl = "https://agrichikitsa.org/api/v1";
-  static const String baseUrl = "http://192.168.1.195:9090/api/v1";
+  static const String baseUrl = "https://agrichikitsa.org/api/v1";
+  // static const String baseUrl = "http://192.168.1.195:9090/api/v1";
   // static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
   // static const String baseUrl = "https://agrichikitsa-8be74.web.app/api/v1";
   static const String statsEndpoint = '$baseUrl/stats';
@@ -37,7 +37,7 @@ class AppUrl {
   static const String weatherAPIEndPoint =
       'http://api.weatherapi.com/v1/current.json?key=94488ccb442e4337ad735838231309';
   static const String chatHistoryEndPoint = '$baseUrl/chat/chatHistory';
-  static const String raiseTestingRequestEndPoint = '$baseUrl/soilTesting/request';
+  static const String raiseTestingRequestEndPoint = '$baseUrl/soilRequest/app/';
   static const String reportPostEndPoint = '$baseUrl/report';
   static const String profileDetailsEndPoint = '$baseUrl/users/profile';
   static const String connectionsEndPoint = '$baseUrl/connection';

@@ -46,7 +46,8 @@ class AgriStickScreen extends HookWidget {
                   color: AppColor.extraDark,
                 ),
               )
-            : currentSelectedPlot.agristick == null
+            // : currentSelectedPlot.agristick == null
+            : false
                 ? Container(
                     margin: const EdgeInsets.all(28),
                     padding: const EdgeInsets.all(16),

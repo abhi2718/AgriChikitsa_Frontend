@@ -33,8 +33,8 @@ class Plots {
     log(json.toString());
     return Plots(
         cropImage: json['cropImage'],
-        cropName: json['crop']['name'],
-        cropNameHi: json['crop']['name_hi'],
+        cropName: json["crop"] != null ? json['crop']['name'] : "N/A",
+        cropNameHi: json["crop"] != null ? json['crop']['name_hi'] : "N/A",
         area: json['area'],
         latitude: json['cordinates']['latitude'],
         longitude: json['cordinates']['longitude'],

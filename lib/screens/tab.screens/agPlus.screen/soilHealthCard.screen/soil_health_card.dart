@@ -71,7 +71,11 @@ class SoilHealthCard extends HookWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: () => Utils.model(context, const SoilTestingReportScreen()),
+                    onTap: () => Utils.model(
+                        context,
+                        SoilTestingReportScreen(
+                          fieldId: useViewModel.selectedPlot.id,
+                        )),
                     child: Container(
                       height: dimension["height"]! * 0.08,
                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -87,7 +91,11 @@ class SoilHealthCard extends HookWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: () => Utils.model(context, const SoilTestingReportScreen()),
+                    onTap: () => Utils.model(
+                        context,
+                        SoilTestingReportScreen(
+                          fieldId: useViewModel.selectedPlot.id,
+                        )),
                     child: Container(
                       height: dimension["height"]! * 0.08,
                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

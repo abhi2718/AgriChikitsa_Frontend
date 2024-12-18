@@ -136,15 +136,12 @@ class SoilHealthChart extends HookWidget {
             reservedSize: 20,
             interval: 1,
             getTitlesWidget: (value, TitleMeta) {
-              final dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-              if (value >= 0 && value < useViewModel.soilMoistureData.length) {
-                final index = useViewModel.soilMoistureData[value.toInt()].x.toInt();
-                if (index >= 0 && index < dayNames.length) {
-                  return Text(
-                    dayNames[index],
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  );
-                }
+              if (value >= 0 && value < useViewModel.dateLabels.length) {
+                // Use date labels generated in data mapping
+                return Text(
+                  useViewModel.dateLabels[value.toInt()],
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                );
               }
               return const Text("");
             },
@@ -173,14 +170,16 @@ class SoilHealthChart extends HookWidget {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: useViewModel.soilMoistureData.length.toDouble() - 1,
+      maxX: useViewModel.soilMoistureData.isNotEmpty
+          ? useViewModel.soilMoistureData.length.toDouble() - 1
+          : 0,
       minY: 0,
       maxY: useViewModel.maxY != 0 ? useViewModel.maxY : 100,
       lineBarsData: [
         LineChartBarData(
           show: useViewModel.showGraph,
           spots: useViewModel.soilMoistureData,
-          isCurved: true,
+          isCurved: false,
           gradient: LinearGradient(
             colors: gradientColors,
           ),
@@ -233,15 +232,12 @@ class SoilHealthChart extends HookWidget {
             reservedSize: 20,
             interval: 1,
             getTitlesWidget: (value, TitleMeta) {
-              final dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-              if (value >= 0 && value < useViewModel.leafWetnessData.length) {
-                final index = useViewModel.leafWetnessData[value.toInt()].x.toInt();
-                if (index >= 0 && index < dayNames.length) {
-                  return Text(
-                    dayNames[index],
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  );
-                }
+              if (value >= 0 && value < useViewModel.dateLabels.length) {
+                // Use date labels generated in data mapping
+                return Text(
+                  useViewModel.dateLabels[value.toInt()],
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                );
               }
               return const Text("");
             },
@@ -253,7 +249,7 @@ class SoilHealthChart extends HookWidget {
             interval: useViewModel.maxLeafWetnessY != 0 ? useViewModel.maxLeafWetnessY / 4 : 30,
             getTitlesWidget: (value, TitleMeta) {
               return Text(
-                '$value',
+                "$value",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
@@ -270,14 +266,16 @@ class SoilHealthChart extends HookWidget {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: useViewModel.leafWetnessData.length.toDouble() - 1,
+      maxX: useViewModel.leafWetnessData.isNotEmpty
+          ? useViewModel.leafWetnessData.length.toDouble() - 1
+          : 0,
       minY: 0,
       maxY: useViewModel.maxLeafWetnessY != 0 ? useViewModel.maxLeafWetnessY : 100,
       lineBarsData: [
         LineChartBarData(
           show: useViewModel.showGraph,
           spots: useViewModel.leafWetnessData,
-          isCurved: true,
+          isCurved: false,
           gradient: LinearGradient(
             colors: gradientColors,
           ),

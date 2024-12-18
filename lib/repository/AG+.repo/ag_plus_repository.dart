@@ -105,8 +105,19 @@ class AGPlusRepository {
     }
   }
 
-  Future<dynamic> getGraphData(String agriStickId, String selectedDate) async {
-    final url = '${AppUrl.graphDataEndPoint}/$agriStickId?startDate=$selectedDate';
+  //Old Implementation
+  // Future<dynamic> getGraphData(String agriStickId, String selectedDate) async {
+  //   final url = '${AppUrl.graphDataEndPoint}/$agriStickId?startDate=$selectedDate';
+  //   try {
+  //     final response = await _apiServices.getGetApiResponse(url);
+  //     return response;
+  //   } catch (error) {
+  //     rethrow;
+  //   }
+  // }
+
+  Future<dynamic> getGraphData(String selectedDate) async {
+    const url = "https://api.thingspeak.com/channels/1548738/feeds.json";
     try {
       final response = await _apiServices.getGetApiResponse(url);
       return response;
@@ -119,6 +130,16 @@ class AGPlusRepository {
     const url = AppUrl.raiseTestingRequestEndPoint;
     try {
       final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getReportsList(String fieldId, int pageNo) async {
+    final url = "${AppUrl.raiseTestingRequestEndPoint}$fieldId?page=$pageNo";
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (error) {
       rethrow;

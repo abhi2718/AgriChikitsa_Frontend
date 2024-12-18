@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/crop_report_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/features_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/pest_management.dart';
@@ -84,13 +85,28 @@ class AGPlusHome extends HookWidget {
               }),
               FeaturesCard(
                   title:
+                      AppLocalization.of(context).getTranslatedValue("agristickTitle").toString(),
+                  image:
+                      "https://images.pexels.com/photos/612335/pexels-photo-612335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                  ontap: () {
+                    // Utils.toastMessage(
+                    //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
+                    Utils.model(
+                        context,
+                        AgriStickScreen(
+                          currentSelectedPlot: useViewModel.selectedPlot,
+                          agPlusViewModel: useViewModel,
+                        ));
+                  }),
+              FeaturesCard(
+                  title:
                       AppLocalization.of(context).getTranslatedValue("soilTestingTitle").toString(),
                   image:
                       "https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                   ontap: () {
-                    Utils.toastMessage(
-                        AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
-                    // Utils.model(context, const SoilHealthCard());
+                    // Utils.toastMessage(
+                    //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
+                    Utils.model(context, const SoilHealthCard());
                   }),
               FeaturesCard(
                   title:
@@ -121,15 +137,15 @@ class AGPlusHome extends HookWidget {
                           agPlusViewModel: useViewModel,
                         ));
                   }),
-              FeaturesCard(
-                  title: AppLocalization.of(context).getTranslatedValue("cropReport").toString(),
-                  image:
-                      "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                  ontap: () {
-                    // Utils.model(context, CropReportScreen());
-                    Utils.toastMessage(
-                        AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
-                  }),
+              // FeaturesCard(
+              //     title: AppLocalization.of(context).getTranslatedValue("cropReport").toString(),
+              //     image:
+              //         "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              //     ontap: () {
+              //       Utils.model(context, CropReportScreen());
+              //       // Utils.toastMessage(
+              //       //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
+              //     }),
             ],
           ),
         ),
