@@ -224,9 +224,7 @@ class JankariViewModel with ChangeNotifier {
     try {
       jankariSubcategoryPostList.clear();
       final data = await _jankariRepository.getJankariSubCategoryPost(selectedSubCategory);
-      log(data.toString());
       jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
-
       if (jankariSubcategoryPostList.length > 1) {
         changeActiveButtonState(true);
       }
@@ -344,7 +342,7 @@ class JankariViewModel with ChangeNotifier {
     try {
       final data = await _jankariRepository.fetchComments(id);
       commentLoading = false;
-      commentsList = mapComments(data["comments"]);
+      commentsList = mapComments(data["comments"].reversed);
       notifyListeners();
     } catch (error) {
       setloading(false);
@@ -359,9 +357,33 @@ class JankariViewModel with ChangeNotifier {
     }
   }
 
+  void likeComment(BuildContext context, Comment comment) async {
+    try {
+      if (!comment.hasLiked) {
+        comment.likeCount++;
+        comment.hasLiked = true;
+      } else {
+        comment.likeCount--;
+        comment.hasLiked = false;
+      }
+      notifyListeners();
+      await _jankariRepository.likeComment(comment.id);
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
+    }
+  }
+
   void addComment(BuildContext context, String id, String comment, User user) async {
     if (comment.isNotEmpty) {
-      final newComment = Comment(id: "newComment", user: user, comment: comment);
+      final newComment = Comment(
+          id: "newComment",
+          user: user,
+          comment: comment,
+          time: DateTime.now().toString(),
+          likeCount: 0,
+          hasLiked: false);
       commentsList = [...commentsList, newComment];
       notifyListeners();
       try {

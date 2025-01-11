@@ -34,10 +34,10 @@ class AGPlusLanding extends HookWidget {
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
-                body: Column(
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(
+                body: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Column(
                         children: [
                           Container(
                             alignment: AlignmentDirectional.bottomCenter,
@@ -214,19 +214,19 @@ class AGPlusLanding extends HookWidget {
                           ),
                         ],
                       ),
-                    ),
-                    InkWell(
-                        onTap: () => Utils.model(context, const AllPlotsScreen()),
-                        child: GradientButton(
-                            height: dimension['height']! * 0.10,
-                            width: dimension['width']!,
-                            // title: AppLocalization.of(context)
-                            //     .getTranslatedValue("agPlusContinue")
-                            //     .toString())),
-                            title: AppLocalization.of(context)
-                                .getTranslatedValue("comingSoon")
-                                .toString())),
-                  ],
+                      InkWell(
+                          onTap: () => Utils.model(context, const AllPlotsScreen()),
+                          child: GradientButton(
+                              height: dimension['height']! * 0.10,
+                              width: dimension['width']!,
+                              // title: AppLocalization.of(context)
+                              //     .getTranslatedValue("agPlusContinue")
+                              //     .toString())),
+                              title: AppLocalization.of(context)
+                                  .getTranslatedValue("comingSoon")
+                                  .toString())),
+                    ],
+                  ),
                 ),
               );
       },

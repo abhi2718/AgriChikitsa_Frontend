@@ -225,7 +225,10 @@ class ChatScreen extends HookWidget {
                                     ? SingleChildScrollView(
                                         child: SizedBox(
                                           width: dimension['width']! - 32,
-                                          height: dimension['height']! * 0.065,
+                                          height: dimension['height']! *
+                                              (profileViewModel.locale["language"] == "en"
+                                                  ? 0.067
+                                                  : 0.065),
                                           child: ListView.builder(
                                               scrollDirection: Axis.horizontal,
                                               itemCount: profileViewModel.locale["language"] == "en"

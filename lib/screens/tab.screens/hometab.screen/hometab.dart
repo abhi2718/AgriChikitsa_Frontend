@@ -149,6 +149,7 @@ class HomeTabScreen1 extends HookWidget {
               // Fixed Header
               HeaderWidget(
                 profileViewModel: profileViewModel,
+                homeScrollController: scrollController,
               ),
               // Scrollable content
               Expanded(
@@ -231,7 +232,7 @@ class HomeTabScreen1 extends HookWidget {
                           children: [
                             const CreatePostCard(),
                             ListView.builder(
-                              // controller: scrollController,
+                              controller: scrollController,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: provider.feedList.length,

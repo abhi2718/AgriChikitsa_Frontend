@@ -3,6 +3,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
@@ -34,9 +35,8 @@ class UserComment extends HookWidget {
         useViewModel.fetchComments(context, feedId);
       });
     }, []);
-    return SizedBox(
-      height: dimension["height"]! - 60,
-      child: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -104,14 +104,18 @@ class UserComment extends HookWidget {
                                         itemCount: provider.commentsList.length,
                                         itemBuilder: (context, index) {
                                           final comment = provider.commentsList[index];
+                                          String commentTime =
+                                              Utils().formatCommentTimeDifference(comment.time);
                                           final profileImage = comment.user.profileImage;
-                                          return Column(
-                                            children: [
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Column(
+                                          return Padding(
+                                            padding: const EdgeInsets.only(bottom: 16.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       ClipRRect(
                                                         borderRadius: BorderRadius.circular(20),
@@ -131,41 +135,79 @@ class UserComment extends HookWidget {
                                                           height: 40,
                                                         ),
                                                       ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SizedBox(
+                                                        width: dimension['width']! - 98,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment.center,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                BaseText(
+                                                                  title: comment.user.name,
+                                                                  style: const TextStyle(
+                                                                      fontSize: 15,
+                                                                      fontWeight: FontWeight.w700),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 4,
+                                                                ),
+                                                                BaseText(
+                                                                  title: commentTime,
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      color: Colors.grey[600]),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 4,
+                                                            ),
+                                                            BaseText(
+                                                              title: comment.comment,
+                                                              style: const TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.w400,
+                                                                  color: Colors.black),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  SizedBox(
-                                                    width: dimension['width']! - 98,
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        BaseText(
-                                                          title: comment.user.name,
-                                                          style: const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight: FontWeight.w700),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 4,
-                                                        ),
-                                                        BaseText(
-                                                          title: comment.comment,
-                                                          style: const TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight: FontWeight.w400),
-                                                        ),
-                                                      ],
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () =>
+                                                          provider.likeComment(context, comment),
+                                                      child: Icon(
+                                                        comment.hasLiked
+                                                            ? Icons.favorite_rounded
+                                                            : Icons.favorite_outline_rounded,
+                                                        color: comment.hasLiked
+                                                            ? Colors.red
+                                                            : Colors.grey,
+                                                      ),
                                                     ),
-                                                  )
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 16,
-                                              )
-                                            ],
+                                                    Text(
+                                                      comment.likeCount.toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 12, color: Colors.grey[800]),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                )
+                                              ],
+                                            ),
                                           );
                                         },
                                       ),

@@ -88,6 +88,16 @@ class JankariRepository {
     }
   }
 
+  Future<dynamic> likeComment(String id) async {
+    try {
+      final url = '${AppUrl.jankariEndPoint}/likeComment/$id';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> addComments(String id, dynamic payload) async {
     try {
       const url = '${AppUrl.jankariEndPoint}/commentOnPost';

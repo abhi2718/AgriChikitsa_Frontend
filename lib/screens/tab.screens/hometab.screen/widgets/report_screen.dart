@@ -6,24 +6,36 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 class ReportPostScreen extends StatefulWidget {
-  @override
-  _ReportPostScreenState createState() => _ReportPostScreenState();
   const ReportPostScreen({super.key, required this.userId});
   final String userId;
+
+  @override
+  _ReportPostScreenState createState() => _ReportPostScreenState();
 }
 
 class _ReportPostScreenState extends State<ReportPostScreen> {
   String? selectedReason;
+  String additionalInfo = '';
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Consumer<HomeTabViewModel>(builder: (context, provider, child) {
-      return Container(
-        padding: const EdgeInsets.all(8),
-        height: dimension['height']! * 0.7,
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: EdgeInsets.only(
+          left: 8,
+          right: 8,
+          top: 8,
+          bottom: isKeyboardVisible ? MediaQuery.of(context).viewInsets.bottom : 8,
+        ),
+        height: isKeyboardVisible ? dimension['height']! : dimension['height']! * 0.7,
         width: dimension['width'],
         child: provider.reportPostLoader
             ? const Center(
@@ -36,80 +48,94 @@ class _ReportPostScreenState extends State<ReportPostScreen> {
                 children: [
                   const Center(child: Icon(Icons.horizontal_rule)),
                   Center(
-                      child: Text(
-                    AppLocalization.of(context).getTranslatedValue('reportPost').toString(),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  )),
-                  const Divider(),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
                     child: Text(
-                      "Why do you want to report this post?",
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      AppLocalization.of(context).getTranslatedValue('reportPost').toString(),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  ReportReasonTile(
-                    title: "It's spam",
-                    userId: widget.userId,
-                    selectedReason: selectedReason,
-                    onSelected: (reason) {
-                      setState(() {
-                        selectedReason = reason;
-                      });
-                    },
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      AppLocalization.of(context).getTranslatedValue("questionReport").toString(),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                    ),
                   ),
-                  ReportReasonTile(
-                    title: "Nudity or sexual activity",
-                    userId: widget.userId,
-                    selectedReason: selectedReason,
-                    onSelected: (reason) {
-                      setState(() {
-                        selectedReason = reason;
-                      });
-                    },
-                  ),
-                  ReportReasonTile(
-                    title: "Hate speech or symbols",
-                    userId: widget.userId,
-                    selectedReason: selectedReason,
-                    onSelected: (reason) {
-                      setState(() {
-                        selectedReason = reason;
-                      });
-                    },
-                  ),
-                  const Spacer(),
-                  // child: ElevatedButton(
-                  // onPressed: selectedReason == null
-                  //     ? null
-                  //     : () {
-                  //         // Handle submit action here
-                  //         final useViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
-                  //         useViewModel.reportPost(selectedReason!, widget.userId, context);
-                  //         // You can show the dialog here or wherever appropriate
-                  //       },
-                  //   style: ElevatedButton.styleFrom(
-                  //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  //     backgroundColor:
-                  //         selectedReason == null ? Colors.grey : Theme.of(context).primaryColor,
-                  //   ),
-                  //   child: Text(
-                  //     "Submit",
-                  //     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  //   ),
-                  // ),
-                  InkWell(
-                      onTap: selectedReason == null
-                          ? null
-                          : () {
-                              provider.reportPost(selectedReason!, widget.userId, context);
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ReportReasonTile(
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("spamReport1")
+                                .toString(),
+                            userId: widget.userId,
+                            selectedReason: selectedReason,
+                            onSelected: (reason) {
+                              setState(() {
+                                selectedReason = reason;
+                              });
                             },
-                      child: GradientButton(
-                          height: dimension['height']! * 0.08,
-                          width: dimension['width']!,
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("submitButton")
-                              .toString())),
+                          ),
+                          ReportReasonTile(
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("spamReport2")
+                                .toString(),
+                            userId: widget.userId,
+                            selectedReason: selectedReason,
+                            onSelected: (reason) {
+                              setState(() {
+                                selectedReason = reason;
+                              });
+                            },
+                          ),
+                          ReportReasonTile(
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("spamReport3")
+                                .toString(),
+                            userId: widget.userId,
+                            selectedReason: selectedReason,
+                            onSelected: (reason) {
+                              setState(() {
+                                selectedReason = reason;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            maxLines: 5,
+                            onChanged: (value) {
+                              setState(() {
+                                additionalInfo = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              hintText: AppLocalization.of(context)
+                                  .getTranslatedValue("additionalReport")
+                                  .toString(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  InkWell(
+                    onTap: selectedReason == null
+                        ? null
+                        : () {
+                            final reportDetails =
+                                "$selectedReason ${additionalInfo.isNotEmpty ? "- $additionalInfo" : ""}";
+                            provider.reportPost(reportDetails, widget.userId, context);
+                          },
+                    child: GradientButton(
+                      height: dimension['height']! * 0.08,
+                      width: dimension['width']!,
+                      title:
+                          AppLocalization.of(context).getTranslatedValue("submitButton").toString(),
+                    ),
+                  ),
                 ],
               ),
       );
@@ -146,18 +172,19 @@ class ReportReasonTile extends StatelessWidget {
         height: 40,
         width: dimension['width'],
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 15),
+            ),
             Checkbox(
               value: isSelected,
               activeColor: AppColor.extraDark,
               onChanged: (value) {
                 onSelected(title);
               },
-            ),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 15),
             ),
           ],
         ),

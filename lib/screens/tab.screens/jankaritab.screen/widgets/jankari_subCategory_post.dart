@@ -59,7 +59,7 @@ class JankariPost extends HookWidget {
         return true;
       },
       child: SizedBox(
-        height: dimension['height']! - 180,
+        height: dimension['height']!,
         width: dimension['width'],
         child: Consumer<JankariViewModel>(
           builder: (context, provider, child) {
@@ -72,7 +72,7 @@ class JankariPost extends HookWidget {
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: SizedBox(
-                      height: dimension['height']! - 180,
+                      // height: dimension['height']! - 180,
                       width: dimension['width'],
                       child: SingleChildScrollView(
                         child: Column(
@@ -108,216 +108,211 @@ class JankariPost extends HookWidget {
                                 .toString(),
                             style: const TextStyle()),
                       )
-                    : SizedBox(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 20,
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(subCategoryTitle,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontSize: 20, fontWeight: FontWeight.w300)),
+                                ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                        onTap: () {
+                                          provider.togglePostLike(
+                                              context,
+                                              provider.jankariSubcategoryPostList[index].id,
+                                              'like',
+                                              provider.jankariSubcategoryPostList[index]);
+                                        },
+                                        child: SizedBox(
+                                          height: 40,
+                                          width: 40,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(
+                                                  provider.jankariSubcategoryPostList[index].isLiked
+                                                      ? Remix.thumb_up_fill
+                                                      : Remix.thumb_up_line),
+                                              BaseText(
+                                                title: provider
+                                                    .jankariSubcategoryPostList[index].likesCount
+                                                    .toString(),
+                                                style: const TextStyle(fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          provider.togglePostLike(
+                                              context,
+                                              provider.jankariSubcategoryPostList[index].id,
+                                              'dislike',
+                                              provider.jankariSubcategoryPostList[index]);
+                                        },
+                                        child: SizedBox(
+                                          height: 40,
+                                          width: 40,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(provider
+                                                      .jankariSubcategoryPostList[index].isDisLiked
+                                                  ? Remix.thumb_down_fill
+                                                  : Remix.thumb_down_line),
+                                              BaseText(
+                                                title: provider
+                                                    .jankariSubcategoryPostList[index].dislikesCount
+                                                    .toString(),
+                                                style: const TextStyle(fontSize: 16),
+                                              )
+                                            ],
+                                          ),
+                                        )),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          Utils.model(
+                                              context,
+                                              PostComments(
+                                                  postId: provider
+                                                      .jankariSubcategoryPostList[index].id));
+                                        },
+                                        child: SizedBox(
+                                          height: 40,
+                                          width: 40,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Icon(Remix.discuss_line),
+                                              BaseText(
+                                                title: provider.jankariSubcategoryPostList[index]
+                                                    .comments.length
+                                                    .toString(),
+                                                style: const TextStyle(fontSize: 16),
+                                              )
+                                            ],
+                                          ),
+                                        )),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                        onTap: () async {
+                                          final xfile = await provider.shareFiles(
+                                              provider.jankariSubcategoryPostList[index].imageUrl);
+                                          await Share.shareXFiles([xfile],
+                                              text:
+                                                  "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
+                                        },
+                                        child: const SizedBox(
+                                            height: 40, width: 40, child: Icon(Remix.share_line))),
+                                  ],
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Flexible(
-                                    child: Text(subCategoryTitle,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            fontSize: 20, fontWeight: FontWeight.w300)),
+                                  const SizedBox(
+                                    height: 10,
                                   ),
-                                  Row(
-                                    children: [
-                                      InkWell(
-                                          onTap: () {
-                                            provider.togglePostLike(
-                                                context,
-                                                provider.jankariSubcategoryPostList[index].id,
-                                                'like',
-                                                provider.jankariSubcategoryPostList[index]);
-                                          },
-                                          child: SizedBox(
-                                            height: 40,
-                                            width: 40,
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Icon(provider
-                                                        .jankariSubcategoryPostList[index].isLiked
-                                                    ? Remix.thumb_up_fill
-                                                    : Remix.thumb_up_line),
-                                                BaseText(
-                                                  title: provider
-                                                      .jankariSubcategoryPostList[index].likesCount
-                                                      .toString(),
-                                                  style: const TextStyle(fontSize: 16),
+                                  provider.jankariSubcategoryPostList[index].youtubeUrl.isNotEmpty
+                                      ? Player(
+                                          videoUrl:
+                                              provider.jankariSubcategoryPostList[index].youtubeUrl,
+                                          aspectRatio: 16 / 9,
+                                        )
+                                      : Container(
+                                          // height: dimension['height']! * 0.40,
+                                          width: dimension['width'],
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(12),
+                                            ),
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              CachedNetworkImage(
+                                                imageUrl: provider
+                                                    .jankariSubcategoryPostList[index].imageUrl,
+                                                progressIndicatorBuilder:
+                                                    (context, url, downloadProgress) => Skeleton(
+                                                  height: dimension['height']! * 0.40,
+                                                  width: dimension['width']!,
+                                                  radius: 16,
                                                 ),
-                                              ],
-                                            ),
-                                          )),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      InkWell(
-                                          onTap: () {
-                                            provider.togglePostLike(
-                                                context,
-                                                provider.jankariSubcategoryPostList[index].id,
-                                                'dislike',
-                                                provider.jankariSubcategoryPostList[index]);
-                                          },
-                                          child: SizedBox(
-                                            height: 40,
-                                            width: 40,
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Icon(provider.jankariSubcategoryPostList[index]
-                                                        .isDisLiked
-                                                    ? Remix.thumb_down_fill
-                                                    : Remix.thumb_down_line),
-                                                BaseText(
-                                                  title: provider.jankariSubcategoryPostList[index]
-                                                      .dislikesCount
-                                                      .toString(),
-                                                  style: const TextStyle(fontSize: 16),
+                                                errorWidget: (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                                height: dimension['height']! * 0.40,
+                                                width: dimension['width'],
+                                                fit: BoxFit.fill,
+                                              ),
+                                              if (provider.jankariSubcategoryPostList[index]
+                                                  .youtubeUrl.isNotEmpty)
+                                                const Align(
+                                                  alignment: Alignment.center,
+                                                  child: Icon(
+                                                    Icons.play_circle_fill,
+                                                    size: 74,
+                                                  ),
                                                 )
-                                              ],
-                                            ),
+                                            ],
                                           )),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      InkWell(
-                                          onTap: () {
-                                            Utils.model(
-                                                context,
-                                                PostComments(
-                                                    postId: provider
-                                                        .jankariSubcategoryPostList[index].id));
-                                          },
-                                          child: SizedBox(
-                                            height: 40,
-                                            width: 40,
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                const Icon(Remix.discuss_line),
-                                                BaseText(
-                                                  title: provider.jankariSubcategoryPostList[index]
-                                                      .comments.length
-                                                      .toString(),
-                                                  style: const TextStyle(fontSize: 16),
-                                                )
-                                              ],
-                                            ),
-                                          )),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      InkWell(
-                                          onTap: () async {
-                                            final xfile = await provider.shareFiles(provider
-                                                .jankariSubcategoryPostList[index].imageUrl);
-                                            await Share.shareXFiles([xfile],
-                                                text:
-                                                    "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
-                                          },
-                                          child: const SizedBox(
-                                              height: 40,
-                                              width: 40,
-                                              child: Icon(Remix.share_line))),
-                                    ],
+                                  const SizedBox(
+                                    height: 23,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                    child: BaseText(
+                                        title: profileViewModel.locale["language"] == "en"
+                                            ? provider.jankariSubcategoryPostList[index].title
+                                            : provider.jankariSubcategoryPostList[index].hindiTitle,
+                                        style: const TextStyle(
+                                            fontSize: 20, fontWeight: FontWeight.bold)),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                    child: HtmlWidget(
+                                      html,
+                                      textStyle: const TextStyle(fontSize: 18),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    provider.jankariSubcategoryPostList[index].youtubeUrl.isNotEmpty
-                                        ? Player(
-                                            videoUrl: provider
-                                                .jankariSubcategoryPostList[index].youtubeUrl,
-                                            aspectRatio: 16 / 9,
-                                          )
-                                        : Container(
-                                            height: dimension['height']! * 0.40,
-                                            width: dimension['width'],
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(12),
-                                              ),
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                CachedNetworkImage(
-                                                  imageUrl: provider
-                                                      .jankariSubcategoryPostList[index].imageUrl,
-                                                  progressIndicatorBuilder:
-                                                      (context, url, downloadProgress) => Skeleton(
-                                                    height: dimension['height']! * 0.40,
-                                                    width: dimension['width']!,
-                                                    radius: 16,
-                                                  ),
-                                                  errorWidget: (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                                  height: dimension['height']! * 0.40,
-                                                  width: dimension['width'],
-                                                  fit: BoxFit.fill,
-                                                ),
-                                                if (provider.jankariSubcategoryPostList[index]
-                                                    .youtubeUrl.isNotEmpty)
-                                                  const Align(
-                                                    alignment: Alignment.center,
-                                                    child: Icon(
-                                                      Icons.play_circle_fill,
-                                                      size: 74,
-                                                    ),
-                                                  )
-                                              ],
-                                            )),
-                                    const SizedBox(
-                                      height: 23,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                      child: BaseText(
-                                          title: profileViewModel.locale["language"] == "en"
-                                              ? provider.jankariSubcategoryPostList[index].title
-                                              : provider
-                                                  .jankariSubcategoryPostList[index].hindiTitle,
-                                          style: const TextStyle(
-                                              fontSize: 20, fontWeight: FontWeight.bold)),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                      child: HtmlWidget(
-                                        html,
-                                        textStyle: const TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       );
           },
         ),

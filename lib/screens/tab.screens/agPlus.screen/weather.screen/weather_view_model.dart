@@ -45,7 +45,7 @@ class WeatherViewModel with ChangeNotifier {
         notifyListeners();
       } else {
         // Fetch data from the API if no data or data is from another day
-        final lang = "en";
+        final lang = "hi";
         final data = await _agPlusRepository.getCurrentWeather(
             currentField.latitude, currentField.longitude, lang);
         latestWeatherData = WeatherData.fromJson(data);

@@ -231,5 +231,11 @@
     "chancesOfRain": "Chances of rain",
     "rain": "Rain",
     "maxWind": "Max wind speed",
-    "sunsriseSunset": "Sunrise/Sunset"
+    "sunsriseSunset": "Sunrise/Sunset",
+    "quintal": "quintal",
+    "questionReport": "Why do you want to report this post?",
+    "spamReport1": "It's spam",
+    "spamReport2": "Nudity or sexual activity",
+    "spamReport3": "Hate speech or symbols",
+    "additionalReport": "If your concern is not listed, write here..."
 }

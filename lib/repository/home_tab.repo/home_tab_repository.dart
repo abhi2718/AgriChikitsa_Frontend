@@ -9,7 +9,6 @@ class HomeTabRepository {
       final url = id == "All"
           ? '${AppUrl.feedEndPoint}/*/1/*/approved'
           : '${AppUrl.feedEndPoint}/$id/1/*/approved';
-      print(url);
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
@@ -50,6 +49,16 @@ class HomeTabRepository {
   Future<dynamic> fetchComments(String id) async {
     try {
       final url = '${AppUrl.feedEndPoint}/getComments/$id';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> likeComment(String id) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/likeComment/$id';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {

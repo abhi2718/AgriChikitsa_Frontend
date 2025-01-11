@@ -2,13 +2,25 @@ class Comment {
   String id;
   User user;
   String comment;
-  Comment({required this.id, required this.user, required this.comment});
+  String time;
+  int likeCount;
+  bool hasLiked;
+  Comment(
+      {required this.id,
+      required this.user,
+      required this.comment,
+      required this.time,
+      required this.likeCount,
+      required this.hasLiked});
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       id: json['_id'],
       user: User.fromJson(json['user']),
       comment: json['comment'],
+      likeCount: json['likeCount'] ?? 0,
+      hasLiked: json['hasLiked'] ?? false,
+      time: json['createdAt'],
     );
   }
 }

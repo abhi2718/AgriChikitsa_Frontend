@@ -7,7 +7,6 @@ import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookma
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprofile_feed.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/post_pre_loader.dart';
 import 'package:agriChikitsa/services/auth.dart';
-import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

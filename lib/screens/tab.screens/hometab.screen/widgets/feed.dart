@@ -9,7 +9,9 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/report_s
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/reshare_post.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/fullScreenImage.widget/full_screen_image.dart';
 import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube.dart';
+import 'package:agriChikitsa/widgets/like.icon/heart_icon.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -101,7 +103,7 @@ class _FeedState extends State<Feed> {
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: EdgeInsets.only(
-          top: 4,
+          top: 2,
           bottom: widget.feed == useViewModel.feedList.elementAt(useViewModel.feedList.length - 1)
               ? 30
               : 0),
@@ -111,7 +113,7 @@ class _FeedState extends State<Feed> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -363,10 +365,12 @@ class _FeedState extends State<Feed> {
                         ),
                       ),
                       Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: AppColor.chatSent, width: 2),
-                            borderRadius: BorderRadius.circular(6),
+                          // margin: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: const BoxDecoration(
+                            // border: Border.all(color: AppColor.chatSent, width: 2),
+                            border: Border(
+                                top: BorderSide(color: AppColor.chatSent, width: 2),
+                                bottom: BorderSide(color: AppColor.chatSent, width: 2)),
                             color: AppColor.whiteColor,
                           ),
                           child: Column(
@@ -375,53 +379,60 @@ class _FeedState extends State<Feed> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(10),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child: CachedNetworkImage(
-                                            imageUrl: widget.feed["repostedFrom"]["user"]
-                                                ['profileImage'],
-                                            progressIndicatorBuilder:
-                                                (context, url, downloadProgress) => Skeleton(
-                                              height: 40,
+                                child: InkWell(
+                                  onTap: () => Utils.model(
+                                      context,
+                                      FeedUserProfile(
+                                        account: widget.feed["repostedFrom"]["user"],
+                                      )),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: CachedNetworkImage(
+                                              imageUrl: widget.feed["repostedFrom"]["user"]
+                                                  ['profileImage'],
+                                              progressIndicatorBuilder:
+                                                  (context, url, downloadProgress) => Skeleton(
+                                                height: 40,
+                                                width: 40,
+                                                radius: 0,
+                                              ),
+                                              errorWidget: (context, url, error) =>
+                                                  const Icon(Icons.error),
                                               width: 40,
-                                              radius: 0,
+                                              fit: BoxFit.cover,
+                                              height: 40,
                                             ),
-                                            errorWidget: (context, url, error) =>
-                                                const Icon(Icons.error),
-                                            width: 40,
-                                            fit: BoxFit.cover,
-                                            height: 40,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          width: 16,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            BaseText(
-                                              title: widget.feed["repostedFrom"]["user"]['name'],
-                                              style: const TextStyle(
-                                                  fontSize: 14, fontWeight: FontWeight.w700),
-                                            ),
-                                            BaseText(
-                                              title: widget.feed["repostedFrom"]["user"]
-                                                      ['userHandler'] ??
-                                                  "@username",
-                                              style: const TextStyle(
-                                                  fontSize: 14, fontWeight: FontWeight.w400),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              BaseText(
+                                                title: widget.feed["repostedFrom"]["user"]['name'],
+                                                style: const TextStyle(
+                                                    fontSize: 14, fontWeight: FontWeight.w700),
+                                              ),
+                                              BaseText(
+                                                title: widget.feed["repostedFrom"]["user"]
+                                                        ['userHandler'] ??
+                                                    "@username",
+                                                style: const TextStyle(
+                                                    fontSize: 14, fontWeight: FontWeight.w400),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               _buildPostMedia(
@@ -470,12 +481,12 @@ class _FeedState extends State<Feed> {
                                     )
                                   : Container(),
                             ],
-                          ))
+                          )),
                     ],
                   )
                 : _buildPostMedia(context, widget.feed, dimension, useViewModel),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -483,12 +494,18 @@ class _FeedState extends State<Feed> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        InkWell(
-                          onTap: handleLike,
-                          child: Icon(
-                            isLiked.value ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-                            color: AppColor.iconHeartColor,
-                          ),
+                        // InkWell(
+                        //   onTap: handleLike,
+                        //   child: Icon(
+                        //     isLiked.value ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                        //     color: AppColor.iconHeartColor,
+                        //   ),
+                        // ),
+                        HeartButton(
+                          isLiked: isLiked.value, // Your current like status
+                          onLike: () {
+                            handleLike(); // Perform your like action
+                          },
                         ),
                         const SizedBox(
                           width: 6,
@@ -522,13 +539,15 @@ class _FeedState extends State<Feed> {
                     const SizedBox(
                       width: 12,
                     ),
-                    InkWell(
-                      onTap: handleBookMark,
-                      child: Icon(
-                        isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
-                        color: AppColor.darkColor,
-                      ),
-                    )
+                    userInfo.sId == user["_id"]
+                        ? const SizedBox.shrink()
+                        : InkWell(
+                            onTap: handleBookMark,
+                            child: Icon(
+                              isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
+                              color: AppColor.darkColor,
+                            ),
+                          )
                   ]),
                   GestureDetector(
                       onTap: () {
@@ -544,24 +563,36 @@ class _FeedState extends State<Feed> {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      userInfo.sId == user["_id"] ||
-                                              widget.feed.containsKey("repostedFrom")
+                                      userInfo.sId ==
+                                                  user[
+                                                      "_id"] || // Condition 1: Can't reshare own posts
+                                              (widget.feed['repostedFrom'] != null &&
+                                                  widget.feed['repostedFrom']['user']['_id'] ==
+                                                      userInfo.sId)
+                                          // Condition 2: Can't reshare posts reshared by others if the original post belongs to me
                                           ? const SizedBox.shrink()
                                           : ListTile(
-                                              title: Text(AppLocalization.of(context)
-                                                  .getTranslatedValue("sharePostApp")
-                                                  .toString()),
+                                              title: Text(
+                                                AppLocalization.of(context)
+                                                    .getTranslatedValue("sharePostApp")
+                                                    .toString(),
+                                              ),
                                               onTap: () {
                                                 Navigator.pop(context);
                                                 Utils.model(
-                                                    context,
-                                                    ResharePost(
-                                                      feed: widget.feed,
-                                                    ));
+                                                  context,
+                                                  ResharePost(
+                                                    feed:
+                                                        widget.feed['repostedFrom'] ?? widget.feed,
+                                                    // Condition 3: If the post is a reshared post, use the original post for resharing.
+                                                  ),
+                                                );
                                               },
                                             ),
                                       userInfo.sId == user["_id"] ||
-                                              widget.feed.containsKey("repostedFrom")
+                                              (widget.feed['repostedFrom'] != null &&
+                                                  widget.feed['repostedFrom']['user']['_id'] ==
+                                                      userInfo.sId)
                                           ? const SizedBox.shrink()
                                           : const Divider(),
                                       ListTile(
@@ -628,19 +659,19 @@ class _FeedState extends State<Feed> {
                               );
                             });
                       },
-                      child: const Icon(Icons.reply_all)),
+                      child: const RotatedBox(quarterTurns: 2, child: Icon(Icons.reply_all))),
                 ],
               ),
             ),
             widget.feed['views'] != 0
                 ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text("${widget.feed['views']} Views"),
                   )
                 : const SizedBox.shrink(),
             widget.feed["hindiCaption"] != null
                 ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -660,15 +691,17 @@ class _FeedState extends State<Feed> {
                                     style: TextStyle(color: AppColor.hyperlinkColor),
                                   ),
                           ),
-                        Text(
-                          useViewModel.getTimeAgo(widget.feed['createdAt'], context),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.6)),
-                        ),
                       ],
                     ),
                   )
                 : Container(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Text(
+                useViewModel.getTimeAgo(widget.feed['createdAt'], context),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.6)),
+              ),
+            ),
             const SizedBox(
               height: 16,
             ),
@@ -692,27 +725,66 @@ class _FeedState extends State<Feed> {
             }
           }
         },
-        child: SizedBox(
-          height: dimension["width"]! - 16,
-          width: dimension["width"]!,
-          child: CachedNetworkImage(
-            imageUrl: feed['imgurl'],
-            progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-              height: dimension["width"]! - 16,
-              width: dimension["width"]! - 16,
-              radius: 0,
+        child: InkWell(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FullScreenImage(
+                      image: feed['imgurl'], feed: feed, useViewModel: useViewModel))),
+          child: SizedBox(
+            height: dimension["width"]! - 16,
+            width: dimension["width"]!,
+            child: CachedNetworkImage(
+              imageUrl: feed['imgurl'],
+              progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                height: dimension["width"]! - 16,
+                width: dimension["width"]! - 16,
+                radius: 0,
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              fit: BoxFit.cover,
             ),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-            fit: BoxFit.fill,
           ),
         ),
       );
     }
     if (feed['mediaType'] == "video") {
       return _buildVideoPlayer(feed['videoUrl'], useViewModel, feed["_id"]);
+      // return VideoFeed(
+      //   url: feed['videoUrl'],
+      //   isActive: useViewModel.activeVideoId == feed['videoUrl'],
+      //   onVisibilityChanged: (isVisible) {
+      //     if (isVisible) {
+      //       useViewModel.changeActivateVideoId(feed["videoUrl"]);
+      //       // useViewModel.activeVideoId = feed['videoUrl'];
+      //     } else if (useViewModel.activeVideoId == feed['videoUrl']) {
+      //       // setState(() {
+      //       // activeVideoId = null;
+      //       useViewModel.changeActivateVideoId(null);
+      //       // });
+      //     }
+      //   },
+      // );
     }
     if (feed['mediaType'] == "youtube") {
       return _buildYoutubePlayer(feed['videoUrl'], useViewModel, feed["_id"]);
+      // return YoutubeFeed(
+      //   url: feed['videoUrl'],
+      //   isActive: useViewModel.activeVideoId == feed['videoUrl'],
+      //   onVisibilityChanged: (isVisible) {
+      //     if (isVisible) {
+      //       // setState(() {
+      //       //   activeVideoId = feed['url'];
+      //       // });
+      //       useViewModel.changeActivateVideoId(feed["videoUrl"]);
+      //     } else if (useViewModel.activeVideoId == feed['videoUrl']) {
+      //       // setState(() {
+      //       //   activeVideoId = null;
+      //       // });
+      //       useViewModel.changeActivateVideoId(null);
+      //   }
+      // },
+      // );
     } else {
       return const SizedBox.shrink();
     }
@@ -810,3 +882,115 @@ class _FeedState extends State<Feed> {
     );
   }
 }
+
+// class VideoFeed extends StatefulWidget {
+//   final String url;
+//   final bool isActive;
+//   final ValueChanged<bool> onVisibilityChanged;
+
+//   VideoFeed({
+//     required this.url,
+//     required this.isActive,
+//     required this.onVisibilityChanged,
+//   });
+
+//   @override
+//   _VideoFeedState createState() => _VideoFeedState();
+// }
+
+// class _VideoFeedState extends State<VideoFeed> {
+//   late VideoPlayerController _controller;
+//   ChewieController? _chewieController;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     var temp = widget.url.split('/');
+//     _controller = VideoPlayerController.networkUrl(
+//         Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"))
+//       ..initialize().then((_) {
+//         setState(() {});
+//       });
+//     _chewieController = ChewieController(videoPlayerController: _controller);
+//     // _controller = VideoPlayerController.network(widget.url)
+//   }
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     _chewieController?.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return VisibilityDetector(
+//       key: Key(widget.url),
+//       onVisibilityChanged: (info) {
+//         widget.onVisibilityChanged(info.visibleFraction > 0.5);
+//         if (widget.isActive) {
+//           _controller.play();
+//         } else {
+//           _controller.pause();
+//         }
+//       },
+//       child: AspectRatio(
+//           aspectRatio: _controller.value.isInitialized ? _controller.value.aspectRatio : 16 / 9,
+//           child: Chewie(controller: _chewieController!)
+//           // : Container(
+//           //     color: Colors.black,
+//           //   ),
+//           ),
+//     );
+//   }
+// }
+
+// class YoutubeFeed extends StatefulWidget {
+//   final String url;
+//   final bool isActive;
+//   final ValueChanged<bool> onVisibilityChanged;
+
+//   YoutubeFeed({
+//     required this.url,
+//     required this.isActive,
+//     required this.onVisibilityChanged,
+//   });
+
+//   @override
+//   _YoutubeFeedState createState() => _YoutubeFeedState();
+// }
+
+// class _YoutubeFeedState extends State<YoutubeFeed> {
+//   late YoutubePlayerController _controller;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = YoutubePlayerController(
+//       initialVideoId: YoutubePlayer.convertUrlToId(widget.url)!,
+//       flags: YoutubePlayerFlags(autoPlay: false, mute: false),
+//     );
+//   }
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return VisibilityDetector(
+//       key: Key(widget.url),
+//       onVisibilityChanged: (info) {
+//         widget.onVisibilityChanged(info.visibleFraction > 0.5);
+//         if (widget.isActive) {
+//           _controller.play();
+//         } else {
+//           _controller.pause();
+//         }
+//       },
+//       child: YoutubePlayer(controller: _controller),
+//     );
+//   }
+// }

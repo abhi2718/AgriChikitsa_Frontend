@@ -2,6 +2,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_test_widget.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/timeline_comment_widget.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -73,7 +75,6 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
         });
       }
     }, []);
-    print(widget.feed);
     useEffect(() {
       if (homeViewModel.increaseCommentNumber["id"] == widget.feed['_id']) {
         final count = homeViewModel.increaseCommentNumber["count"];
@@ -441,21 +442,77 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                     Text(numberOfComments.value.toString())
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    widget.feed['approved']
-                        ? const Icon(
-                            Icons.verified_rounded,
-                            color: AppColor.darkColor,
-                          )
-                        : const Icon(
-                            Icons.hourglass_bottom,
-                            color: AppColor.errorColor,
-                          ),
-                  ],
-                )
+                GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: ListTile(
+                                  contentPadding: const EdgeInsets.all(16.0),
+                                  title: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("sharePostOutside")
+                                      .toString()),
+                                  onTap: () async {
+                                    String text = "";
+                                    if (widget.feed.containsKey("imgurl") &&
+                                        widget.feed['imgurl'].isNotEmpty) {
+                                      final xfile = await JankariViewModel()
+                                          .shareFiles(widget.feed['imgurl']);
+                                      if (widget.feed.containsKey("repostedFrom")) {
+                                        text =
+                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                      } else {
+                                        if (widget.feed["hindiCaption"] == null) {
+                                          text =
+                                              "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                        } else {
+                                          text =
+                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                        }
+                                      }
+                                      await Share.shareXFiles([xfile], text: text);
+                                    } else if (widget.feed['mediaType'] == "video") {
+                                      List<String> temp = widget.feed['videoUrl'].split('/');
+                                      if (widget.feed.containsKey("repostedFrom")) {
+                                        text =
+                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                      } else {
+                                        if (widget.feed["hindiCaption"] == null) {
+                                          text =
+                                              "Check out what ${user['name']} posted!\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                        } else {
+                                          text =
+                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                        }
+                                      }
+                                      Share.share(text);
+                                    } else {
+                                      if (widget.feed.containsKey("repostedFrom")) {
+                                        text =
+                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                      } else {
+                                        if (widget.feed["hindiCaption"] == null) {
+                                          text =
+                                              "Check out what ${user['name']} posted!\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                        } else {
+                                          text =
+                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                        }
+                                      }
+                                      Share.share(text);
+                                    }
+                                    if (context.mounted) {
+                                      Navigator.pop(context);
+                                    }
+                                  }),
+                            );
+                          });
+                    },
+                    child: const RotatedBox(quarterTurns: 2, child: Icon(Icons.reply_all)))
               ]),
             );
           }),

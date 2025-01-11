@@ -49,100 +49,261 @@ class _ChatHistoryTileState extends State<ChatHistoryTile> {
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Dismissible(
-        key: Key(widget.chat["id"].toString()),
-        direction: DismissDirection.endToStart,
-        background: Container(
-          color: Colors.red,
-          padding: const EdgeInsets.only(right: 20),
-          alignment: Alignment.centerRight,
-          child: const Icon(Icons.delete, color: Colors.white),
-        ),
-        confirmDismiss: (direction) async {
-          return await showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title:
-                  Text(AppLocalization.of(context).getTranslatedValue("warningTitle").toString()),
-              content: Text(AppLocalization.of(context)
-                  .getTranslatedValue("warningDeleteChatSubTitle")
-                  .toString()),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text(AppLocalization.of(context).getTranslatedValue("no").toString(),
-                      style: const TextStyle(color: Colors.black)),
+      child: widget.chat["isReplied"]
+          ? Dismissible(
+              key: Key(widget.chat["id"].toString()),
+              direction: DismissDirection.horizontal, // Allow scrolling in both directions
+              background: Container(
+                color: Colors.red,
+                padding: const EdgeInsets.only(left: 20),
+                alignment: Alignment.centerLeft,
+                child: const Icon(Icons.delete, color: Colors.white),
+              ),
+              secondaryBackground: Container(
+                color: Colors.red,
+                padding: const EdgeInsets.only(right: 20),
+                alignment: Alignment.centerRight,
+                child: const Icon(Icons.delete, color: Colors.white),
+              ),
+              confirmDismiss: (direction) async {
+                if (direction == DismissDirection.endToStart) {
+                  return await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(AppLocalization.of(context)
+                          .getTranslatedValue("warningTitle")
+                          .toString()),
+                      content: Text(AppLocalization.of(context)
+                          .getTranslatedValue("warningDeleteChatSubTitle")
+                          .toString()),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text(
+                            AppLocalization.of(context).getTranslatedValue("no").toString(),
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                            useViewModel.deleteChatHistory(context, widget.chat["_id"]);
+                          },
+                          child: Text(
+                            AppLocalization.of(context).getTranslatedValue("yes").toString(),
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return false; // Prevent dismissal in other directions
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColor.notificationBgColor,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                    useViewModel.deleteChatHistory(context, widget.chat["_id"]);
+                child: ListTile(
+                  onTap: () {
+                    if (!widget.chat["isOpened"]) {
+                      useViewModel.markChatAsOpened(widget.chat["_id"]);
+                      setState(() {
+                        widget.chat["isOpened"] = true;
+                      });
+                    }
+                    Utils.model(
+                      context,
+                      ChatDescription(chat: widget.chat),
+                    );
                   },
-                  child: Text(
-                    AppLocalization.of(context).getTranslatedValue("yes").toString(),
-                    style: const TextStyle(color: Colors.red),
+                  title: Row(
+                    children: [
+                      Text(date),
+                      if (!isOpened)
+                        Container(
+                          margin: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            AppLocalization.of(context)
+                                .getTranslatedValue("newChatTitle")
+                                .toString(),
+                            style: const TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ),
+                    ],
                   ),
+                  trailing: const Icon(Icons.description),
+                  subtitle: isAdminReplied
+                      ? Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            AppLocalization.of(context)
+                                .getTranslatedValue("adminReplied")
+                                .toString(),
+                            style:
+                                const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      : null,
                 ),
-              ],
+              ),
+            )
+          : Container(
+              decoration: BoxDecoration(
+                color: AppColor.notificationBgColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                onTap: () {
+                  if (!widget.chat["isOpened"]) {
+                    useViewModel.markChatAsOpened(widget.chat["_id"]);
+                    setState(() {
+                      widget.chat["isOpened"] = true;
+                    });
+                  }
+                  Utils.model(
+                    context,
+                    ChatDescription(chat: widget.chat),
+                  );
+                },
+                title: Row(
+                  children: [
+                    Text(date),
+                    if (!isOpened)
+                      Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          AppLocalization.of(context).getTranslatedValue("newChatTitle").toString(),
+                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ),
+                  ],
+                ),
+                trailing: const Icon(Icons.description),
+                subtitle: isAdminReplied
+                    ? Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          AppLocalization.of(context).getTranslatedValue("adminReplied").toString(),
+                          style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    : null,
+              ),
             ),
-          );
-        },
-        onDismissed: (direction) {
-          // Add your delete logic here
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColor.notificationBgColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: ListTile(
-            onTap: () {
-              if (!widget.chat["isOpened"]) {
-                useViewModel.markChatAsOpened(widget.chat["_id"]);
-                setState(() {
-                  widget.chat["isOpened"] = true;
-                });
-              }
-              Utils.model(
-                context,
-                ChatDescription(chat: widget.chat),
-              );
-            },
-            title: Row(
-              children: [
-                Text(date),
-                if (!isOpened)
-                  Container(
-                    margin: const EdgeInsets.only(left: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      AppLocalization.of(context).getTranslatedValue("newChatTitle").toString(),
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ),
-              ],
-            ),
-            trailing: const Icon(Icons.description),
-            subtitle: isAdminReplied
-                ? Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      AppLocalization.of(context).getTranslatedValue("adminReplied").toString(),
-                      style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                    ),
-                  )
-                : null,
-          ),
-        ),
-      ),
     );
+    // return Padding(
+    //   padding: const EdgeInsets.all(8.0),
+    //   child: Dismissible(
+    //     key: Key(widget.chat["id"].toString()),
+    //     direction: DismissDirection.endToStart,
+    //     background: Container(
+    //       color: Colors.red,
+    //       padding: const EdgeInsets.only(right: 20),
+    //       alignment: Alignment.centerRight,
+    //       child: const Icon(Icons.delete, color: Colors.white),
+    //     ),
+    //     confirmDismiss: (direction) async {
+    //       return await showDialog(
+    //         context: context,
+    //         builder: (context) => AlertDialog(
+    //           title:
+    //               Text(AppLocalization.of(context).getTranslatedValue("warningTitle").toString()),
+    //           content: Text(AppLocalization.of(context)
+    //               .getTranslatedValue("warningDeleteChatSubTitle")
+    //               .toString()),
+    //           actions: [
+    //             TextButton(
+    //               onPressed: () => Navigator.of(context).pop(false),
+    //               child: Text(AppLocalization.of(context).getTranslatedValue("no").toString(),
+    //                   style: const TextStyle(color: Colors.black)),
+    //             ),
+    //             TextButton(
+    //               onPressed: () {
+    //                 Navigator.of(context).pop(true);
+    //                 useViewModel.deleteChatHistory(context, widget.chat["_id"]);
+    //               },
+    //               child: Text(
+    //                 AppLocalization.of(context).getTranslatedValue("yes").toString(),
+    //                 style: const TextStyle(color: Colors.red),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       );
+    //     },
+    //     child: Container(
+    //       decoration: BoxDecoration(
+    //         color: AppColor.notificationBgColor,
+    //         borderRadius: BorderRadius.circular(8),
+    //       ),
+    //       child: ListTile(
+    //         onTap: () {
+    //           if (!widget.chat["isOpened"]) {
+    //             useViewModel.markChatAsOpened(widget.chat["_id"]);
+    //             setState(() {
+    //               widget.chat["isOpened"] = true;
+    //             });
+    //           }
+    //           Utils.model(
+    //             context,
+    //             ChatDescription(chat: widget.chat),
+    //           );
+    //         },
+    //         title: Row(
+    //           children: [
+    //             Text(date),
+    //             if (!isOpened)
+    //               Container(
+    //                 margin: const EdgeInsets.only(left: 8),
+    //                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    //                 decoration: BoxDecoration(
+    //                   color: Colors.red,
+    //                   borderRadius: BorderRadius.circular(4),
+    //                 ),
+    //                 child: Text(
+    //                   AppLocalization.of(context).getTranslatedValue("newChatTitle").toString(),
+    //                   style: const TextStyle(color: Colors.white, fontSize: 12),
+    //                 ),
+    //               ),
+    //           ],
+    //         ),
+    //         trailing: const Icon(Icons.description),
+    //         subtitle: isAdminReplied
+    //             ? Container(
+    //                 padding: const EdgeInsets.all(4),
+    //                 decoration: BoxDecoration(
+    //                   color: Colors.green.withOpacity(0.2),
+    //                   borderRadius: BorderRadius.circular(4),
+    //                 ),
+    //                 child: Text(
+    //                   AppLocalization.of(context).getTranslatedValue("adminReplied").toString(),
+    //                   style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+    //                 ),
+    //               )
+    //             : null,
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }

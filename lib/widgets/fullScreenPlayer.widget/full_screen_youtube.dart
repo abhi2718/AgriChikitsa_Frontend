@@ -1,4 +1,4 @@
-import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -47,10 +47,32 @@ class _FullScreenYoutubeState extends State<FullScreenYoutube> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
         child: YoutubePlayer(
           controller: _controller,
           showVideoProgressIndicator: true,
+          // bottomActions: [
+          //   CurrentPosition(),
+          //   ProgressBar(
+          //     isExpanded: true,
+          //     colors: const ProgressBarColors(playedColor: AppColor.darkColor),
+          //   ),
+          //   IconButton(
+          //     icon: const Icon(
+          //       Icons.fullscreen,
+          //       color: Colors.white,
+          //       size: 30.0,
+          //     ),
+          //     onPressed: () {
+          //       // setState(() {
+          //       //   _controller.pause();
+          //       // });
+          //       // Utils.model(context, FullScreenYoutube());
+          //       dispose();
+          //     },
+          //   ),
+          // ],
         ),
       ),
     );

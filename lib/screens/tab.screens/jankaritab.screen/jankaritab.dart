@@ -33,7 +33,6 @@ class JankariHomeTab extends HookWidget {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (useViewModel.jankaricardList.isEmpty) {
           useViewModel.getJankariCategory(context);
-          // useViewModel.fetchTrendingCrops(context);
           useViewModel.fetchTrendingPosts(context);
         }
       });

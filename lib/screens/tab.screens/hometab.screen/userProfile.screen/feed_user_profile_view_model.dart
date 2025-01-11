@@ -59,6 +59,8 @@ class FeedUserProfileViewModel extends ChangeNotifier {
 
   void fetchUserFeeds(BuildContext context, String userId) async {
     expandedPosts.clear();
+    feedList.clear();
+    connections = null;
     setloading(true);
     try {
       final data = await _feedProfileRepository.fetchPosts(userId);

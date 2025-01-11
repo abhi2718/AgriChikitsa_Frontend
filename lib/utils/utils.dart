@@ -219,4 +219,25 @@ class Utils {
           );
         });
   }
+
+  String formatCommentTimeDifference(String timestamp) {
+    DateTime inputTime = DateTime.parse(timestamp);
+    DateTime now = DateTime.now();
+
+    Duration difference = now.difference(inputTime);
+
+    if (difference.inMinutes < 1) {
+      return 'Just now';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h';
+    } else if (difference.inDays < 30) {
+      return '${difference.inDays}d';
+    } else if (difference.inDays < 365) {
+      return '${(difference.inDays / 30).floor()}m';
+    } else {
+      return '${(difference.inDays / 365).floor()}y';
+    }
+  }
 }

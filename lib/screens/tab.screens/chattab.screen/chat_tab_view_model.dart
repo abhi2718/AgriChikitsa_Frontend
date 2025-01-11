@@ -535,8 +535,14 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       if (isSecondTry) {
         imageFile2 = await Utils.capturePhoto();
+        if (imageFile2 == null) {
+          return;
+        }
       } else {
         imageFile = await Utils.capturePhoto();
+        if (imageFile == null) {
+          return;
+        }
       }
       setShowCameraButton(false);
       if (isSecondTry) {
@@ -613,8 +619,14 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       if (isSecondTry) {
         imageFile2 = await Utils.pickImage();
+        if (imageFile2 == null) {
+          return;
+        }
       } else {
         imageFile = await Utils.pickImage();
+        if (imageFile == null) {
+          return;
+        }
       }
       enableKeyboard(false);
       setShowCameraButton(false);
@@ -792,9 +804,7 @@ class ChatTabViewModel with ChangeNotifier {
 
   void deleteChatHistory(BuildContext context, String chatId) async {
     try {
-      print("Here");
-      final data = await _chatTabRepository.deleteChatHistory(chatId);
-      print(data);
+      await _chatTabRepository.deleteChatHistory(chatId);
     } catch (e) {
       if (kDebugMode) {
         if (context.mounted) {

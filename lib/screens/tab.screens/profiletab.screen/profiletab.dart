@@ -122,6 +122,30 @@ class ProfileTabScreen extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
+                onPress: () {
+                  Utils.model(
+                      context,
+                      SelectLanguage(
+                        phoneNumber: user.phoneNumber.toString(),
+                        firebaseId: user.firebaseId.toString(),
+                      ));
+                },
+                leftIcon: const Icon(
+                  Icons.translate,
+                  color: AppColor.iconColor,
+                ),
+                title: AppLocalization.of(context)
+                    .getTranslatedValue("changeLanguageAppBar")
+                    .toString(),
+                width: dimension["width"]! - 32,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
                 leftIcon: SvgPicture.asset('assets/svg/terms-and-conditions.svg'),
                 title:
@@ -148,20 +172,10 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () {
-                  Utils.model(
-                      context,
-                      SelectLanguage(
-                        phoneNumber: user.phoneNumber.toString(),
-                        firebaseId: user.firebaseId.toString(),
-                      ));
+                  showLogoutAccountDialog(context, useViewModel, disposableProvider);
                 },
-                leftIcon: const Icon(
-                  Icons.translate,
-                  color: AppColor.iconColor,
-                ),
-                title: AppLocalization.of(context)
-                    .getTranslatedValue("changeLanguageAppBar")
-                    .toString(),
+                leftIcon: SvgPicture.asset('assets/svg/logout.svg'),
+                title: AppLocalization.of(context).getTranslatedValue("logoutTitle").toString(),
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -181,22 +195,8 @@ class ProfileTabScreen extends HookWidget {
               ),
             ),
             const SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ProfileButton(
-                onPress: () {
-                  showLogoutAccountDialog(context, useViewModel, disposableProvider);
-                },
-                leftIcon: SvgPicture.asset('assets/svg/logout.svg'),
-                title: AppLocalization.of(context).getTranslatedValue("logoutTitle").toString(),
-                width: dimension["width"]! - 32,
-              ),
-            ),
-            const SizedBox(
               height: 40,
-            ),
+            )
           ],
         ),
       ),

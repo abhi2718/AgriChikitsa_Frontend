@@ -136,7 +136,8 @@ class PricesScreen extends HookWidget {
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                   trailing: BaseText(
-                      title: "\u{20B9} ${pricesData!['min_price']}",
+                      title:
+                          "\u{20B9} ${pricesData!['min_price']}/${AppLocalization.of(context).getTranslatedValue("quintal").toString()}",
                       style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 20)),
                 ),
                 const SizedBox(
@@ -153,7 +154,8 @@ class PricesScreen extends HookWidget {
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                   trailing: BaseText(
-                      title: "\u{20B9} ${pricesData!['max_price']}",
+                      title:
+                          "\u{20B9} ${pricesData!['max_price']}/${AppLocalization.of(context).getTranslatedValue("quintal").toString()}",
                       style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 20)),
                 ),
               ],

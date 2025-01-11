@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/category_model.dart';
@@ -43,6 +44,13 @@ class HomeTabViewModel with ChangeNotifier {
   bool reportPostStatus = false;
   bool hasIncreasedViewForImage = false;
   bool repostLoader = false;
+  String? activeVideoId;
+
+  changeActivateVideoId(String? id) {
+    activeVideoId = id;
+    notifyListeners();
+  }
+
   bool get loading {
     return _loading;
   }
@@ -53,7 +61,7 @@ class HomeTabViewModel with ChangeNotifier {
 
   String getTimeAgo(String dateString, BuildContext context) {
     DateTime createdAt = DateTime.parse(dateString);
-    DateTime now = DateTime.now();
+    DateTime now = DateTime.now().toUtc();
 
     Duration difference = now.difference(createdAt);
     int daysDifference = difference.inDays;
@@ -151,12 +159,15 @@ class HomeTabViewModel with ChangeNotifier {
     setReportPostloading(true);
     try {
       final payload = {"reason": reason, "reportedUserId": userId};
-      final response = await _homeTabRepository.reportPost(payload);
-      if (response['status']) {
+      // final response = await _homeTabRepository.reportPost(payload);
+      print(payload);
+      final response = {"status": true};
+      if (response['status']!) {
         reportPostStatus = true;
         notifyListeners();
         Timer(const Duration(seconds: 2), () {
           Navigator.pop(context);
+          Utils.flushBarErrorMessage("", "Post Reported successfully!", context);
           setReportPostloading(false);
         });
       }
@@ -348,7 +359,7 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final data = await _homeTabRepository.fetchComments(id);
       commentLoading = false;
-      commentsList = mapComments(data["comments"]);
+      commentsList = mapComments(data["comments"].reversed);
       notifyListeners();
     } catch (error) {
       setloading(false);
@@ -482,7 +493,13 @@ class HomeTabViewModel with ChangeNotifier {
   void addComment(BuildContext context, String id, String comment, User user,
       MyProfileViewModel myProfileViewModel) async {
     if (comment.isNotEmpty) {
-      final newComment = Comment(id: "newComment", user: user, comment: comment);
+      final newComment = Comment(
+          id: "newComment",
+          user: user,
+          comment: comment,
+          time: DateTime.now().toString(),
+          likeCount: 0,
+          hasLiked: false);
       commentsList = [...commentsList, newComment];
       notifyListeners();
       try {
@@ -515,6 +532,24 @@ class HomeTabViewModel with ChangeNotifier {
         if (kDebugMode) {
           Utils.flushBarErrorMessage('Alert', error.toString(), context);
         }
+      }
+    }
+  }
+
+  void likeComment(BuildContext context, Comment comment) async {
+    try {
+      if (!comment.hasLiked) {
+        comment.likeCount++;
+        comment.hasLiked = true;
+      } else {
+        comment.likeCount--;
+        comment.hasLiked = false;
+      }
+      notifyListeners();
+      await _homeTabRepository.likeComment(comment.id);
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
       }
     }
   }
