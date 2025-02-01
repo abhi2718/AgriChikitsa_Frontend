@@ -1,11 +1,12 @@
 import 'package:agriChikitsa/res/color.dart';
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_test_widget.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/timeline_comment_widget.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/fullScreenImage.widget/full_screen_image.dart';
 import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -553,6 +555,7 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
   Widget _buildPostMedia(
       BuildContext context, dynamic feed, dynamic dimension, HomeTabViewModel useViewModel) {
     if (feed['mediaType'] == "image") {
+      final PageController pageController = PageController();
       return VisibilityDetector(
         key: Key(feed['_id']),
         onVisibilityChanged: (info) {
@@ -564,18 +567,60 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
             }
           }
         },
-        child: SizedBox(
-          height: dimension["width"]! - 16,
-          width: dimension["width"]!,
-          child: CachedNetworkImage(
-            imageUrl: feed['imgurl'],
-            progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-              height: dimension["width"]! - 16,
-              width: dimension["width"]! - 16,
-              radius: 0,
+        child: InkWell(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FullScreenImage(
+                images: feed["imgurls"].isNotEmpty
+                    ? (feed["imgurls"] as List<dynamic>).cast<String>()
+                    : [feed["imgurl"]],
+                feed: feed,
+                useViewModel: useViewModel,
+              ),
             ),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-            fit: BoxFit.fill,
+          ),
+          child: SizedBox(
+            height: dimension["width"]! - 16 + 20,
+            width: dimension["width"]!,
+            child: Column(
+              children: [
+                Expanded(
+                  child: PageView.builder(
+                    controller: pageController,
+                    itemCount: feed["imgurls"].isNotEmpty ? feed["imgurls"].length : 1,
+                    itemBuilder: (context, pagePosition) {
+                      return CachedNetworkImage(
+                        imageUrl: feed["imgurls"].isNotEmpty
+                            ? feed['imgurls'][pagePosition]
+                            : feed['imgurl'],
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                          height: dimension["width"]! - 16,
+                          width: dimension["width"]! - 16,
+                          radius: 0,
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                ),
+                if (feed["imgurls"].isNotEmpty) // Add dots only if there are multiple images
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: SmoothPageIndicator(
+                      controller: pageController,
+                      count: feed["imgurls"].length,
+                      effect: const SlideEffect(
+                        dotHeight: 8,
+                        dotWidth: 8,
+                        activeDotColor: AppColor.extraDark,
+                        dotColor: Colors.grey,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       );

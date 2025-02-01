@@ -82,8 +82,6 @@ class AGPlusRepository {
 
   Future<dynamic> getCurrentWeather(String latitude, String longitude, String lang) async {
     try {
-      // final lang1 = AppLocalization.of(context).locale.toString() == "en" ? "en" : "hi";
-      // log(lang1);
       final url = lang == "en"
           ? '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no'
           : '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no&lang=hi';
@@ -94,10 +92,11 @@ class AGPlusRepository {
     }
   }
 
-  Future<dynamic> getPredictedWeather(String latitude, String longitude) async {
+  Future<dynamic> getPredictedWeather(String latitude, String longitude, String lang) async {
     try {
       final url =
-          'http://api.weatherapi.com/v1/forecast.json?key=94488ccb442e4337ad735838231309&q=$latitude,$longitude&aqi=no&days=3';
+          'http://api.weatherapi.com/v1/forecast.json?key=94488ccb442e4337ad735838231309&q=$latitude,$longitude&aqi=no&days=3&lang=$lang';
+      print(url);
       final response = await _apiServices.getWeatherApiResponse(url);
       return response;
     } catch (e) {

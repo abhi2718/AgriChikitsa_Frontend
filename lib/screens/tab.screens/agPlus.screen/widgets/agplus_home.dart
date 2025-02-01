@@ -27,8 +27,9 @@ class AGPlusHome extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<AGPlusViewModel>(context, listen: false);
     final weatherViewModel = Provider.of<WeatherViewModel>(context, listen: false);
+    final lang = AppLocalization.of(context).locale.toString();
     useEffect(() {
-      weatherViewModel.getCurrentWeather(context, useViewModel.selectedPlot);
+      weatherViewModel.getCurrentWeather(context, useViewModel.selectedPlot, lang);
     }, [useViewModel.selectedPlot]);
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,

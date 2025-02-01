@@ -77,6 +77,8 @@ dependencies:
   open_file: ^3.3.2
   device_info_plus: ^10.1.1
   permission_handler: ^11.3.1
+  smooth_page_indicator: ^1.2.0+3
+  image_cropper: ^8.0.1
 
 dev_dependencies:
   flutter_test:

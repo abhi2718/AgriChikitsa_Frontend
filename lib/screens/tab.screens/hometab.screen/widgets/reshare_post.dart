@@ -14,6 +14,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -291,6 +292,7 @@ class _ResharePostState extends State<ResharePost> {
   Widget _buildPostMedia(
       BuildContext context, dynamic feed, dynamic dimension, HomeTabViewModel useViewModel) {
     if (feed['mediaType'] == "image") {
+      final PageController pageController = PageController();
       return VisibilityDetector(
         key: Key(feed['_id']),
         onVisibilityChanged: (info) {
@@ -303,17 +305,45 @@ class _ResharePostState extends State<ResharePost> {
           }
         },
         child: SizedBox(
-          height: dimension["width"]! - 16,
+          height: dimension["width"]! - 16 + 20,
           width: dimension["width"]!,
-          child: CachedNetworkImage(
-            imageUrl: feed['imgurl'],
-            progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-              height: dimension["width"]! - 16,
-              width: dimension["width"]! - 16,
-              radius: 0,
-            ),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-            fit: BoxFit.fill,
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: pageController,
+                  itemCount: feed["imgurls"].isNotEmpty ? feed["imgurls"].length : 1,
+                  itemBuilder: (context, pagePosition) {
+                    return CachedNetworkImage(
+                      imageUrl: feed["imgurls"].isNotEmpty
+                          ? feed['imgurls'][pagePosition]
+                          : feed['imgurl'],
+                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                        height: dimension["width"]! - 16,
+                        width: dimension["width"]! - 16,
+                        radius: 0,
+                      ),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              ),
+              if (feed["imgurls"].isNotEmpty) // Add dots only if there are multiple images
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: SmoothPageIndicator(
+                    controller: pageController,
+                    count: feed["imgurls"].length,
+                    effect: const SlideEffect(
+                      dotHeight: 8,
+                      dotWidth: 8,
+                      activeDotColor: AppColor.extraDark,
+                      dotColor: Colors.grey,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       );

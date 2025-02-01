@@ -6,12 +6,12 @@ import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class FullScreenImage extends StatefulWidget {
   const FullScreenImage(
-      {super.key, required this.image, required this.feed, required this.useViewModel});
-  final String image;
+      {super.key, required this.images, required this.feed, required this.useViewModel});
+  final List<String> images; // Changed from String to List<String>
   final dynamic feed;
   final HomeTabViewModel useViewModel;
 
@@ -20,6 +20,8 @@ class FullScreenImage extends StatefulWidget {
 }
 
 class _FullScreenImageState extends State<FullScreenImage> {
+  final PageController _pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -37,23 +39,29 @@ class _FullScreenImageState extends State<FullScreenImage> {
             onPressed: () {
               Navigator.pop(context);
             },
-          )
+          ),
         ],
       ),
       body: Stack(
         children: [
-          // Positioned.fill(
-          //   child: PageView.builder(
-          //     controller: _pageController,
-          //     itemCount: 1,
-          //     itemBuilder: (context, index) {
-          //       return Image.network(
-          //         widget.image,
-          //         fit: BoxFit.contain,
-          //       );
-          //     },
-          //   ),
-          // ),
+          Positioned.fill(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: widget.images.length,
+              itemBuilder: (context, index) {
+                return CachedNetworkImage(
+                  imageUrl: widget.images[index],
+                  progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                    height: dimension["width"]! - 16,
+                    width: dimension["width"]! - 16,
+                    radius: 0,
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  fit: BoxFit.contain,
+                );
+              },
+            ),
+          ),
           Positioned(
             left: 0,
             right: 0,
@@ -81,6 +89,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   widget.feed["hindiCaption"] != null
                       ? Column(
@@ -143,40 +152,24 @@ class _FullScreenImageState extends State<FullScreenImage> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  if (widget.images.length > 1) // Show dot indicator only for multiple images
+                    Center(
+                      child: SmoothPageIndicator(
+                        controller: _pageController,
+                        count: widget.images.length,
+                        effect: const ExpandingDotsEffect(
+                          dotHeight: 8,
+                          dotWidth: 8,
+                          activeDotColor: Colors.white,
+                          dotColor: Colors.grey,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
-          Positioned.fill(
-            child: CachedNetworkImage(
-              imageUrl: widget.image,
-              progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                height: dimension["width"]! - 16,
-                width: dimension["width"]! - 16,
-                radius: 0,
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              fit: BoxFit.contain,
-            ),
-          ),
-          // For multiple image
-          // Positioned(
-          //   bottom: 30,
-          //   left: 0,
-          //   right: 0,
-          //   child: Center(
-          //     child: SmoothPageIndicator(
-          //       controller: _pageController,
-          //       count: widget.currentReview.images.length,
-          //       effect: ExpandingDotsEffect(
-          //         dotHeight: 8,
-          //         dotWidth: 8,
-          //         activeDotColor: AppColor.whiteColor,
-          //         dotColor: AppColor.whiteColor.withOpacity(0.5),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

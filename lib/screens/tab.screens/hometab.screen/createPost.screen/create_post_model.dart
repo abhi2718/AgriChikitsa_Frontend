@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
@@ -7,6 +8,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_mod
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../../services/auth.dart';
@@ -29,11 +31,12 @@ class CreatePostModel with ChangeNotifier {
   // var categoryLoading = true;
 
   Map<String, String> dropdownOptions = {};
-  var imagePath = "";
+  var imagePath = [];
   var imageUrl = "";
   var buttonloading = false;
   var caption = '';
   var category = '';
+  List<XFile> pickedImages = [];
 
   void setfetchMyPost(bool val) {
     fetchMyPost = val;
@@ -49,8 +52,15 @@ class CreatePostModel with ChangeNotifier {
       caption = feed["hindiCaption"] ?? "";
       captionController.text = feed['hindiCaption'] ?? "";
     }
-    imagePath = feed['mediaType'] == "image" ? feed['imgurl'] : "";
+    if (feed['mediaType'] == "image" && feed['imgurls'].isNotEmpty) {
+      imagePath = feed['imgurls'];
+    } else if (feed['mediaType'] == "image" && feed['imgurl'].isNotEmpty) {
+      imagePath = [feed['imgurl']];
+    } else {
+      imagePath = [];
+    }
     currentSelectedCategory = feed.containsKey('categoryRef') ? feed['categoryRef'] : "";
+    log(imagePath.toString());
     // notifyListeners();
   }
 
@@ -78,7 +88,7 @@ class CreatePostModel with ChangeNotifier {
     Timer(const Duration(milliseconds: 500), () {
       captionController.clear();
       youtubeUrlController.clear();
-      imagePath = "";
+      imagePath = [];
       imageUrl = "";
       youtubeVideoPath = '';
       isPostPicked = false;
@@ -86,6 +96,7 @@ class CreatePostModel with ChangeNotifier {
       caption = "";
       currentSelectedCategory = "";
       buttonloading = false;
+      pickedImages = [];
     });
   }
 
@@ -110,10 +121,12 @@ class CreatePostModel with ChangeNotifier {
   }
 
   void clearImagePath() {
-    imagePath = "";
+    imagePath.clear();
+    pickedImages.clear();
     notifyListeners();
   }
 
+//For a single image
   void pickPostImage(context, AuthService authService) async {
     try {
       if (isPostPicked) {
@@ -129,6 +142,64 @@ class CreatePostModel with ChangeNotifier {
     } catch (error) {
       Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
           error.toString(), context);
+    }
+  }
+
+  //for multiple images
+  void pickPostImages(BuildContext context, dynamic dimension) async {
+    try {
+      if (isPostPicked) {
+        return;
+      }
+
+      final List<XFile>? images = await Utils.pickMultipleImages();
+      if (images == null) return;
+
+      // Limit to a maximum of 4 images
+      if (images.length > 4) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+            "You can only select up to 4 images.",
+            "Please deselect some images.",
+            context,
+          );
+        }
+        return;
+      }
+      if (images.isNotEmpty) {
+        for (var image in images) {
+          // Crop each image
+          final croppedFile = await Utils.cropImage(image.path, dimension);
+          if (croppedFile != null) {
+            pickedImages.add(XFile(croppedFile.path));
+          }
+        }
+
+        if (pickedImages.isNotEmpty) {
+          isPostPicked = true;
+          Navigator.pop(context);
+          notifyListeners();
+        }
+      }
+    } catch (error) {
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(),
+          context,
+        );
+      }
+    }
+  }
+
+  //For removing selected images
+  void removeImage(int index) {
+    if (index >= 0 && index < pickedImages.length) {
+      pickedImages.removeAt(index);
+      if (pickedImages.isEmpty) {
+        isPostPicked = false;
+      }
+      notifyListeners();
     }
   }
 
@@ -187,25 +258,91 @@ class CreatePostModel with ChangeNotifier {
     }
   }
 
+//old method
+  // void createPost(
+  //   BuildContext context,
+  // ) async {
+  //   if (currentSelectedCategory.isNotEmpty &&
+  //       (imagePath.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
+  //     setloading(true);
+  //     FocusManager.instance.primaryFocus?.unfocus();
+  //     var response;
+  //     if (imagePath.isNotEmpty) {
+  //       response = await Utils.uploadImage(imagePicked);
+  //     } else if (videoPicked != null) {
+  //       response = await Utils.uploadVideo(videoPicked);
+  //     } else {
+  //       response = {'success': true, 'url': youtubeVideoPath};
+  //     }
+  //     if (response['success']) {
+  //       final passedUrl = imagePath.isEmpty ? response['url'] : response['imgurl'];
+  //       final data = await _homeTabViewModel.createPost(
+  //           context, currentSelectedCategory, caption, passedUrl, imagePath.isNotEmpty);
+  //       setfetchMyPost(true);
+  //       if (data) {
+  //         await Future.delayed(const Duration(seconds: 1), () {
+  //           goBack(context);
+  //           setloading(false);
+  //           Utils.flushBarErrorMessage(
+  //               AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
+  //               AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
+  //               context);
+  //           reinitialize();
+  //         });
+  //       }
+  //     } else {
+  //       if (context.mounted) {
+  //         Utils.flushBarErrorMessage(
+  //             AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+  //             AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+  //             context);
+  //       }
+  //     }
+  //   } else {
+  //     setloading(false);
+  //     Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+  //         AppLocalization.of(context).getTranslatedValue("fillAllDetails").toString(), context);
+  //   }
+  // }
+
   void createPost(
     BuildContext context,
   ) async {
     if (currentSelectedCategory.isNotEmpty &&
-        (imagePath.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
+        (pickedImages.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
+      // Assuming imagePaths is a List
       setloading(true);
       FocusManager.instance.primaryFocus?.unfocus();
       var response;
-      if (imagePath.isNotEmpty) {
-        response = await Utils.uploadImage(imagePicked);
+      List<String> uploadedImageUrls = []; // Store uploaded image URLs
+
+      // Upload multiple images if imagePaths is not empty
+      if (pickedImages.isNotEmpty) {
+        for (var imagePath in pickedImages) {
+          // imagePaths should be a List of image paths
+          var imageResponse = await Utils.uploadImage(imagePath);
+          if (imageResponse['success']) {
+            uploadedImageUrls.add(imageResponse['imgurl']);
+            response = imageResponse;
+          } else {
+            setloading(false);
+            Utils.flushBarErrorMessage(
+                AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+                AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+                context);
+            return;
+          }
+        }
       } else if (videoPicked != null) {
         response = await Utils.uploadVideo(videoPicked);
       } else {
         response = {'success': true, 'url': youtubeVideoPath};
       }
-      if (response['success']) {
-        final passedUrl = imagePath.isEmpty ? response['url'] : response['imgurl'];
+
+      if (response['success'] || uploadedImageUrls.isNotEmpty) {
+        final passedUrl = uploadedImageUrls.isNotEmpty ? uploadedImageUrls : response['url'];
         final data = await _homeTabViewModel.createPost(
-            context, currentSelectedCategory, caption, passedUrl, imagePath.isNotEmpty);
+            context, currentSelectedCategory, caption, passedUrl, uploadedImageUrls.isNotEmpty);
         setfetchMyPost(true);
         if (data) {
           await Future.delayed(const Duration(seconds: 1), () {

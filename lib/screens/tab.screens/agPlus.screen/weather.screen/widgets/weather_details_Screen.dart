@@ -1,19 +1,15 @@
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/weather_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/widgets/weather_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:remixicon/remixicon.dart';
-
-import '../../../../../utils/utils.dart';
 
 class WeatherScreenDetails extends StatefulWidget {
   const WeatherScreenDetails({super.key, required this.useViewModel});
@@ -41,6 +37,10 @@ class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
 
   @override
   Widget build(BuildContext context) {
+    final lang = AppLocalization.of(context).locale.toString();
+    String conditionText = lang == "hi"
+        ? utf8.decode(widget.useViewModel.latestWeatherData.condition.runes.toList())
+        : widget.useViewModel.latestWeatherData.condition.condition;
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
       body: SafeArea(
@@ -87,10 +87,9 @@ class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
                     widget.useViewModel.date,
                     style: const TextStyle(fontWeight: FontWeight.w400, color: AppColor.whiteColor),
                   ),
-                  SvgPicture.asset(
-                    'assets/svg/rainy.svg',
-                    height: MediaQuery.of(context).size.height * 0.15,
-                  ),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: Image.network("https:${widget.useViewModel.latestWeatherData.icon}")),
                   Text(
                     '${widget.useViewModel.latestWeatherData.temp_c.toString()}º C',
                     style: const TextStyle(
@@ -100,7 +99,7 @@ class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
                     height: 8,
                   ),
                   Text(
-                    widget.useViewModel.latestWeatherData.condition,
+                    conditionText,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700, color: AppColor.whiteColor, fontSize: 18),
                   ),
@@ -180,131 +179,309 @@ class _PresentDetailsState extends State<PresentDetails> {
   Widget build(BuildContext context) {
     final useViewModel = Provider.of<AGPlusViewModel>(context, listen: false);
     final weatherViewModel = Provider.of<WeatherViewModel>(context, listen: false);
+    final lang = AppLocalization.of(context).locale.toString();
     useEffect(() {
       if (weatherViewModel.predictedDataList.isEmpty) {
-        weatherViewModel.getPredictedData(context, useViewModel.selectedPlot);
+        weatherViewModel.getPredictedData(context, useViewModel.selectedPlot, lang);
       }
     }, [useViewModel.selectedPlot]);
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Consumer<WeatherViewModel>(builder: (context, provider, child) {
-              return provider.getPredictedDataLoader
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Column(
-                      children: [
-                        ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                          title: Text(
-                            AppLocalization.of(context).getTranslatedValue("today").toString(),
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      child: Consumer<WeatherViewModel>(builder: (context, provider, child) {
+        return provider.getPredictedDataLoader
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  SizedBox(
+                    height: 180,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: provider.predictedHourlyDataList.length,
+                      itemBuilder: (context, index) {
+                        final data = provider.predictedHourlyDataList[index];
+                        String conditionText = lang == "hi"
+                            ? utf8.decode(data.conditionText.runes.toList())
+                            : data.conditionText;
+                        return GestureDetector(
+                            onTap: () => showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    backgroundColor: AppColor.whiteColor,
+                                    title: Text(data.time),
+                                    titleTextStyle: const TextStyle(
+                                        fontSize: 18,
+                                        color: AppColor.darkBlackColor,
+                                        fontWeight: FontWeight.w500),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Image.network(data.conditionIcon),
+                                            const SizedBox(
+                                              width: 34,
+                                            ),
+                                            Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${data.tempC}°C',
+                                                  style: const TextStyle(
+                                                      fontSize: 22,
+                                                      color: AppColor.darkBlackColor,
+                                                      fontWeight: FontWeight.w500),
+                                                ),
+                                                Text(
+                                                  conditionText,
+                                                  style: const TextStyle(
+                                                      fontSize: 22,
+                                                      color: AppColor.darkBlackColor,
+                                                      fontWeight: FontWeight.w500),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 14,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              AppLocalization.of(context)
+                                                  .getTranslatedValue("maxWind")
+                                                  .toString(),
+                                              style: const TextStyle(fontSize: 16),
+                                            ),
+                                            Text(
+                                              "${data.windSpeedKph} km/h",
+                                              style: const TextStyle(
+                                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              AppLocalization.of(context)
+                                                  .getTranslatedValue("humidity")
+                                                  .toString(),
+                                              style: const TextStyle(fontSize: 16),
+                                            ),
+                                            Text(
+                                              "${data.humidity}%",
+                                              style: const TextStyle(
+                                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              AppLocalization.of(context)
+                                                  .getTranslatedValue("willItRain")
+                                                  .toString(),
+                                              style: const TextStyle(fontSize: 16),
+                                            ),
+                                            Text(
+                                              data.willItRain == 1
+                                                  ? AppLocalization.of(context)
+                                                      .getTranslatedValue("yes")
+                                                      .toString()
+                                                  : AppLocalization.of(context)
+                                                      .getTranslatedValue("no")
+                                                      .toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              AppLocalization.of(context)
+                                                  .getTranslatedValue("chancesOfRain")
+                                                  .toString(),
+                                              style: const TextStyle(fontSize: 16),
+                                            ),
+                                            Text(
+                                              "${data.chanceOfRain}%",
+                                              style: const TextStyle(
+                                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            child: Card(
+                              color: AppColor.whiteColor,
+                              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: AppColor.whiteColor,
+                                ),
+                                width: 150,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      data.time, // Display time in 12-hour format
+                                      style: const TextStyle(
+                                          fontSize: 14, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Image.network(data.conditionIcon, height: 50, width: 50),
+                                    const SizedBox(height: 8),
+                                    Text('${data.tempC}°C',
+                                        style: const TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold)),
+                                    Text('${data.windSpeedKph} kph',
+                                        style: const TextStyle(fontSize: 14)),
+                                  ],
+                                ),
+                              ),
+                            ));
+                      },
+                    ),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 5,
+                            offset: const Offset(0, 2),
                           ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '${provider.predictedDataList[0].minTemp}\u2103/${provider.predictedDataList[0].maxTemp}\u2103',
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                            ],
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                            title: Text(
+                              AppLocalization.of(context).getTranslatedValue("today").toString(),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${provider.predictedDataList[0].minTemp}\u2103/${provider.predictedDataList[0].maxTemp}\u2103',
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        if (true)
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Column(children: [
-                              ListTile(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                leading: const Icon(Icons.thermostat, color: AppColor.iconColor),
-                                title: Text(
-                                  AppLocalization.of(context)
-                                      .getTranslatedValue("avgTemp")
-                                      .toString(),
+                          if (true)
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Column(children: [
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                  leading: const Icon(Icons.thermostat, color: AppColor.iconColor),
+                                  title: Text(
+                                    AppLocalization.of(context)
+                                        .getTranslatedValue("avgTemp")
+                                        .toString(),
+                                  ),
+                                  trailing: Text(
+                                    "${provider.predictedDataList[0].avgTemp.toString()}\u2103",
+                                    style:
+                                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                                trailing: Text(
-                                  "${provider.predictedDataList[0].avgTemp.toString()}\u2103",
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                  leading: const Icon(Icons.circle, color: Colors.blue),
+                                  title: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("humidity")
+                                      .toString()), // Replace with your actual titles
+                                  trailing: Text(
+                                    "${provider.predictedDataList[0].avgHumidity.toString()}%",
+                                    style:
+                                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              ListTile(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                leading: const Icon(Icons.circle, color: Colors.blue),
-                                title: Text(AppLocalization.of(context)
-                                    .getTranslatedValue("humidity")
-                                    .toString()), // Replace with your actual titles
-                                trailing: Text(
-                                  "${provider.predictedDataList[0].avgHumidity.toString()}%",
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                  leading: const Icon(Icons.circle, color: Colors.blue),
+                                  title: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("chancesOfRain")
+                                      .toString()),
+                                  trailing: Text(
+                                    "${provider.predictedDataList[0].dailyChanceOfRain.toString()}%",
+                                    style:
+                                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              ListTile(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                leading: const Icon(Icons.circle, color: Colors.blue),
-                                title: Text(AppLocalization.of(context)
-                                    .getTranslatedValue("chancesOfRain")
-                                    .toString()),
-                                trailing: Text(
-                                  "${provider.predictedDataList[0].dailyChanceOfRain.toString()}%",
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                  leading: const Icon(Icons.circle, color: Colors.blue),
+                                  title: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("rain")
+                                      .toString()),
+                                  trailing: Text(
+                                    "${provider.predictedDataList[0].totalPrecipMm.toString()} mm",
+                                    style:
+                                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              ListTile(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                leading: const Icon(Icons.circle, color: Colors.blue),
-                                title: Text(AppLocalization.of(context)
-                                    .getTranslatedValue("rain")
-                                    .toString()),
-                                trailing: Text(
-                                  "${provider.predictedDataList[0].totalPrecipMm.toString()} mm",
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                  leading: const Icon(Icons.air, color: AppColor.iconColor),
+                                  title: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("maxWind")
+                                      .toString()),
+                                  trailing: Text(
+                                    "${provider.predictedDataList[0].maxWindKph.toString()} km/h",
+                                    style:
+                                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              ListTile(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                leading: const Icon(Icons.air, color: AppColor.iconColor),
-                                title: Text(AppLocalization.of(context)
-                                    .getTranslatedValue("maxWind")
-                                    .toString()),
-                                trailing: Text(
-                                  "${provider.predictedDataList[0].maxWindKph.toString()} km/h",
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                  leading: const Icon(Icons.wb_sunny_outlined,
+                                      color: AppColor.iconColor),
+                                  title: Text(AppLocalization.of(context)
+                                      .getTranslatedValue("sunsriseSunset")
+                                      .toString()),
+                                  trailing: Text(
+                                    "${provider.predictedDataList[0].sunrise.toString()}/${provider.predictedDataList[0].sunset.toString()}",
+                                    style:
+                                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              ListTile(
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                                leading:
-                                    const Icon(Icons.wb_sunny_outlined, color: AppColor.iconColor),
-                                title: Text(AppLocalization.of(context)
-                                    .getTranslatedValue("sunsriseSunset")
-                                    .toString()),
-                                trailing: Text(
-                                  "${provider.predictedDataList[0].sunrise.toString()}/${provider.predictedDataList[0].sunset.toString()}",
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ]),
-                          ),
-                      ],
-                    );
-            }),
-          )
-        ],
-      ),
+                              ]),
+                            ),
+                        ],
+                      )),
+                ],
+              );
+      }),
     );
   }
 }
@@ -315,9 +492,10 @@ class PredictedDetails extends HookWidget {
   Widget build(BuildContext context) {
     final useViewModel = Provider.of<AGPlusViewModel>(context, listen: false);
     final weatherViewModel = Provider.of<WeatherViewModel>(context, listen: false);
+    final lang = AppLocalization.of(context).locale.toString();
     useEffect(() {
       if (weatherViewModel.predictedDataList.isEmpty) {
-        weatherViewModel.getPredictedData(context, useViewModel.selectedPlot);
+        weatherViewModel.getPredictedData(context, useViewModel.selectedPlot, lang);
       }
     }, [useViewModel.selectedPlot]);
     return SingleChildScrollView(

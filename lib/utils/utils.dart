@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
@@ -182,11 +183,49 @@ class Utils {
     }
   }
 
+  //For single image
   static Future<dynamic> pickImage() async {
     try {
       final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return null;
       return image;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  //For multiple images
+  static Future<List<XFile>?> pickMultipleImages() async {
+    try {
+      final List<XFile> images = await ImagePicker().pickMultiImage();
+      if (images.isEmpty) return null;
+      return images;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  static Future<CroppedFile?> cropImage(String imagePath, dynamic dimension) async {
+    try {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: imagePath,
+        maxHeight: (dimension['width']! - 16).toInt(),
+        maxWidth: (dimension['width']! - 16).toInt(),
+        aspectRatio:
+            CropAspectRatio(ratioX: dimension['width']! - 16, ratioY: dimension['width']! - 16),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: AppColor.extraDark,
+            toolbarWidgetColor: Colors.white,
+            lockAspectRatio: false,
+          ),
+          IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          ),
+        ],
+      );
+      return croppedFile;
     } catch (error) {
       rethrow;
     }

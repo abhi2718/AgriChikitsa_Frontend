@@ -8,7 +8,7 @@ import '../../../../services/auth.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 import '../../../../widgets/text.widgets/text.dart';
-import '../createPost.screen/createPost.dart';
+import '../createPost.screen/create_post.dart';
 
 class CreatePostCard extends HookWidget {
   const CreatePostCard({

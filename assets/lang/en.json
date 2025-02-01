@@ -237,5 +237,6 @@
     "spamReport1": "It's spam",
     "spamReport2": "Nudity or sexual activity",
     "spamReport3": "Hate speech or symbols",
-    "additionalReport": "If your concern is not listed, write here..."
+    "additionalReport": "If your concern is not listed, write here...",
+    "willItRain": "Will it rain"
 }

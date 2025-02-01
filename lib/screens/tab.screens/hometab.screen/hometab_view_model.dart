@@ -235,10 +235,12 @@ class HomeTabViewModel with ChangeNotifier {
     } catch (error) {
       setloading(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
-            context);
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }
@@ -393,18 +395,65 @@ class HomeTabViewModel with ChangeNotifier {
     return hashtags;
   }
 
-  Future<bool> createPost(
-      BuildContext context, String id, String caption, String imageUrl, bool isImgUploaded) async {
+//old method
+  // Future<bool> createPost(
+  //     BuildContext context, String id, String caption, String imageUrl, bool isImgUploaded) async {
+  //   try {
+  //     Map<String, dynamic> payload = {};
+  //     if (caption == "") {
+  //       payload = {"categoryId": id};
+  //       if (isImgUploaded) {
+  //         payload["imgurl"] = imageUrl;
+  //         payload["mediaType"] = "image";
+  //       } else {
+  //         payload["videoUrl"] = imageUrl;
+  //         if (imageUrl.contains("https://youtu")) {
+  //           payload["mediaType"] = "youtube";
+  //         } else {
+  //           payload["mediaType"] = "video";
+  //         }
+  //       }
+  //     } else {
+  //       List<String> tags = extractHashtags(caption);
+  //       payload = {"categoryId": id, "hindiCaption": caption, "tags": tags};
+  //       if (isImgUploaded) {
+  //         payload["imgurl"] = imageUrl;
+  //         payload["mediaType"] = "image";
+  //       } else {
+  //         payload["videoUrl"] = imageUrl;
+  //         if (imageUrl.contains("https://youtu")) {
+  //           payload["mediaType"] = "youtube";
+  //         } else {
+  //           payload["mediaType"] = "video";
+  //         }
+  //       }
+  //     }
+  //     await _homeTabRepository.createPost(payload);
+  //     return true;
+  //   } catch (error) {
+  //     setloading(false);
+  //     if (kDebugMode) {
+  //       Utils.flushBarErrorMessage(
+  //           AppLocalization.of(context).getTranslatedValue("alert").toString(),
+  //           error.toString(),
+  //           context);
+  //     }
+  //     return false;
+  //   }
+  // }
+
+  Future<bool> createPost(BuildContext context, String id, String caption, dynamic passedUrl,
+      bool isImgUploaded) async {
     try {
       Map<String, dynamic> payload = {};
       if (caption == "") {
         payload = {"categoryId": id};
         if (isImgUploaded) {
-          payload["imgurl"] = imageUrl;
+          payload["imgurls"] = passedUrl; // imageUrls should be a List of URLs
           payload["mediaType"] = "image";
         } else {
-          payload["videoUrl"] = imageUrl;
-          if (imageUrl.contains("https://youtu")) {
+          payload["videoUrl"] = passedUrl;
+          if (passedUrl.contains("https://youtu")) {
             payload["mediaType"] = "youtube";
           } else {
             payload["mediaType"] = "video";
@@ -414,11 +463,11 @@ class HomeTabViewModel with ChangeNotifier {
         List<String> tags = extractHashtags(caption);
         payload = {"categoryId": id, "hindiCaption": caption, "tags": tags};
         if (isImgUploaded) {
-          payload["imgurl"] = imageUrl;
+          payload["imgurls"] = passedUrl; // imageUrls should be a List of URLs
           payload["mediaType"] = "image";
         } else {
-          payload["videoUrl"] = imageUrl;
-          if (imageUrl.contains("https://youtu")) {
+          payload["videoUrl"] = passedUrl;
+          if (passedUrl.contains("https://youtu")) {
             payload["mediaType"] = "youtube";
           } else {
             payload["mediaType"] = "video";

@@ -1,5 +1,5 @@
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/all_plots_screen.dart';
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/createPost.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:flutter/material.dart';
 import '../screens/auth.screen/auth.landing/landing.dart';

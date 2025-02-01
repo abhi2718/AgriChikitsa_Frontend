@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../model/plots.dart';
 import '../../../../utils/utils.dart';
@@ -50,6 +51,10 @@ class WeatherCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final lang = AppLocalization.of(context).locale.toString();
+    String conditionText = lang == "hi"
+        ? utf8.decode(provider.latestWeatherData.condition.runes.toList())
+        : provider.latestWeatherData.condition;
     return Container(
         margin: const EdgeInsets.only(top: 4),
         padding: const EdgeInsets.only(left: 24, right: 24, top: 14, bottom: 14),
@@ -104,7 +109,7 @@ class WeatherCard extends StatelessWidget {
                           height: 2,
                         ),
                         Text(
-                          provider.latestWeatherData.condition,
+                          conditionText,
                           style: const TextStyle(
                               color: AppColor.whiteColor,
                               fontWeight: FontWeight.w700,

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:intl/intl.dart';
+
 class WeatherData {
   String region;
   String countryName;
@@ -79,6 +81,45 @@ class PredictedData {
       totalPrecipMm: json['day']['totalprecip_mm'],
       maxWindKph: json['day']['maxwind_kph'],
       avgTemp: json['day']['avgtemp_c'],
+    );
+  }
+}
+
+class PredictedHourlyData {
+  final String time;
+  final double tempC;
+  final String conditionText;
+  final String conditionIcon;
+  final double windSpeedKph;
+  final int humidity;
+  final int willItRain;
+  final int chanceOfRain;
+
+  PredictedHourlyData({
+    required this.time,
+    required this.tempC,
+    required this.conditionText,
+    required this.conditionIcon,
+    required this.windSpeedKph,
+    required this.humidity,
+    required this.willItRain,
+    required this.chanceOfRain,
+  });
+
+  factory PredictedHourlyData.fromJson(Map<String, dynamic> json) {
+    // Parsing time to 12-hour format
+    final DateTime parsedTime = DateTime.parse(json['time']);
+    final String formattedTime = DateFormat('hh:mm a').format(parsedTime);
+
+    return PredictedHourlyData(
+      time: formattedTime,
+      tempC: json['temp_c'],
+      conditionText: json['condition']['text'],
+      conditionIcon: 'https:${json['condition']['icon']}',
+      windSpeedKph: json['wind_kph'],
+      humidity: json['humidity'],
+      willItRain: json['will_it_rain'],
+      chanceOfRain: json['chance_of_rain'],
     );
   }
 }

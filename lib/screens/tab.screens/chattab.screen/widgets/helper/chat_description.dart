@@ -292,33 +292,91 @@ class ChatDescription extends HookWidget {
                                       textStyle:
                                           const TextStyle(color: AppColor.whiteColor, fontSize: 16),
                                     ),
-                                    provider.chatMessagesList.containsKey("userImageAttachment")
-                                        ? Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Container(
-                                              margin: const EdgeInsets.symmetric(
-                                                  vertical: 8, horizontal: 8),
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(8)),
-                                              height: dimension['height']! * 0.40,
-                                              width: dimension['width']! * 0.6,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(8),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: provider
-                                                      .chatMessagesList["userImageAttachment"],
-                                                  fit: BoxFit.fill,
-                                                  placeholder: (context, url) => Skeleton(
-                                                    height: dimension["height"]! * 0.4,
-                                                    width: dimension["width"]! * 0.6,
-                                                    radius: 10,
+                                    provider.chatMessagesList["userImageAttachments"].isNotEmpty
+                                        ? provider.chatMessagesList["userImageAttachments"].length >
+                                                1
+                                            ? Column(
+                                                children: [
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: Container(
+                                                      margin: const EdgeInsets.symmetric(
+                                                          vertical: 8, horizontal: 8),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(8)),
+                                                      height: dimension['height']! * 0.40,
+                                                      width: dimension['width']! * 0.6,
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: provider.chatMessagesList[
+                                                              "userImageAttachments"][0],
+                                                          fit: BoxFit.fill,
+                                                          placeholder: (context, url) => Skeleton(
+                                                            height: dimension["height"]! * 0.4,
+                                                            width: dimension["width"]! * 0.6,
+                                                            radius: 10,
+                                                          ),
+                                                          errorWidget: (context, url, error) =>
+                                                              const Icon(Icons.error),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                  errorWidget: (context, url, error) =>
-                                                      const Icon(Icons.error),
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: Container(
+                                                      margin: const EdgeInsets.symmetric(
+                                                          vertical: 8, horizontal: 8),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(8)),
+                                                      height: dimension['height']! * 0.40,
+                                                      width: dimension['width']! * 0.6,
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: provider.chatMessagesList[
+                                                              "userImageAttachments"][1],
+                                                          fit: BoxFit.fill,
+                                                          placeholder: (context, url) => Skeleton(
+                                                            height: dimension["height"]! * 0.4,
+                                                            width: dimension["width"]! * 0.6,
+                                                            radius: 10,
+                                                          ),
+                                                          errorWidget: (context, url, error) =>
+                                                              const Icon(Icons.error),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Align(
+                                                alignment: Alignment.centerRight,
+                                                child: Container(
+                                                  margin: const EdgeInsets.symmetric(
+                                                      vertical: 8, horizontal: 8),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(8)),
+                                                  height: dimension['height']! * 0.40,
+                                                  width: dimension['width']! * 0.6,
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: provider.chatMessagesList[
+                                                          "userImageAttachments"][0],
+                                                      fit: BoxFit.fill,
+                                                      placeholder: (context, url) => Skeleton(
+                                                        height: dimension["height"]! * 0.4,
+                                                        width: dimension["width"]! * 0.6,
+                                                        radius: 10,
+                                                      ),
+                                                      errorWidget: (context, url, error) =>
+                                                          const Icon(Icons.error),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          )
+                                              )
                                         : BubbleSpecialThree(
                                             text: provider.chatMessagesList["problemSection"],
                                             color: AppColor.chatSent,

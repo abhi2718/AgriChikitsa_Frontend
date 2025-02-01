@@ -39,6 +39,7 @@ class ChatTabViewModel with ChangeNotifier {
   String selectedUserMessage = "";
   var questionAsked = "";
   var cropImage = "";
+  var cropImageBucketPath = "";
   var cropImage2 = "";
   var questionIndex = 0;
   var selectedDisease = '';
@@ -114,7 +115,7 @@ class ChatTabViewModel with ChangeNotifier {
     chatHistoryLoader = value;
   }
 
-  setImageCheck(bool value, BuildContext context) {
+  setImageCheck(bool value, BuildContext context) async {
     imageConfirm = value;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
@@ -188,12 +189,16 @@ class ChatTabViewModel with ChangeNotifier {
   }
 
   void sendQuestion() async {
+    final userImageAttachments = [];
+    if (cropImageBucketPath.isNotEmpty) userImageAttachments.add(cropImageBucketPath);
+    if (cropImage2.isNotEmpty) userImageAttachments.add(cropImage2);
     final payloadStructure = {
       "ageGroup": selectedAge,
       "crop": selectedCrop,
       "problemSection": selectedReason,
       if (selectedUserMessage.trim().isNotEmpty) "userMessage": selectedUserMessage,
       if (cropImage2.isNotEmpty) "userImageAttachment": cropImage2,
+      if (userImageAttachments.isNotEmpty) "userImageAttachments": userImageAttachments
     };
     if (kDebugMode) {
       log(payloadStructure.toString());
@@ -691,7 +696,7 @@ class ChatTabViewModel with ChangeNotifier {
       showSeventhBubbleLoader = true;
       notifyListeners();
       final data = await Utils.uploadImage(imageFile);
-      cropImage2 = data["imgurl"];
+      cropImageBucketPath = data["imgurl"];
       final t9 = Timer(const Duration(seconds: 1), () {
         chatMessages.add(
           {
