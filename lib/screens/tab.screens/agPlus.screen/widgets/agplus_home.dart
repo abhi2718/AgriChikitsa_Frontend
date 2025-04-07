@@ -1,9 +1,10 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_screen.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/crop_report_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/features_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/pest_management.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/selected_plot_details.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_promo.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/soilHealthCard.screen/soil_health_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_card.dart';
@@ -11,6 +12,7 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/wi
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
@@ -65,6 +67,7 @@ class AGPlusHome extends HookWidget {
           padding: const EdgeInsets.only(right: 8, left: 8, bottom: 16),
           child: Column(
             children: [
+              // useViewModel.selectedPlot["is_ndvi_opted"] ? :
               CurrentSelectedPlot(
                 plotNumber: plotNumber,
                 selectedPlot: useViewModel.selectedPlot,
@@ -108,6 +111,20 @@ class AGPlusHome extends HookWidget {
                     // Utils.toastMessage(
                     //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
                     Utils.model(context, const SoilHealthCard());
+                  }),
+              FeaturesCard(
+                  title: AppLocalization.of(context)
+                      .getTranslatedValue("cropMonitoringTitle")
+                      .toString(),
+                  image: "assets/images/ndvi_banner2.jpeg",
+                  ontap: () {
+                    Utils.model(
+                        context,
+                        useViewModel.selectedPlot.isMonitoringOpted
+                            ? NDVIScreen(
+                                selectedPlot: useViewModel.selectedPlot,
+                              )
+                            : NDVIPromo(selectedPlot: useViewModel.selectedPlot));
                   }),
               FeaturesCard(
                   title:

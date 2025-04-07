@@ -259,6 +259,17 @@ class _FeedState extends State<Feed> {
                               Utils.model(
                                   context,
                                   CreatePostScreen(
+                                    onPostCreated: () {
+                                      Utils.flushBarErrorMessage(
+                                        AppLocalization.of(context)
+                                            .getTranslatedValue("postCreatedTitle")
+                                            .toString(),
+                                        AppLocalization.of(context)
+                                            .getTranslatedValue("postCreatedSubtitle")
+                                            .toString(),
+                                        context,
+                                      );
+                                    },
                                     feed: widget.feed,
                                     isEdit: widget.feed.containsKey("repostedFrom") ? true : false,
                                   ));
@@ -765,7 +776,7 @@ class _FeedState extends State<Feed> {
                     },
                   ),
                 ),
-                if (feed["imgurls"].isNotEmpty) // Add dots only if there are multiple images
+                if (feed["imgurls"].isNotEmpty && feed["imgurls"].length > 1)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: SmoothPageIndicator(

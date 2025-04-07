@@ -90,26 +90,6 @@ class SoilHealthCard extends HookWidget {
                       )),
                     ),
                   ),
-                  InkWell(
-                    onTap: () => Utils.model(
-                        context,
-                        SoilTestingReportScreen(
-                          fieldId: useViewModel.selectedPlot.id,
-                        )),
-                    child: Container(
-                      height: dimension["height"]! * 0.08,
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                          boxShadow: const [BoxShadow(offset: Offset(2, 3), color: Colors.grey)],
-                          color: const Color(0xffBEDEB3),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Center(
-                          child: Text(
-                        AppLocalization.of(context).getTranslatedValue("shareReport").toString(),
-                        style: const TextStyle(color: AppColor.darkBlackColor, fontSize: 16),
-                      )),
-                    ),
-                  ),
                 ],
               ),
             ),

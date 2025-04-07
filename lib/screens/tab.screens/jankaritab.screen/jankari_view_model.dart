@@ -224,6 +224,7 @@ class JankariViewModel with ChangeNotifier {
     try {
       jankariSubcategoryPostList.clear();
       final data = await _jankariRepository.getJankariSubCategoryPost(selectedSubCategory);
+
       jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
       if (jankariSubcategoryPostList.length > 1) {
         changeActiveButtonState(true);
@@ -243,9 +244,8 @@ class JankariViewModel with ChangeNotifier {
   }
 
   void getJankariSubCategoryTagsPost(BuildContext context, String tagId) async {
-    // setJankariSubCategoryLoaderPost(true);
+    setJankariSubCategoryLoaderPost(true);
     try {
-      log("Here");
       jankariSubcategoryPostList.clear();
       final data = await _jankariRepository.getJankariSubCategoryTagsPost(tagId);
       if (data["posts"].isNotEmpty) {

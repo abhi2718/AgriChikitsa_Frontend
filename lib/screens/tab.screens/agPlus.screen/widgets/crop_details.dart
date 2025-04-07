@@ -200,7 +200,7 @@ class CropDetails extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white,
                             ),
-                            child: DropdownButton(
+                            child: DropdownButton<String>(
                               underline: Container(),
                               isExpanded: true,
                               hint: BaseText(
@@ -209,25 +209,26 @@ class CropDetails extends StatelessWidget {
                                     .toString(),
                                 style: const TextStyle(),
                               ),
-                              value: provider.selectedDuration,
+                              value: provider.selectedDuration?["_id"],
                               alignment: AlignmentDirectional.centerStart,
-                              items: provider.durations
-                                  .map<DropdownMenuItem<Map<String, dynamic>>>((dynamic value) {
-                                return DropdownMenuItem<Map<String, dynamic>>(
-                                  value: value,
+                              items:
+                                  provider.durations.map<DropdownMenuItem<String>>((dynamic value) {
+                                return DropdownMenuItem<String>(
+                                  value: value["_id"],
                                   child: BaseText(
                                     title: value["duration"],
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 );
                               }).toList(),
-                              onChanged: (value) {
-                                if (value != null) {
-                                  provider.setDuration(value);
+                              onChanged: (selectedId) {
+                                if (selectedId != null) {
+                                  final selectedItem = provider.durations
+                                      .firstWhere((item) => item["_id"] == selectedId);
+                                  provider.setDuration(selectedItem);
                                 }
                               },
-                            ),
-                          );
+                            ));
                   }),
                   InkWell(
                     onTap: () {

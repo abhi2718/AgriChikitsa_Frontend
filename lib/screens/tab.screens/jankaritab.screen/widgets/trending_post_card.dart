@@ -10,6 +10,7 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
@@ -103,15 +104,16 @@ class _CustomCarouselState extends State<CustomCarousel> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          AppLocalization.of(context).locale.toString() == "en"
-                              ? widget.trendingPosts[index].title
-                              : widget.trendingPosts[index].hindiTitle,
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis),
-                          maxLines: 1,
+                        Flexible(
+                          child: Text(
+                            AppLocalization.of(context).locale.toString() == "en"
+                                ? widget.trendingPosts[index].title
+                                : widget.trendingPosts[index].hindiTitle,
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis),
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

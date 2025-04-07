@@ -43,7 +43,6 @@ class JankariTagsScreen extends StatelessWidget {
               width: dimension['width'],
               child: Consumer<JankariViewModel>(
                 builder: (context, provider, child) {
-                  print(provider.jankariSubcategoryList[index].tags);
                   return provider.jankariSubCategoryLoader
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),

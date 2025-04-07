@@ -244,8 +244,26 @@ class ChatDescription extends HookWidget {
                                     ),
                                     BubbleSpecialThree(
                                       text: isEnglish
-                                          ? "Now Select your crop."
-                                          : "कृपया अपनी फसल चुनें, यदि आपकी फसल यहाँ लिस्ट में नहीं है तो अकिंकित करें। ⏬",
+                                          ? "Please choose your crop category."
+                                          : "कृप्या अपनी फसल से सम्बंधित कैटेगरी चुने",
+                                      color: AppColor.chatBubbleColor,
+                                      tail: true,
+                                      isSender: false,
+                                      textStyle:
+                                          const TextStyle(color: AppColor.whiteColor, fontSize: 16),
+                                    ),
+                                    BubbleSpecialThree(
+                                      text: provider.chatMessagesList["cropCategory"],
+                                      color: AppColor.chatSent,
+                                      tail: false,
+                                      isSender: true,
+                                      textStyle: const TextStyle(
+                                          color: AppColor.darkBlackColor, fontSize: 16),
+                                    ),
+                                    BubbleSpecialThree(
+                                      text: isEnglish
+                                          ? "Please select your crop."
+                                          : "कृपया अपनी फसल चुनें",
                                       color: AppColor.chatBubbleColor,
                                       tail: true,
                                       isSender: false,

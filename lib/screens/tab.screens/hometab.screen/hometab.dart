@@ -230,7 +230,19 @@ class HomeTabScreen1 extends HookWidget {
                       } else {
                         return Column(
                           children: [
-                            const CreatePostCard(),
+                            CreatePostCard(
+                              onPostedCreated: () {
+                                Utils.flushBarErrorMessage(
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("postCreatedTitle")
+                                      .toString(),
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("postCreatedSubtitle")
+                                      .toString(),
+                                  context,
+                                );
+                              },
+                            ),
                             ListView.builder(
                               controller: scrollController,
                               shrinkWrap: true,

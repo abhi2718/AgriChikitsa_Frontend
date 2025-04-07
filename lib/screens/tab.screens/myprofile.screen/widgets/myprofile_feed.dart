@@ -145,6 +145,17 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                         Utils.model(
                             context,
                             CreatePostScreen(
+                              onPostCreated: () {
+                                Utils.flushBarErrorMessage(
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("postCreatedTitle")
+                                      .toString(),
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("postCreatedSubtitle")
+                                      .toString(),
+                                  context,
+                                );
+                              },
                               feed: widget.feed,
                               isEdit: widget.feed.containsKey("repostedFrom") ? true : false,
                             ));

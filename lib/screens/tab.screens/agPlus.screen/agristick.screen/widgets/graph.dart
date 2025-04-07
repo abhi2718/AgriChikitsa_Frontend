@@ -11,9 +11,9 @@ class SoilHealthChart extends HookWidget {
   const SoilHealthChart({super.key, required this.useViewModel, required this.selectedField});
   final dynamic useViewModel;
   final List<Color> gradientColors = const [
-    Color(0xff12c2e9),
-    Color(0xffc471ed),
-    Color(0xfff64f59),
+    Color(0xFF006400), // DarkGreen
+    Color(0xFF228B22), // ForestGreen
+    Color(0xFF2E8B57),
   ];
 
   final bool showAvg = false;

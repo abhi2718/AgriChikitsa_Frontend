@@ -23,7 +23,9 @@ class Routes {
     RouteName.signUpRoute: (context) => const SignUpScreen(),
     RouteName.agPlusRoute: (context) => const AllPlotsScreen(),
     RouteName.editProfileRoute: (context) => const EditProfileScreen(),
-    RouteName.createPostRoute: (context) => const CreatePostScreen(),
+    RouteName.createPostRoute: (context) => CreatePostScreen(
+          onPostCreated: () {},
+        ),
     RouteName.chatBotRoute: (context) => const ChatTabScreen(),
     RouteName.myProfileScreenRoute: (context) => const MyProfileScreen(),
     RouteName.notificationScreenRoute: (context) => const NotificationScreen(),

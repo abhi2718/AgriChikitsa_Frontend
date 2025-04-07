@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
@@ -23,6 +24,7 @@ class HeaderWidget extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel =
         useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
+    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
     useEffect(() {
       useViewModel.fetchNotifications(context);
     }, [useViewModel.notificationCount]);
@@ -61,20 +63,25 @@ class HeaderWidget extends HookWidget {
                     width: 80,
                   ),
                 ),
-                Consumer<NotificationViewModel>(builder: (context, provider, child) {
-                  return NotificationIndicatorButton(
-                    notificationCount: provider.notificationCount,
-                  );
-                })
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     SizedBox(
-                //       width: dimension['width']! * 0.04,
-                //     ),
-                //     ,
-                //   ],
-                // )
+                Row(
+                  children: [
+                    if (createPostModel.isUploading)
+                      const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: AppColor.extraDark,
+                          )),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    Consumer<NotificationViewModel>(builder: (context, provider, child) {
+                      return NotificationIndicatorButton(
+                        notificationCount: provider.notificationCount,
+                      );
+                    }),
+                  ],
+                )
               ],
             ),
           ),

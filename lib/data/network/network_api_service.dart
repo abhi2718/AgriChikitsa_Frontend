@@ -109,4 +109,20 @@ class NetworkApiService extends BaseApiServices {
         throw FetchDataException(body["message"].toString());
     }
   }
+
+  // FOR NDVI DATA
+  Future<dynamic> getNDVIApiResponse(String url) async {
+    final headers = await getHeaders();
+    final response = await retry(
+      () => http
+          .get(
+            Uri.parse(url),
+            headers: headers,
+          )
+          .timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = jsonDecode(response.body);
+    return [_jsonResponse, response.statusCode];
+  }
 }

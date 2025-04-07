@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../res/color.dart';
 import 'helper/save_file_helper.dart';
@@ -49,8 +50,13 @@ class SoilTestingReportScreen extends HookWidget {
         },
         child: Consumer<AGPlusViewModel>(
           builder: (context, provider, child) {
-            if (provider.isReportsLoading && provider.reportsList.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
+            if (provider.isReportsLoading) {
+              return const Center(child: CircularProgressIndicator(color: AppColor.extraDark));
+            }
+            if (provider.reportsList.isEmpty) {
+              return Center(
+                  child: Text(
+                      AppLocalization.of(context).getTranslatedValue("noReportFound").toString()));
             }
 
             return ListView.builder(
@@ -121,13 +127,10 @@ class SoilTestingReportScreen extends HookWidget {
               ],
             ),
           ),
-          // if (status != 'PENDING')
-          if (false)
-            // if (true)
+          if (status == 'TESTED')
             InkWell(
-                onTap: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const DetailsScreen())),
-                // onTap: createInvoice,
+                onTap: () =>
+                    {launchUrl(Uri.parse("https://agrichikitsa.org/soilreport/${report['_id']}"))},
                 child: const Icon(Icons.description))
           else
             Text(
@@ -146,7 +149,7 @@ class SoilTestingReportScreen extends HookWidget {
       await generateInvoice();
       return true;
     } else if (status.isPermanentlyDenied) {
-      openAppSettings(); // Direct the user to settings to grant permissions
+      openAppSettings();
       return false;
     } else {
       return false;

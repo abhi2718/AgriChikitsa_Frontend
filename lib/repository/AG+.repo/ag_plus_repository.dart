@@ -1,8 +1,3 @@
-import 'dart:developer';
-
-import 'package:agriChikitsa/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
-
 import '../../data/network/network_api_service.dart';
 import '../../res/app_url.dart';
 
@@ -22,6 +17,16 @@ class AGPlusRepository {
     try {
       final url = "${AppUrl.getCropsListEndPoint}/$cropId";
       final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> checkCropAvailablity(String cropId, dynamic payload) async {
+    try {
+      final url = "${AppUrl.checkCropEndPoint}/$cropId";
+      final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (e) {
       rethrow;
@@ -96,7 +101,6 @@ class AGPlusRepository {
     try {
       final url =
           'http://api.weatherapi.com/v1/forecast.json?key=94488ccb442e4337ad735838231309&q=$latitude,$longitude&aqi=no&days=3&lang=$lang';
-      print(url);
       final response = await _apiServices.getWeatherApiResponse(url);
       return response;
     } catch (e) {
@@ -171,6 +175,26 @@ class AGPlusRepository {
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> addFieldForMonitoring(String fieldId) async {
+    final url = "${AppUrl.ndviEndpoint}/$fieldId";
+    try {
+      final response = await _apiServices.getPostApiResponse(url, {});
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getNDVIData(String ndviId, String pageNo) async {
+    final url = "${AppUrl.ndviEndpoint}/cropHealth/$ndviId/$pageNo";
+    try {
+      final response = await _apiServices.getNDVIApiResponse(url);
+      return response;
+    } catch (error) {
       rethrow;
     }
   }

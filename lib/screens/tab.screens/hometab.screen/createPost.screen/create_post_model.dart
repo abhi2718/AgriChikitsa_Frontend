@@ -37,6 +37,7 @@ class CreatePostModel with ChangeNotifier {
   var caption = '';
   var category = '';
   List<XFile> pickedImages = [];
+  bool isUploading = false;
 
   void setfetchMyPost(bool val) {
     fetchMyPost = val;
@@ -74,6 +75,11 @@ class CreatePostModel with ChangeNotifier {
     notifyListeners();
   }
 
+  setUploading(bool value) {
+    isUploading = value;
+    notifyListeners();
+  }
+
   void fetchFeedsCategory(BuildContext context, HomeTabViewModel homeTabViewModel) async {
     try {
       categoriesList = List.from(homeTabViewModel.categoriesList);
@@ -89,6 +95,7 @@ class CreatePostModel with ChangeNotifier {
       captionController.clear();
       youtubeUrlController.clear();
       imagePath = [];
+      isUploading = false;
       imageUrl = "";
       youtubeVideoPath = '';
       isPostPicked = false;
@@ -305,69 +312,87 @@ class CreatePostModel with ChangeNotifier {
   //   }
   // }
 
-  void createPost(
-    BuildContext context,
-  ) async {
+  void createPost(BuildContext context, VoidCallback onPostCreated) async {
     if (currentSelectedCategory.isNotEmpty &&
         (pickedImages.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
-      // Assuming imagePaths is a List
-      setloading(true);
-      FocusManager.instance.primaryFocus?.unfocus();
-      var response;
-      List<String> uploadedImageUrls = []; // Store uploaded image URLs
+      setUploading(true);
 
-      // Upload multiple images if imagePaths is not empty
-      if (pickedImages.isNotEmpty) {
-        for (var imagePath in pickedImages) {
-          // imagePaths should be a List of image paths
-          var imageResponse = await Utils.uploadImage(imagePath);
-          if (imageResponse['success']) {
-            uploadedImageUrls.add(imageResponse['imgurl']);
-            response = imageResponse;
-          } else {
-            setloading(false);
-            Utils.flushBarErrorMessage(
-                AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-                AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-                context);
-            return;
-          }
-        }
-      } else if (videoPicked != null) {
-        response = await Utils.uploadVideo(videoPicked);
-      } else {
-        response = {'success': true, 'url': youtubeVideoPath};
-      }
+      // Navigate to Home Screen immediately
+      Navigator.pop(context);
 
-      if (response['success'] || uploadedImageUrls.isNotEmpty) {
-        final passedUrl = uploadedImageUrls.isNotEmpty ? uploadedImageUrls : response['url'];
-        final data = await _homeTabViewModel.createPost(
-            context, currentSelectedCategory, caption, passedUrl, uploadedImageUrls.isNotEmpty);
-        setfetchMyPost(true);
-        if (data) {
-          await Future.delayed(const Duration(seconds: 1), () {
-            goBack(context);
-            setloading(false);
-            Utils.flushBarErrorMessage(
-                AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
-                AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
-                context);
-            reinitialize();
-          });
-        }
-      } else {
-        if (context.mounted) {
+      // Start upload in the background
+      uploadPostInBackground(context, onPostCreated);
+    } else {
+      Utils.flushBarErrorMessage(
+        AppLocalization.of(context).getTranslatedValue("alert").toString(),
+        AppLocalization.of(context).getTranslatedValue("fillAllDetails").toString(),
+        context,
+      );
+    }
+  }
+
+  Future<void> uploadPostInBackground(BuildContext context, VoidCallback onPostCreated) async {
+    List<String> uploadedImageUrls = [];
+    var response;
+
+    // Upload images
+    if (pickedImages.isNotEmpty) {
+      for (var imagePath in pickedImages) {
+        var imageResponse = await Utils.uploadImage(imagePath);
+        if (imageResponse['success']) {
+          uploadedImageUrls.add(imageResponse['imgurl']);
+        } else {
           Utils.flushBarErrorMessage(
-              AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-              AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-              context);
+            AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+            AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+            context,
+          );
+          setUploading(false);
+          return;
         }
+      }
+    }
+
+    // Upload video
+    if (videoPicked != null) {
+      response = await Utils.uploadVideo(videoPicked);
+    } else {
+      response = {'success': true, 'url': youtubeVideoPath};
+    }
+
+    if (response['success'] || uploadedImageUrls.isNotEmpty) {
+      final passedUrl = uploadedImageUrls.isNotEmpty ? uploadedImageUrls : response['url'];
+      final data = await _homeTabViewModel.createPost(
+        context,
+        currentSelectedCategory,
+        caption,
+        passedUrl,
+        uploadedImageUrls.isNotEmpty,
+      );
+
+      if (data) {
+        if (context.mounted) {
+          onPostCreated();
+        }
+        setfetchMyPost(true);
+        setUploading(false);
+      } else {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+          AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+          context,
+        );
+        setUploading(false);
       }
     } else {
-      setloading(false);
-      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
-          AppLocalization.of(context).getTranslatedValue("fillAllDetails").toString(), context);
+      setUploading(false);
+      Utils.flushBarErrorMessage(
+        AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+        AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+        context,
+      );
     }
+    reinitialize();
   }
 
   void updatePost(BuildContext context, String feedId, bool isShared) async {
@@ -388,14 +413,6 @@ class CreatePostModel with ChangeNotifier {
           reinitialize();
         });
       }
-      // } else {
-      //   if (context.mounted) {
-      //     Utils.flushBarErrorMessage(
-      //         AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-      //         AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-      //         context);
-      //   }
-      // }
     } else {
       setloading(false);
       Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),

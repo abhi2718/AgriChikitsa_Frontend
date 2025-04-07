@@ -11,9 +11,8 @@ import '../../../../widgets/text.widgets/text.dart';
 import '../createPost.screen/create_post.dart';
 
 class CreatePostCard extends HookWidget {
-  const CreatePostCard({
-    super.key,
-  });
+  const CreatePostCard({super.key, required this.onPostedCreated});
+  final VoidCallback onPostedCreated;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -21,7 +20,11 @@ class CreatePostCard extends HookWidget {
     final profileImage = authService.userInfo['user']['profileImage'];
     return GestureDetector(
       onTap: () {
-        Utils.model(context, const CreatePostScreen());
+        Utils.model(
+            context,
+            CreatePostScreen(
+              onPostCreated: onPostedCreated,
+            ));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
@@ -83,7 +86,11 @@ class CreatePostCard extends HookWidget {
                       ),
                     ),
                     onPressed: () {
-                      Utils.model(context, const CreatePostScreen());
+                      Utils.model(
+                          context,
+                          CreatePostScreen(
+                            onPostCreated: onPostedCreated,
+                          ));
                     },
                     child: BaseText(
                       title: AppLocalization.of(context).getTranslatedValue("post").toString(),

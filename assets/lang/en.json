@@ -142,6 +142,7 @@
     "area": "Area",
     "lastUpdated": "Last Updated",
     "soilTestingTitle": "Soil Testing",
+    "cropMonitoringTitle": "Crop Monitoring",
     "lastReport": "Last Report",
     "irrigationTitle": "Irrigation",
     "irrigationDescription": "Irrigation helps to grow crops, maintain landscapes, and revegetate disturbed soils in dry areas and during times of below-average rainfall. In addition to these uses, irrigation is also employed to protect crops from frost, suppress weed growth in grain fields, and prevent soil consolidation.",
@@ -238,5 +239,13 @@
     "spamReport2": "Nudity or sexual activity",
     "spamReport3": "Hate speech or symbols",
     "additionalReport": "If your concern is not listed, write here...",
-    "willItRain": "Will it rain"
+    "willItRain": "Will it rain",
+    "addCropMonitoringQuestion": "Do you want to add this crop for monitoring?",
+    "ndviTasksHeader": "Tasks directed for this stage",
+    "ndviPromoDescription": "Fellow Farmers, through this technology the crops planted in your fields will be monitored through satellite. Every 10 days, you will get accurate updates on the health of the crop, which will let you know how healthy the crop is and what needs improvement.",
+    "ndviAdvantages01": "⏱️ Spotting problems early",
+    "ndviAdvantages02": "💰 Reduction in cost of farming",
+    "ndviAdvantages03": "🌾 15-20% increase in production and income",
+    "cropNotAvailableInState": "This crop is not available in your state right now.",
+    "noReportFound": "No Reports Found!"
 }

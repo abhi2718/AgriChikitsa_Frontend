@@ -20,9 +20,10 @@ import '../../../../widgets/button.widgets/elevated_button.dart';
 import '../../../../widgets/text.widgets/text.dart';
 
 class CreatePostScreen extends HookWidget {
-  const CreatePostScreen({super.key, this.feed, this.isEdit = false});
+  const CreatePostScreen({super.key, this.feed, this.isEdit = false, required this.onPostCreated});
   final dynamic feed;
   final bool isEdit;
+  final VoidCallback onPostCreated;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -469,7 +470,7 @@ class CreatePostScreen extends HookWidget {
                     onPress: () {
                       feed != null
                           ? useViewModel.updatePost(context, feed['_id'], isEdit)
-                          : useViewModel.createPost(context);
+                          : useViewModel.createPost(context, onPostCreated);
                     }),
               )
             ],

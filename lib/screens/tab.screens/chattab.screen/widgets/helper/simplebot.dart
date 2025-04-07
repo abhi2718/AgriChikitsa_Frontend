@@ -196,6 +196,7 @@ class ChatScreen extends HookWidget {
                                                 : () {
                                                     provider.handleSelctCrop(
                                                         context,
+                                                        message["options_en"][index],
                                                         profileViewModel.locale["language"] == "en"
                                                             ? message["options_en"][index]
                                                             : message["options_hi"][index],
@@ -241,6 +242,137 @@ class ChatScreen extends HookWidget {
                                                       ? null
                                                       : () {
                                                           provider.handleSelctCrop(
+                                                              context,
+                                                              message["options_en"][currentIndex],
+                                                              profileViewModel.locale["language"] ==
+                                                                      "en"
+                                                                  ? message["options_en"]
+                                                                      [currentIndex]
+                                                                  : message["options_hi"]
+                                                                      [currentIndex],
+                                                              message["id"]);
+                                                        },
+                                                  child: CustomChatButton(
+                                                    isCrops: true,
+                                                    text:
+                                                        profileViewModel.locale["language"] == "en"
+                                                            ? message["options_en"][currentIndex]
+                                                            : message["options_hi"][currentIndex],
+                                                    isSelected: provider.selectedCrop ==
+                                                            (profileViewModel.locale["language"] ==
+                                                                    "en"
+                                                                ? message["options_en"]
+                                                                    [currentIndex]
+                                                                : message["options_hi"]
+                                                                    [currentIndex])
+                                                        ? true
+                                                        : false,
+                                                  ),
+                                                );
+                                              }),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          message["isAnswerSelected"]
+                              ? CustomTextBubble(
+                                  text: message["answer"],
+                                  isSender: message["isAnswerSelected"],
+                                )
+                              : Container(),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          provider.showCategoriesdCropLoader ? const ChatLoader() : Container()
+                        ],
+                      );
+                    }
+                    if (index == 4) {
+                      return Column(
+                        children: [
+                          CustomTextBubble(
+                            text: profileViewModel.locale["language"] == "en"
+                                ? message["question_en"]
+                                : message["question_hi"],
+                            isSender: message["isMe"],
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          SizedBox(
+                            width: dimension['width']! - 32,
+                            child: Column(
+                              children: [
+                                SingleChildScrollView(
+                                  child: SizedBox(
+                                    width: dimension['width']! - 32,
+                                    height: dimension['height']! * 0.06,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: profileViewModel.locale["language"] == "en"
+                                            ? message["options_en"].length > 10
+                                                ? 10
+                                                : message["options_en"].length
+                                            : message["options_hi"].length > 10
+                                                ? 10
+                                                : message["options_hi"].length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: message["isAnswerSelected"]
+                                                ? null
+                                                : () {
+                                                    provider.handleSelctCategoriesdCrop(
+                                                        context,
+                                                        profileViewModel.locale["language"] == "en"
+                                                            ? message["options_en"][index]
+                                                            : message["options_hi"][index],
+                                                        message["id"]);
+                                                  },
+                                            child: CustomChatButton(
+                                              isCrops: true,
+                                              text: profileViewModel.locale["language"] == "en"
+                                                  ? message["options_en"][index]
+                                                  : message["options_hi"][index],
+                                              isSelected: provider.selectedCrop ==
+                                                      (profileViewModel.locale["language"] == "en"
+                                                          ? message["options_en"][index]
+                                                          : message["options_hi"][index])
+                                                  ? true
+                                                  : false,
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                message["options_en"].length > 10 ||
+                                        message["options_hi"].length > 10
+                                    ? SingleChildScrollView(
+                                        child: SizedBox(
+                                          width: dimension['width']! - 32,
+                                          height: dimension['height']! *
+                                              (profileViewModel.locale["language"] == "en"
+                                                  ? 0.067
+                                                  : 0.065),
+                                          child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: profileViewModel.locale["language"] == "en"
+                                                  ? message["options_en"].length - 10
+                                                  : message["options_hi"].length - 10,
+                                              itemBuilder: (context, index) {
+                                                int currentIndex = index + 10;
+                                                return InkWell(
+                                                  onTap: message["isAnswerSelected"]
+                                                      ? null
+                                                      : () {
+                                                          provider.handleSelctCategoriesdCrop(
                                                               context,
                                                               profileViewModel.locale["language"] ==
                                                                       "en"
@@ -290,7 +422,8 @@ class ChatScreen extends HookWidget {
                         ],
                       );
                     }
-                    if (index == 4) {
+
+                    if (index == 5) {
                       return Column(
                         children: [
                           CustomTextBubble(
@@ -356,7 +489,7 @@ class ChatScreen extends HookWidget {
                         ],
                       );
                     }
-                    if (index == 5) {
+                    if (index == 6) {
                       return Column(
                         children: [
                           (profileViewModel.locale["language"] == "en"
@@ -414,7 +547,7 @@ class ChatScreen extends HookWidget {
                         ],
                       );
                     }
-                    if (index == 6) {
+                    if (index == 7) {
                       return Column(
                         children: [
                           CustomTextBubble(
@@ -547,14 +680,6 @@ class ChatScreen extends HookWidget {
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.file(
                                           File(provider.cropImage),
-                                          // progressIndicatorBuilder:
-                                          //     (context, url, downloadProgress) => Skeleton(
-                                          //   height: dimension['height']! * 0.40,
-                                          //   width: dimension['width']! * 0.6,
-                                          //   radius: 8,
-                                          // ),
-                                          // errorWidget: (context, url, error) =>
-                                          //     const Icon(Icons.error),
                                           fit: BoxFit.cover,
                                           height: dimension['height']! * 0.40,
                                           width: dimension['width']! * 0.6,
@@ -567,7 +692,7 @@ class ChatScreen extends HookWidget {
                         ],
                       );
                     }
-                    if (index == 7) {
+                    if (index == 8) {
                       return Column(
                         children: [
                           CustomTextBubble(
@@ -582,35 +707,47 @@ class ChatScreen extends HookWidget {
                               children: [
                                 provider.isChatCompleted
                                     ? const SizedBox.shrink()
-                                    : IconButton(
+                                    : TextButton(
                                         onPressed:
                                             provider.showCameraButton || provider.isChatCompleted
                                                 ? null
                                                 : () {
                                                     provider.setImageCheck(true, context);
                                                   },
-                                        icon: const Icon(
-                                          Icons.check,
-                                          color: AppColor.extraDark,
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: AppColor.whiteColor,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 8),
                                         ),
-                                        style: IconButton.styleFrom(
-                                            backgroundColor: AppColor.whiteColor),
+                                        child: Text(
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("yes")
+                                              .toString(),
+                                          style: const TextStyle(color: AppColor.extraDark),
+                                        ),
                                       ),
+                                const SizedBox(width: 8), // Space between buttons
                                 provider.isChatCompleted
                                     ? const SizedBox.shrink()
-                                    : IconButton(
+                                    : TextButton(
                                         onPressed:
                                             provider.showCameraButton || provider.isChatCompleted
                                                 ? null
                                                 : () {
                                                     provider.setImageCheck(false, context);
                                                   },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: AppColor.whiteColor,
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 8),
                                         ),
-                                        style: IconButton.styleFrom(backgroundColor: Colors.red),
-                                      )
+                                        child: Text(
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("no")
+                                              .toString(),
+                                          style: const TextStyle(color: AppColor.whiteColor),
+                                        ),
+                                      ),
                               ],
                             ),
                           ),
@@ -643,7 +780,7 @@ class ChatScreen extends HookWidget {
                         ],
                       );
                     }
-                    if (index == 8) {
+                    if (index == 9) {
                       return Column(
                         children: [
                           provider.showSeventhBubbleLoader ? const ChatLoader() : Container(),
