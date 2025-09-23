@@ -279,4 +279,9 @@ class Utils {
       return '${(difference.inDays / 365).floor()}y';
     }
   }
+
+  static String cleanHtmlTags(String htmlText) {
+    final RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: false);
+    return htmlText.replaceAll(exp, '').replaceAll('&nbsp;', ' ').trim();
+  }
 }

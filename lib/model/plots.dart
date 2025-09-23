@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 class Plots {
   String id;
+  String fieldNo;
   String fieldName;
+  String cropId;
   String cropName;
   String cropNameHi;
   String cropImage;
@@ -18,7 +18,9 @@ class Plots {
 
   Plots(
       {this.id = "1",
+      required this.fieldNo,
       required this.fieldName,
+      required this.cropId,
       required this.cropName,
       required this.cropNameHi,
       required this.latitude,
@@ -35,12 +37,14 @@ class Plots {
   factory Plots.fromJson(Map<String, dynamic> json) {
     return Plots(
         cropImage: json['cropImage'],
+        cropId: json["crop"] != null ? json['crop']['_id'] : "N/A",
         cropName: json["crop"] != null ? json['crop']['name'] : "N/A",
         cropNameHi: json["crop"] != null ? json['crop']['name_hi'] : "N/A",
         area: json['area'],
         latitude: json['cordinates']['latitude'],
         longitude: json['cordinates']['longitude'],
         fieldName: json['feildName'],
+        fieldNo: json['feildNo']?.toString() ?? "1",
         soilType: json['soilType'],
         sowingDate: json['sowingDate'],
         id: json['_id'],

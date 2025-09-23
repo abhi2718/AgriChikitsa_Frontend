@@ -130,15 +130,16 @@ class WeatherCard extends StatelessWidget {
                 const SizedBox(
                   width: 8,
                 ),
-                InkWell(
-                  onTap: () {
-                    provider.getCurrentWeather(context, currentSelectedPlot);
-                  },
-                  child: const Icon(
-                    Icons.refresh,
-                    color: AppColor.whiteColor,
-                  ),
-                )
+                // InkWell(
+                //   onTap: () {
+                //     provider.getCurrentWeather(context, currentSelectedPlot,
+                //         AppLocalization.of(context).locale.toString());
+                //   },
+                //   child: const Icon(
+                //     Icons.refresh,
+                //     color: AppColor.whiteColor,
+                //   ),
+                // )
               ],
             )
           ],

@@ -78,9 +78,6 @@ class JankariHomeTab extends HookWidget {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   stops: [0, 0.8]),
-                              // boxShadow: const [
-                              //   BoxShadow(offset: Offset(1, 1), color: Colors.grey)
-                              // ]
                             ),
                             child: provider.weatherPDFloader
                                 ? const Center(
@@ -120,9 +117,6 @@ class JankariHomeTab extends HookWidget {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 stops: [0, 0.8]),
-                            // boxShadow: const [
-                            //   BoxShadow(offset: Offset(1, 1), color: Colors.grey)
-                            // ]
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

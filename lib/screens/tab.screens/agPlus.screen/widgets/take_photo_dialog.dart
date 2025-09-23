@@ -52,11 +52,21 @@ void takeAPhotoDialog(BuildContext context, dynamic dimension, AGPlusViewModel p
                             height: 8,
                           ),
                           InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              takeLocationDialog(context, provider);
+                            onTap: () async {
+                              if (provider.checkLocationLoader) {
+                                return;
+                              }
+                              provider.checkLocation(context).then((value) {
+                                if (provider.isLocationEnabled) {
+                                  provider.mapCurrentLocation(context);
+                                } else {
+                                  Navigator.pop(context);
+                                  takeLocationDialog(context, provider);
+                                }
+                              });
                             },
                             child: GradientButton(
+                                isLoading: provider.checkLocationLoader,
                                 height: (dimension['height']! * 0.4) * 0.2,
                                 width: dimension['width']!,
                                 title: AppLocalization.of(context)

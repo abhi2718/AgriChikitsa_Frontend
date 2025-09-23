@@ -146,8 +146,7 @@ class AllPlotsScreen extends HookWidget {
                                                   padding:
                                                       const EdgeInsets.symmetric(horizontal: 16),
                                                   child: Text(
-                                                    "${AppLocalization.of(context).getTranslatedValue("plotCountTitle").toString()} ${plot.key + 1} ${plot.value.fieldName}",
-                                                    // plot.fieldName,
+                                                    "${AppLocalization.of(context).getTranslatedValue("plotCountTitle").toString()} ${plot.value.fieldNo} ${plot.value.fieldName}",
                                                     style: GoogleFonts.inter(
                                                         fontSize: 22,
                                                         fontWeight: FontWeight.w600,
@@ -216,7 +215,7 @@ class AllPlotsScreen extends HookWidget {
                         }
                       },
                       child: Container(
-                        margin: provider.userPlotList.isNotEmpty ? EdgeInsets.all(16) : null,
+                        margin: provider.userPlotList.isNotEmpty ? const EdgeInsets.all(16) : null,
                         // margin: false ? EdgeInsets.all(16) : null,
                         child: GradientButton(
                           height: dimension['height']! * 0.10,

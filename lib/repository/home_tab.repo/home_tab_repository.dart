@@ -79,8 +79,6 @@ class HomeTabRepository {
   Future<dynamic> resharePost(dynamic payload, String feedId) async {
     try {
       final url = '${AppUrl.feedEndPoint}/repost/$feedId';
-      print(url);
-      print(payload);
       final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (e) {

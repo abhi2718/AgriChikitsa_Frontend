@@ -51,6 +51,7 @@ class CropDetails extends StatelessWidget {
                     child: TextField(
                       controller: useViewModel.fieldSizecontroller,
                       cursorColor: AppColor.darkBlackColor,
+                      keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       style: const TextStyle(color: AppColor.darkBlackColor),
                       decoration: InputDecoration(
@@ -143,23 +144,34 @@ class CropDetails extends StatelessWidget {
                       ),
                     );
                   }),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Consumer<AGPlusViewModel>(builder: (context, provider, child) {
-                        return Checkbox(
-                          value: provider.notPlantedCheck,
-                          onChanged: (bool? value) {
-                            provider.setNotPlantedCheck(value);
-                          },
-                          activeColor: Colors.green,
-                        );
-                      }),
-                      Text(
-                        AppLocalization.of(context).getTranslatedValue("notPlantedYet").toString(),
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ],
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    height: dimension['height']! * 0.075,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Consumer<AGPlusViewModel>(builder: (context, provider, child) {
+                          return Checkbox(
+                            value: provider.notPlantedCheck,
+                            onChanged: (bool? value) {
+                              provider.setNotPlantedCheck(value);
+                            },
+                            activeColor: Colors.green,
+                          );
+                        }),
+                        Text(
+                          AppLocalization.of(context)
+                              .getTranslatedValue("notPlantedYet")
+                              .toString(),
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
                   ),
                   Consumer<AGPlusViewModel>(builder: (context, provider, child) {
                     return provider.sowingDate == null
@@ -216,29 +228,34 @@ class CropDetails extends StatelessWidget {
                                 return DropdownMenuItem<String>(
                                   value: value["_id"],
                                   child: BaseText(
-                                    title: value["duration"],
+                                    title: AppLocalization.of(context).locale.toString() == "en"
+                                        ? value["duration_en"]
+                                        : value["duration_hi"],
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 );
                               }).toList(),
                               onChanged: (selectedId) {
                                 if (selectedId != null) {
-                                  final selectedItem = provider.durations
-                                      .firstWhere((item) => item["_id"] == selectedId);
-                                  provider.setDuration(selectedItem);
+                                  final selected =
+                                      provider.durations.firstWhere((d) => d["_id"] == selectedId);
+                                  provider.setDuration(selected);
                                 }
                               },
                             ));
                   }),
-                  InkWell(
-                    onTap: () {
-                      useViewModel.createPlot(context);
-                    },
-                    child: GradientButton(
-                        height: dimension['height']! * 0.07,
-                        width: dimension['width']! * 0.3,
-                        title: AppLocalization.of(context).getTranslatedValue("save").toString()),
-                  )
+                  Consumer<AGPlusViewModel>(builder: (context, provider, child) {
+                    return InkWell(
+                      onTap: () {
+                        provider.addFieldLoader ? null : useViewModel.createPlot(context);
+                      },
+                      child: GradientButton(
+                          isLoading: provider.addFieldLoader,
+                          height: dimension['height']! * 0.07,
+                          width: dimension['width']! * 0.3,
+                          title: AppLocalization.of(context).getTranslatedValue("save").toString()),
+                    );
+                  })
                 ],
               ),
             ),

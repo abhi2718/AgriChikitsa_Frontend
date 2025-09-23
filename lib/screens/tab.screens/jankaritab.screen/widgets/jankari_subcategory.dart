@@ -23,8 +23,6 @@ class SubCategoryContainer extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
     return Scaffold(
-      // height: dimension['height']! - 80,
-      // width: dimension['width'],
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
@@ -34,22 +32,6 @@ class SubCategoryContainer extends HookWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   children: [
-                //     InkWell(
-                //         onTap: () => Navigator.of(context).pop(),
-                //         child:
-                //             const SizedBox(height: 40, width: 30, child: Icon(Icons.arrow_back))),
-                //     InkWell(
-                //       onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
-                //       child: const Icon(
-                //         Remix.close_circle_line,
-                //       ),
-                //     ),
-                //   ],
-                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: BaseText(

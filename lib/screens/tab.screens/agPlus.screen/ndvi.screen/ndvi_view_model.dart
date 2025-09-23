@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/ndvi_model.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
@@ -8,11 +10,13 @@ import 'package:flutter/material.dart';
 class NDVIViewModel with ChangeNotifier {
   final _agPlusRepository = AGPlusRepository();
   bool responseLoader = true;
+  bool addForMonitoringLoader = false;
   NDVIResponse? ndviResponse;
 
   void reinitialize() {
     responseLoader = true;
     ndviResponse = null;
+    addForMonitoringLoader = false;
   }
 
   setReponseLoader(value) {
@@ -20,11 +24,19 @@ class NDVIViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> addFieldForMonitoring(BuildContext context, String fieldId) async {
+  setAddForMonitoringLoader(value) {
+    addForMonitoringLoader = value;
+    notifyListeners();
+  }
+
+  Future<Map<String, dynamic>> addFieldForMonitoring(BuildContext context, String fieldId) async {
+    setAddForMonitoringLoader(true);
     try {
-      await _agPlusRepository.addFieldForMonitoring(fieldId);
-      return true;
+      final res = await _agPlusRepository.addFieldForMonitoring(fieldId);
+      setAddForMonitoringLoader(false);
+      return {...res, "success": true};
     } catch (error) {
+      setAddForMonitoringLoader(false);
       if (kDebugMode) {
         if (context.mounted) {
           Utils.flushBarErrorMessage(
@@ -33,14 +45,19 @@ class NDVIViewModel with ChangeNotifier {
               context);
         }
       }
-      return false;
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("errorMessage").toString(),
+            context);
+      }
+      return {"success": false};
     }
   }
 
   Future<bool> getCropHealthStatus(BuildContext context, String ndviId, String pageNo) async {
     try {
       final response = await _agPlusRepository.getNDVIData(ndviId, pageNo);
-      print(response);
       if (response is List && response.length >= 2) {
         final data = response[0] as Map<String, dynamic>?;
         final statusCode = response[1] as int?;

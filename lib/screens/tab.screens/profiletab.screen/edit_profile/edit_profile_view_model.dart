@@ -161,6 +161,7 @@ class EditProfileViewModel with ChangeNotifier {
 
   void captureProfileImage(context, AuthService authService) async {
     try {
+      if (!context.mounted) return;
       final data = await Utils.capturePhoto();
       if (data != null) {
         setImageLoading(true);

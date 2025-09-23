@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
@@ -224,13 +223,11 @@ class JankariViewModel with ChangeNotifier {
     try {
       jankariSubcategoryPostList.clear();
       final data = await _jankariRepository.getJankariSubCategoryPost(selectedSubCategory);
-
       jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
       if (jankariSubcategoryPostList.length > 1) {
         changeActiveButtonState(true);
       }
       setJankariSubCategoryLoaderPost(false);
-      notifyListeners();
       updateStats(context, 'post', jankariSubcategoryPostList[0].id);
     } catch (error) {
       setJankariSubCategoryLoaderPost(false);
@@ -254,7 +251,6 @@ class JankariViewModel with ChangeNotifier {
           changeActiveButtonState(true);
         }
         setJankariSubCategoryLoaderPost(false);
-        notifyListeners();
         if (context.mounted) {
           updateStats(context, 'post', jankariSubcategoryPostList[0].id);
         }

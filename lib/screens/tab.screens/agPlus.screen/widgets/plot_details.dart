@@ -73,8 +73,15 @@ class PlotDetails extends HookWidget {
                     value: provider.soilType.isEmpty ? null : provider.soilType,
                     alignment: AlignmentDirectional.centerStart,
                     items: [
+                      AppLocalization.of(context).getTranslatedValue("loamSoil").toString(),
+                      AppLocalization.of(context).getTranslatedValue("sandySoil").toString(),
                       AppLocalization.of(context).getTranslatedValue("blackSoil").toString(),
-                      AppLocalization.of(context).getTranslatedValue("redSoil").toString()
+                      AppLocalization.of(context).getTranslatedValue("redSoil").toString(),
+                      AppLocalization.of(context).getTranslatedValue("clayeySoil").toString(),
+                      AppLocalization.of(context).getTranslatedValue("desertSoil").toString(),
+                      AppLocalization.of(context).getTranslatedValue("gravellySoil").toString(),
+                      AppLocalization.of(context).getTranslatedValue("mountainSoil").toString(),
+                      AppLocalization.of(context).getTranslatedValue("marshySoil").toString()
                     ].map<DropdownMenuItem<String>>((dynamic value) {
                       return DropdownMenuItem<String>(
                         value: value,

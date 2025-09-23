@@ -28,7 +28,6 @@ class WeatherViewModel with ChangeNotifier {
   void getCurrentWeather(BuildContext context, Plots currentField, String lang) async {
     setWeatherDataLoader(true);
     try {
-      // Always fetch data from the API
       final data = await _agPlusRepository.getCurrentWeather(
           currentField.latitude, currentField.longitude, lang);
       latestWeatherData = WeatherData.fromJson(data);
@@ -53,7 +52,6 @@ class WeatherViewModel with ChangeNotifier {
   void getPredictedData(BuildContext context, Plots currentField, String lang) async {
     setPredictedDataLoader(true);
     try {
-      // Always fetch data from the API
       predictedDataList.clear();
       predictedHourlyDataList.clear();
       final data = await _agPlusRepository.getPredictedWeather(
@@ -61,9 +59,21 @@ class WeatherViewModel with ChangeNotifier {
       predictedDataList = (data["forecast"]['forecastday'] as List)
           .map((day) => PredictedData.fromJson(day))
           .toList();
+
+      final now = DateTime.now();
       predictedHourlyDataList = (data['forecast']['forecastday'][0]['hour'] as List)
           .map((hour) => PredictedHourlyData.fromJson(hour))
-          .toList();
+          .where((hourData) {
+        final parsedTime = DateFormat('hh:mm a').parse(hourData.time);
+        final hourlyDateTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          parsedTime.hour,
+          parsedTime.minute,
+        );
+        return hourlyDateTime.isAfter(now) || hourlyDateTime.hour == now.hour;
+      }).toList();
       setPredictedDataLoader(false);
       notifyListeners();
     } catch (error) {

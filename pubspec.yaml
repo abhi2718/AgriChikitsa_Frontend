@@ -79,6 +79,7 @@ dependencies:
   permission_handler: ^11.3.1
   smooth_page_indicator: ^1.2.0+3
   image_cropper: ^8.0.1
+  flutter_tts: ^4.0.2
 
 dev_dependencies:
   flutter_test:

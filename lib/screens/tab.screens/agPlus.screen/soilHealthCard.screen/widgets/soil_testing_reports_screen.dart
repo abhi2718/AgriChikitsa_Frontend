@@ -180,7 +180,6 @@ class SoilTestingReportScreen extends HookWidget {
     //Dispose the document.
     document.dispose();
     //Save and launch the file.
-    print("Here");
     await saveAndLaunchFile(bytes, 'ReportTitle.pdf');
   }
 

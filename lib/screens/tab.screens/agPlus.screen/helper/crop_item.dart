@@ -44,9 +44,6 @@ class CropItem extends StatelessWidget {
                       backgroundColor: Colors.green,
                       backgroundImage: CachedNetworkImageProvider(
                         crop.backgroundImage,
-                        errorListener: (_) {
-                          debugPrint("Failed to load image");
-                        },
                       ),
                     ),
                     crop.isSelected

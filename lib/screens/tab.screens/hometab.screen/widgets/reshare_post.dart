@@ -42,7 +42,6 @@ class _ResharePostState extends State<ResharePost> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     if (_currentVideoController != null && _currentVideoController!.value.isInitialized) {
       _currentVideoController!.dispose();
@@ -120,7 +119,6 @@ class _ResharePostState extends State<ResharePost> {
                                   errorText: _errorText),
                             ),
                             Container(
-                                // height: 300,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: AppColor.chatSent, width: 2),
                                   color: AppColor.whiteColor,
@@ -263,7 +261,6 @@ class _ResharePostState extends State<ResharePost> {
                       ),
                     ),
                   ),
-                  // const Spacer(),
                   InkWell(
                       onTap: _controller.text.trim().isEmpty
                           ? () {
@@ -409,7 +406,6 @@ class _ResharePostState extends State<ResharePost> {
             isExpanded: true,
             colors: const ProgressBarColors(playedColor: AppColor.darkColor),
           ),
-          // FullScreenButton()
         ],
       ),
     );

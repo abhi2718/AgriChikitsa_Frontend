@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,7 @@ class SignInScreen extends HookWidget {
               height: 26,
             ),
             Consumer<SignInViewModel>(builder: (context, provider, child) {
+              final isValid = useViewModel.phoneNumberController.text.length == 10;
               return TextField(
                 autofillHints: const [AutofillHints.telephoneNumber],
                 controller: useViewModel.phoneNumberController,
@@ -47,8 +49,15 @@ class SignInScreen extends HookWidget {
                   labelText: AppLocalization.of(context)
                       .getTranslatedValue("mobileNumberCount")
                       .toString(),
-                  errorText: useViewModel.errorMessage,
-                  //   ),
+                  errorText: isValid ? null : useViewModel.errorMessage,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: isValid ? AppColor.extraDark : AppColor.errorColor),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: isValid ? AppColor.extraDark : AppColor.errorColor, width: 2),
+                  ),
                 ),
               );
             }),

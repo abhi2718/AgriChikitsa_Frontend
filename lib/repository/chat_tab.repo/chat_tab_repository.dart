@@ -3,9 +3,14 @@ import '../../res/app_url.dart';
 
 class ChatTabRepository {
   final _apiServices = NetworkApiService();
-  Future<dynamic> fetchBotQuestion(String id) async {
+  Future<dynamic> fetchBotQuestion(String id, [String? cropCategoryId]) async {
     try {
-      final url = '${AppUrl.botQquestionsEndPoint}/$id';
+      String url;
+      if (cropCategoryId != null) {
+        url = '${AppUrl.botQquestionsEndPoint}/$id?categoryId=$cropCategoryId';
+      } else {
+        url = '${AppUrl.botQquestionsEndPoint}/$id';
+      }
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {

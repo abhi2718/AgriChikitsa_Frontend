@@ -19,6 +19,7 @@ class ChatTabScreen extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
     useEffect(() {
+      useViewModel.reinitilize(context);
       Future.delayed(Duration.zero, () {});
     }, []);
 
@@ -43,6 +44,7 @@ class ChatTabScreen extends HookWidget {
                 ),
                 TextButton(
                   onPressed: () {
+                    useViewModel.reinitilize(context);
                     Navigator.of(context).pop(true); // Close the dialog and exit the screen
                   },
                   child: Text(
@@ -81,14 +83,10 @@ class ChatTabScreen extends HookWidget {
                 InkWell(
                     onTap: () async {
                       final shouldPop = await _onWillPop();
-                      // if (shouldPop) {
-                      //   useViewModel.reinitilize(context);
-                      //   Navigator.of(context).pop();
-                      // }
                       if (shouldPop) {
-                        Navigator.of(context).pop(); // Pop the screen first
+                        Navigator.of(context).pop();
                         Future.delayed(Duration.zero, () {
-                          useViewModel.reinitilize(context); // Reinitialize after pop
+                          useViewModel.reinitilize(context);
                         });
                       }
                     },
@@ -137,7 +135,7 @@ class ChatTabScreen extends HookWidget {
         ),
         body: Column(
           children: [
-            Expanded(child: ChatScreen()),
+            const Expanded(child: ChatScreen()),
             Consumer<ChatTabViewModel>(builder: (context, provider, chlid) {
               return provider.enableKeyBoard || provider.showCameraButton
                   ? Container(

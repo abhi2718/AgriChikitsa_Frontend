@@ -7,7 +7,6 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_mode
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -106,22 +105,10 @@ class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
                   const SizedBox(
                     height: 8,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "${AppLocalization.of(context).getTranslatedValue("lastUpdated").toString()} ${widget.useViewModel.time}",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w400, color: AppColor.whiteColor, fontSize: 15),
-                      ),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      const Icon(
-                        Icons.refresh,
-                        color: AppColor.whiteColor,
-                      ),
-                    ],
+                  Text(
+                    "${AppLocalization.of(context).getTranslatedValue("lastUpdated").toString()} ${widget.useViewModel.time}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w400, color: AppColor.whiteColor, fontSize: 15),
                   ),
                 ],
               ),
@@ -181,9 +168,7 @@ class _PresentDetailsState extends State<PresentDetails> {
     final weatherViewModel = Provider.of<WeatherViewModel>(context, listen: false);
     final lang = AppLocalization.of(context).locale.toString();
     useEffect(() {
-      if (weatherViewModel.predictedDataList.isEmpty) {
-        weatherViewModel.getPredictedData(context, useViewModel.selectedPlot, lang);
-      }
+      weatherViewModel.getPredictedData(context, useViewModel.selectedPlot, lang);
     }, [useViewModel.selectedPlot]);
     return SingleChildScrollView(
       child: Consumer<WeatherViewModel>(builder: (context, provider, child) {

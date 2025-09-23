@@ -9,7 +9,8 @@ class NDVIResponse {
   final int totalRecords;
   final int statusCode;
   final Color statusColor;
-  final String currentStaging;
+  final String currentStagingEn;
+  final String currentStagingHi;
 
   NDVIResponse({
     required this.messageHi,
@@ -19,34 +20,38 @@ class NDVIResponse {
     required this.ndviHistory,
     required this.totalRecords,
     required this.statusCode,
-    required this.currentStaging,
+    required this.currentStagingEn,
+    required this.currentStagingHi,
   }) : statusColor = _getStatusColor(statusCode);
 
   factory NDVIResponse.fromJson(Map<String, dynamic>? json, int? statusCode) {
     if (json == null || statusCode == null) {
       return NDVIResponse(
-          messageHi: 'कोई डेटा मौजूद नहीं।',
-          messageEn: 'No data available',
-          advisoryEn: 'कोई डेटा मौजूद नहीं।',
-          advisoryHi: 'No data available',
-          ndviHistory: [],
-          totalRecords: 0,
-          statusCode: 0,
-          currentStaging: "Not Available");
+        messageHi: 'कोई डेटा मौजूद नहीं।',
+        messageEn: 'No data available',
+        advisoryEn: 'कोई डेटा मौजूद नहीं।',
+        advisoryHi: 'No data available',
+        ndviHistory: [],
+        totalRecords: 0,
+        statusCode: 0,
+        currentStagingEn: "Not Available",
+        currentStagingHi: "उपलब्ध नहीं",
+      );
     }
     return NDVIResponse(
-        messageHi: json['message_hi'] ?? 'कोई डेटा मौजूद नहीं।',
-        messageEn: json['message_en'] ?? 'No message available',
-        advisoryEn: json['advisory_en'] ?? 'No message available',
-        advisoryHi: json['advisory_hi'] ?? 'कोई डेटा मौजूद नहीं।',
-        ndviHistory: (json['ndvi_history'] as List<dynamic>?)
-                ?.map((e) => NDVIHistory.fromJson(e))
-                .toList() ??
-            [],
-        totalRecords:
-            json['total_ndvi_records'] != null ? (json['total_ndvi_records'] as num).toInt() : 0,
-        statusCode: statusCode,
-        currentStaging: json["current_crop_stage"] ?? "N/A");
+      messageHi: json['message_hi'] ?? 'कोई डेटा मौजूद नहीं।',
+      messageEn: json['message_en'] ?? 'No message available',
+      advisoryEn: json['advisory_en'] ?? 'No message available',
+      advisoryHi: json['advisory_hi'] ?? 'कोई डेटा मौजूद नहीं।',
+      ndviHistory:
+          (json['ndvi_history'] as List<dynamic>?)?.map((e) => NDVIHistory.fromJson(e)).toList() ??
+              [],
+      totalRecords:
+          json['total_ndvi_records'] != null ? (json['total_ndvi_records'] as num).toInt() : 0,
+      statusCode: statusCode,
+      currentStagingEn: json["currentCropStage_en"] ?? "N/A",
+      currentStagingHi: json["currentCropStage_hi"] ?? "N/A",
+    );
   }
 
   static Color _getStatusColor(int code) {

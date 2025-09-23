@@ -25,6 +25,7 @@ class AppUrl {
   static const String notificationsEndPoint = '$baseUrl/notification';
   static const String chatEndPoint = '$baseUrl/chat';
   static const String jankariPostToggleLike = '$baseUrl/jankari/likes/post';
+  static const String fieldEndpoint = '$baseUrl/agristick';
   static const String getFieldsEndPoint = '$baseUrl/agristick/feilds';
   static const String deleteFieldEndPoint = '$baseUrl/agristick/feild';
   static const String createPlotEndPoint = '$baseUrl/agristick/addFeild';
@@ -44,4 +45,6 @@ class AppUrl {
   static const String profileDetailsEndPoint = '$baseUrl/users/profile';
   static const String connectionsEndPoint = '$baseUrl/connection';
   static const String ndviEndpoint = '$baseUrl/ndviReport';
+  static const String advisoryEnpoint = '$baseUrl/advisory';
+  static const String pestDiseaseEnpoint = '$baseUrl/agristickDashboard/crop-health';
 }

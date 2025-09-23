@@ -161,7 +161,6 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                     ],
                   ),
                 ),
-                // GestureDetector(child: Icon(Icons.more_vert)),
                 Builder(
                   builder: (context) => PopupMenuButton(
                     itemBuilder: (context) => [
@@ -196,24 +195,6 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
               ],
             ),
           ),
-          // feed['mediaType'] == 'image'
-          //     ? SizedBox(
-          //         height: dimension["width"]! - 16,
-          //         width: dimension["width"]!,
-          //         child: CachedNetworkImage(
-          //           imageUrl: feed['imgurl'],
-          //           progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-          //             height: dimension["width"]! - 16,
-          //             width: dimension["width"]!,
-          //             radius: 0,
-          //           ),
-          //           errorWidget: (context, url, error) => const Icon(Icons.error),
-          //           fit: BoxFit.fill,
-          //         ),
-          //       )
-          //     : feed['mediaType'] == 'video'
-          //         ? PostWidget(videoUrl: feed['videoUrl'])
-          //         : Player(videoUrl: feed['videoUrl'], aspectRatio: 16 / 9),
           widget.feed.containsKey("repostedFrom")
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,13 +304,6 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                                                         TextStyle(color: AppColor.hyperlinkColor),
                                                   ),
                                           ),
-                                        // Text(
-                                        //   home .getTimeAgo(
-                                        //       widget.feed["repostedFrom"]['createdAt'], context),
-                                        //   style: TextStyle(
-                                        //       fontWeight: FontWeight.bold,
-                                        //       color: Colors.black.withOpacity(0.6)),
-                                        // ),
                                       ],
                                     ),
                                   )
@@ -631,12 +605,8 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
               size: 30.0,
             ),
             onPressed: () {
-              // setState(() {
-              //   _controller.pause();
-              // });
-              // Utils.model(context, FullScreenYoutube());
               setState(() {
-                youtubeController.pause(); // Pause the video before entering fullscreen
+                youtubeController.pause();
               });
 
               Navigator.push(
@@ -649,7 +619,6 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
               );
             },
           ),
-          // FullScreenButton()
         ],
       ),
     );

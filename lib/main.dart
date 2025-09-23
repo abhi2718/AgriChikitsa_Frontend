@@ -9,6 +9,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.scre
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandi_prices_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -107,6 +108,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<NDVIViewModel>(
           create: (_) => NDVIViewModel(),
+        ),
+        ChangeNotifierProvider<TextToSpeechViewModel>(
+          create: (_) => TextToSpeechViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(

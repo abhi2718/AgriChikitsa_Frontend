@@ -11,7 +11,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class FullScreenImage extends StatefulWidget {
   const FullScreenImage(
       {super.key, required this.images, required this.feed, required this.useViewModel});
-  final List<String> images; // Changed from String to List<String>
+  final List<String> images;
   final dynamic feed;
   final HomeTabViewModel useViewModel;
 
@@ -82,8 +82,8 @@ class _FullScreenImageState extends State<FullScreenImage> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    AppColor.darkBlackColor.withOpacity(1), // Start color
-                    Colors.transparent, // End color
+                    AppColor.darkBlackColor.withOpacity(1),
+                    Colors.transparent,
                   ],
                 ),
               ),
@@ -153,7 +153,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (widget.images.length > 1) // Show dot indicator only for multiple images
+                  if (widget.images.length > 1)
                     Center(
                       child: SmoothPageIndicator(
                         controller: _pageController,

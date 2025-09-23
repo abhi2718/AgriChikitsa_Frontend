@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../data/network/network_api_service.dart';
 import '../../res/app_url.dart';
 
@@ -169,6 +171,16 @@ class AGPlusRepository {
     }
   }
 
+  Future<dynamic> checkPremium() async {
+    const url = "${AppUrl.fieldEndpoint}/is-premium";
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> fetchPlotHistory(String fieldId) async {
     try {
       final url = "${AppUrl.cropHistoryEndpoint}/$fieldId";
@@ -195,6 +207,37 @@ class AGPlusRepository {
       final response = await _apiServices.getNDVIApiResponse(url);
       return response;
     } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getWeedProtectionData(String cropId) async {
+    try {
+      final url = "${AppUrl.advisoryEnpoint}/kharpatvar/getByCrop/$cropId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getPestAndDiseaseData(String cropId) async {
+    try {
+      const url =
+          "${AppUrl.pestDiseaseEnpoint}/68369d99c18deb48aba2b08f/6836b790c18deb48aba2b195/uttar_pradesh/zaid";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> updateField(String fieldId, dynamic payload) async {
+    try {
+      final url = "${AppUrl.fieldEndpoint}/updateField/$fieldId";
+      final response = await _apiServices.getPutFeedApiResponse(url, payload);
+      return response;
+    } catch (e) {
       rethrow;
     }
   }

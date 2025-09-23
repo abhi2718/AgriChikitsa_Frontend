@@ -87,19 +87,6 @@ class _FeedState extends State<Feed> {
       isBookMarked.value = !isBookMarked.value;
     }
 
-    // useEffect(() {
-    //   if (myProfileViewModel.toogleHomeFeed["id"] == feed['_id']) {
-    //     isLiked.value = myProfileViewModel.toogleHomeFeed["isLiked"];
-    //     if (myProfileViewModel.toogleHomeFeed["isLiked"] == true) {
-    //       numberOfLikes.value = numberOfLikes.value + 1;
-    //     } else {
-    //       numberOfLikes.value = numberOfLikes.value - 1;
-    //     }
-    //     Future.delayed(Duration.zero, () {
-    //       myProfileViewModel.setToogleHomeFeed(false, "");
-    //     });
-    //   }
-    // }, [myProfileViewModel.toogleHomeFeed]);
     final user = widget.feed['user'];
     final dimension = Utils.getDimensions(context, true);
     return Container(
@@ -168,12 +155,10 @@ class _FeedState extends State<Feed> {
                           ? const SizedBox.shrink()
                           : GestureDetector(
                               onTap: () {
-                                // if (user.containsKey("isFollowing") ? user["isFollowing"] : false) {
                                 feedProfileModel.followUser(context, widget.feed['user']['_id']);
                                 setState(() {
                                   user["isFollowing"] = !user["isFollowing"];
                                 });
-                                // }
                               },
                               child: user.containsKey("isFollowing")
                                   ? user["isFollowing"]
@@ -349,20 +334,6 @@ class _FeedState extends State<Feed> {
                 ],
               ),
             ),
-            // feed['mediaType'] == 'image'
-            //     ?
-            //     : feed['mediaType'] == 'video'
-            //         ? PostWidget(
-            //             videoUrl: feed['videoUrl'],
-            //             postId: feed['_id'],
-            //             feed: feed,
-            //           )
-            //         // : Player(
-            //         //     videoUrl: feed['videoUrl'],
-            //         //     aspectRatio: 16 / 9,
-            //         //     feedId: feed['_id'],
-            //         //   ),
-            //         : SizedBox.shrink(),
             widget.feed.containsKey("repostedFrom")
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,9 +348,7 @@ class _FeedState extends State<Feed> {
                         ),
                       ),
                       Container(
-                          // margin: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: const BoxDecoration(
-                            // border: Border.all(color: AppColor.chatSent, width: 2),
                             border: Border(
                                 top: BorderSide(color: AppColor.chatSent, width: 2),
                                 bottom: BorderSide(color: AppColor.chatSent, width: 2)),
@@ -506,17 +475,10 @@ class _FeedState extends State<Feed> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // InkWell(
-                        //   onTap: handleLike,
-                        //   child: Icon(
-                        //     isLiked.value ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-                        //     color: AppColor.iconHeartColor,
-                        //   ),
-                        // ),
                         HeartButton(
-                          isLiked: isLiked.value, // Your current like status
+                          isLiked: isLiked.value,
                           onLike: () {
-                            handleLike(); // Perform your like action
+                            handleLike();
                           },
                         ),
                         const SizedBox(
@@ -596,7 +558,6 @@ class _FeedState extends State<Feed> {
                                                   ResharePost(
                                                     feed:
                                                         widget.feed['repostedFrom'] ?? widget.feed,
-                                                    // Condition 3: If the post is a reshared post, use the original post for resharing.
                                                   ),
                                                 );
                                               },
@@ -798,41 +759,9 @@ class _FeedState extends State<Feed> {
     }
     if (feed['mediaType'] == "video") {
       return _buildVideoPlayer(feed['videoUrl'], useViewModel, feed["_id"]);
-      // return VideoFeed(
-      //   url: feed['videoUrl'],
-      //   isActive: useViewModel.activeVideoId == feed['videoUrl'],
-      //   onVisibilityChanged: (isVisible) {
-      //     if (isVisible) {
-      //       useViewModel.changeActivateVideoId(feed["videoUrl"]);
-      //       // useViewModel.activeVideoId = feed['videoUrl'];
-      //     } else if (useViewModel.activeVideoId == feed['videoUrl']) {
-      //       // setState(() {
-      //       // activeVideoId = null;
-      //       useViewModel.changeActivateVideoId(null);
-      //       // });
-      //     }
-      //   },
-      // );
     }
     if (feed['mediaType'] == "youtube") {
       return _buildYoutubePlayer(feed['videoUrl'], useViewModel, feed["_id"]);
-      // return YoutubeFeed(
-      //   url: feed['videoUrl'],
-      //   isActive: useViewModel.activeVideoId == feed['videoUrl'],
-      //   onVisibilityChanged: (isVisible) {
-      //     if (isVisible) {
-      //       // setState(() {
-      //       //   activeVideoId = feed['url'];
-      //       // });
-      //       useViewModel.changeActivateVideoId(feed["videoUrl"]);
-      //     } else if (useViewModel.activeVideoId == feed['videoUrl']) {
-      //       // setState(() {
-      //       //   activeVideoId = null;
-      //       // });
-      //       useViewModel.changeActivateVideoId(null);
-      //   }
-      // },
-      // );
     } else {
       return const SizedBox.shrink();
     }
@@ -906,12 +835,8 @@ class _FeedState extends State<Feed> {
               size: 30.0,
             ),
             onPressed: () {
-              // setState(() {
-              //   _controller.pause();
-              // });
-              // Utils.model(context, FullScreenYoutube());
               setState(() {
-                youtubeController.pause(); // Pause the video before entering fullscreen
+                youtubeController.pause();
               });
 
               Navigator.push(
@@ -924,121 +849,8 @@ class _FeedState extends State<Feed> {
               );
             },
           ),
-          // FullScreenButton()
         ],
       ),
     );
   }
 }
-
-// class VideoFeed extends StatefulWidget {
-//   final String url;
-//   final bool isActive;
-//   final ValueChanged<bool> onVisibilityChanged;
-
-//   VideoFeed({
-//     required this.url,
-//     required this.isActive,
-//     required this.onVisibilityChanged,
-//   });
-
-//   @override
-//   _VideoFeedState createState() => _VideoFeedState();
-// }
-
-// class _VideoFeedState extends State<VideoFeed> {
-//   late VideoPlayerController _controller;
-//   ChewieController? _chewieController;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     var temp = widget.url.split('/');
-//     _controller = VideoPlayerController.networkUrl(
-//         Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"))
-//       ..initialize().then((_) {
-//         setState(() {});
-//       });
-//     _chewieController = ChewieController(videoPlayerController: _controller);
-//     // _controller = VideoPlayerController.network(widget.url)
-//   }
-
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     _chewieController?.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return VisibilityDetector(
-//       key: Key(widget.url),
-//       onVisibilityChanged: (info) {
-//         widget.onVisibilityChanged(info.visibleFraction > 0.5);
-//         if (widget.isActive) {
-//           _controller.play();
-//         } else {
-//           _controller.pause();
-//         }
-//       },
-//       child: AspectRatio(
-//           aspectRatio: _controller.value.isInitialized ? _controller.value.aspectRatio : 16 / 9,
-//           child: Chewie(controller: _chewieController!)
-//           // : Container(
-//           //     color: Colors.black,
-//           //   ),
-//           ),
-//     );
-//   }
-// }
-
-// class YoutubeFeed extends StatefulWidget {
-//   final String url;
-//   final bool isActive;
-//   final ValueChanged<bool> onVisibilityChanged;
-
-//   YoutubeFeed({
-//     required this.url,
-//     required this.isActive,
-//     required this.onVisibilityChanged,
-//   });
-
-//   @override
-//   _YoutubeFeedState createState() => _YoutubeFeedState();
-// }
-
-// class _YoutubeFeedState extends State<YoutubeFeed> {
-//   late YoutubePlayerController _controller;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller = YoutubePlayerController(
-//       initialVideoId: YoutubePlayer.convertUrlToId(widget.url)!,
-//       flags: YoutubePlayerFlags(autoPlay: false, mute: false),
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return VisibilityDetector(
-//       key: Key(widget.url),
-//       onVisibilityChanged: (info) {
-//         widget.onVisibilityChanged(info.visibleFraction > 0.5);
-//         if (widget.isActive) {
-//           _controller.play();
-//         } else {
-//           _controller.pause();
-//         }
-//       },
-//       child: YoutubePlayer(controller: _controller),
-//     );
-//   }
-// }

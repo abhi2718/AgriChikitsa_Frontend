@@ -65,10 +65,6 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
     }
 
     final user = widget.feed['user'];
-    // final imageName = feed['imgurl'].split(
-    //     'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
-    // final profileImage = user['profileImage'].split(
-    //     'https://agrichikitsaimagebucket.s3.ap-south-1.amazonaws.com/')[1];
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
       if (useViewModel.isUserSwitchTheTab) {
@@ -243,25 +239,6 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
               ],
             ),
           ),
-          // widget.feed['mediaType'] == 'image'
-          //     ? SizedBox(
-          //         height: dimension["width"]! - 16,
-          //         width: dimension["width"]!,
-          //         child: CachedNetworkImage(
-          //           imageUrl: widget.feed['imgurl'],
-          //           progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-          //             height: dimension["width"]! - 16,
-          //             width: dimension["width"]! - 16,
-          //             radius: 0,
-          //           ),
-          //           errorWidget: (context, url, error) => const Icon(Icons.error),
-          //           fit: BoxFit.fill,
-          //         ),
-          //       )
-          //     : widget.feed['mediaType'] == 'video'
-          //         ? PostWidget(videoUrl: widget.feed['videoUrl'])
-          //         : Player(videoUrl: widget.feed['videoUrl'], aspectRatio: 16 / 9),
-
           widget.feed.containsKey("repostedFrom")
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,13 +348,6 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                                                         TextStyle(color: AppColor.hyperlinkColor),
                                                   ),
                                           ),
-                                        // Text(
-                                        //   home .getTimeAgo(
-                                        //       widget.feed["repostedFrom"]['createdAt'], context),
-                                        //   style: TextStyle(
-                                        //       fontWeight: FontWeight.bold,
-                                        //       color: Colors.black.withOpacity(0.6)),
-                                        // ),
                                       ],
                                     ),
                                   )
@@ -387,22 +357,6 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                   ],
                 )
               : _buildPostMedia(context, widget.feed, dimension, homeViewModel),
-
-          // SizedBox(
-          //   height: dimension["width"]! - 16,
-          //   width: dimension["width"]! - 16,
-          //   child: CachedNetworkImage(
-          //     imageUrl: feed['imgurl'],
-          //     progressIndicatorBuilder: (context, url, downloadProgress) =>
-          //         Skeleton(
-          //       height: dimension["width"]! - 16,
-          //       width: dimension["width"]! - 16,
-          //       radius: 0,
-          //     ),
-          //     errorWidget: (context, url, error) => const Icon(Icons.error),
-          //     fit: BoxFit.fill,
-          //   ),
-          // ),
           Consumer<HomeTabViewModel>(builder: (context, provider, child) {
             return Padding(
               padding: const EdgeInsets.all(16),
@@ -714,12 +668,8 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
               size: 30.0,
             ),
             onPressed: () {
-              // setState(() {
-              //   _controller.pause();
-              // });
-              // Utils.model(context, FullScreenYoutube());
               setState(() {
-                youtubeController.pause(); // Pause the video before entering fullscreen
+                youtubeController.pause();
               });
 
               Navigator.push(
@@ -732,7 +682,6 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
               );
             },
           ),
-          // FullScreenButton()
         ],
       ),
     );

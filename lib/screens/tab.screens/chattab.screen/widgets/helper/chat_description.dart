@@ -341,6 +341,27 @@ class ChatDescription extends HookWidget {
                                                       ),
                                                     ),
                                                   ),
+                                                  BubbleSpecialThree(
+                                                    text: isEnglish
+                                                        ? "Do you want to attach another photo with this?"
+                                                        : "क्या आप इसके साथ एक और फोटो भेजना चाहते हैं?",
+                                                    color: AppColor.chatBubbleColor,
+                                                    tail: true,
+                                                    isSender: false,
+                                                    textStyle: const TextStyle(
+                                                        color: AppColor.whiteColor, fontSize: 16),
+                                                  ),
+                                                  BubbleSpecialThree(
+                                                    text: AppLocalization.of(context)
+                                                        .getTranslatedValue("yes")
+                                                        .toString(),
+                                                    color: AppColor.chatSent,
+                                                    tail: false,
+                                                    isSender: true,
+                                                    textStyle: const TextStyle(
+                                                        color: AppColor.darkBlackColor,
+                                                        fontSize: 16),
+                                                  ),
                                                   Align(
                                                     alignment: Alignment.centerRight,
                                                     child: Container(
@@ -369,31 +390,56 @@ class ChatDescription extends HookWidget {
                                                   ),
                                                 ],
                                               )
-                                            : Align(
-                                                alignment: Alignment.centerRight,
-                                                child: Container(
-                                                  margin: const EdgeInsets.symmetric(
-                                                      vertical: 8, horizontal: 8),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(8)),
-                                                  height: dimension['height']! * 0.40,
-                                                  width: dimension['width']! * 0.6,
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: provider.chatMessagesList[
-                                                          "userImageAttachments"][0],
-                                                      fit: BoxFit.fill,
-                                                      placeholder: (context, url) => Skeleton(
-                                                        height: dimension["height"]! * 0.4,
-                                                        width: dimension["width"]! * 0.6,
-                                                        radius: 10,
+                                            : Column(
+                                                children: [
+                                                  Align(
+                                                    alignment: Alignment.centerRight,
+                                                    child: Container(
+                                                      margin: const EdgeInsets.symmetric(
+                                                          vertical: 8, horizontal: 8),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(8)),
+                                                      height: dimension['height']! * 0.40,
+                                                      width: dimension['width']! * 0.6,
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: provider.chatMessagesList[
+                                                              "userImageAttachments"][0],
+                                                          fit: BoxFit.fill,
+                                                          placeholder: (context, url) => Skeleton(
+                                                            height: dimension["height"]! * 0.4,
+                                                            width: dimension["width"]! * 0.6,
+                                                            radius: 10,
+                                                          ),
+                                                          errorWidget: (context, url, error) =>
+                                                              const Icon(Icons.error),
+                                                        ),
                                                       ),
-                                                      errorWidget: (context, url, error) =>
-                                                          const Icon(Icons.error),
                                                     ),
                                                   ),
-                                                ),
+                                                  BubbleSpecialThree(
+                                                    text: isEnglish
+                                                        ? "Do you want to attach another photo with this?"
+                                                        : "क्या आप इसके साथ एक और फोटो भेजना चाहते हैं?",
+                                                    color: AppColor.chatBubbleColor,
+                                                    tail: true,
+                                                    isSender: false,
+                                                    textStyle: const TextStyle(
+                                                        color: AppColor.whiteColor, fontSize: 16),
+                                                  ),
+                                                  BubbleSpecialThree(
+                                                    text: AppLocalization.of(context)
+                                                        .getTranslatedValue("no")
+                                                        .toString(),
+                                                    color: AppColor.chatSent,
+                                                    tail: false,
+                                                    isSender: true,
+                                                    textStyle: const TextStyle(
+                                                        color: AppColor.darkBlackColor,
+                                                        fontSize: 16),
+                                                  ),
+                                                ],
                                               )
                                         : BubbleSpecialThree(
                                             text: provider.chatMessagesList["problemSection"],

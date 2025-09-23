@@ -159,9 +159,7 @@ class HomeTabViewModel with ChangeNotifier {
     setReportPostloading(true);
     try {
       final payload = {"reason": reason, "reportedUserId": userId};
-      // final response = await _homeTabRepository.reportPost(payload);
-      print(payload);
-      final response = {"status": true};
+      final response = await _homeTabRepository.reportPost(payload);
       if (response['status']!) {
         reportPostStatus = true;
         notifyListeners();

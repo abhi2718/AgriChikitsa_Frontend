@@ -2,6 +2,7 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/post_comments.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -35,13 +36,16 @@ class JankariPost extends HookWidget {
     final dimension = Utils.getDimensions(context, false);
     final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: false));
     useEffect(() {
-      if (!isFromTagScreen) {
-        Future.delayed(Duration.zero, () {
-          useViewModel.getJankariSubCategoryPost(context);
-        });
-      } else {
-        useViewModel.getJankariSubCategoryTagsPost(context, tagId!);
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!isFromTagScreen) {
+          Future.delayed(Duration.zero, () {
+            useViewModel.getJankariSubCategoryPost(context);
+          });
+        } else {
+          useViewModel.getJankariSubCategoryTagsPost(context, tagId!);
+        }
+      });
+      return null;
     }, []);
     useEffect(() {
       if (!isFromTagScreen) {
@@ -72,7 +76,6 @@ class JankariPost extends HookWidget {
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: SizedBox(
-                      // height: dimension['height']! - 180,
                       width: dimension['width'],
                       child: SingleChildScrollView(
                         child: Column(
@@ -251,7 +254,6 @@ class JankariPost extends HookWidget {
                                           aspectRatio: 16 / 9,
                                         )
                                       : Container(
-                                          // height: dimension['height']! * 0.40,
                                           width: dimension['width'],
                                           decoration: const BoxDecoration(
                                             borderRadius: BorderRadius.all(

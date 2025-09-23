@@ -149,9 +149,6 @@ class NotificationTile extends HookWidget {
                   onPressed: () {
                     Utils.model(
                         context,
-                        // ChatHistory(
-                        //   notificationItem: notificationItem,
-                        // )
                         ChatDescription(
                           chat: notificationItem,
                           isFromNotifications: true,

@@ -1,34 +1,70 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/change_crop.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop.helpers/add_sowing_date.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/select_crop.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../model/plots.dart';
 import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 
-class SelectedPlotDetails extends StatelessWidget {
+class SelectedPlotDetails extends HookWidget {
   const SelectedPlotDetails({super.key, required this.selectedPlot});
   final Plots selectedPlot;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final useViewModel = useMemoized(() => Provider.of<AGPlusViewModel>(context, listen: false));
     return GestureDetector(
       onTap: () {
-        showModalBottomSheet(
-          context: context,
-          useSafeArea: true,
-          enableDrag: true,
-          builder: (BuildContext context) => const ChangeCrop(),
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(16),
+        if (selectedPlot.sowingDate == null) {
+          Utils.model(
+              context,
+              AddSowingDate(
+                fieldId: selectedPlot.id,
+                isFromCropCard: true,
+              ));
+        } else {
+          showDialog(
+            context: context,
+            builder: (c) => AlertDialog(
+              title:
+                  Text(AppLocalization.of(context).getTranslatedValue("warningTitle").toString()),
+              content: Text(AppLocalization.of(context)
+                  .getTranslatedValue("changeCropWarningSubtitle")
+                  .toString()),
+              actions: [
+                TextButton(
+                  child: Text(
+                    AppLocalization.of(context).getTranslatedValue("yes").toString(),
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                  onPressed: () {
+                    useViewModel.fetchCropCategories(context);
+                    Utils.model(
+                        context,
+                        CropSelection(
+                          isFromFieldScreen: true,
+                          fieldId: useViewModel.selectedPlot.id,
+                        ));
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                    AppLocalization.of(context).getTranslatedValue("no").toString(),
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
             ),
-          ),
-        );
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(top: 4),

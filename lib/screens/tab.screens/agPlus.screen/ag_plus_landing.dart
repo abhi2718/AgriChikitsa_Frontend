@@ -219,12 +219,12 @@ class AGPlusLanding extends HookWidget {
                           child: GradientButton(
                               height: dimension['height']! * 0.10,
                               width: dimension['width']!,
-                              // title: AppLocalization.of(context)
-                              //     .getTranslatedValue("agPlusContinue")
-                              //     .toString())),
                               title: AppLocalization.of(context)
-                                  .getTranslatedValue("comingSoon")
+                                  .getTranslatedValue("agPlusContinue")
                                   .toString())),
+                      // title: AppLocalization.of(context)
+                      //     .getTranslatedValue("comingSoon")
+                      //     .toString())),
                     ],
                   ),
                 ),

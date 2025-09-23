@@ -86,7 +86,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                       width: double.infinity,
                       child: CachedNetworkImage(
                         imageUrl: widget.trendingPosts[index].imageUrl,
-                        fit: BoxFit.fill, // Ensures the image fits within the bounds
+                        fit: BoxFit.fill,
                         progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: 100,
                           width: double.infinity,
@@ -160,9 +160,6 @@ class TrendingPostDetails extends HookWidget {
         return true;
       },
       child: Scaffold(
-        // height: dimension['height']! - 180,
-        // width: dimension['width'],
-        // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -245,48 +242,6 @@ class TrendingPostDetails extends HookWidget {
                                   )
                               ],
                             )),
-                    // InkWell(
-                    //   onTap: () {
-                    //     if (post.youtubeUrl.isNotEmpty) {
-                    //       launchUrl(Uri.parse(post.youtubeUrl));
-                    //     }
-                    //   },
-                    //   child: Container(
-                    //       height: dimension['height']! * 0.40,
-                    //       width: dimension['width'],
-                    //       decoration: const BoxDecoration(
-                    //         borderRadius: BorderRadius.all(
-                    //           Radius.circular(12),
-                    //         ),
-                    //       ),
-                    //       child: ClipRRect(
-                    //           borderRadius: BorderRadius.circular(16),
-                    //           child: Stack(
-                    //             children: [
-                    //               CachedNetworkImage(
-                    //                 imageUrl: post.imageUrl,
-                    //                 progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    //                     Skeleton(
-                    //                   height: dimension['height']! * 0.40,
-                    //                   width: dimension['width']!,
-                    //                   radius: 16,
-                    //                 ),
-                    //                 errorWidget: (context, url, error) => const Icon(Icons.error),
-                    //                 height: dimension['height']! * 0.40,
-                    //                 width: dimension['width'],
-                    //                 fit: BoxFit.fill,
-                    //               ),
-                    //               if (post.youtubeUrl.isNotEmpty)
-                    //                 const Align(
-                    //                   alignment: Alignment.center,
-                    //                   child: Icon(
-                    //                     Icons.play_circle_fill,
-                    //                     size: 74,
-                    //                   ),
-                    //                 )
-                    //             ],
-                    //           ))),
-                    // ),
                     const SizedBox(
                       height: 23,
                     ),

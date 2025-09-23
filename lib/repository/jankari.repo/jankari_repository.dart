@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/res/app_url.dart';
 
 import '../../data/network/network_api_service.dart';
@@ -40,7 +38,6 @@ class JankariRepository {
   Future<dynamic> getJankariSubCategoryTagsPost(String id) async {
     try {
       final url = '${AppUrl.jankariEndPoint}/postsByTags/$id';
-      log(url);
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {

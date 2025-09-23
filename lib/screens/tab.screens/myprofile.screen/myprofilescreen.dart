@@ -189,7 +189,6 @@ class MyProfileScreen extends HookWidget {
                                         borderRadius: BorderRadius.circular(5)),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
-                                      // crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         BaseText(
                                           title: AppLocalization.of(context)
@@ -201,8 +200,6 @@ class MyProfileScreen extends HookWidget {
                                           height: 10,
                                         ),
                                         InkWell(
-                                          // onTap: () =>
-                                          //     Navigator.pushNamed(context, RouteName.createPostRoute),
                                           child: Container(
                                               height: dimension['height']! * 0.07,
                                               width: dimension['width']! * 0.30,

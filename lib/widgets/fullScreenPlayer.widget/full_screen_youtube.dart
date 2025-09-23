@@ -21,9 +21,6 @@ class _FullScreenYoutubeState extends State<FullScreenYoutube> {
       DeviceOrientation.landscapeLeft,
     ]);
     _controller = YoutubePlayerController(
-      // initialVideoId: YoutubePlayer.convertUrlToId(
-      //         "https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}")
-      //     .toString(),
       initialVideoId: YoutubePlayer.convertUrlToId(widget.url).toString(),
       flags: const YoutubePlayerFlags(
         autoPlay: true,
@@ -52,27 +49,6 @@ class _FullScreenYoutubeState extends State<FullScreenYoutube> {
         child: YoutubePlayer(
           controller: _controller,
           showVideoProgressIndicator: true,
-          // bottomActions: [
-          //   CurrentPosition(),
-          //   ProgressBar(
-          //     isExpanded: true,
-          //     colors: const ProgressBarColors(playedColor: AppColor.darkColor),
-          //   ),
-          //   IconButton(
-          //     icon: const Icon(
-          //       Icons.fullscreen,
-          //       color: Colors.white,
-          //       size: 30.0,
-          //     ),
-          //     onPressed: () {
-          //       // setState(() {
-          //       //   _controller.pause();
-          //       // });
-          //       // Utils.model(context, FullScreenYoutube());
-          //       dispose();
-          //     },
-          //   ),
-          // ],
         ),
       ),
     );
