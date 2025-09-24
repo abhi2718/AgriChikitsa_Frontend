@@ -1,8 +1,8 @@
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofilescreen.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,13 +15,16 @@ import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';
 
 class HeaderWidget extends HookWidget {
-  const HeaderWidget({Key? key, required this.profileViewModel});
+  const HeaderWidget(
+      {Key? key, required this.profileViewModel, required this.homeScrollController});
   final ProfileViewModel profileViewModel;
+  final ScrollController homeScrollController;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel =
         useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
+    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
     useEffect(() {
       useViewModel.fetchNotifications(context);
     }, [useViewModel.notificationCount]);
@@ -48,25 +51,37 @@ class HeaderWidget extends HookWidget {
                     height: 22,
                   ),
                 ),
-                SvgPicture.asset(
-                  'assets/svg/homeScreenLogo.svg',
-                  height: 40,
-                  width: 80,
+                InkWell(
+                  onTap: () => homeScrollController.animateTo(
+                    0.0,
+                    duration: const Duration(seconds: 2),
+                    curve: Curves.fastOutSlowIn,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/svg/homeScreenLogo.svg',
+                    height: 40,
+                    width: 80,
+                  ),
                 ),
-                Consumer<NotificationViewModel>(builder: (context, provider, child) {
-                  return NotificationIndicatorButton(
-                    notificationCount: provider.notificationCount,
-                  );
-                })
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     SizedBox(
-                //       width: dimension['width']! * 0.04,
-                //     ),
-                //     ,
-                //   ],
-                // )
+                Row(
+                  children: [
+                    if (createPostModel.isUploading)
+                      const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: AppColor.extraDark,
+                          )),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    Consumer<NotificationViewModel>(builder: (context, provider, child) {
+                      return NotificationIndicatorButton(
+                        notificationCount: provider.notificationCount,
+                      );
+                    }),
+                  ],
+                )
               ],
             ),
           ),

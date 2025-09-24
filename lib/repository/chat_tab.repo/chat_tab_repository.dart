@@ -3,9 +3,14 @@ import '../../res/app_url.dart';
 
 class ChatTabRepository {
   final _apiServices = NetworkApiService();
-  Future<dynamic> fetchBotQuestion(String id) async {
+  Future<dynamic> fetchBotQuestion(String id, [String? cropCategoryId]) async {
     try {
-      final url = '${AppUrl.botQquestionsEndPoint}/$id';
+      String url;
+      if (cropCategoryId != null) {
+        url = '${AppUrl.botQquestionsEndPoint}/$id?categoryId=$cropCategoryId';
+      } else {
+        url = '${AppUrl.botQquestionsEndPoint}/$id';
+      }
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
@@ -15,8 +20,28 @@ class ChatTabRepository {
 
   Future<dynamic> postChatQuestion(dynamic payload) async {
     try {
-      const url = '${AppUrl.chatEndPoint}/';
+      const url = AppUrl.chatHistoryEndPoint;
       final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> markChatAsOpened(dynamic payload, String chatId) async {
+    try {
+      final url = "${AppUrl.chatHistoryEndPoint}/$chatId";
+      final response = await _apiServices.getPutFeedApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> deleteChatHistory(String chatId) async {
+    try {
+      final url = '${AppUrl.chatEndPoint}/$chatId';
+      final response = await _apiServices.getDeleteApiResponse(url);
       return response;
     } catch (e) {
       rethrow;

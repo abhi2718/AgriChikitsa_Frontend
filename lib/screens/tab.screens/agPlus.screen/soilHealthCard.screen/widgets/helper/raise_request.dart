@@ -61,8 +61,7 @@ void showRaiseRequest(BuildContext context, dynamic dimension) {
                                 .getTranslatedValue("submitButton")
                                 .toString(),
                             onPress: () {
-                              provider.raiseRequest(context, provider.selectedPlot.fieldName,
-                                  provider.selectedPlot.id);
+                              provider.raiseRequest(context, provider.selectedPlot.id);
                             },
                             loading: provider.requestLoader,
                           ),

@@ -19,10 +19,43 @@ class ChatTabScreen extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
     useEffect(() {
+      useViewModel.reinitilize(context);
       Future.delayed(Duration.zero, () {});
     }, []);
+
     Future<bool> _onWillPop() async {
-      return false;
+      return await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title:
+                  Text(AppLocalization.of(context).getTranslatedValue("warningTitle").toString()),
+              content: Text(AppLocalization.of(context)
+                  .getTranslatedValue("warningCloseChatSubTitle")
+                  .toString()),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false); // Close the dialog, do not exit
+                  },
+                  child: Text(
+                    AppLocalization.of(context).getTranslatedValue("no").toString(),
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    useViewModel.reinitilize(context);
+                    Navigator.of(context).pop(true); // Close the dialog and exit the screen
+                  },
+                  child: Text(
+                    AppLocalization.of(context).getTranslatedValue("yes").toString(),
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          ) ??
+          false;
     }
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -41,15 +74,21 @@ class ChatTabScreen extends HookWidget {
           centerTitle: false,
           leading: null,
           automaticallyImplyLeading: false,
-          title: Consumer<ChatTabViewModel>(builder: (context, provider, child) {
+          title: Consumer<ChatTabViewModel>(builder: (ctx, provider, child) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
-                    onTap: () {
-                      useViewModel.goBack(context);
+                    onTap: () async {
+                      final shouldPop = await _onWillPop();
+                      if (shouldPop) {
+                        Navigator.of(context).pop();
+                        Future.delayed(Duration.zero, () {
+                          useViewModel.reinitilize(context);
+                        });
+                      }
                     },
                     child: const Icon(Icons.arrow_back)),
                 Expanded(
@@ -76,21 +115,19 @@ class ChatTabScreen extends HookWidget {
               ],
             );
           }),
-          // title: BaseText(
-          //     title: AppLocalization.of(context).getTranslatedValue("chatBotTitle").toString(),
-          //     style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 18)),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: InkWell(
                   onTap: () {
-                    useViewModel.isChatCompleted
-                        ? Utils.model(context, const ChatHistory1())
-                        : Utils.snackbar(
-                            AppLocalization.of(context)
-                                .getTranslatedValue("chatActiveWarning")
-                                .toString(),
-                            context);
+                    // useViewModel.isChatCompleted
+                    //     ?
+                    Utils.model(context, const ChatHistory1());
+                    // : Utils.snackbar(
+                    //     AppLocalization.of(context)
+                    //         .getTranslatedValue("chatActiveWarning")
+                    //         .toString(),
+                    //     context);
                   },
                   child: const Icon(Icons.history)),
             )
@@ -98,7 +135,7 @@ class ChatTabScreen extends HookWidget {
         ),
         body: Column(
           children: [
-            Expanded(child: ChatScreen()),
+            const Expanded(child: ChatScreen()),
             Consumer<ChatTabViewModel>(builder: (context, provider, chlid) {
               return provider.enableKeyBoard || provider.showCameraButton
                   ? Container(

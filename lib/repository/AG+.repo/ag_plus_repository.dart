@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../data/network/network_api_service.dart';
 import '../../res/app_url.dart';
 
@@ -7,6 +9,26 @@ class AGPlusRepository {
     try {
       const url = AppUrl.getFieldsEndPoint;
       final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getCropDuration(String cropId) async {
+    try {
+      final url = "${AppUrl.getCropsListEndPoint}/$cropId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> checkCropAvailablity(String cropId, dynamic payload) async {
+    try {
+      final url = "${AppUrl.checkCropEndPoint}/$cropId";
+      final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (e) {
       rethrow;
@@ -65,9 +87,11 @@ class AGPlusRepository {
     }
   }
 
-  Future<dynamic> getCurrentWeather(String latitude, String longitude) async {
+  Future<dynamic> getCurrentWeather(String latitude, String longitude, String lang) async {
     try {
-      final url = '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no';
+      final url = lang == "en"
+          ? '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no'
+          : '${AppUrl.weatherAPIEndPoint}&q=$latitude,$longitude&aqi=no&lang=hi';
       final response = await _apiServices.getWeatherApiResponse(url);
       return response;
     } catch (e) {
@@ -75,8 +99,30 @@ class AGPlusRepository {
     }
   }
 
-  Future<dynamic> getGraphData(String agriStickId, String selectedDate) async {
-    final url = '${AppUrl.graphDataEndPoint}/$agriStickId?startDate=$selectedDate';
+  Future<dynamic> getPredictedWeather(String latitude, String longitude, String lang) async {
+    try {
+      final url =
+          'http://api.weatherapi.com/v1/forecast.json?key=94488ccb442e4337ad735838231309&q=$latitude,$longitude&aqi=no&days=3&lang=$lang';
+      final response = await _apiServices.getWeatherApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Old Implementation
+  // Future<dynamic> getGraphData(String agriStickId, String selectedDate) async {
+  //   final url = '${AppUrl.graphDataEndPoint}/$agriStickId?startDate=$selectedDate';
+  //   try {
+  //     final response = await _apiServices.getGetApiResponse(url);
+  //     return response;
+  //   } catch (error) {
+  //     rethrow;
+  //   }
+  // }
+
+  Future<dynamic> getGraphData(String selectedDate) async {
+    const url = "https://api.thingspeak.com/channels/1548738/feeds.json";
     try {
       final response = await _apiServices.getGetApiResponse(url);
       return response;
@@ -89,6 +135,16 @@ class AGPlusRepository {
     const url = AppUrl.raiseTestingRequestEndPoint;
     try {
       final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getReportsList(String fieldId, int pageNo) async {
+    final url = "${AppUrl.raiseTestingRequestEndPoint}$fieldId?page=$pageNo";
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (error) {
       rethrow;
@@ -115,10 +171,71 @@ class AGPlusRepository {
     }
   }
 
+  Future<dynamic> checkPremium() async {
+    const url = "${AppUrl.fieldEndpoint}/is-premium";
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> fetchPlotHistory(String fieldId) async {
     try {
       final url = "${AppUrl.cropHistoryEndpoint}/$fieldId";
       final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> addFieldForMonitoring(String fieldId) async {
+    final url = "${AppUrl.ndviEndpoint}/$fieldId";
+    try {
+      final response = await _apiServices.getPostApiResponse(url, {});
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getNDVIData(String ndviId, String pageNo) async {
+    final url = "${AppUrl.ndviEndpoint}/cropHealth/$ndviId/$pageNo";
+    try {
+      final response = await _apiServices.getNDVIApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getWeedProtectionData(String cropId) async {
+    try {
+      final url = "${AppUrl.advisoryEnpoint}/kharpatvar/getByCrop/$cropId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getPestAndDiseaseData(String cropId) async {
+    try {
+      const url =
+          "${AppUrl.pestDiseaseEnpoint}/68369d99c18deb48aba2b08f/6836b790c18deb48aba2b195/uttar_pradesh/zaid";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> updateField(String fieldId, dynamic payload) async {
+    try {
+      final url = "${AppUrl.fieldEndpoint}/updateField/$fieldId";
+      final response = await _apiServices.getPutFeedApiResponse(url, payload);
       return response;
     } catch (e) {
       rethrow;

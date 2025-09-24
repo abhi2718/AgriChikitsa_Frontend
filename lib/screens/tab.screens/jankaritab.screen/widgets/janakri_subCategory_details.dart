@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -12,134 +13,159 @@ import 'jankari_subCategory_post.dart';
 class JankariSubCategoryPost extends HookWidget {
   final String subCategoryTitle;
   final ProfileViewModel profileViewModel;
+  final bool isFromTagsScreen;
+  final String? tagId;
   const JankariSubCategoryPost(
-      {super.key, required this.subCategoryTitle, required this.profileViewModel});
+      {super.key,
+      required this.subCategoryTitle,
+      required this.profileViewModel,
+      this.isFromTagsScreen = false,
+      this.tagId});
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
     final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: true));
+
     useEffect(() {
       Future.delayed(Duration.zero, () {
         useViewModel.reinitalize();
-        useViewModel.getJankariSubCategoryPost(context);
+        if (!isFromTagsScreen) {
+          useViewModel.getJankariSubCategoryPost(context);
+        } else {
+          useViewModel.getJankariSubCategoryTagsPost(context, tagId!);
+        }
       });
     }, []);
-    return SizedBox(
-      height: dimension['height']! - 100,
-      width: dimension['width'],
-      child: Padding(
-        padding: const EdgeInsets.only(top: 22),
-        child: Column(
-          children: [
-            SizedBox(
-              width: dimension['width'],
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const SizedBox(
-                                height: 40, width: 30, child: Icon(Icons.arrow_back))),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).popUntil((route) => route.isFirst);
-                          },
-                          child: const Icon(
-                            Remix.close_circle_line,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Consumer<JankariViewModel>(builder: (context, provider, child) {
-              return InkWell(
-                onTap: () {
-                  provider.changeActiveButtonState(!provider.showActiveButton);
-                },
-                child: Stack(
-                  children: [
-                    JankariPost(
-                      profileViewModel: profileViewModel,
-                      subCategoryTitle: subCategoryTitle,
-                      index: provider.currentPostIndex,
-                    ),
-                    if (provider.currentPostIndex != 0 && provider.showActiveButton)
-                      Positioned(
-                          bottom: 0,
-                          left: 0,
-                          child: InkWell(
-                            onTap: () {
-                              provider.updateCurrentPostIndex(provider.currentPostIndex - 1);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: AppColor.whiteColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColor.darkBlackColor.withOpacity(0.4),
-                                    blurRadius: 5,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              height: 40,
-                              width: 40,
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: Scaffold(
+        body: SizedBox(
+          height: dimension['height']!,
+          width: dimension['width'],
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: dimension['width'],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const SizedBox(
+                                    height: 40, width: 30, child: Icon(Icons.arrow_back))),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).popUntil((route) => route.isFirst);
+                              },
                               child: const Icon(
-                                Icons.arrow_back,
-                                size: 30,
-                                color: AppColor.iconColor,
+                                Remix.close_circle_line,
                               ),
                             ),
-                          )),
-                    if (provider.currentPostIndex !=
-                            provider.jankariSubcategoryPostList.length - 1 &&
-                        provider.showActiveButton)
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: () {
-                            useViewModel.updateCurrentPostIndex(provider.currentPostIndex + 1);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: AppColor.whiteColor,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColor.darkBlackColor.withOpacity(0.4),
-                                  blurRadius: 5,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            height: 40,
-                            width: 40,
-                            child: const Icon(
-                              Icons.arrow_forward,
-                              size: 30,
-                              color: AppColor.iconColor,
-                            ),
-                          ),
+                          ],
                         ),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
-              );
-            })
-          ],
+                Expanded(
+                  child: Consumer<JankariViewModel>(builder: (context, provider, child) {
+                    return InkWell(
+                      onTap: () {
+                        provider.changeActiveButtonState(!provider.showActiveButton);
+                      },
+                      child: Stack(
+                        children: [
+                          JankariPost(
+                            tagId: tagId,
+                            isFromTagScreen: isFromTagsScreen,
+                            profileViewModel: profileViewModel,
+                            subCategoryTitle: subCategoryTitle,
+                            index: provider.currentPostIndex,
+                          ),
+                          if (provider.currentPostIndex != 0 && provider.showActiveButton)
+                            Positioned(
+                                bottom: 0,
+                                left: 0,
+                                child: InkWell(
+                                  onTap: () {
+                                    provider.updateCurrentPostIndex(provider.currentPostIndex - 1);
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: AppColor.whiteColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColor.darkBlackColor.withOpacity(0.4),
+                                          blurRadius: 5,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    height: 40,
+                                    width: 40,
+                                    child: const Icon(
+                                      Icons.arrow_back,
+                                      size: 30,
+                                      color: AppColor.iconColor,
+                                    ),
+                                  ),
+                                )),
+                          if (provider.currentPostIndex !=
+                                  provider.jankariSubcategoryPostList.length - 1 &&
+                              provider.showActiveButton)
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: InkWell(
+                                onTap: () {
+                                  useViewModel
+                                      .updateCurrentPostIndex(provider.currentPostIndex + 1);
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: AppColor.whiteColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColor.darkBlackColor.withOpacity(0.4),
+                                        blurRadius: 5,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  height: 40,
+                                  width: 40,
+                                  child: const Icon(
+                                    Icons.arrow_forward,
+                                    size: 30,
+                                    color: AppColor.iconColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  }),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

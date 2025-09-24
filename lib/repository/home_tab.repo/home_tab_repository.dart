@@ -22,7 +22,6 @@ class HomeTabRepository {
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -57,9 +56,29 @@ class HomeTabRepository {
     }
   }
 
+  Future<dynamic> likeComment(String id) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/likeComment/$id';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> createPost(dynamic payload) async {
     try {
       const url = '${AppUrl.feedEndPoint}/';
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> resharePost(dynamic payload, String feedId) async {
+    try {
+      final url = '${AppUrl.feedEndPoint}/repost/$feedId';
       final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
     } catch (e) {

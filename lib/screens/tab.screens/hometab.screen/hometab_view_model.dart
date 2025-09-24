@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/category_model.dart';
 import 'package:agriChikitsa/repository/auth.repo/auth_repository.dart';
 import 'package:agriChikitsa/repository/home_tab.repo/home_tab_repository.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -41,6 +43,14 @@ class HomeTabViewModel with ChangeNotifier {
   bool reportPostLoader = false;
   bool reportPostStatus = false;
   bool hasIncreasedViewForImage = false;
+  bool repostLoader = false;
+  String? activeVideoId;
+
+  changeActivateVideoId(String? id) {
+    activeVideoId = id;
+    notifyListeners();
+  }
+
   bool get loading {
     return _loading;
   }
@@ -51,7 +61,7 @@ class HomeTabViewModel with ChangeNotifier {
 
   String getTimeAgo(String dateString, BuildContext context) {
     DateTime createdAt = DateTime.parse(dateString);
-    DateTime now = DateTime.now();
+    DateTime now = DateTime.now().toUtc();
 
     Duration difference = now.difference(createdAt);
     int daysDifference = difference.inDays;
@@ -74,6 +84,11 @@ class HomeTabViewModel with ChangeNotifier {
 
   setWeatherPDFLoader(value) {
     weatherPDFloader = value;
+    notifyListeners();
+  }
+
+  setRepostLoader(value) {
+    repostLoader = value;
     notifyListeners();
   }
 
@@ -145,13 +160,13 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final payload = {"reason": reason, "reportedUserId": userId};
       final response = await _homeTabRepository.reportPost(payload);
-      setReportPostloading(false);
-      if (response['status']) {
+      if (response['status']!) {
         reportPostStatus = true;
         notifyListeners();
         Timer(const Duration(seconds: 2), () {
           Navigator.pop(context);
-          Navigator.pop(context);
+          Utils.flushBarErrorMessage("", "Post Reported successfully!", context);
+          setReportPostloading(false);
         });
       }
     } catch (error) {
@@ -218,10 +233,12 @@ class HomeTabViewModel with ChangeNotifier {
     } catch (error) {
       setloading(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
-            context);
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }
@@ -342,7 +359,7 @@ class HomeTabViewModel with ChangeNotifier {
     try {
       final data = await _homeTabRepository.fetchComments(id);
       commentLoading = false;
-      commentsList = mapComments(data["comments"]);
+      commentsList = mapComments(data["comments"].reversed);
       notifyListeners();
     } catch (error) {
       setloading(false);
@@ -376,18 +393,65 @@ class HomeTabViewModel with ChangeNotifier {
     return hashtags;
   }
 
-  Future<bool> createPost(
-      BuildContext context, String id, String caption, String imageUrl, bool isImgUploaded) async {
+//old method
+  // Future<bool> createPost(
+  //     BuildContext context, String id, String caption, String imageUrl, bool isImgUploaded) async {
+  //   try {
+  //     Map<String, dynamic> payload = {};
+  //     if (caption == "") {
+  //       payload = {"categoryId": id};
+  //       if (isImgUploaded) {
+  //         payload["imgurl"] = imageUrl;
+  //         payload["mediaType"] = "image";
+  //       } else {
+  //         payload["videoUrl"] = imageUrl;
+  //         if (imageUrl.contains("https://youtu")) {
+  //           payload["mediaType"] = "youtube";
+  //         } else {
+  //           payload["mediaType"] = "video";
+  //         }
+  //       }
+  //     } else {
+  //       List<String> tags = extractHashtags(caption);
+  //       payload = {"categoryId": id, "hindiCaption": caption, "tags": tags};
+  //       if (isImgUploaded) {
+  //         payload["imgurl"] = imageUrl;
+  //         payload["mediaType"] = "image";
+  //       } else {
+  //         payload["videoUrl"] = imageUrl;
+  //         if (imageUrl.contains("https://youtu")) {
+  //           payload["mediaType"] = "youtube";
+  //         } else {
+  //           payload["mediaType"] = "video";
+  //         }
+  //       }
+  //     }
+  //     await _homeTabRepository.createPost(payload);
+  //     return true;
+  //   } catch (error) {
+  //     setloading(false);
+  //     if (kDebugMode) {
+  //       Utils.flushBarErrorMessage(
+  //           AppLocalization.of(context).getTranslatedValue("alert").toString(),
+  //           error.toString(),
+  //           context);
+  //     }
+  //     return false;
+  //   }
+  // }
+
+  Future<bool> createPost(BuildContext context, String id, String caption, dynamic passedUrl,
+      bool isImgUploaded) async {
     try {
       Map<String, dynamic> payload = {};
       if (caption == "") {
         payload = {"categoryId": id};
         if (isImgUploaded) {
-          payload["imgurl"] = imageUrl;
+          payload["imgurls"] = passedUrl; // imageUrls should be a List of URLs
           payload["mediaType"] = "image";
         } else {
-          payload["videoUrl"] = imageUrl;
-          if (imageUrl.contains("https://youtu")) {
+          payload["videoUrl"] = passedUrl;
+          if (passedUrl.contains("https://youtu")) {
             payload["mediaType"] = "youtube";
           } else {
             payload["mediaType"] = "video";
@@ -397,11 +461,11 @@ class HomeTabViewModel with ChangeNotifier {
         List<String> tags = extractHashtags(caption);
         payload = {"categoryId": id, "hindiCaption": caption, "tags": tags};
         if (isImgUploaded) {
-          payload["imgurl"] = imageUrl;
+          payload["imgurls"] = passedUrl; // imageUrls should be a List of URLs
           payload["mediaType"] = "image";
         } else {
-          payload["videoUrl"] = imageUrl;
-          if (imageUrl.contains("https://youtu")) {
+          payload["videoUrl"] = passedUrl;
+          if (passedUrl.contains("https://youtu")) {
             payload["mediaType"] = "youtube";
           } else {
             payload["mediaType"] = "video";
@@ -422,11 +486,43 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
-  Future<bool> updatePost(BuildContext context, String id, String caption, String feedId) async {
+  void resharePost(
+      BuildContext context, String id, String caption, CreatePostModel createPostModel) async {
+    setRepostLoader(true);
+    try {
+      Map<String, dynamic> payload = {"repostDescription": caption};
+      await _homeTabRepository.resharePost(payload, id).then((value) {
+        createPostModel.setfetchMyPost(true);
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pop(context);
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
+              context);
+          setRepostLoader(false);
+        });
+      });
+    } catch (error) {
+      setRepostLoader(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
+  }
+
+  Future<bool> updatePost(
+      BuildContext context, String id, String caption, String feedId, bool isShared) async {
     try {
       Map<String, dynamic> payload = {};
       List<String> tags = extractHashtags(caption);
-      payload = {"feedId": feedId, "categoryId": id, "hindiCaption": caption, "tags": tags};
+      if (isShared) {
+        payload = {"feedId": feedId, "categoryId": id, "tags": tags, "repostDescription": caption};
+      } else {
+        payload = {"feedId": feedId, "categoryId": id, "hindiCaption": caption, "tags": tags};
+      }
       await _homeTabRepository.updatePost(payload);
       return true;
     } catch (error) {
@@ -444,7 +540,13 @@ class HomeTabViewModel with ChangeNotifier {
   void addComment(BuildContext context, String id, String comment, User user,
       MyProfileViewModel myProfileViewModel) async {
     if (comment.isNotEmpty) {
-      final newComment = Comment(id: "newComment", user: user, comment: comment);
+      final newComment = Comment(
+          id: "newComment",
+          user: user,
+          comment: comment,
+          time: DateTime.now().toString(),
+          likeCount: 0,
+          hasLiked: false);
       commentsList = [...commentsList, newComment];
       notifyListeners();
       try {
@@ -481,6 +583,24 @@ class HomeTabViewModel with ChangeNotifier {
     }
   }
 
+  void likeComment(BuildContext context, Comment comment) async {
+    try {
+      if (!comment.hasLiked) {
+        comment.likeCount++;
+        comment.hasLiked = true;
+      } else {
+        comment.likeCount--;
+        comment.hasLiked = false;
+      }
+      notifyListeners();
+      await _homeTabRepository.likeComment(comment.id);
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
+    }
+  }
+
   Future<dynamic> openWeatherPDF(BuildContext context, String pdfUrl) async {
     setWeatherPDFLoader(true);
     try {
@@ -496,10 +616,12 @@ class HomeTabViewModel with ChangeNotifier {
     } catch (error) {
       setWeatherPDFLoader(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
-            context);
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

@@ -35,6 +35,16 @@ class JankariRepository {
     }
   }
 
+  Future<dynamic> getJankariSubCategoryTagsPost(String id) async {
+    try {
+      final url = '${AppUrl.jankariEndPoint}/postsByTags/$id';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> toggleJankariPostLike(String postId, String type) async {
     try {
       final url = '${AppUrl.jankariPostToggleLike}/$postId/$type';
@@ -68,6 +78,16 @@ class JankariRepository {
   Future<dynamic> fetchComments(String id) async {
     try {
       final url = '${AppUrl.jankariEndPoint}/commentOnPost/$id';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> likeComment(String id) async {
+    try {
+      final url = '${AppUrl.jankariEndPoint}/likeComment/$id';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {

@@ -16,7 +16,7 @@ class CurrentSelectedPlot extends StatelessWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: 4),
       height: dimension['height']! * 0.21,
       width: dimension['width']!,
       decoration: BoxDecoration(

@@ -2,13 +2,10 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_landing.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankaritab.dart';
 import 'package:agriChikitsa/services/auth.dart';
-import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../utils/utils.dart';
 import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import '../../res/color.dart';
@@ -49,7 +46,9 @@ class TabScreen extends HookWidget {
               width: 40,
             ),
             onPressed: () {
-              Utils.model(context, const ChatTabScreen());
+              // Utils.model(context, const ChatTabScreen());
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const ChatTabScreen()));
             }),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
@@ -164,24 +163,31 @@ class TabScreen extends HookWidget {
                         if (provider.userInfo != null) {
                           final user = provider.userInfo["user"];
                           final profileImage = user['profileImage'];
-                          return SizedBox(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: CachedNetworkImage(
-                                imageUrl: profileImage,
-                                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                    Skeleton(
-                                  height: 23,
-                                  width: 20,
-                                  radius: 0,
-                                ),
-                                errorWidget: (context, url, error) => const Icon(Icons.error),
-                                width: 23,
-                                fit: BoxFit.cover,
-                                height: 20,
-                              ),
-                            ),
+                          // return Container(
+                          //   decoration: BoxDecoration(shape: BoxShape.circle),
+                          //   // child: CachedNetworkImage(
+                          //   //   imageUrl: profileImage,
+                          //   //   progressIndicatorBuilder: (context, url, downloadProgress) =>
+                          //   //       Skeleton(
+                          //   //     height: 23,
+                          //   //     width: 20,
+                          //   //     radius: 0,
+                          //   //   ),
+                          //   //   errorWidget: (context, url, error) => const Icon(Icons.error),
+                          //   //   width: 23,
+                          //   //   fit: BoxFit.cover,
+                          //   //   height: 20,
+                          //   // ),
+                          //   child: Image.network(profileImage),
+                          // );
+                          return CircleAvatar(
+                            radius: 10,
+                            backgroundImage: NetworkImage(profileImage), // Profile image
                           );
+                          // return ImageIcon(
+                          //   NetworkImage(profileImage),
+                          //   size: 20,
+                          // );
                         }
                         return Container();
                       }),

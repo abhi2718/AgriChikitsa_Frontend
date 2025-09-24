@@ -3,7 +3,6 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandi_prices.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_card.dart';
-import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/trending_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/services/auth.dart';
@@ -34,7 +33,6 @@ class JankariHomeTab extends HookWidget {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (useViewModel.jankaricardList.isEmpty) {
           useViewModel.getJankariCategory(context);
-          // useViewModel.fetchTrendingCrops(context);
           useViewModel.fetchTrendingPosts(context);
         }
       });
@@ -73,16 +71,14 @@ class JankariHomeTab extends HookWidget {
                             height: dimension['height']! * 0.17,
                             width: dimension['width']! * 0.40,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(width: 0.1),
-                                gradient: const LinearGradient(
-                                    colors: [Color(0xffE5FFAF), Color.fromARGB(255, 238, 247, 219)],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    stops: [0, 0.8]),
-                                boxShadow: const [
-                                  BoxShadow(offset: Offset(1, 1), color: Colors.grey)
-                                ]),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(width: 0.1),
+                              gradient: const LinearGradient(
+                                  colors: [Color(0xffE5FFAF), Color.fromARGB(255, 238, 247, 219)],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: [0, 0.8]),
+                            ),
                             child: provider.weatherPDFloader
                                 ? const Center(
                                     child: CircularProgressIndicator(
@@ -114,16 +110,14 @@ class JankariHomeTab extends HookWidget {
                           height: dimension['height']! * 0.17,
                           width: dimension['width']! * 0.40,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(width: 0.1),
-                              gradient: const LinearGradient(
-                                  colors: [Color(0xff8EFF71), Color.fromARGB(255, 202, 244, 191)],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  stops: [0, 0.8]),
-                              boxShadow: const [
-                                BoxShadow(offset: Offset(1, 1), color: Colors.grey)
-                              ]),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(width: 0.1),
+                            gradient: const LinearGradient(
+                                colors: [Color(0xff8EFF71), Color.fromARGB(255, 202, 244, 191)],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                stops: [0, 0.8]),
+                          ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -246,6 +240,7 @@ class JankariHomeTab extends HookWidget {
                         )
                       : Container(
                           width: dimension['width'],
+                          margin: const EdgeInsets.symmetric(horizontal: 6),
                           padding: const EdgeInsets.only(bottom: 30),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

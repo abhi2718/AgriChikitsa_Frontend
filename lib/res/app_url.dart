@@ -1,6 +1,7 @@
 class AppUrl {
   static const String baseUrl = "https://agrichikitsa.org/api/v1";
   // static const String baseUrl = "http://192.168.1.195:9090/api/v1";
+  // static const String baseUrl = "http://192.168.194.58:9090/api/v1";
   // static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
   // static const String baseUrl = "https://agrichikitsa-8be74.web.app/api/v1";
   static const String statsEndpoint = '$baseUrl/stats';
@@ -24,10 +25,12 @@ class AppUrl {
   static const String notificationsEndPoint = '$baseUrl/notification';
   static const String chatEndPoint = '$baseUrl/chat';
   static const String jankariPostToggleLike = '$baseUrl/jankari/likes/post';
+  static const String fieldEndpoint = '$baseUrl/agristick';
   static const String getFieldsEndPoint = '$baseUrl/agristick/feilds';
   static const String deleteFieldEndPoint = '$baseUrl/agristick/feild';
   static const String createPlotEndPoint = '$baseUrl/agristick/addFeild';
   static const String getCropsListEndPoint = '$baseUrl/agristick/crops';
+  static const String checkCropEndPoint = '$baseUrl/agristick/isValidCropSeason';
   static const String changeCropEndPoint = '$baseUrl/agristick/changeCropOnField';
   static const String getCropsCategoryListEndPoint = '$baseUrl/agristick/cropCategory';
   static const String activateAgriStickEndPoint = '$baseUrl/agristick/activateAgristick';
@@ -37,8 +40,11 @@ class AppUrl {
   static const String weatherAPIEndPoint =
       'http://api.weatherapi.com/v1/current.json?key=94488ccb442e4337ad735838231309';
   static const String chatHistoryEndPoint = '$baseUrl/chat/chatHistory';
-  static const String raiseTestingRequestEndPoint = '$baseUrl/soilTesting/request';
+  static const String raiseTestingRequestEndPoint = '$baseUrl/soilRequest/app/';
   static const String reportPostEndPoint = '$baseUrl/report';
   static const String profileDetailsEndPoint = '$baseUrl/users/profile';
   static const String connectionsEndPoint = '$baseUrl/connection';
+  static const String ndviEndpoint = '$baseUrl/ndviReport';
+  static const String advisoryEnpoint = '$baseUrl/advisory';
+  static const String pestDiseaseEnpoint = '$baseUrl/agristickDashboard/crop-health';
 }

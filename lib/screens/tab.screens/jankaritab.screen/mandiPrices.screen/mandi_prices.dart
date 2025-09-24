@@ -334,7 +334,6 @@ class MandiPricesScreen extends HookWidget {
                         ),
                       ),
                     ),
-                    // if (provider.loader)
                     if (provider.loader)
                       Container(
                         color: Colors.black.withOpacity(0.5),

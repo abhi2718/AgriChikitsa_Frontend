@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
@@ -156,7 +155,6 @@ class JankariViewModel with ChangeNotifier {
     try {
       final data = await _jankariRepository.fetchTrendingPosts();
       trendingPostsList = mapJankariSubCategoryPost(data['posts']);
-      print(trendingPostsList);
       setloading(false);
       notifyListeners();
     } catch (error) {
@@ -230,7 +228,6 @@ class JankariViewModel with ChangeNotifier {
         changeActiveButtonState(true);
       }
       setJankariSubCategoryLoaderPost(false);
-      notifyListeners();
       updateStats(context, 'post', jankariSubcategoryPostList[0].id);
     } catch (error) {
       setJankariSubCategoryLoaderPost(false);
@@ -239,6 +236,36 @@ class JankariViewModel with ChangeNotifier {
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
             context);
+      }
+    }
+  }
+
+  void getJankariSubCategoryTagsPost(BuildContext context, String tagId) async {
+    setJankariSubCategoryLoaderPost(true);
+    try {
+      jankariSubcategoryPostList.clear();
+      final data = await _jankariRepository.getJankariSubCategoryTagsPost(tagId);
+      if (data["posts"].isNotEmpty) {
+        jankariSubcategoryPostList = mapJankariSubCategoryPost(data['posts']);
+        if (jankariSubcategoryPostList.length > 1) {
+          changeActiveButtonState(true);
+        }
+        setJankariSubCategoryLoaderPost(false);
+        if (context.mounted) {
+          updateStats(context, 'post', jankariSubcategoryPostList[0].id);
+        }
+      } else {
+        setJankariSubCategoryLoaderPost(false);
+      }
+    } catch (error) {
+      setJankariSubCategoryLoaderPost(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }
@@ -311,7 +338,7 @@ class JankariViewModel with ChangeNotifier {
     try {
       final data = await _jankariRepository.fetchComments(id);
       commentLoading = false;
-      commentsList = mapComments(data["comments"]);
+      commentsList = mapComments(data["comments"].reversed);
       notifyListeners();
     } catch (error) {
       setloading(false);
@@ -326,9 +353,33 @@ class JankariViewModel with ChangeNotifier {
     }
   }
 
+  void likeComment(BuildContext context, Comment comment) async {
+    try {
+      if (!comment.hasLiked) {
+        comment.likeCount++;
+        comment.hasLiked = true;
+      } else {
+        comment.likeCount--;
+        comment.hasLiked = false;
+      }
+      notifyListeners();
+      await _jankariRepository.likeComment(comment.id);
+    } catch (error) {
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage('Alert', error.toString(), context);
+      }
+    }
+  }
+
   void addComment(BuildContext context, String id, String comment, User user) async {
     if (comment.isNotEmpty) {
-      final newComment = Comment(id: "newComment", user: user, comment: comment);
+      final newComment = Comment(
+          id: "newComment",
+          user: user,
+          comment: comment,
+          time: DateTime.now().toString(),
+          likeCount: 0,
+          hasLiked: false);
       commentsList = [...commentsList, newComment];
       notifyListeners();
       try {

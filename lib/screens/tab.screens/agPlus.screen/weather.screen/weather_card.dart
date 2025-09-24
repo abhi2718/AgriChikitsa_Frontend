@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../../model/plots.dart';
 import '../../../../utils/utils.dart';
@@ -49,8 +51,12 @@ class WeatherCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final lang = AppLocalization.of(context).locale.toString();
+    String conditionText = lang == "hi"
+        ? utf8.decode(provider.latestWeatherData.condition.runes.toList())
+        : provider.latestWeatherData.condition;
     return Container(
-        margin: const EdgeInsets.only(top: 8),
+        margin: const EdgeInsets.only(top: 4),
         padding: const EdgeInsets.only(left: 24, right: 24, top: 14, bottom: 14),
         width: dimension["width"]!,
         decoration: BoxDecoration(
@@ -66,7 +72,7 @@ class WeatherCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  provider.date,
+                  provider.date.toString(),
                   style: const TextStyle(
                       color: AppColor.whiteColor, fontSize: 15, fontWeight: FontWeight.w500),
                 ),
@@ -78,10 +84,14 @@ class WeatherCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  SvgPicture.asset(
-                    'assets/svg/rainy.svg',
-                    height: dimension['height']! * 0.15,
-                  ),
+                  // SvgPicture.asset(
+                  //   'assets/svg/rainy.svg',
+                  //   height: dimension['height']! * 0.15,
+                  // ),
+                  SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Image.network("https:${provider.latestWeatherData.icon}")),
                   Expanded(
                     flex: 1,
                     child: Column(
@@ -99,7 +109,7 @@ class WeatherCard extends StatelessWidget {
                           height: 2,
                         ),
                         Text(
-                          provider.latestWeatherData.condition,
+                          conditionText,
                           style: const TextStyle(
                               color: AppColor.whiteColor,
                               fontWeight: FontWeight.w700,
@@ -120,15 +130,16 @@ class WeatherCard extends StatelessWidget {
                 const SizedBox(
                   width: 8,
                 ),
-                InkWell(
-                  onTap: () {
-                    provider.getCurrentWeather(context, currentSelectedPlot);
-                  },
-                  child: const Icon(
-                    Icons.refresh,
-                    color: AppColor.whiteColor,
-                  ),
-                )
+                // InkWell(
+                //   onTap: () {
+                //     provider.getCurrentWeather(context, currentSelectedPlot,
+                //         AppLocalization.of(context).locale.toString());
+                //   },
+                //   child: const Icon(
+                //     Icons.refresh,
+                //     color: AppColor.whiteColor,
+                //   ),
+                // )
               ],
             )
           ],

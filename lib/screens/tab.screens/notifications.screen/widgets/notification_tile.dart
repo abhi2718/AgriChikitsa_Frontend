@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/chat_description.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/chat_history.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -148,8 +149,9 @@ class NotificationTile extends HookWidget {
                   onPressed: () {
                     Utils.model(
                         context,
-                        ChatHistory(
-                          notificationItem: notificationItem,
+                        ChatDescription(
+                          chat: notificationItem,
+                          isFromNotifications: true,
                         ));
                   },
                   icon: const Icon(Icons.description),

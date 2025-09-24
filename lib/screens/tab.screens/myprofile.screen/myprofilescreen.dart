@@ -1,12 +1,17 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/comment.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/myprofile_feed.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/post_pre_loader.dart';
+import 'package:agriChikitsa/services/auth.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../res/color.dart';
@@ -27,8 +32,14 @@ class MyProfileScreen extends HookWidget {
     double availableHeight = screenHeight - (2 * appBarHeight + statusBarHeight);
     final useViewModel = useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: true));
     final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
+    final feedProfileViewModel =
+        useMemoized(() => Provider.of<FeedUserProfileViewModel>(context, listen: false));
+
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final userInfo = User.fromJson(authService.userInfo["user"]);
 
     useEffect(() {
+      feedProfileViewModel.fetchUserFeeds(context, userInfo.id);
       if (useViewModel.feedList.isEmpty) {
         useViewModel.fetchFeeds(context);
       }
@@ -61,7 +72,86 @@ class MyProfileScreen extends HookWidget {
             foregroundColor: AppColor.darkBlackColor,
           ),
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Consumer<FeedUserProfileViewModel>(builder: (context, provider, child) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(userInfo.profileImage),
+                        radius: dimension["width"]! * 0.08,
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                useViewModel.feedList.length.toString(),
+                                style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("postsTile")
+                                    .toString(),
+                                style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                provider.connections == null
+                                    ? "0"
+                                    : provider.connections['followers'].length.toString(),
+                                style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("followersTitle")
+                                    .toString(),
+                                style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                provider.connections == null
+                                    ? "0"
+                                    : provider.connections['following'].length.toString(),
+                                style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("followingTitle")
+                                    .toString(),
+                                style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              }),
+              const SizedBox(
+                height: 8,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(userInfo.name,
+                    style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14)),
+              ),
               TabBar(
                   indicatorColor: AppColor.extraDark,
                   onTap: (index) {
@@ -99,7 +189,6 @@ class MyProfileScreen extends HookWidget {
                                         borderRadius: BorderRadius.circular(5)),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
-                                      // crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         BaseText(
                                           title: AppLocalization.of(context)
@@ -111,8 +200,6 @@ class MyProfileScreen extends HookWidget {
                                           height: 10,
                                         ),
                                         InkWell(
-                                          // onTap: () =>
-                                          //     Navigator.pushNamed(context, RouteName.createPostRoute),
                                           child: Container(
                                               height: dimension['height']! * 0.07,
                                               width: dimension['width']! * 0.30,
@@ -134,6 +221,7 @@ class MyProfileScreen extends HookWidget {
                                 )
                               : RefreshIndicator(
                                   onRefresh: refresh,
+                                  color: AppColor.extraDark,
                                   child: SizedBox(
                                     height: availableHeight,
                                     child: ListView.builder(

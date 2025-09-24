@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/screens/auth.screen/language_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
@@ -8,6 +9,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.scre
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandi_prices_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -103,6 +105,12 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<PlotHistoryViewModel>(
           create: (_) => PlotHistoryViewModel(),
+        ),
+        ChangeNotifierProvider<NDVIViewModel>(
+          create: (_) => NDVIViewModel(),
+        ),
+        ChangeNotifierProvider<TextToSpeechViewModel>(
+          create: (_) => TextToSpeechViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(

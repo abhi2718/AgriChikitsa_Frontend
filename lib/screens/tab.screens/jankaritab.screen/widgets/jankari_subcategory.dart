@@ -2,6 +2,7 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_category_button.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/janakri_subCategory_details.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_tags_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,8 +23,6 @@ class SubCategoryContainer extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
     return Scaffold(
-      // height: dimension['height']! - 80,
-      // width: dimension['width'],
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
@@ -33,22 +32,6 @@ class SubCategoryContainer extends HookWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   children: [
-                //     InkWell(
-                //         onTap: () => Navigator.of(context).pop(),
-                //         child:
-                //             const SizedBox(height: 40, width: 30, child: Icon(Icons.arrow_back))),
-                //     InkWell(
-                //       onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
-                //       child: const Icon(
-                //         Remix.close_circle_line,
-                //       ),
-                //     ),
-                //   ],
-                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: BaseText(
@@ -90,21 +73,24 @@ class SubCategoryContainer extends HookWidget {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 16,
+            ),
             SizedBox(
               height: dimension['height']! - 180,
               width: dimension['width'],
               child: Consumer<JankariViewModel>(
                 builder: (context, provider, child) {
                   return provider.jankariSubCategoryLoader
-                      ? Container(
-                          padding: const EdgeInsets.only(left: 16, right: 16, top: 17.5),
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: GridView.builder(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.only(top: 27, bottom: 27),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              childAspectRatio: ((dimension['width']! - 10) / 2) / 138,
+                              crossAxisSpacing: 6.0,
+                              mainAxisSpacing: 6.0,
+                              childAspectRatio: ((dimension['width']! - 10) / 2) / 148,
                             ),
                             itemCount: 10,
                             itemBuilder: (context, index) {
@@ -150,16 +136,27 @@ class SubCategoryContainer extends HookWidget {
                                           provider.jankariSubcategoryList[index].id);
                                       provider.setSelectedSubCategory(
                                           provider.jankariSubcategoryList[index].id);
-                                      provider.getJankariSubCategoryPost(context);
-                                      Utils.model(
-                                          context,
-                                          JankariSubCategoryPost(
-                                            profileViewModel: profileViewModel,
-                                            subCategoryTitle: profileViewModel.locale["language"] ==
-                                                    "en"
-                                                ? provider.jankariSubcategoryList[index].name
-                                                : provider.jankariSubcategoryList[index].hindiName,
-                                          ));
+                                      if (provider.jankariSubcategoryList[index].tags.isEmpty) {
+                                        provider.getJankariSubCategoryPost(context);
+                                        Utils.model(
+                                            context,
+                                            JankariSubCategoryPost(
+                                              profileViewModel: profileViewModel,
+                                              subCategoryTitle:
+                                                  profileViewModel.locale["language"] == "en"
+                                                      ? provider.jankariSubcategoryList[index].name
+                                                      : provider
+                                                          .jankariSubcategoryList[index].hindiName,
+                                            ));
+                                      } else {
+                                        Utils.model(
+                                            context,
+                                            JankariTagsScreen(
+                                              profileViewModel: profileViewModel,
+                                              subCategory: subCategory,
+                                              index: index,
+                                            ));
+                                      }
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.only(left: 6, right: 6),

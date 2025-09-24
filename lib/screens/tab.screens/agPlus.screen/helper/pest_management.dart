@@ -5,7 +5,6 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../model/plots.dart';

@@ -3,9 +3,11 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/auth.screen/language_view_model.dart';
 import 'package:agriChikitsa/screens/auth.screen/select_language.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/widgets/delete_alert.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -46,6 +48,8 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<MyProfileViewModel>(context, listen: false),
       Provider.of<AGPlusViewModel>(context, listen: false),
       Provider.of<LanguageViewModel>(context, listen: false),
+      Provider.of<ChatTabViewModel>(context, listen: false),
+      Provider.of<TextToSpeechViewModel>(context, listen: false),
     ];
     final profileImage = user.profileImage!;
     return Scaffold(
@@ -122,6 +126,30 @@ class ProfileTabScreen extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
+                onPress: () {
+                  Utils.model(
+                      context,
+                      SelectLanguage(
+                        phoneNumber: user.phoneNumber.toString(),
+                        firebaseId: user.firebaseId.toString(),
+                      ));
+                },
+                leftIcon: const Icon(
+                  Icons.translate,
+                  color: AppColor.iconColor,
+                ),
+                title: AppLocalization.of(context)
+                    .getTranslatedValue("changeLanguageAppBar")
+                    .toString(),
+                width: dimension["width"]! - 32,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ProfileButton(
                 onPress: () => useViewModel.openTermsAndConditions(context),
                 leftIcon: SvgPicture.asset('assets/svg/terms-and-conditions.svg'),
                 title:
@@ -148,20 +176,10 @@ class ProfileTabScreen extends HookWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ProfileButton(
                 onPress: () {
-                  Utils.model(
-                      context,
-                      SelectLanguage(
-                        phoneNumber: user.phoneNumber.toString(),
-                        firebaseId: user.firebaseId.toString(),
-                      ));
+                  showLogoutAccountDialog(context, useViewModel, disposableProvider);
                 },
-                leftIcon: const Icon(
-                  Icons.translate,
-                  color: AppColor.iconColor,
-                ),
-                title: AppLocalization.of(context)
-                    .getTranslatedValue("changeLanguageAppBar")
-                    .toString(),
+                leftIcon: SvgPicture.asset('assets/svg/logout.svg'),
+                title: AppLocalization.of(context).getTranslatedValue("logoutTitle").toString(),
                 width: dimension["width"]! - 32,
               ),
             ),
@@ -181,22 +199,8 @@ class ProfileTabScreen extends HookWidget {
               ),
             ),
             const SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ProfileButton(
-                onPress: () {
-                  showLogoutAccountDialog(context, useViewModel, disposableProvider);
-                },
-                leftIcon: SvgPicture.asset('assets/svg/logout.svg'),
-                title: AppLocalization.of(context).getTranslatedValue("logoutTitle").toString(),
-                width: dimension["width"]! - 32,
-              ),
-            ),
-            const SizedBox(
               height: 40,
-            ),
+            )
           ],
         ),
       ),

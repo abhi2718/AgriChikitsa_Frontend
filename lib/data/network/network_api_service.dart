@@ -14,7 +14,6 @@ class NetworkApiService extends BaseApiServices {
     final mapString = localStorage.getString('profile');
     if (mapString != null) {
       final profile = jsonDecode(mapString);
-      print(profile['token']);
       return {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -109,5 +108,21 @@ class NetworkApiService extends BaseApiServices {
       default:
         throw FetchDataException(body["message"].toString());
     }
+  }
+
+  // FOR NDVI DATA
+  Future<dynamic> getNDVIApiResponse(String url) async {
+    final headers = await getHeaders();
+    final response = await retry(
+      () => http
+          .get(
+            Uri.parse(url),
+            headers: headers,
+          )
+          .timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = jsonDecode(response.body);
+    return [_jsonResponse, response.statusCode];
   }
 }

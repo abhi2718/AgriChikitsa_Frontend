@@ -59,10 +59,11 @@ class FeedUserProfileViewModel extends ChangeNotifier {
 
   void fetchUserFeeds(BuildContext context, String userId) async {
     expandedPosts.clear();
+    feedList.clear();
+    connections = null;
     setloading(true);
     try {
       final data = await _feedProfileRepository.fetchPosts(userId);
-      print(data['connections']);
       feedList = data['feeds'];
       isFollowing = data['isFollowing'];
       connections = data['connections'];

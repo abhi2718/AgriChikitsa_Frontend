@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/app_url.dart';
-import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -11,6 +10,7 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
@@ -70,33 +70,31 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 horizontal: 10,
                 vertical: 10,
               ),
-              color: AppColor.whiteColor,
-              // decoration: BoxDecoration(
-              //   color: Colors.white,
-              //   // borderRadius: BorderRadius.circular(20),
-              //   // boxShadow: const [
-              //   //   BoxShadow(
-              //   //     color: Colors.black26,
-              //   //     blurRadius: 10,
-              //   //     offset: Offset(0, 5),
-              //   //   ),
-              //   // ],
-              // ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Column(
                 children: [
-                  // CircleAvatar(
-                  //   backgroundImage:
-                  //       CachedNetworkImageProvider(widget.trendingPosts[index].imageUrl),
-                  // ),
-                  CachedNetworkImage(
-                    imageUrl: widget.trendingPosts[index].imageUrl,
-                    fit: BoxFit.fill,
-                    progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                      height: 100,
-                      width: double.infinity,
-                      radius: 0,
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
                     ),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    child: SizedBox(
+                      height: (dimension["height"]! * 0.22) * 0.6,
+                      width: double.infinity,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.trendingPosts[index].imageUrl,
+                        fit: BoxFit.fill,
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                          height: 100,
+                          width: double.infinity,
+                          radius: 0,
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     width: 15,
@@ -106,15 +104,16 @@ class _CustomCarouselState extends State<CustomCarousel> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          AppLocalization.of(context).locale.toString() == "en"
-                              ? widget.trendingPosts[index].title
-                              : widget.trendingPosts[index].hindiTitle,
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis),
-                          maxLines: 1,
+                        Flexible(
+                          child: Text(
+                            AppLocalization.of(context).locale.toString() == "en"
+                                ? widget.trendingPosts[index].title
+                                : widget.trendingPosts[index].hindiTitle,
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis),
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -161,9 +160,6 @@ class TrendingPostDetails extends HookWidget {
         return true;
       },
       child: Scaffold(
-        // height: dimension['height']! - 180,
-        // width: dimension['width'],
-        // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -246,48 +242,6 @@ class TrendingPostDetails extends HookWidget {
                                   )
                               ],
                             )),
-                    // InkWell(
-                    //   onTap: () {
-                    //     if (post.youtubeUrl.isNotEmpty) {
-                    //       launchUrl(Uri.parse(post.youtubeUrl));
-                    //     }
-                    //   },
-                    //   child: Container(
-                    //       height: dimension['height']! * 0.40,
-                    //       width: dimension['width'],
-                    //       decoration: const BoxDecoration(
-                    //         borderRadius: BorderRadius.all(
-                    //           Radius.circular(12),
-                    //         ),
-                    //       ),
-                    //       child: ClipRRect(
-                    //           borderRadius: BorderRadius.circular(16),
-                    //           child: Stack(
-                    //             children: [
-                    //               CachedNetworkImage(
-                    //                 imageUrl: post.imageUrl,
-                    //                 progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    //                     Skeleton(
-                    //                   height: dimension['height']! * 0.40,
-                    //                   width: dimension['width']!,
-                    //                   radius: 16,
-                    //                 ),
-                    //                 errorWidget: (context, url, error) => const Icon(Icons.error),
-                    //                 height: dimension['height']! * 0.40,
-                    //                 width: dimension['width'],
-                    //                 fit: BoxFit.fill,
-                    //               ),
-                    //               if (post.youtubeUrl.isNotEmpty)
-                    //                 const Align(
-                    //                   alignment: Alignment.center,
-                    //                   child: Icon(
-                    //                     Icons.play_circle_fill,
-                    //                     size: 74,
-                    //                   ),
-                    //                 )
-                    //             ],
-                    //           ))),
-                    // ),
                     const SizedBox(
                       height: 23,
                     ),

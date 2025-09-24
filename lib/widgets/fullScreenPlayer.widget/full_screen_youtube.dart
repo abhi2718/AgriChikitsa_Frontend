@@ -1,4 +1,4 @@
-import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -21,9 +21,6 @@ class _FullScreenYoutubeState extends State<FullScreenYoutube> {
       DeviceOrientation.landscapeLeft,
     ]);
     _controller = YoutubePlayerController(
-      // initialVideoId: YoutubePlayer.convertUrlToId(
-      //         "https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}")
-      //     .toString(),
       initialVideoId: YoutubePlayer.convertUrlToId(widget.url).toString(),
       flags: const YoutubePlayerFlags(
         autoPlay: true,
@@ -47,6 +44,7 @@ class _FullScreenYoutubeState extends State<FullScreenYoutube> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
         child: YoutubePlayer(
           controller: _controller,

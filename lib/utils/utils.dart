@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
@@ -11,6 +13,7 @@ import 'package:agriChikitsa/data/app_excaptions.dart';
 import 'package:agriChikitsa/res/app_url.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:video_player/video_player.dart';
 
 class Utils {
   static void toastMessage(String message) {
@@ -180,6 +183,7 @@ class Utils {
     }
   }
 
+  //For single image
   static Future<dynamic> pickImage() async {
     try {
       final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -190,10 +194,54 @@ class Utils {
     }
   }
 
+  //For multiple images
+  static Future<List<XFile>?> pickMultipleImages() async {
+    try {
+      final List<XFile> images = await ImagePicker().pickMultiImage();
+      if (images.isEmpty) return null;
+      return images;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  static Future<CroppedFile?> cropImage(String imagePath, dynamic dimension) async {
+    try {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: imagePath,
+        maxHeight: (dimension['width']! - 16).toInt(),
+        maxWidth: (dimension['width']! - 16).toInt(),
+        aspectRatio:
+            CropAspectRatio(ratioX: dimension['width']! - 16, ratioY: dimension['width']! - 16),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: AppColor.extraDark,
+            toolbarWidgetColor: Colors.white,
+            lockAspectRatio: false,
+          ),
+          IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          ),
+        ],
+      );
+      return croppedFile;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   static Future<dynamic> pickVideo() async {
     try {
       final XFile? video = await ImagePicker().pickVideo(source: ImageSource.gallery);
       if (video == null) return null;
+      final VideoPlayerController videoController = VideoPlayerController.file(File(video.path));
+      await videoController.initialize();
+      final Duration videoDuration = videoController.value.duration;
+      videoController.dispose();
+      if (videoDuration.inSeconds > 60) {
+        return 'Video exceeds the maximum duration of 1 minute.';
+      }
       return video;
     } catch (error) {
       rethrow;
@@ -209,5 +257,31 @@ class Utils {
             content: Text(message),
           );
         });
+  }
+
+  String formatCommentTimeDifference(String timestamp) {
+    DateTime inputTime = DateTime.parse(timestamp);
+    DateTime now = DateTime.now();
+
+    Duration difference = now.difference(inputTime);
+
+    if (difference.inMinutes < 1) {
+      return 'Just now';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h';
+    } else if (difference.inDays < 30) {
+      return '${difference.inDays}d';
+    } else if (difference.inDays < 365) {
+      return '${(difference.inDays / 30).floor()}m';
+    } else {
+      return '${(difference.inDays / 365).floor()}y';
+    }
+  }
+
+  static String cleanHtmlTags(String htmlText) {
+    final RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: false);
+    return htmlText.replaceAll(exp, '').replaceAll('&nbsp;', ' ').trim();
   }
 }

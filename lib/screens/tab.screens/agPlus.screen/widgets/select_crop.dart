@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop.helpers/change_crop_duration.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop_details.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/plot_details.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/category_button.dart';
@@ -112,31 +113,47 @@ class CropSelection extends HookWidget {
             ],
           );
         }),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () {
-            if (isFromFieldScreen) {
-              if (useViewModel.selectedChangeCrop == null) {
-                Utils.toastMessage(
-                    AppLocalization.of(context).getTranslatedValue("warningSelectCrop").toString());
+        floatingActionButton: Consumer<AGPlusViewModel>(builder: (context, provider, child) {
+          return FloatingActionButton(
+            backgroundColor: Colors.white,
+            onPressed: () {
+              if (isFromFieldScreen) {
+                if (useViewModel.selectedChangeCrop == null) {
+                  Utils.toastMessage(AppLocalization.of(context)
+                      .getTranslatedValue("warningSelectCrop")
+                      .toString());
+                } else {
+                  // provider.checkCropAvailability(
+                  //     context, useViewModel.selectedChangeCrop!.id, true, fieldId!);
+                  Navigator.pop(context);
+                  Utils.model(
+                      context,
+                      ChangeCropDuration(
+                        fieldId: fieldId!,
+                      ));
+                }
               } else {
-                useViewModel.changeCropFromField(context, fieldId!);
+                if (useViewModel.selectedCropId.isEmpty) {
+                  Utils.toastMessage(AppLocalization.of(context)
+                      .getTranslatedValue("warningSelectCrop")
+                      .toString());
+                } else {
+                  // provider.checkCropAvailability(context, useViewModel.selectedCropId, false, "");
+                  Navigator.pop(context);
+                  Utils.model(context, const CropDetails());
+                }
               }
-            } else {
-              if (useViewModel.selectedCropId.isEmpty) {
-                Utils.toastMessage(
-                    AppLocalization.of(context).getTranslatedValue("warningSelectCrop").toString());
-              } else {
-                Navigator.pop(context);
-                Utils.model(context, const CropDetails());
-              }
-            }
-          },
-          child: const Icon(
-            Icons.arrow_forward_ios,
-            color: AppColor.extraDark,
-          ),
-        ),
+            },
+            child: provider.cropStateAvailabilityLoader
+                ? const CircularProgressIndicator(
+                    color: AppColor.darkColor,
+                  )
+                : const Icon(
+                    Icons.arrow_forward_ios,
+                    color: AppColor.extraDark,
+                  ),
+          );
+        }),
       ),
     );
   }

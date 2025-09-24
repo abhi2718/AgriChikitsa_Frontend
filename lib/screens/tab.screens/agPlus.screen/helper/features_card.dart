@@ -18,7 +18,7 @@ class FeaturesCard extends StatelessWidget {
     return InkWell(
       onTap: ontap,
       child: Container(
-        margin: const EdgeInsets.only(top: 8),
+        margin: const EdgeInsets.only(top: 4),
         height: dimension['height']! * 0.21,
         width: dimension['width']!,
         decoration: BoxDecoration(
@@ -29,16 +29,23 @@ class FeaturesCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: CachedNetworkImage(
-                imageUrl: image,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Skeleton(
-                  height: dimension['height']! * 0.21,
-                  width: dimension['width']!,
-                  radius: 12,
-                ),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
+              child: image.contains("assets/")
+                  ? Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                      height: dimension['height']! * 0.21,
+                      width: dimension['width']!,
+                    )
+                  : CachedNetworkImage(
+                      imageUrl: image,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Skeleton(
+                        height: dimension['height']! * 0.21,
+                        width: dimension['width']!,
+                        radius: 12,
+                      ),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                    ),
             ),
             Positioned.fill(
               child: Container(

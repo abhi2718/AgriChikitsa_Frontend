@@ -1,5 +1,5 @@
-import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/weather_model.dart';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,15 +14,22 @@ class WeatherViewModel with ChangeNotifier {
   late String date;
   late String time;
   bool getWeatherDataLoader = false;
+  bool getPredictedDataLoader = false;
+  List<PredictedData> predictedDataList = [];
+  List<PredictedHourlyData> predictedHourlyDataList = [];
   setWeatherDataLoader(value) {
     getWeatherDataLoader = value;
   }
 
-  void getCurrentWeather(BuildContext context, Plots currentField) async {
+  setPredictedDataLoader(value) {
+    getPredictedDataLoader = value;
+  }
+
+  void getCurrentWeather(BuildContext context, Plots currentField, String lang) async {
     setWeatherDataLoader(true);
     try {
-      final data =
-          await _agPlusRepository.getCurrentWeather(currentField.latitude, currentField.longitude);
+      final data = await _agPlusRepository.getCurrentWeather(
+          currentField.latitude, currentField.longitude, lang);
       latestWeatherData = WeatherData.fromJson(data);
       date = DateFormat('EEEE, d MMMM y', 'en_IN').format(DateTime.now());
       time = DateFormat('hh:mm a', 'en_US')
@@ -32,10 +39,52 @@ class WeatherViewModel with ChangeNotifier {
     } catch (error) {
       setWeatherDataLoader(false);
       if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
-            context);
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
+      }
+    }
+  }
+
+  void getPredictedData(BuildContext context, Plots currentField, String lang) async {
+    setPredictedDataLoader(true);
+    try {
+      predictedDataList.clear();
+      predictedHourlyDataList.clear();
+      final data = await _agPlusRepository.getPredictedWeather(
+          currentField.latitude, currentField.longitude, lang);
+      predictedDataList = (data["forecast"]['forecastday'] as List)
+          .map((day) => PredictedData.fromJson(day))
+          .toList();
+
+      final now = DateTime.now();
+      predictedHourlyDataList = (data['forecast']['forecastday'][0]['hour'] as List)
+          .map((hour) => PredictedHourlyData.fromJson(hour))
+          .where((hourData) {
+        final parsedTime = DateFormat('hh:mm a').parse(hourData.time);
+        final hourlyDateTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          parsedTime.hour,
+          parsedTime.minute,
+        );
+        return hourlyDateTime.isAfter(now) || hourlyDateTime.hour == now.hour;
+      }).toList();
+      setPredictedDataLoader(false);
+      notifyListeners();
+    } catch (error) {
+      setPredictedDataLoader(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }

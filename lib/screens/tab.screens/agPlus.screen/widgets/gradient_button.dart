@@ -4,17 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../res/color.dart';
 
 class GradientButton extends StatelessWidget {
-  const GradientButton({
-    super.key,
-    required this.height,
-    required this.width,
-    required this.title,
-    this.icon,
-  });
+  const GradientButton(
+      {super.key,
+      required this.height,
+      required this.width,
+      required this.title,
+      this.icon,
+      this.isLoading});
   final IconData? icon;
   final dynamic height;
   final dynamic width;
   final String title;
+  final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class GradientButton extends StatelessWidget {
       alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       height: height,
-      width: width,
+      width: isLoading ?? false ? width + 30 : width,
       decoration: BoxDecoration(
           gradient: const LinearGradient(
               begin: Alignment.topCenter,
@@ -37,11 +38,25 @@ class GradientButton extends StatelessWidget {
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                isLoading ?? false
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: AppColor.whiteColor,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                isLoading ?? false
+                    ? const SizedBox(
+                        width: 8,
+                      )
+                    : const SizedBox.shrink(),
                 Icon(
                   icon,
                   color: AppColor.whiteColor,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 Text(
@@ -51,10 +66,29 @@ class GradientButton extends StatelessWidget {
                 ),
               ],
             )
-          : Text(
-              title,
-              style: GoogleFonts.inter(
-                  fontSize: 15, fontWeight: FontWeight.w600, color: AppColor.whiteColor),
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                isLoading ?? false
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: AppColor.whiteColor,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                isLoading ?? false
+                    ? const SizedBox(
+                        width: 22,
+                      )
+                    : const SizedBox.shrink(),
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                      fontSize: 15, fontWeight: FontWeight.w600, color: AppColor.whiteColor),
+                ),
+              ],
             ),
     );
   }
