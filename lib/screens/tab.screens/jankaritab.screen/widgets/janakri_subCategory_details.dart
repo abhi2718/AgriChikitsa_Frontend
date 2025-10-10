@@ -1,6 +1,6 @@
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';

@@ -2,11 +2,12 @@ import 'dart:developer';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/widgets/activateAgristickStatusScreen.dart';
+import 'package:agriChikitsa/widgets/scanner/qr_scanner_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../model/plots.dart';
@@ -57,22 +58,26 @@ class AgristickViewModel with ChangeNotifier {
   }
 
   Future<void> scanQRCode(BuildContext context, Plots currentField) async {
-    String barCodeScanRes;
     try {
-      barCodeScanRes =
-          await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', false, ScanMode.QR);
+      final barCodeScanRes = await Navigator.push<String>(
+            context,
+            MaterialPageRoute(builder: (_) => const QRScannerScreen()),
+          ) ??
+          "-1";
+
       barCodeResult = barCodeScanRes == "-1"
           ? AppLocalization.of(context).getTranslatedValue("scanFailed").toString()
           : barCodeScanRes;
-      if (barCodeScanRes == "-1") {
-        barCodeResult = AppLocalization.of(context).getTranslatedValue("scanFailed").toString();
-      } else {
+
+      if (barCodeScanRes != "-1") {
         setBarCodeLoader(true);
         activateAgristick(context, currentField);
       }
+
       notifyListeners();
-    } on PlatformException {
-      barCodeScanRes = "Failed to scan barcode";
+    } catch (e) {
+      barCodeResult = "Failed to scan barcode";
+      notifyListeners();
     }
   }
 

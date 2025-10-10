@@ -1,8 +1,12 @@
-import 'package:agriChikitsa/model/weed_protection.dart';
+import 'dart:developer';
+
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weedProtection.screen/widgets/button_tab.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weedProtection.screen/widgets/weed_carousel.dart';
-import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -19,21 +23,26 @@ class WeedProtectionScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(() => Provider.of<AGPlusViewModel>(context, listen: false));
-    final ttsViewModel =
-        useMemoized(() => Provider.of<TextToSpeechViewModel>(context, listen: false));
+    final audioViewModel =
+        useMemoized(() => Provider.of<AudioPlayerViewModel>(context, listen: false));
+    final medicineViewModel =
+        useMemoized(() => Provider.of<MedicineViewModel>(context, listen: false));
     final beforeExpanded = useState(false);
     final afterExpanded = useState(false);
     useEffect(() {
+      medicineViewModel.reinitialize();
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        useViewModel.getWeedProtectionData(context, useViewModel.selectedPlot.cropId);
-        ttsViewModel.reinitalize();
+        useViewModel.getWeedProtectionData(
+            context, useViewModel.selectedPlot.cropId, selectedWeedType, medicineViewModel);
+        audioViewModel.reinitalize();
       });
       return null;
     }, []);
     return WillPopScope(
       onWillPop: () async {
-        ttsViewModel.stop();
+        audioViewModel.stop();
         return true;
       },
       child: Scaffold(
@@ -46,7 +55,7 @@ class WeedProtectionScreen extends HookWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              ttsViewModel.stop();
+              audioViewModel.stop();
               Navigator.pop(context);
             },
           ),
@@ -73,15 +82,17 @@ class WeedProtectionScreen extends HookWidget {
                           .toString()),
                     );
                   }
-                  WeedAdvisory selectedAdvisory = protection.getByType(selectedWeedType)[0];
-                  if (selectedAdvisory.advisoryType == "organic") {
-                    String cleanHtml = Utils.cleanHtmlTags(
-                      AppLocalization.of(context).locale.toString() == "en"
-                          ? selectedAdvisory.advisoryBeforeEn
-                          : selectedAdvisory.advisoryBeforeHi,
-                    );
+                  if (provider.selectedAdvisory!.advisoryType == "organic") {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ttsViewModel.setText(cleanHtml);
+                      final locale = AppLocalization.of(context).locale.toString();
+                      if (locale == "en" && provider.selectedAdvisory!.audioBeforeEn.isNotEmpty) {
+                        audioViewModel.setAudioUrl(provider.selectedAdvisory!.audioBeforeEn);
+                      } else if (locale == "hi" &&
+                          provider.selectedAdvisory!.audioBeforeHi.isNotEmpty) {
+                        audioViewModel.setAudioUrl(provider.selectedAdvisory!.audioBeforeHi);
+                      } else {
+                        audioViewModel.setAudioUrl("");
+                      }
                     });
                   }
                   return SingleChildScrollView(
@@ -103,8 +114,8 @@ class WeedProtectionScreen extends HookWidget {
                         const SizedBox(
                           height: 12,
                         ),
-                        WeedCarousel(images: selectedAdvisory.imagesBefore),
-                        if (selectedAdvisory.advisoryType == "organic")
+                        WeedCarousel(images: provider.selectedAdvisory!.imagesBefore),
+                        if (provider.selectedAdvisory!.advisoryType == "organic")
                           Container(
                             margin: const EdgeInsets.symmetric(vertical: 22, horizontal: 14),
                             width: double.infinity,
@@ -124,26 +135,104 @@ class WeedProtectionScreen extends HookWidget {
                                 ]),
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-                                  child: Center(
-                                    child: Text(
-                                      AppLocalization.of(context)
-                                          .getTranslatedValue("jankariTab")
-                                          .toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16),
-                                    ),
-                                  ),
-                                ),
+                                Consumer<AudioPlayerViewModel>(
+                                    builder: (context, audioProvider, _) {
+                                  final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: hasUrl ? 0 : 12),
+                                    child: Row(children: [
+                                      Expanded(
+                                        child: Center(
+                                          child: Text(
+                                            AppLocalization.of(context)
+                                                .getTranslatedValue("jankariTab")
+                                                .toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w500, fontSize: 16),
+                                          ),
+                                        ),
+                                      ),
+                                      if (hasUrl)
+                                        IconButton(
+                                          icon: audioProvider.isLoading
+                                              ? const SizedBox(
+                                                  width: 24,
+                                                  height: 24,
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    color: AppColor.whiteColor,
+                                                  ),
+                                                )
+                                              : Icon(
+                                                  audioProvider.isPlaying
+                                                      ? Icons.pause
+                                                      : Icons.play_arrow,
+                                                ),
+                                          onPressed: audioProvider.isLoading
+                                              ? null
+                                              : () {
+                                                  if (audioProvider.isPlaying) {
+                                                    audioProvider.pause();
+                                                  } else if (audioProvider.isPaused) {
+                                                    audioProvider.resume();
+                                                  } else {
+                                                    audioProvider.play(context);
+                                                  }
+                                                },
+                                        ),
+                                    ]),
+                                  );
+                                }),
                                 Container(
                                     padding:
                                         const EdgeInsets.symmetric(horizontal: 12, vertical: 22),
                                     color: AppColor.whiteColor,
-                                    child: HtmlWidget(
-                                        AppLocalization.of(context).locale.toString() == "en"
-                                            ? selectedAdvisory.advisoryBeforeEn
-                                            : selectedAdvisory.advisoryBeforeHi))
+                                    child: Column(
+                                      children: [
+                                        HtmlWidget(
+                                            AppLocalization.of(context).locale.toString() == "en"
+                                                ? provider.selectedAdvisory!.advisoryBeforeEn
+                                                : provider.selectedAdvisory!.advisoryBeforeHi),
+                                        Consumer<MedicineViewModel>(
+                                            builder: (context, provider, _) {
+                                          return Column(
+                                            children: provider.isManageListLoading
+                                                ? List.generate(
+                                                    3,
+                                                    (index) => Padding(
+                                                        padding: const EdgeInsets.symmetric(
+                                                            vertical: 4.0),
+                                                        child: Skeleton(
+                                                            height: dimension["height"]! * 0.1,
+                                                            width: dimension["width"]!)),
+                                                  )
+                                                : List.generate(
+                                                    provider.weedManageList.length,
+                                                    (index) => Padding(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(vertical: 4.0),
+                                                      child: ButtonTab(
+                                                        text: provider.weedManageList[index][
+                                                            AppLocalization.of(context)
+                                                                        .locale
+                                                                        .toString() ==
+                                                                    "en"
+                                                                ? "nameEn"
+                                                                : "nameHi"],
+                                                        onPressed: () => Utils.model(
+                                                            context,
+                                                            MedicineScreen(
+                                                                showCalculator: false,
+                                                                method: provider
+                                                                    .weedManageList[index])),
+                                                      ),
+                                                    ),
+                                                  ),
+                                          );
+                                        }),
+                                      ],
+                                    ))
                               ],
                             ),
                           )
@@ -161,23 +250,126 @@ class WeedProtectionScreen extends HookWidget {
                                   onExpansionChanged: (expanded) {
                                     beforeExpanded.value = expanded;
                                     if (expanded) {
-                                      ttsViewModel.reinitalize();
-                                      String cleanHtml = Utils.cleanHtmlTags(
-                                          AppLocalization.of(context).locale.toString() == "en"
-                                              ? selectedAdvisory.advisoryBeforeEn
-                                              : selectedAdvisory.advisoryBeforeHi);
-                                      ttsViewModel.setText(cleanHtml);
+                                      audioViewModel.reinitalize();
+                                      final locale = AppLocalization.of(context).locale.toString();
+                                      if (locale == "en" &&
+                                          provider.selectedAdvisory!.audioBeforeEn.isNotEmpty) {
+                                        audioViewModel
+                                            .setAudioUrl(provider.selectedAdvisory!.audioBeforeEn);
+                                      } else if (locale == "hi" &&
+                                          provider.selectedAdvisory!.audioBeforeHi.isNotEmpty) {
+                                        audioViewModel
+                                            .setAudioUrl(provider.selectedAdvisory!.audioBeforeHi);
+                                      } else {
+                                        audioViewModel.setAudioUrl("");
+                                      }
                                     } else {
-                                      ttsViewModel.stop();
+                                      audioViewModel.stop();
                                     }
                                   },
                                   children: [
+                                    Consumer<AudioPlayerViewModel>(
+                                      builder: (context, audioProvider, child) {
+                                        final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                                        if (hasUrl) {
+                                          return Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: audioProvider.isLoading
+                                                ? Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    margin:
+                                                        const EdgeInsets.only(left: 12, bottom: 8),
+                                                    decoration: const BoxDecoration(
+                                                      color: AppColor.darkColor,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.all(8.0),
+                                                      child: CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: AppColor.whiteColor,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    margin:
+                                                        const EdgeInsets.only(left: 12, bottom: 8),
+                                                    decoration: const BoxDecoration(
+                                                      color: AppColor.darkColor,
+                                                      shape: BoxShape.circle, // round button
+                                                    ),
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        audioProvider.isPlaying
+                                                            ? Icons.pause
+                                                            : Icons.play_arrow,
+                                                        color: Colors.white, // white icon
+                                                      ),
+                                                      onPressed: () {
+                                                        if (audioProvider.isPlaying) {
+                                                          audioProvider.pause();
+                                                        } else if (audioProvider.isPaused) {
+                                                          audioProvider.resume();
+                                                        } else {
+                                                          audioProvider.play(context);
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                          );
+                                        }
+                                        return const SizedBox.shrink();
+                                      },
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.all(12.0),
-                                      child: HtmlWidget(
-                                          AppLocalization.of(context).locale.toString() == "en"
-                                              ? selectedAdvisory.advisoryBeforeEn
-                                              : selectedAdvisory.advisoryBeforeHi),
+                                      child: Column(
+                                        children: [
+                                          HtmlWidget(
+                                              AppLocalization.of(context).locale.toString() == "en"
+                                                  ? provider.selectedAdvisory!.advisoryBeforeEn
+                                                  : provider.selectedAdvisory!.advisoryBeforeHi),
+                                          Consumer<MedicineViewModel>(
+                                              builder: (context, provider, _) {
+                                            final filteredList = provider.weedManageList
+                                                .where((item) => item["type"] == "before")
+                                                .toList();
+                                            return Column(
+                                              children: provider.isManageListLoading
+                                                  ? List.generate(
+                                                      3,
+                                                      (index) => Padding(
+                                                          padding: const EdgeInsets.symmetric(
+                                                              vertical: 4.0),
+                                                          child: Skeleton(
+                                                              height: dimension["height"]! * 0.1,
+                                                              width: dimension["width"]!)),
+                                                    )
+                                                  : List.generate(
+                                                      filteredList.length,
+                                                      (index) => Padding(
+                                                        padding: const EdgeInsets.symmetric(
+                                                            vertical: 4.0),
+                                                        child: ButtonTab(
+                                                          text: filteredList[index][
+                                                              AppLocalization.of(context)
+                                                                          .locale
+                                                                          .toString() ==
+                                                                      "en"
+                                                                  ? "nameEn"
+                                                                  : "nameHi"],
+                                                          onPressed: () => Utils.model(
+                                                              context,
+                                                              MedicineScreen(
+                                                                  method: filteredList[index])),
+                                                        ),
+                                                      ),
+                                                    ),
+                                            );
+                                          }),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -192,24 +384,127 @@ class WeedProtectionScreen extends HookWidget {
                                   onExpansionChanged: (expanded) {
                                     afterExpanded.value = expanded;
                                     if (expanded) {
-                                      ttsViewModel.reinitalize();
-                                      String cleanHtml = Utils.cleanHtmlTags(
-                                          AppLocalization.of(context).locale.toString() == "en"
-                                              ? selectedAdvisory.advisoryAfterEn
-                                              : selectedAdvisory.advisoryAfterHi);
-                                      ttsViewModel.setText(cleanHtml);
-                                      // ttsViewModel.setText("Chl ja bhosdu");
+                                      audioViewModel.reinitalize();
+                                      final locale = AppLocalization.of(context).locale.toString();
+                                      if (locale == "en" &&
+                                          provider.selectedAdvisory!.audioAfterEn.isNotEmpty) {
+                                        audioViewModel
+                                            .setAudioUrl(provider.selectedAdvisory!.audioAfterEn);
+                                      } else if (locale == "hi" &&
+                                          provider.selectedAdvisory!.audioAfterHi.isNotEmpty) {
+                                        audioViewModel
+                                            .setAudioUrl(provider.selectedAdvisory!.audioAfterHi);
+                                      } else {
+                                        audioViewModel.setAudioUrl("");
+                                      }
                                     } else {
-                                      ttsViewModel.stop();
+                                      audioViewModel.stop();
                                     }
                                   },
                                   children: [
+                                    Consumer<AudioPlayerViewModel>(
+                                      builder: (context, audioProvider, child) {
+                                        final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                                        if (hasUrl) {
+                                          return Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: audioProvider.isLoading
+                                                ? Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    margin:
+                                                        const EdgeInsets.only(left: 12, bottom: 8),
+                                                    decoration: const BoxDecoration(
+                                                      color: AppColor.darkColor,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.all(8.0),
+                                                      child: CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: AppColor.whiteColor,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    margin:
+                                                        const EdgeInsets.only(left: 12, bottom: 8),
+                                                    decoration: const BoxDecoration(
+                                                      color: AppColor.darkColor,
+                                                      shape: BoxShape.circle, // round button
+                                                    ),
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        audioProvider.isPlaying
+                                                            ? Icons.pause
+                                                            : Icons.play_arrow,
+                                                        color: Colors.white, // white icon
+                                                      ),
+                                                      onPressed: () {
+                                                        if (audioProvider.isPlaying) {
+                                                          audioProvider.pause();
+                                                        } else if (audioProvider.isPaused) {
+                                                          audioProvider.resume();
+                                                        } else {
+                                                          audioProvider.play(context);
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                          );
+                                        }
+                                        return const SizedBox.shrink();
+                                      },
+                                    ),
                                     Padding(
                                         padding: const EdgeInsets.all(12.0),
-                                        child: HtmlWidget(
-                                            AppLocalization.of(context).locale.toString() == "en"
-                                                ? selectedAdvisory.advisoryAfterEn
-                                                : selectedAdvisory.advisoryAfterHi)),
+                                        child: Column(
+                                          children: [
+                                            HtmlWidget(
+                                                AppLocalization.of(context).locale.toString() ==
+                                                        "en"
+                                                    ? provider.selectedAdvisory!.advisoryAfterEn
+                                                    : provider.selectedAdvisory!.advisoryAfterHi),
+                                            Consumer<MedicineViewModel>(
+                                                builder: (context, provider, _) {
+                                              final filteredList = provider.weedManageList
+                                                  .where((item) => item["type"] == "after")
+                                                  .toList();
+                                              return Column(
+                                                children: provider.isManageListLoading
+                                                    ? List.generate(
+                                                        3,
+                                                        (index) => Padding(
+                                                            padding: const EdgeInsets.symmetric(
+                                                                vertical: 4.0),
+                                                            child: Skeleton(
+                                                                height: dimension["height"]! * 0.1,
+                                                                width: dimension["width"]!)),
+                                                      )
+                                                    : List.generate(
+                                                        filteredList.length,
+                                                        (index) => Padding(
+                                                          padding: const EdgeInsets.symmetric(
+                                                              vertical: 4.0),
+                                                          child: ButtonTab(
+                                                            text: filteredList[index][
+                                                                AppLocalization.of(context)
+                                                                            .locale
+                                                                            .toString() ==
+                                                                        "en"
+                                                                    ? "nameEn"
+                                                                    : "nameHi"],
+                                                            onPressed: () => Utils.model(
+                                                                context,
+                                                                MedicineScreen(
+                                                                    method: filteredList[index])),
+                                                          ),
+                                                        ),
+                                                      ),
+                                              );
+                                            }),
+                                          ],
+                                        )),
                                   ],
                                 ),
                               ],
@@ -220,75 +515,6 @@ class WeedProtectionScreen extends HookWidget {
                   );
                 });
         }),
-        floatingActionButton: Consumer<TextToSpeechViewModel>(
-          builder: (context, vm, _) {
-            final advisory = useViewModel.weedProtection.getByType(selectedWeedType).isNotEmpty
-                ? useViewModel.weedProtection.getByType(selectedWeedType)[0]
-                : null;
-
-            if (advisory == null || useViewModel.isWeedDataLoading) return const SizedBox();
-
-            bool showFab =
-                advisory.advisoryType == "organic" || beforeExpanded.value || afterExpanded.value;
-
-            if (!showFab) return const SizedBox();
-            return Stack(
-              children: [
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                    backgroundColor: AppColor.darkColor,
-                    child: vm.isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: AppColor.whiteColor,
-                            ),
-                          )
-                        : const Icon(
-                            Icons.mic,
-                            color: AppColor.whiteColor,
-                          ),
-                    onPressed: () {
-                      if (vm.isLoading) {
-                        return;
-                      }
-                      vm.speak(context, languageCode: "hi-IN");
-                    },
-                  ),
-                ),
-                if (vm.isSpeaking)
-                  Positioned(
-                    bottom: 80,
-                    right: 0,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.white,
-                      onPressed: vm.isLoading
-                          ? () {
-                              return;
-                            }
-                          : vm.isPaused
-                              ? () => {vm.resume(context)}
-                              : vm.pause,
-                      child: vm.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: AppColor.whiteColor,
-                              ),
-                            )
-                          : Icon(
-                              vm.isPaused ? Icons.play_arrow : Icons.pause,
-                              color: AppColor.darkColor,
-                            ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
       ),
     );
   }

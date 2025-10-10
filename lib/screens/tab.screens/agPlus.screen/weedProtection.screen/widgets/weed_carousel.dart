@@ -76,7 +76,7 @@ class _WeedCarouselState extends State<WeedCarousel> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
-                        height: (dimension["height"]! * 0.3),
+                        height: (dimension["height"]! * 0.30 - 8),
                         width: double.infinity,
                         child: CachedNetworkImage(
                           imageUrl: widget.images[index].imageUrl,

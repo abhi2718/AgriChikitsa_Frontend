@@ -241,4 +241,54 @@ class AGPlusRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> getWeedManageData(String weedId) async {
+    try {
+      final url = "${AppUrl.advisoryEnpoint}/kharpatvar/manage/$weedId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getChemicalsData(String methodId) async {
+    try {
+      final url = "${AppUrl.advisoryEnpoint}/kharpatvar/manage/chemical/$methodId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> toggleMedicineLike(String chemicalId) async {
+    try {
+      final url = "${AppUrl.advisoryEnpoint}/kharpatvar/manage/chemical/toggleLike/$chemicalId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> toggleMedicineDislike(String chemicalId) async {
+    try {
+      final url = "${AppUrl.advisoryEnpoint}/kharpatvar/manage/chemical/toggledisLike/$chemicalId";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> calculateDosage(String chemicalId, dynamic payload) async {
+    try {
+      final url = "${AppUrl.advisoryEnpoint}/kharpatvar/manage/calculateDosage/$chemicalId";
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

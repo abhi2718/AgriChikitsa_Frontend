@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class NDVIResponse {
@@ -5,6 +7,8 @@ class NDVIResponse {
   final String messageEn;
   final String advisoryHi;
   final String advisoryEn;
+  final String audioEn;
+  final String audioHi;
   final List<NDVIHistory> ndviHistory;
   final int totalRecords;
   final int statusCode;
@@ -17,6 +21,8 @@ class NDVIResponse {
     required this.messageEn,
     required this.advisoryEn,
     required this.advisoryHi,
+    required this.audioEn,
+    required this.audioHi,
     required this.ndviHistory,
     required this.totalRecords,
     required this.statusCode,
@@ -31,6 +37,8 @@ class NDVIResponse {
         messageEn: 'No data available',
         advisoryEn: 'कोई डेटा मौजूद नहीं।',
         advisoryHi: 'No data available',
+        audioEn: "",
+        audioHi: "",
         ndviHistory: [],
         totalRecords: 0,
         statusCode: 0,
@@ -43,6 +51,8 @@ class NDVIResponse {
       messageEn: json['message_en'] ?? 'No message available',
       advisoryEn: json['advisory_en'] ?? 'No message available',
       advisoryHi: json['advisory_hi'] ?? 'कोई डेटा मौजूद नहीं।',
+      audioEn: json['audioEn'] ?? '',
+      audioHi: json['audioHi'] ?? '',
       ndviHistory:
           (json['ndvi_history'] as List<dynamic>?)?.map((e) => NDVIHistory.fromJson(e)).toList() ??
               [],
