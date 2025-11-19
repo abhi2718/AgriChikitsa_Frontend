@@ -46,22 +46,29 @@ class PestAndDiseaseScreen extends HookWidget {
           foregroundColor: AppColor.darkBlackColor,
           automaticallyImplyLeading: true,
           centerTitle: true,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 AppLocalization.of(context).locale.toString() == "en"
                     ? selectedPestDisease.nameEn
                     : selectedPestDisease.nameHi,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 "(${AppLocalization.of(context).locale.toString() == "en" ? selectedPestDisease.nameSciEn : selectedPestDisease.nameSciHi})",
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 18,
+                  fontSize: 16,
                   fontStyle: FontStyle.italic,
                 ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -83,57 +90,88 @@ class PestAndDiseaseScreen extends HookWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PestsCarousel(images: selectedPestDisease.images),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                  child: Consumer<AudioPlayerViewModel>(
-                    builder: (context, audioProvider, _) {
-                      final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                      return Row(
-                        children: [
-                          if (hasUrl)
-                            audioProvider.isLoading
-                                ? Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: const BoxDecoration(
-                                      color: AppColor.darkColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: AppColor.whiteColor,
-                                    ),
-                                  )
-                                : Container(
-                                    decoration: const BoxDecoration(
-                                      color: AppColor.darkColor,
-                                      shape: BoxShape.circle, // make it round
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(
-                                        audioProvider.isPlaying ? Icons.pause : Icons.play_arrow,
-                                        color: Colors.white, // white icon
-                                      ),
-                                      onPressed: () {
-                                        if (audioProvider.isPlaying) {
-                                          audioProvider.pause();
-                                        } else if (audioProvider.isPaused) {
-                                          audioProvider.resume();
-                                        } else {
-                                          audioProvider.play(context);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 22.0, horizontal: 14),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Consumer<AudioPlayerViewModel>(
+                        builder: (context, audioProvider, _) {
+                          final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                          final isLoading = audioProvider.isLoading;
+                          final isPlaying = audioProvider.isPlaying;
+                          final isPaused = audioProvider.isPaused;
+
+                          String buttonText;
+                          if (isLoading) {
+                            buttonText = AppLocalization.of(context)
+                                .getTranslatedValue("loadingAudio")
+                                .toString();
+                          } else if (isPlaying) {
+                            buttonText = AppLocalization.of(context)
+                                .getTranslatedValue("pauseAudio")
+                                .toString();
+                          } else {
+                            buttonText = AppLocalization.of(context)
+                                .getTranslatedValue("playAudio")
+                                .toString();
+                          }
+
+                          return !hasUrl
+                              ? const SizedBox.shrink()
+                              : ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColor.tabIconColor,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                  ),
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          if (isPlaying) {
+                                            audioProvider.pause();
+                                          } else if (isPaused) {
+                                            audioProvider.resume();
+                                          } else {
+                                            audioProvider.play(context);
+                                          }
+                                        },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (isLoading)
+                                        const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      else
+                                        Icon(
+                                          isPlaying ? Icons.pause : Icons.play_arrow,
+                                          color: Colors.white,
+                                        ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        buttonText,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
                       HtmlWidget(AppLocalization.of(context).locale.toString() == "en"
                           ? selectedPestDisease.contentEn
                           : selectedPestDisease.contentHi),

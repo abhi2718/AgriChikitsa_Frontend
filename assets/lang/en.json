@@ -288,5 +288,11 @@
     "calculateSizeDescription": "Enter Area",
     "warningSizeDescription": "Please provide area to treat",
     "pumpSizeText": "Pump Size",
-    "suggestion": "Suggestion"
+    "suggestion": "Suggestion",
+    "feedbackTitle": "Please share your experience with our Pancham Chatbot below",
+    "feedback": "Please write your suggestions here",
+    "feedbackSuccess": "Feedback submitted successfully",
+    "playAudio": "Play Audio",
+    "loadingAudio": "Loading...",
+    "pauseAudio": "Pause Audio"
 }

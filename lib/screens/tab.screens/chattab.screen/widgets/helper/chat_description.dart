@@ -1,9 +1,11 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_button.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,178 +18,163 @@ class ChatDescription extends HookWidget {
   ChatDescription({super.key, required this.chat, this.isFromNotifications = false});
   final dynamic chat;
   bool isFromNotifications = false;
-  // Future<void> _createPDF(BuildContext ctx) async {
-  //   PdfDocument document = PdfDocument();
-  //   final page = document.pages.add();
 
-  //   final pageWidth = page.getClientSize().width;
-
-  //   // Add Age message (Left-aligned)
-  //   _drawLeftAlignedBubble(
-  //     page: page,
-  //     // text: 'कृपया अपनी आयु सीमा चुनें।',
-  //     text: 'Please select your age.',
-  //     top: 10,
-  //     bubbleColor: PdfColor(139, 195, 74),
-  //     pageWidth: pageWidth,
-  //   );
-
-  //   // Add User response (Right-aligned)
-  //   _drawRightAlignedBubble(
-  //     page: page,
-  //     // text: '#30 साल से कम',
-  //     text: 'Less than 30',
-  //     top: 50,
-  //     bubbleColor: PdfColor(238, 238, 238),
-  //     pageWidth: pageWidth,
-  //   );
-
-  //   // Add Crop request (Left-aligned)
-  //   _drawLeftAlignedBubble(
-  //     page: page,
-  //     // text: 'कृपया अपनी फसल चुनें',
-  //     text: 'Please select your crop.',
-  //     top: 90,
-  //     bubbleColor: PdfColor(139, 195, 74),
-  //     pageWidth: pageWidth,
-  //   );
-
-  //   // Add User response (Right-aligned)
-  //   _drawRightAlignedBubble(
-  //     page: page,
-  //     // text: 'धान',
-  //     text: 'Wheat',
-  //     top: 130,
-  //     bubbleColor: PdfColor(238, 238, 238),
-  //     pageWidth: pageWidth,
-  //   );
-
-  //   // Add Thanks message (Left-aligned)
-  //   _drawLeftAlignedBubble(
-  //     page: page,
-  //     // text: 'अपनी फसल चुनने के लिए धन्यवाद, कृपया अपनी फसल की समस्या चुनें',
-  //     text: 'Thankyou for choosing your crop, please select the problem you are facing.',
-  //     top: 170,
-  //     bubbleColor: PdfColor(139, 195, 74),
-  //     pageWidth: pageWidth,
-  //   );
-
-  //   // Add User response (Right-aligned)
-  //   _drawRightAlignedBubble(
-  //     page: page,
-  //     // text: 'पतियों का गहर हरा',
-  //     text: 'Darkining of leaves',
-  //     top: 220,
-  //     bubbleColor: PdfColor(238, 238, 238),
-  //     pageWidth: pageWidth,
-  //   );
-
-  //   // Add "उतर आना बाकी..." message
-  //   page.graphics.drawString(
-  //     // 'उतर आना बाकी...',
-  //     'Reply Pending...',
-  //     PdfStandardFont(PdfFontFamily.helvetica, 12),
-  //     bounds: Rect.fromLTWH(10, 270, pageWidth - 20, 20),
-  //     brush: PdfBrushes.gray,
-  //   );
-
-  //   List<int> bytes = await document.save();
-  //   document.dispose();
-
-  //   saveAndLaunchFile(bytes, "ChatOutput.pdf", ctx);
-  // }
-
-  // void _drawLeftAlignedBubble({
-  //   required PdfPage page,
-  //   required String text,
-  //   required double top,
-  //   required PdfColor bubbleColor,
-  //   required double pageWidth,
-  // }) {
-  //   final bubbleWidth = pageWidth * 0.75;
-  //   final bubbleHeight = 40.0;
-
-  //   // Draw bubble
-  //   page.graphics.drawRectangle(
-  //     bounds: Rect.fromLTWH(10, top, bubbleWidth, bubbleHeight),
-  //     pen: PdfPen(bubbleColor),
-  //     brush: PdfSolidBrush(bubbleColor),
-  //     // radius: const Radius.circular(10),
-  //   );
-
-  //   // Draw text inside the bubble
-  //   page.graphics.drawString(
-  //     text,
-  //     PdfStandardFont(PdfFontFamily.helvetica, 12),
-  //     bounds: Rect.fromLTWH(15, top + 10, bubbleWidth - 10, bubbleHeight),
-  //   );
-  // }
-
-  // void _drawRightAlignedBubble({
-  //   required PdfPage page,
-  //   required String text,
-  //   required double top,
-  //   required PdfColor bubbleColor,
-  //   required double pageWidth,
-  // }) {
-  //   final bubbleWidth = pageWidth * 0.55;
-  //   final bubbleHeight = 40.0;
-
-  //   // Draw bubble
-  //   page.graphics.drawRectangle(
-  //     bounds: Rect.fromLTWH(pageWidth - bubbleWidth - 10, top, bubbleWidth, bubbleHeight),
-  //     pen: PdfPen(bubbleColor),
-  //     brush: PdfSolidBrush(bubbleColor),
-  //     // radius: const Radius.circular(10),
-  //   );
-
-  //   // Draw text inside the bubble
-  //   page.graphics.drawString(
-  //     text,
-  //     PdfStandardFont(PdfFontFamily.helvetica, 12),
-  //     bounds: Rect.fromLTWH(pageWidth - bubbleWidth + 5, top + 10, bubbleWidth - 10, bubbleHeight),
-  //   );
-  // }
-
-  // //Will be removed, just for testing
-  // Future<void> saveAndLaunchFile(List<int> bytes, String fileName, BuildContext ctx) async {
-  //   final path = (await getExternalStorageDirectory())!.path;
-  //   final file = File('$path/$fileName');
-  //   await file.writeAsBytes(bytes, flush: true);
-
-  //   Utils.model(
-  //       ctx,
-  //       PDFScreen(
-  //         path: '$path/$fileName',
-  //         filename: fileName,
-  //       ));
-  // }
-
-  // Future<Uint8List> _readImageData(String name) async {
-  //   final data = await rootBundle.load('assets/images/$name');
-  //   return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-  // }
+  void showFeedbackDialog(BuildContext context, dynamic dimension) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Consumer<ChatTabViewModel>(builder: (context, provider, _) {
+                  return AbsorbPointer(
+                    absorbing: provider.isFeedbackLoading,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Close button
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                        Text(
+                          AppLocalization.of(context)
+                              .getTranslatedValue("feedbackTitle")
+                              .toString(),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        RatingBar.builder(
+                          initialRating: provider.chatRating,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemSize: 36,
+                          unratedColor: Colors.grey.shade300,
+                          itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (value) {
+                            provider.setChatRating(value);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                            enabled: !provider.isFeedbackLoading,
+                            controller: provider.userFeedbackController,
+                            cursorColor: AppColor.darkBlackColor,
+                            keyboardType: TextInputType.text,
+                            style: const TextStyle(color: AppColor.darkBlackColor),
+                            decoration: InputDecoration(
+                              hintText: AppLocalization.of(context)
+                                  .getTranslatedValue("feedback")
+                                  .toString(),
+                              filled: true,
+                              fillColor: AppColor.whiteColor,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus()),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: provider.isFeedbackLoading
+                              ? null
+                              : () {
+                                  provider.sendChatFeedback(context, chat["_id"]).then((result) {
+                                    if (result["success"] && context.mounted) {
+                                      Utils.showResultDialog(
+                                          context,
+                                          dimension,
+                                          Image.asset(
+                                            'assets/images/plot_success.png',
+                                            fit: BoxFit.cover,
+                                          ), () {
+                                        chat["isUserFeedbackGiven"] = true;
+                                        if (Navigator.canPop(context)) Navigator.pop(context);
+                                        if (Navigator.canPop(context)) Navigator.pop(context);
+                                      },
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("feedbackSuccess")
+                                              .toString(),
+                                          true);
+                                    } else {
+                                      Utils.showResultDialog(context, dimension, null, () {
+                                        if (Navigator.canPop(context)) Navigator.pop(context);
+                                        if (Navigator.canPop(context)) Navigator.pop(context);
+                                      },
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("errorMessage")
+                                              .toString(),
+                                          false);
+                                    }
+                                  });
+                                },
+                          child: GradientButton(
+                            height: dimension["height"]! * 0.08,
+                            width: dimension["width"],
+                            isLoading: provider.isFeedbackLoading,
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("submitButton")
+                                .toString(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(() => Provider.of<ChatTabViewModel>(context, listen: false));
     useEffect(() {
-      // useViewModel.fetchChatHistory(context, chat['_id']);
-      useViewModel.fetchChatHistory(context, isFromNotifications ? chat['relatedTo'] : chat['_id']);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        useViewModel.fetchChatHistory(
+            context, isFromNotifications ? chat['relatedTo'] : chat['_id']);
+      });
+      return null;
     }, []);
     return Scaffold(
       body: Container(
           color: AppColor.whiteColor,
           padding: const EdgeInsets.only(left: 16, right: 16, top: 25.5),
-          // height: dimension['height']! - 160,
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
-                      onTap: () => Navigator.of(context).pop(),
+                      onTap: () {
+                        if (!chat["isUserFeedbackGiven"] && chat["isReplied"]) {
+                          showFeedbackDialog(context, dimension);
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      },
                       child: const Icon(Icons.arrow_back)),
                   BaseText(
                     title: AppLocalization.of(context)

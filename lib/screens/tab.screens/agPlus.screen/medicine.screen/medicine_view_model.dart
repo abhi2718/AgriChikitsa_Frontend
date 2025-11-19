@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -21,8 +23,8 @@ class MedicineViewModel with ChangeNotifier {
   final List<Map<String, dynamic>> areaUnits = [
     {"id": 1, "textEn": "Acre", "textHi": "एकड़", "value": "acre"},
     {"id": 2, "textEn": "Hectare", "textHi": "हेक्टेयर", "value": "hectare"},
-    {"id": 3, "textEn": "Gunta", "textHi": "गुंता", "value": "hunta"},
-    {"id": 4, "textEn": "Bigha", "textHi": "बीघा", "value": "bigha"}
+    // {"id": 3, "textEn": "Gunta", "textHi": "गुंता", "value": "hunta"},
+    // {"id": 4, "textEn": "Bigha", "textHi": "बीघा", "value": "bigha"}
   ];
 
   final List<Map<String, dynamic>> pumpSizes = [
@@ -200,9 +202,9 @@ class MedicineViewModel with ChangeNotifier {
     setIsCalculating(true);
     try {
       final payload = {
-        "area": plotSize,
+        "area": int.parse(plotSize.toString()),
         "areaUnit": selectedAreaUnitValue,
-        "pumpSize": selectedPumpSizeValue
+        "pumpSize": int.parse(selectedPumpSizeValue.toString())
       };
       final res = await _agPlusRepository.calculateDosage(chemicalId, payload);
       setIsCalculating(false);

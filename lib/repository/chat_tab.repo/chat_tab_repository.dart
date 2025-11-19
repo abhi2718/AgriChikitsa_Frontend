@@ -57,4 +57,14 @@ class ChatTabRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> postchatRating(String id, dynamic payload) async {
+    try {
+      final url = "${AppUrl.chatHistoryEndPoint}/$id/feedback";
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

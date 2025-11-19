@@ -202,14 +202,14 @@ class MedicineScreen extends HookWidget {
                 const SizedBox(height: 10),
                 Text(
                     AppLocalization.of(context).locale.toString() == "en"
-                        ? result["message1_en"]
-                        : result["message1_hi"],
+                        ? result["data"]["messages"]["message1_en"]
+                        : result["data"]["messages"]["message1_hi"],
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
                 Text(
                     AppLocalization.of(context).locale.toString() == "en"
-                        ? result["message2_en"]
-                        : result["message2_hi"],
+                        ? result["data"]["messages"]["message2_en"]
+                        : result["data"]["messages"]["message2_hi"],
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ],
             ),

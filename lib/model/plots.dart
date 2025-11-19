@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class Plots {
   String id;
   String fieldNo;
@@ -15,6 +17,7 @@ class Plots {
   dynamic agristick;
   bool isMonitoringOpted;
   String? ndviId;
+  String? currentStageId;
 
   Plots(
       {this.id = "1",
@@ -32,7 +35,8 @@ class Plots {
       this.isSelected = false,
       this.isMonitoringOpted = false,
       this.agristick,
-      this.ndviId});
+      this.ndviId,
+      this.currentStageId});
 
   factory Plots.fromJson(Map<String, dynamic> json) {
     return Plots(
@@ -41,15 +45,16 @@ class Plots {
         cropName: json["crop"] != null ? json['crop']['name'] : "N/A",
         cropNameHi: json["crop"] != null ? json['crop']['name_hi'] : "N/A",
         area: json['area'],
-        latitude: json['cordinates']['latitude'],
-        longitude: json['cordinates']['longitude'],
-        fieldName: json['feildName'],
+        latitude: json['cordinates']?['latitude'],
+        longitude: json['cordinates']?['longitude'],
+        fieldName: json['feildName'] ?? '',
         fieldNo: json['feildNo']?.toString() ?? "1",
-        soilType: json['soilType'],
+        soilType: json['soilType'] ?? '',
         sowingDate: json['sowingDate'],
         id: json['_id'],
         isMonitoringOpted: json["isMarkedForNdviMonitoring"],
         agristick: json['agristick'],
+        currentStageId: json["currentCropStage"]?["_id"] ?? "",
         ndviId: json["ndvi_ref"]);
   }
 }

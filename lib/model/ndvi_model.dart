@@ -51,8 +51,8 @@ class NDVIResponse {
       messageEn: json['message_en'] ?? 'No message available',
       advisoryEn: json['advisory_en'] ?? 'No message available',
       advisoryHi: json['advisory_hi'] ?? 'कोई डेटा मौजूद नहीं।',
-      audioEn: json['audioEn'] ?? '',
-      audioHi: json['audioHi'] ?? '',
+      audioEn: json['audio_en'] ?? '',
+      audioHi: json['audio_hi'] ?? '',
       ndviHistory:
           (json['ndvi_history'] as List<dynamic>?)?.map((e) => NDVIHistory.fromJson(e)).toList() ??
               [],

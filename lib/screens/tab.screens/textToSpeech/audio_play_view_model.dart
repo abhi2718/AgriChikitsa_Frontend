@@ -41,7 +41,6 @@ class AudioPlayerViewModel extends ChangeNotifier {
       final completed = state.processingState == ProcessingState.completed;
 
       if (completed) {
-        // Reset to "not playing"
         isPlaying = false;
         isPaused = false;
         isLoading = false;

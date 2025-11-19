@@ -1,6 +1,6 @@
 class AppUrl {
   static const String baseUrl = "https://agrichikitsa.org/api/v1";
-  // static const String baseUrl = "http://192.168.1.195:9090/api/v1";
+  // static const String baseUrl = "http://192.168.0.195:9090/api/v1";
   // static const String baseUrl = "http://192.168.194.58:9090/api/v1";
   // static const String baseUrl = "https://staging.agrichikitsa.org/api/v1";
   // static const String baseUrl = "https://agrichikitsa-8be74.web.app/api/v1";
@@ -11,6 +11,7 @@ class AppUrl {
   static const String userEndPoint = '$baseUrl/users';
   static const String updateProfileEndPoint = '$baseUrl/auth/update';
   static const String uploadImageEndPoint = '$baseUrl/upload';
+
   static const String uploadVideoEndPoint = '$baseUrl/upload/video';
   static const String feedEndPoint = '$baseUrl/feed';
   static const String jankariEndPoint = '$baseUrl/jankari';

@@ -135,61 +135,105 @@ class WeedProtectionScreen extends HookWidget {
                                 ]),
                             child: Column(
                               children: [
-                                Consumer<AudioPlayerViewModel>(
-                                    builder: (context, audioProvider, _) {
-                                  final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: hasUrl ? 0 : 12),
-                                    child: Row(children: [
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            AppLocalization.of(context)
-                                                .getTranslatedValue("jankariTab")
-                                                .toString(),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w500, fontSize: 16),
-                                          ),
-                                        ),
-                                      ),
-                                      if (hasUrl)
-                                        IconButton(
-                                          icon: audioProvider.isLoading
-                                              ? const SizedBox(
-                                                  width: 24,
-                                                  height: 24,
-                                                  child: CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                    color: AppColor.whiteColor,
-                                                  ),
-                                                )
-                                              : Icon(
-                                                  audioProvider.isPlaying
-                                                      ? Icons.pause
-                                                      : Icons.play_arrow,
-                                                ),
-                                          onPressed: audioProvider.isLoading
-                                              ? null
-                                              : () {
-                                                  if (audioProvider.isPlaying) {
-                                                    audioProvider.pause();
-                                                  } else if (audioProvider.isPaused) {
-                                                    audioProvider.resume();
-                                                  } else {
-                                                    audioProvider.play(context);
-                                                  }
-                                                },
-                                        ),
-                                    ]),
-                                  );
-                                }),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue("jankariTab")
+                                          .toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w500, fontSize: 16),
+                                    ),
+                                  ),
+                                ),
                                 Container(
                                     padding:
-                                        const EdgeInsets.symmetric(horizontal: 12, vertical: 22),
+                                        const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                     color: AppColor.whiteColor,
                                     child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        Consumer<AudioPlayerViewModel>(
+                                          builder: (context, audioProvider, _) {
+                                            final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                                            final isLoading = audioProvider.isLoading;
+                                            final isPlaying = audioProvider.isPlaying;
+                                            final isPaused = audioProvider.isPaused;
+
+                                            String buttonText;
+                                            if (isLoading) {
+                                              buttonText = AppLocalization.of(context)
+                                                  .getTranslatedValue("loadingAudio")
+                                                  .toString();
+                                            } else if (isPlaying) {
+                                              buttonText = AppLocalization.of(context)
+                                                  .getTranslatedValue("pauseAudio")
+                                                  .toString();
+                                            } else {
+                                              buttonText = AppLocalization.of(context)
+                                                  .getTranslatedValue("playAudio")
+                                                  .toString();
+                                            }
+
+                                            return !hasUrl
+                                                ? const SizedBox.shrink()
+                                                : ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: AppColor.tabIconColor,
+                                                      foregroundColor: Colors.white,
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 8, vertical: 4),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(6),
+                                                      ),
+                                                    ),
+                                                    onPressed: isLoading
+                                                        ? null
+                                                        : () {
+                                                            if (isPlaying) {
+                                                              audioProvider.pause();
+                                                            } else if (isPaused) {
+                                                              audioProvider.resume();
+                                                            } else {
+                                                              audioProvider.play(context);
+                                                            }
+                                                          },
+                                                    child: Row(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        if (isLoading)
+                                                          const SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: CircularProgressIndicator(
+                                                              strokeWidth: 2,
+                                                              color: Colors.white,
+                                                            ),
+                                                          )
+                                                        else
+                                                          Icon(
+                                                            isPlaying
+                                                                ? Icons.pause
+                                                                : Icons.play_arrow,
+                                                            color: Colors.white,
+                                                          ),
+                                                        const SizedBox(width: 4),
+                                                        Text(
+                                                          buttonText,
+                                                          style: const TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
                                         HtmlWidget(
                                             AppLocalization.of(context).locale.toString() == "en"
                                                 ? provider.selectedAdvisory!.advisoryBeforeEn

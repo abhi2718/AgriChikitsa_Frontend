@@ -288,5 +288,11 @@
     "calculateSizeDescription": "क्षेत्र दर्ज करें",
     "warningSizeDescription": "कृपया क्षेत्र की इकाई प्रदान करें",
     "pumpSizeText": "पंप का आकार",
-    "suggestion": "सुझाव"
+    "suggestion": "सुझाव",
+    "feedbackTitle": "पंचम चैटबॉट द्वारा बताये गए सुझाव से आप कितना संतुष्ट है, कृप्या निचे रेटिंग दे कर हमें बताये",
+    "feedback": "कृपया अपने सुझाव यहां लिखें",
+    "feedbackSuccess": "फ़ीडबैक सफलतापूर्वक सबमिट किया गया।",
+    "playAudio": "ऑडियो सुनें",
+    "loadingAudio": "लोड हो रहा है",
+    "pauseAudio": "ऑडियो रोकें"
 }

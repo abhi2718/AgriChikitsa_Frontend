@@ -158,56 +158,95 @@ class NDVIScreen extends HookWidget {
                             children: [
                               // ndviTasksHeader
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Consumer<AudioPlayerViewModel>(
-                                    builder: (context, audioProvider, _) {
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue("ndviTasksHeader")
+                                          .toString(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  )),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Consumer<AudioPlayerViewModel>(
+                                builder: (context, audioProvider, _) {
                                   final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                                  return Row(
-                                    children: [
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            AppLocalization.of(context)
-                                                .getTranslatedValue("ndviTasksHeader")
-                                                .toString(),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
+                                  final isLoading = audioProvider.isLoading;
+                                  final isPlaying = audioProvider.isPlaying;
+                                  final isPaused = audioProvider.isPaused;
+
+                                  String buttonText;
+                                  if (isLoading) {
+                                    buttonText = AppLocalization.of(context)
+                                        .getTranslatedValue("loadingAudio")
+                                        .toString();
+                                  } else if (isPlaying) {
+                                    buttonText = AppLocalization.of(context)
+                                        .getTranslatedValue("pauseAudio")
+                                        .toString();
+                                  } else {
+                                    buttonText = AppLocalization.of(context)
+                                        .getTranslatedValue("playAudio")
+                                        .toString();
+                                  }
+
+                                  return !hasUrl
+                                      ? const SizedBox.shrink()
+                                      : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColor.tabIconColor,
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 4),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(6),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                      if (hasUrl)
-                                        IconButton(
-                                          icon: audioProvider.isLoading
-                                              ? const SizedBox(
-                                                  width: 24,
-                                                  height: 24,
-                                                  child: CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                    color: AppColor.darkColor,
-                                                  ),
-                                                )
-                                              : Icon(
-                                                  audioProvider.isPlaying
-                                                      ? Icons.pause
-                                                      : Icons.play_arrow,
-                                                ),
-                                          onPressed: audioProvider.isLoading
+                                          onPressed: isLoading
                                               ? null
                                               : () {
-                                                  if (audioProvider.isPlaying) {
+                                                  if (isPlaying) {
                                                     audioProvider.pause();
-                                                  } else if (audioProvider.isPaused) {
+                                                  } else if (isPaused) {
                                                     audioProvider.resume();
                                                   } else {
                                                     audioProvider.play(context);
                                                   }
                                                 },
-                                        ),
-                                    ],
-                                  );
-                                }),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (isLoading)
+                                                const SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                              else
+                                                Icon(
+                                                  isPlaying ? Icons.pause : Icons.play_arrow,
+                                                  color: Colors.white,
+                                                ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                buttonText,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                },
                               ),
                               const SizedBox(
                                 height: 12,

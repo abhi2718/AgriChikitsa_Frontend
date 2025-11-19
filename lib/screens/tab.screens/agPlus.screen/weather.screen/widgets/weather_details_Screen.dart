@@ -167,8 +167,13 @@ class _PresentDetailsState extends State<PresentDetails> {
     return SingleChildScrollView(
       child: Consumer<WeatherViewModel>(builder: (context, provider, child) {
         return provider.getPredictedDataLoader
-            ? const Center(
-                child: CircularProgressIndicator(),
+            ? SizedBox(
+                height: 300,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColor.extraDark,
+                  ),
+                ),
               )
             : Column(
                 children: [

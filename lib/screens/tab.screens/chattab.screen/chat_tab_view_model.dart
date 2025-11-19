@@ -63,6 +63,12 @@ class ChatTabViewModel with ChangeNotifier {
   ];
 
   var chatMessages = [];
+
+  //Feedback
+  bool isFeedbackLoading = false;
+  double chatRating = 5;
+  TextEditingController userFeedbackController = TextEditingController();
+
   void setShowCameraButton(bool value) {
     showCameraButton = value;
   }
@@ -117,6 +123,9 @@ class ChatTabViewModel with ChangeNotifier {
     imageFile = null;
     imageFile2 = null;
     isSecondTry = false;
+    isFeedbackLoading = false;
+    userFeedbackController.clear();
+    chatRating = 5;
   }
 
   void disposeValues() {
@@ -967,6 +976,42 @@ class ChatTabViewModel with ChangeNotifier {
               context);
         }
       }
+    }
+  }
+
+  void setIsFeedbackLoader(bool value) {
+    isFeedbackLoading = value;
+    notifyListeners();
+  }
+
+  void setChatRating(double value) {
+    chatRating = value;
+  }
+
+  Future<dynamic> sendChatFeedback(BuildContext context, String chatId) async {
+    setIsFeedbackLoader(true);
+    try {
+      final payloadStructure = {
+        "rating": chatRating,
+        if (userFeedbackController.text.trim().isNotEmpty)
+          "feedback": userFeedbackController.text.trim(),
+      };
+      final data = await _chatTabRepository.postchatRating(chatId, payloadStructure);
+      chatRating = 5;
+      userFeedbackController.clear();
+      setIsFeedbackLoader(false);
+      return data;
+    } catch (e) {
+      setIsFeedbackLoader(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              e.toString(),
+              context);
+        }
+      }
+      return {"success": false};
     }
   }
 }
