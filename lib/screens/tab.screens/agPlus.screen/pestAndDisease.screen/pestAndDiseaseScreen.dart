@@ -1,8 +1,10 @@
 import 'package:agriChikitsa/model/pestAndDisease.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/widgets/pest_carousel.dart';
-import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weedProtection.screen/widgets/button_tab.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -19,17 +21,22 @@ class PestAndDiseaseScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ttsViewModel =
-        useMemoized(() => Provider.of<TextToSpeechViewModel>(context, listen: false));
+    final dimension = Utils.getDimensions(context, true);
+    final audioViewModel =
+        useMemoized(() => Provider.of<AudioPlayerViewModel>(context, listen: false));
+    final medicineViewModel =
+        useMemoized(() => Provider.of<MedicineViewModel>(context, listen: false));
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ttsViewModel.reinitalize();
+        audioViewModel.reinitalize();
+        //To be discussed
+        // medicineViewModel.getWeedManageList(context, weedId);
       });
       return null;
     }, []);
     return WillPopScope(
       onWillPop: () async {
-        ttsViewModel.stop();
+        audioViewModel.stop();
         return true;
       },
       child: Scaffold(
@@ -39,36 +46,44 @@ class PestAndDiseaseScreen extends HookWidget {
           foregroundColor: AppColor.darkBlackColor,
           automaticallyImplyLeading: true,
           centerTitle: true,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 AppLocalization.of(context).locale.toString() == "en"
                     ? selectedPestDisease.nameEn
                     : selectedPestDisease.nameHi,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 "(${AppLocalization.of(context).locale.toString() == "en" ? selectedPestDisease.nameSciEn : selectedPestDisease.nameSciHi})",
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 18,
+                  fontSize: 16,
                   fontStyle: FontStyle.italic,
                 ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
         ),
         body: Consumer<AGPlusViewModel>(builder: (context, provider, child) {
-          String cleanHtml = Utils.cleanHtmlTags(
-            AppLocalization.of(context).locale.toString() == "en"
-                ? selectedPestDisease.contentEn
-                : selectedPestDisease.contentHi,
-          );
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ttsViewModel.setText(cleanHtml);
+            final locale = AppLocalization.of(context).locale.toString();
+            if (locale == "en" && selectedPestDisease.audioEn.isNotEmpty) {
+              audioViewModel.setAudioUrl(selectedPestDisease.audioEn);
+            } else if (locale == "hi" && selectedPestDisease.audioHi.isNotEmpty) {
+              audioViewModel.setAudioUrl(selectedPestDisease.audioHi);
+            } else {
+              audioViewModel.setAudioUrl("");
+            }
           });
-          // return provider.isWeedDataLoading
           return SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -77,74 +92,122 @@ class PestAndDiseaseScreen extends HookWidget {
                 PestsCarousel(images: selectedPestDisease.images),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 22.0, horizontal: 14),
-                  child: HtmlWidget(AppLocalization.of(context).locale.toString() == "en"
-                      ? selectedPestDisease.contentEn
-                      : selectedPestDisease.contentHi),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Consumer<AudioPlayerViewModel>(
+                        builder: (context, audioProvider, _) {
+                          final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                          final isLoading = audioProvider.isLoading;
+                          final isPlaying = audioProvider.isPlaying;
+                          final isPaused = audioProvider.isPaused;
+
+                          String buttonText;
+                          if (isLoading) {
+                            buttonText = AppLocalization.of(context)
+                                .getTranslatedValue("loadingAudio")
+                                .toString();
+                          } else if (isPlaying) {
+                            buttonText = AppLocalization.of(context)
+                                .getTranslatedValue("pauseAudio")
+                                .toString();
+                          } else {
+                            buttonText = AppLocalization.of(context)
+                                .getTranslatedValue("playAudio")
+                                .toString();
+                          }
+
+                          return !hasUrl
+                              ? const SizedBox.shrink()
+                              : ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColor.tabIconColor,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                  ),
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          if (isPlaying) {
+                                            audioProvider.pause();
+                                          } else if (isPaused) {
+                                            audioProvider.resume();
+                                          } else {
+                                            audioProvider.play(context);
+                                          }
+                                        },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (isLoading)
+                                        const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      else
+                                        Icon(
+                                          isPlaying ? Icons.pause : Icons.play_arrow,
+                                          color: Colors.white,
+                                        ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        buttonText,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      HtmlWidget(AppLocalization.of(context).locale.toString() == "en"
+                          ? selectedPestDisease.contentEn
+                          : selectedPestDisease.contentHi),
+                      Consumer<MedicineViewModel>(builder: (context, provider, _) {
+                        return Column(
+                          children: provider.isManageListLoading
+                              ? List.generate(
+                                  3,
+                                  (index) => Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                      child: Skeleton(
+                                          height: dimension["height"]! * 0.1,
+                                          width: dimension["width"]!)),
+                                )
+                              : List.generate(
+                                  provider.weedManageList.length,
+                                  (index) => Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                    child: ButtonTab(
+                                      text: provider.weedManageList[index][
+                                          AppLocalization.of(context).locale.toString() == "en"
+                                              ? "nameEn"
+                                              : "nameHi"],
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
               ],
             ),
           );
         }),
-        floatingActionButton: Consumer<TextToSpeechViewModel>(
-          builder: (context, vm, _) {
-            // if (advisory == null || useViewModel.isWeedDataLoading) return const SizedBox();
-            return Stack(
-              children: [
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                    backgroundColor: AppColor.darkColor,
-                    child: vm.isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: AppColor.whiteColor,
-                            ),
-                          )
-                        : const Icon(
-                            Icons.mic,
-                            color: AppColor.whiteColor,
-                          ),
-                    onPressed: () {
-                      if (vm.isLoading) {
-                        return;
-                      }
-                      vm.speak(context, languageCode: "hi-IN");
-                    },
-                  ),
-                ),
-                if (vm.isSpeaking)
-                  Positioned(
-                    bottom: 80,
-                    right: 0,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.white,
-                      onPressed: vm.isLoading
-                          ? () {
-                              return;
-                            }
-                          : vm.isPaused
-                              ? () => {vm.resume(context)}
-                              : vm.pause,
-                      child: vm.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: AppColor.whiteColor,
-                              ),
-                            )
-                          : Icon(
-                              vm.isPaused ? Icons.play_arrow : Icons.pause,
-                              color: AppColor.darkColor,
-                            ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
       ),
     );
   }
@@ -351,9 +414,9 @@ class AllPestsDiseasesScreen extends HookWidget {
                             ClipRRect(
                               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                               child: CachedNetworkImage(
-                                imageUrl: selectedType == "pest" ? item.images[0] : item.images[0],
+                                imageUrl: item.images[0],
                                 fit: BoxFit.cover,
-                                height: 150, // fixed height for image
+                                height: 150,
                                 width: double.infinity,
                                 placeholder: (context, url) => Skeleton(
                                   height: 150,
@@ -363,36 +426,40 @@ class AllPestsDiseasesScreen extends HookWidget {
                                 errorWidget: (context, url, error) => const Icon(Icons.error),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    selectedType == "pest"
-                                        ? AppLocalization.of(context).locale.toString() == "en"
-                                            ? item.nameEn
-                                            : item.nameHi
-                                        : AppLocalization.of(context).locale.toString() == "en"
-                                            ? item.nameEn
-                                            : item.nameHi,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      AppLocalization.of(context).locale.toString() == "en"
+                                          ? item.nameEn
+                                          : item.nameHi,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "(${selectedType == "pest" ? AppLocalization.of(context).locale.toString() == "en" ? item.nameSciEn : item.nameSciHi : AppLocalization.of(context).locale.toString() == "en" ? item.nameSciEn : item.nameSciHi})",
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 13,
-                                      fontStyle: FontStyle.italic,
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      AppLocalization.of(context).locale.toString() == "en"
+                                          ? item.nameSciEn
+                                          : item.nameSciHi,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 13,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],

@@ -41,7 +41,7 @@ class AGPlusLanding extends HookWidget {
                         children: [
                           Container(
                             alignment: AlignmentDirectional.bottomCenter,
-                            height: dimension['height']! * 0.32,
+                            height: dimension['height']! * 0.30,
                             width: dimension['width']!,
                             decoration: const BoxDecoration(
                                 image: DecorationImage(
@@ -106,7 +106,7 @@ class AGPlusLanding extends HookWidget {
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 5,
+                                  flex: 6,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -222,6 +222,9 @@ class AGPlusLanding extends HookWidget {
                               title: AppLocalization.of(context)
                                   .getTranslatedValue("agPlusContinue")
                                   .toString())),
+                      SizedBox(
+                        height: 40,
+                      )
                       // title: AppLocalization.of(context)
                       //     .getTranslatedValue("comingSoon")
                       //     .toString())),

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/weather_model.dart';
 import 'package:agriChikitsa/res/color.dart';
@@ -36,10 +34,6 @@ class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
 
   @override
   Widget build(BuildContext context) {
-    final lang = AppLocalization.of(context).locale.toString();
-    String conditionText = lang == "hi"
-        ? utf8.decode(widget.useViewModel.latestWeatherData.condition.runes.toList())
-        : widget.useViewModel.latestWeatherData.condition.condition;
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
       body: SafeArea(
@@ -98,7 +92,7 @@ class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
                     height: 8,
                   ),
                   Text(
-                    conditionText,
+                    widget.useViewModel.latestWeatherData.condition,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700, color: AppColor.whiteColor, fontSize: 18),
                   ),
@@ -173,8 +167,13 @@ class _PresentDetailsState extends State<PresentDetails> {
     return SingleChildScrollView(
       child: Consumer<WeatherViewModel>(builder: (context, provider, child) {
         return provider.getPredictedDataLoader
-            ? const Center(
-                child: CircularProgressIndicator(),
+            ? SizedBox(
+                height: 300,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColor.extraDark,
+                  ),
+                ),
               )
             : Column(
                 children: [
@@ -185,9 +184,6 @@ class _PresentDetailsState extends State<PresentDetails> {
                       itemCount: provider.predictedHourlyDataList.length,
                       itemBuilder: (context, index) {
                         final data = provider.predictedHourlyDataList[index];
-                        String conditionText = lang == "hi"
-                            ? utf8.decode(data.conditionText.runes.toList())
-                            : data.conditionText;
                         return GestureDetector(
                             onTap: () => showDialog(
                                   context: context,
@@ -221,7 +217,7 @@ class _PresentDetailsState extends State<PresentDetails> {
                                                       fontWeight: FontWeight.w500),
                                                 ),
                                                 Text(
-                                                  conditionText,
+                                                  data.conditionText,
                                                   style: const TextStyle(
                                                       fontSize: 22,
                                                       color: AppColor.darkBlackColor,

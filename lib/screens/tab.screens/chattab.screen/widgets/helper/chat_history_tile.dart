@@ -87,9 +87,6 @@ class _ChatHistoryTileState extends State<ChatHistoryTile> {
                   onTap: () {
                     if (!widget.chat["isOpened"]) {
                       useViewModel.markChatAsOpened(widget.chat["_id"]);
-                      setState(() {
-                        widget.chat["isOpened"] = true;
-                      });
                     }
                     Utils.model(
                       context,
@@ -145,9 +142,6 @@ class _ChatHistoryTileState extends State<ChatHistoryTile> {
                 onTap: () {
                   if (!widget.chat["isOpened"]) {
                     useViewModel.markChatAsOpened(widget.chat["_id"]);
-                    setState(() {
-                      widget.chat["isOpened"] = true;
-                    });
                   }
                   Utils.model(
                     context,

@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:agriChikitsa/model/ndvi_model.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -36,18 +38,19 @@ class NDVIScreen extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(() => Provider.of<NDVIViewModel>(context, listen: false));
-    final ttsViewModel =
-        useMemoized(() => Provider.of<TextToSpeechViewModel>(context, listen: false));
+    final audioViewModel =
+        useMemoized(() => Provider.of<AudioPlayerViewModel>(context, listen: false));
     useEffect(() {
       useViewModel.reinitialize();
       useViewModel.getCropHealthStatus(context, ndviId ?? selectedPlot.ndviId!, "1");
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ttsViewModel.reinitalize();
+        audioViewModel.reinitalize();
       });
     }, []);
     return WillPopScope(
       onWillPop: () async {
-        ttsViewModel.stop();
+        audioViewModel.stop();
+        audioViewModel.disposeValues();
         return true;
       },
       child: Scaffold(
@@ -90,13 +93,16 @@ class NDVIScreen extends HookWidget {
                                 AppLocalization.of(context).locale.toString() == "en"
                                     ? ndviResponse?.messageEn ?? "No data available"
                                     : ndviResponse?.messageHi ?? "कोई डेटा मौजूद नहीं।";
-                            String cleanHtml = Utils.cleanHtmlTags(
-                              AppLocalization.of(context).locale.toString() == "en"
-                                  ? provider.ndviResponse!.advisoryEn
-                                  : provider.ndviResponse!.advisoryHi,
-                            );
                             WidgetsBinding.instance.addPostFrameCallback((_) {
-                              ttsViewModel.setText(cleanHtml);
+                              final locale = AppLocalization.of(context).locale.toString();
+
+                              if (locale == "en" && ndviResponse!.audioEn.isNotEmpty) {
+                                audioViewModel.setAudioUrl(ndviResponse.audioEn);
+                              } else if (locale == "hi" && ndviResponse!.audioHi.isNotEmpty) {
+                                audioViewModel.setAudioUrl(ndviResponse.audioHi);
+                              } else {
+                                audioViewModel.setAudioUrl("");
+                              }
                             });
                             return Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
@@ -151,13 +157,96 @@ class NDVIScreen extends HookWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // ndviTasksHeader
-                              Center(
-                                child: Text(
-                                  AppLocalization.of(context)
-                                      .getTranslatedValue("ndviTasksHeader")
-                                      .toString(),
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                ),
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue("ndviTasksHeader")
+                                          .toString(),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  )),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Consumer<AudioPlayerViewModel>(
+                                builder: (context, audioProvider, _) {
+                                  final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                                  final isLoading = audioProvider.isLoading;
+                                  final isPlaying = audioProvider.isPlaying;
+                                  final isPaused = audioProvider.isPaused;
+
+                                  String buttonText;
+                                  if (isLoading) {
+                                    buttonText = AppLocalization.of(context)
+                                        .getTranslatedValue("loadingAudio")
+                                        .toString();
+                                  } else if (isPlaying) {
+                                    buttonText = AppLocalization.of(context)
+                                        .getTranslatedValue("pauseAudio")
+                                        .toString();
+                                  } else {
+                                    buttonText = AppLocalization.of(context)
+                                        .getTranslatedValue("playAudio")
+                                        .toString();
+                                  }
+
+                                  return !hasUrl
+                                      ? const SizedBox.shrink()
+                                      : ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColor.tabIconColor,
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 4),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                          ),
+                                          onPressed: isLoading
+                                              ? null
+                                              : () {
+                                                  if (isPlaying) {
+                                                    audioProvider.pause();
+                                                  } else if (isPaused) {
+                                                    audioProvider.resume();
+                                                  } else {
+                                                    audioProvider.play(context);
+                                                  }
+                                                },
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (isLoading)
+                                                const SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                              else
+                                                Icon(
+                                                  isPlaying ? Icons.pause : Icons.play_arrow,
+                                                  color: Colors.white,
+                                                ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                buttonText,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                },
                               ),
                               const SizedBox(
                                 height: 12,
@@ -173,70 +262,6 @@ class NDVIScreen extends HookWidget {
                   ),
                 );
         }),
-        floatingActionButton: Consumer<TextToSpeechViewModel>(
-          builder: (context, vm, _) {
-            final isDataPresent = useViewModel.ndviResponse != null &&
-                (useViewModel.ndviResponse!.advisoryEn.isNotEmpty ||
-                    useViewModel.ndviResponse!.advisoryHi.isNotEmpty);
-
-            if (!isDataPresent || useViewModel.responseLoader) return const SizedBox();
-            return Stack(
-              children: [
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                    backgroundColor: AppColor.darkColor,
-                    child: vm.isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: AppColor.whiteColor,
-                            ),
-                          )
-                        : const Icon(
-                            Icons.mic,
-                            color: AppColor.whiteColor,
-                          ),
-                    onPressed: () {
-                      if (vm.isLoading) {
-                        return;
-                      }
-                      vm.speak(context, languageCode: "hi-IN");
-                    },
-                  ),
-                ),
-                if (vm.isSpeaking)
-                  Positioned(
-                    bottom: 80,
-                    right: 0,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.white,
-                      onPressed: vm.isLoading
-                          ? () {
-                              return;
-                            }
-                          : vm.isPaused
-                              ? () => {vm.resume(context)}
-                              : vm.pause,
-                      child: vm.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: AppColor.whiteColor,
-                              ),
-                            )
-                          : Icon(
-                              vm.isPaused ? Icons.play_arrow : Icons.pause,
-                              color: AppColor.darkColor,
-                            ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
       ),
     );
   }
@@ -259,7 +284,7 @@ class _NDVIGraphState extends State<NDVIGraph> {
   ];
 
   int currentPage = 1;
-  final int maxVisiblePoints = 5;
+  final int maxVisiblePoints = 7;
   bool isLoading = false;
 
   @override
@@ -269,7 +294,6 @@ class _NDVIGraphState extends State<NDVIGraph> {
     final int totalPages = (widget.ndviData.totalRecords / maxVisiblePoints).ceil();
     final bool canGoBack = currentPage > 1;
     final bool canGoForward = currentPage < totalPages;
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
       decoration:

@@ -87,7 +87,7 @@ class JankariTagsScreen extends StatelessWidget {
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 6.0,
                                   mainAxisSpacing: 6.0,
-                                  childAspectRatio: ((dimension['width']! - 10) / 2) / 148,
+                                  childAspectRatio: ((dimension['width']! - 10) / 2) / 180,
                                 ),
                                 itemBuilder: (BuildContext context, int count) {
                                   final subCategory =
@@ -116,11 +116,17 @@ class JankariTagsScreen extends StatelessWidget {
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.only(left: 6, right: 6),
-                                      child: Stack(
-                                        fit: StackFit.expand,
+                                      decoration: BoxDecoration(
+                                        color: AppColor.notificationBgColor,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(12),
+                                                topRight: Radius.circular(12)),
                                             child: CachedNetworkImage(
                                               imageUrl: backgroundImage,
                                               progressIndicatorBuilder:
@@ -131,21 +137,12 @@ class JankariTagsScreen extends StatelessWidget {
                                               ),
                                               errorWidget: (context, url, error) =>
                                                   const Icon(Icons.error),
-                                              width: 40,
                                               fit: BoxFit.fill,
-                                              height: 40,
+                                              width: double.infinity,
+                                              height: 130,
                                             ),
                                           ),
-                                          Positioned.fill(
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.black.withOpacity(0.3),
-                                                borderRadius: const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
+                                          const SizedBox(height: 8),
                                           Container(
                                             alignment: Alignment.center,
                                             child: subCategory["name_hi"].length > 8
@@ -158,8 +155,8 @@ class JankariTagsScreen extends StatelessWidget {
                                                           ? subCategory["name"]
                                                           : subCategory["name_hi"],
                                                       style: const TextStyle(
-                                                          color: AppColor.whiteColor,
-                                                          fontSize: 16,
+                                                          color: AppColor.darkBlackColor,
+                                                          fontSize: 14,
                                                           fontWeight: FontWeight.w600),
                                                     ),
                                                   )
@@ -169,8 +166,8 @@ class JankariTagsScreen extends StatelessWidget {
                                                             ? subCategory["name"]
                                                             : subCategory["name_hi"],
                                                     style: const TextStyle(
-                                                        color: AppColor.whiteColor,
-                                                        fontSize: 16,
+                                                        color: AppColor.darkBlackColor,
+                                                        fontSize: 14,
                                                         fontWeight: FontWeight.w600),
                                                   ),
                                           ),

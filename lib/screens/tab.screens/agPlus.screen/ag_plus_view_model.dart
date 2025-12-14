@@ -7,6 +7,7 @@ import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/model/weed_protection.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/add_field_status_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop.helpers/change_crop_duration.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop_details.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/select_crop.dart';
@@ -73,6 +74,7 @@ class AGPlusViewModel with ChangeNotifier {
   //Variables for weed protection section
   // late WeedProtection? weedProtection;
   WeedProtection weedProtection = WeedProtection(organic: [], chemical: []);
+  WeedAdvisory? selectedAdvisory;
   bool isWeedDataLoading = false;
 
   //Variable for pest disease section
@@ -123,6 +125,7 @@ class AGPlusViewModel with ChangeNotifier {
     changeCropLoader = false;
     checkLocationLoader = false;
     sowingDateLoader = false;
+    selectedAdvisory = null;
   }
 
   void resetLoader() {
@@ -162,6 +165,7 @@ class AGPlusViewModel with ChangeNotifier {
     selectedPlot = null;
     mapLocation = {"latitude": "", "longitude": ""};
     infoRequestRaised = false;
+    selectedAdvisory = null;
     reinitialize();
   }
 
@@ -1026,7 +1030,8 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   //Methods for kharpatwar section
-  void getWeedProtectionData(BuildContext context, String cropId) async {
+  void getWeedProtectionData(BuildContext context, String cropId, String selectedWeedType,
+      MedicineViewModel medicineViewModel) async {
     setWeedProtectionLoader(true);
     try {
       final res = await _agPlusRepository.getWeedProtectionData(cropId);
@@ -1035,6 +1040,10 @@ class AGPlusViewModel with ChangeNotifier {
           "organic": res["organic"] ?? [],
           "chemical": res["chemical"] ?? [],
         });
+        selectedAdvisory = weedProtection.getByType(selectedWeedType)[0];
+        if (context.mounted) {
+          medicineViewModel.getWeedManageList(context, selectedAdvisory!.id);
+        }
       } else {
         weedProtection = WeedProtection(organic: [], chemical: []);
       }

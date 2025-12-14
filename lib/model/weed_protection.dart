@@ -41,6 +41,10 @@ class WeedAdvisory {
   final String advisoryBeforeHi;
   final String advisoryAfterEn;
   final String advisoryAfterHi;
+  final String audioBeforeEn;
+  final String audioBeforeHi;
+  final String audioAfterEn;
+  final String audioAfterHi;
 
   WeedAdvisory({
     required this.id,
@@ -53,6 +57,10 @@ class WeedAdvisory {
     required this.advisoryBeforeHi,
     required this.advisoryAfterEn,
     required this.advisoryAfterHi,
+    required this.audioBeforeEn,
+    required this.audioBeforeHi,
+    required this.audioAfterEn,
+    required this.audioAfterHi,
   });
 
   factory WeedAdvisory.fromJson(Map<String, dynamic> json) {
@@ -73,6 +81,10 @@ class WeedAdvisory {
       advisoryBeforeHi: json['advisory_before_hi'] ?? '',
       advisoryAfterEn: json['advisory_after_en'] ?? '',
       advisoryAfterHi: json['advisory_after_hi'] ?? '',
+      audioBeforeEn: json['audio_before_en'] ?? '',
+      audioBeforeHi: json['audio_before_hi'] ?? '',
+      audioAfterEn: json['audio_after_en'] ?? '',
+      audioAfterHi: json['audio_after_hi'] ?? '',
     );
   }
 }

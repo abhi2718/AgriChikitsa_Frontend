@@ -198,18 +198,6 @@ class AGPlusHome extends HookWidget {
                                     currentSelectedPlot: useViewModel.selectedPlot),
                               );
                       }),
-                      FeaturesCard(
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("weedProtectionTitle")
-                              .toString(),
-                          image:
-                              "https://i0.wp.com/geopard.tech/wp-content/uploads/2022/03/19.2-min.jpg?resize=1024%2C555&ssl=1",
-                          ontap: () {
-                            // Utils.toastMessage(
-                            //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
-                            Utils.model(context, const WeedCategorySelectModal());
-                          }),
-
                       //To be implemented in v2.0
                       // FeaturesCard(
                       //     title:
@@ -270,6 +258,17 @@ class AGPlusHome extends HookWidget {
                       //             agPlusViewModel: useViewModel,
                       //           ));
                       //     }),
+                      FeaturesCard(
+                          title: AppLocalization.of(context)
+                              .getTranslatedValue("weedProtectionTitle")
+                              .toString(),
+                          image:
+                              "https://i0.wp.com/geopard.tech/wp-content/uploads/2022/03/19.2-min.jpg?resize=1024%2C555&ssl=1",
+                          ontap: () {
+                            // Utils.toastMessage(
+                            //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
+                            Utils.model(context, const WeedCategorySelectModal());
+                          }),
                       FeaturesCard(
                           title: AppLocalization.of(context)
                               .getTranslatedValue("pestAndDiseaseTitle")

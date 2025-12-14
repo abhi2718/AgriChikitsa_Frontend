@@ -81,7 +81,7 @@ class PlotHistoryScreen extends HookWidget {
                                   ElevatedButton(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xff158C96),
+                                      backgroundColor: AppColor.extraDark,
                                       foregroundColor: AppColor.whiteColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),

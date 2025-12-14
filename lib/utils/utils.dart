@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
@@ -248,7 +249,7 @@ class Utils {
     }
   }
 
-  static showAlert(BuildContext context, String title, String message) {
+  static void showAlert(BuildContext context, String title, String message) {
     showDialog(
         context: context,
         builder: (context) {
@@ -283,5 +284,51 @@ class Utils {
   static String cleanHtmlTags(String htmlText) {
     final RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: false);
     return htmlText.replaceAll(exp, '').replaceAll('&nbsp;', ' ').trim();
+  }
+
+  static void showResultDialog(
+    BuildContext context,
+    dynamic dimension,
+    Image? image,
+    Function callback,
+    String message,
+    bool isSuccess,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        Future.delayed(const Duration(seconds: 3), () {
+          if (Navigator.canPop(dialogContext)) Navigator.of(dialogContext).pop();
+          callback();
+        });
+
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            height: dimension["height"]! * 0.3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                isSuccess
+                    ? ClipRRect(borderRadius: BorderRadius.circular(10), child: image)
+                    : Lottie.asset(
+                        'assets/lottie/fail.json',
+                        height: dimension['height']! * 0.10,
+                        width: dimension['width']! * 0.30,
+                      ),
+                const SizedBox(height: 8),
+                Text(
+                  message,
+                  style: const TextStyle(fontWeight: FontWeight.w400),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

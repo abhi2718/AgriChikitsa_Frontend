@@ -125,7 +125,7 @@ class SubCategoryContainer extends HookWidget {
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 6.0,
                                   mainAxisSpacing: 6.0,
-                                  childAspectRatio: ((dimension['width']! - 10) / 2) / 148,
+                                  childAspectRatio: ((dimension['width']! - 10) / 2) / 180,
                                 ),
                                 itemBuilder: (BuildContext context, int index) {
                                   final subCategory = provider.jankariSubcategoryList[index];
@@ -159,66 +159,45 @@ class SubCategoryContainer extends HookWidget {
                                       }
                                     },
                                     child: Container(
-                                      margin: const EdgeInsets.only(left: 6, right: 6),
-                                      child: Stack(
-                                        fit: StackFit.expand,
+                                      margin: const EdgeInsets.symmetric(horizontal: 6),
+                                      decoration: BoxDecoration(
+                                        color: AppColor.notificationBgColor,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           ClipRRect(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(12),
+                                                topRight: Radius.circular(12)),
                                             child: CachedNetworkImage(
-                                              imageUrl: backgroundImage,
-                                              progressIndicatorBuilder:
-                                                  (context, url, downloadProgress) => Skeleton(
-                                                height: 40,
-                                                width: 40,
-                                                radius: 0,
-                                              ),
-                                              errorWidget: (context, url, error) =>
-                                                  const Icon(Icons.error),
-                                              width: 40,
-                                              fit: BoxFit.fill,
-                                              height: 40,
-                                            ),
+                                                imageUrl: backgroundImage,
+                                                progressIndicatorBuilder:
+                                                    (context, url, downloadProgress) => Skeleton(
+                                                          height: 40,
+                                                          width: 40,
+                                                          radius: 0,
+                                                        ),
+                                                errorWidget: (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                                width: double.infinity,
+                                                fit: BoxFit.fill,
+                                                height: 130),
                                           ),
-                                          Positioned.fill(
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.black.withOpacity(0.3),
-                                                borderRadius: const BorderRadius.all(
-                                                  Radius.circular(12),
-                                                ),
+                                          const SizedBox(height: 8),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                            child: BaseText(
+                                              title: profileViewModel.locale["language"] == "en"
+                                                  ? subCategory.name
+                                                  : subCategory.hindiName,
+                                              style: const TextStyle(
+                                                color: AppColor.darkBlackColor,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
                                               ),
-                                            ),
-                                          ),
-                                          Container(
-                                            alignment: Alignment.center,
-                                            child: Center(
-                                              child: subCategory.hindiName.length > 8
-                                                  ? Padding(
-                                                      padding: const EdgeInsets.symmetric(
-                                                          horizontal: 20),
-                                                      child: BaseText(
-                                                        title:
-                                                            profileViewModel.locale["language"] ==
-                                                                    "en"
-                                                                ? subCategory.name
-                                                                : subCategory.hindiName,
-                                                        style: const TextStyle(
-                                                            color: AppColor.whiteColor,
-                                                            fontSize: 16,
-                                                            fontWeight: FontWeight.w600),
-                                                      ),
-                                                    )
-                                                  : BaseText(
-                                                      title: profileViewModel.locale["language"] ==
-                                                              "en"
-                                                          ? subCategory.name
-                                                          : subCategory.hindiName,
-                                                      style: const TextStyle(
-                                                          color: AppColor.whiteColor,
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight.w600),
-                                                    ),
+                                              textAlign: TextAlign.left,
                                             ),
                                           ),
                                         ],

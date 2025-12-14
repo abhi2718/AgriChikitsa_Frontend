@@ -7,7 +7,7 @@ import 'package:agriChikitsa/screens/tab.screens/chattab.screen/chat_tab_view_mo
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/widgets/delete_alert.dart';
-import 'package:agriChikitsa/screens/tab.screens/textToSpeech/textToSpeechViewModel.dart';
+import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -49,7 +49,7 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<AGPlusViewModel>(context, listen: false),
       Provider.of<LanguageViewModel>(context, listen: false),
       Provider.of<ChatTabViewModel>(context, listen: false),
-      Provider.of<TextToSpeechViewModel>(context, listen: false),
+      Provider.of<AudioPlayerViewModel>(context, listen: false),
     ];
     final profileImage = user.profileImage!;
     return Scaffold(
