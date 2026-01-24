@@ -103,7 +103,7 @@ class CropDetails extends StatelessWidget {
                             );
                           }).toList(),
                           onChanged: (value) {
-                            provider.setAreaUnit(value);
+                            provider.setAreaUnit(value.toString());
                           }),
                     );
                   }),
@@ -159,7 +159,7 @@ class CropDetails extends StatelessWidget {
                           return Checkbox(
                             value: provider.notPlantedCheck,
                             onChanged: (bool? value) {
-                              provider.setNotPlantedCheck(value);
+                              provider.setNotPlantedCheck(value!);
                             },
                             activeColor: Colors.green,
                           );

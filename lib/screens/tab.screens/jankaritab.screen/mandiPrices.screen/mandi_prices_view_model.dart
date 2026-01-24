@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../repository/mandiPrices.repo/mandi_prices_tab_repository.dart';
@@ -17,16 +19,16 @@ class MandiPricesModel with ChangeNotifier {
   var selectedMarket = "";
   var selectedCommodity = "";
 
-  setStateLoading(value) {
+  void setStateLoading(bool value) {
     stateLoading = value;
   }
 
-  setLoader(value) {
+  void setLoader(bool value) {
     loader = value;
     notifyListeners();
   }
 
-  setPriceLoader(value) {
+  void setPriceLoader(bool value) {
     priceLoader = value;
     notifyListeners();
   }
@@ -68,8 +70,31 @@ class MandiPricesModel with ChangeNotifier {
   void fetchStates(BuildContext context) async {
     setStateLoading(true);
     try {
-      final data = await _mandiPricesRepository.fetchStates();
-      stateList = data["states"].cast<String>();
+      stateList = [
+        "Andhra Pradesh",
+        "Gujarat",
+        "Haryana",
+        "Himachal Pradesh",
+        "Jammu and Kashmir",
+        "Karnataka",
+        "Kerala",
+        "Madhya Pradesh",
+        "Maharashtra",
+        "Odisha",
+        "Punjab",
+        "Rajasthan",
+        "Tamil Nadu",
+        "Telangana",
+        "Tripura",
+        "Uttar Pradesh",
+        "West Bengal",
+        "Chandigarh",
+        "Chattisgarh",
+        "Nagaland",
+        "Uttrakhand"
+      ];
+      // final data = await _mandiPricesRepository.fetchStates();
+      // stateList = data["states"].cast<String>();
       setStateLoading(false);
       notifyListeners();
     } catch (error) {
@@ -94,7 +119,7 @@ class MandiPricesModel with ChangeNotifier {
       setLoader(false);
     } catch (error) {
       setLoader(false);
-      if (kDebugMode) {
+      if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage("Error", error.toString(), context);
       }
     }
@@ -112,21 +137,22 @@ class MandiPricesModel with ChangeNotifier {
       setLoader(false);
     } catch (error) {
       setLoader(false);
-      if (kDebugMode) {
+      if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage("Error", error.toString(), context);
       }
     }
   }
 
   void fetchCommodities(BuildContext context) async {
+    setSelectedCommodity("");
     setLoader(true);
     try {
       final data = await _mandiPricesRepository.fetchCommodities(selectedMarket);
-      cropList = data["comodities"].cast<String>();
+      cropList = data["commodities"].cast<String>();
       setLoader(false);
     } catch (error) {
       setLoader(false);
-      if (kDebugMode) {
+      if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage("Error", error.toString(), context);
       }
     }
@@ -141,7 +167,7 @@ class MandiPricesModel with ChangeNotifier {
       return data;
     } catch (error) {
       setPriceLoader(false);
-      if (kDebugMode) {
+      if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage("Error", error.toString(), context);
       }
     }

@@ -18,7 +18,9 @@ class MandiPricesScreen extends HookWidget {
     final useViewModel = useMemoized(() => Provider.of<MandiPricesModel>(context, listen: false));
     useEffect(() {
       useViewModel.reinitalize();
-      useViewModel.fetchStates(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        useViewModel.fetchStates(context);
+      });
     }, []);
 
     return Scaffold(
@@ -303,8 +305,10 @@ class MandiPricesScreen extends HookWidget {
                                             useViewModel.selectedMarket.isNotEmpty &&
                                             useViewModel.selectedCommodity.isNotEmpty) {
                                           useViewModel.fetchPrices(context).then((value) {
-                                            Utils.model(
-                                                context, PricesScreen(pricesData: value['data']));
+                                            if (context.mounted) {
+                                              Utils.model(
+                                                  context, PricesScreen(pricesData: value['data']));
+                                            }
                                           });
                                         } else {
                                           Utils.flushBarErrorMessage(

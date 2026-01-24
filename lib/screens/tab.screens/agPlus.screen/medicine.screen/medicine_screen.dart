@@ -23,6 +23,7 @@ class MedicineScreen extends HookWidget {
         final locale = AppLocalization.of(context).locale.toString();
 
         return Dialog(
+          backgroundColor: AppColor.notificationBgColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: ConstrainedBox(
             constraints: BoxConstraints(

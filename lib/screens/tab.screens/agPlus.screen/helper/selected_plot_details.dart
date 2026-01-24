@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop.helpers/add_sowing_date.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_button.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/select_crop.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +25,21 @@ class SelectedPlotDetails extends HookWidget {
     final useViewModel = useMemoized(() => Provider.of<AGPlusViewModel>(context, listen: false));
     return GestureDetector(
       onTap: () {
-        if (selectedPlot.sowingDate == null) {
+        if (selectedPlot.cropId != null && selectedPlot.sowingDate == null) {
           Utils.model(
               context,
               AddSowingDate(
                 fieldId: selectedPlot.id,
                 isFromCropCard: true,
+              ));
+        } else if (selectedPlot.cropId == null) {
+          useViewModel.fetchCropCategories(context);
+          Utils.model(
+              context,
+              CropSelection(
+                isFromFieldScreen: true,
+                fieldId: useViewModel.selectedPlot.id,
+                wasCropEmpty: true,
               ));
         } else {
           showDialog(
@@ -39,12 +51,8 @@ class SelectedPlotDetails extends HookWidget {
                   .getTranslatedValue("changeCropWarningSubtitle")
                   .toString()),
               actions: [
-                TextButton(
-                  child: Text(
-                    AppLocalization.of(context).getTranslatedValue("yes").toString(),
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  onPressed: () {
+                InkWell(
+                  onTap: () {
                     useViewModel.fetchCropCategories(context);
                     Utils.model(
                         context,
@@ -53,6 +61,11 @@ class SelectedPlotDetails extends HookWidget {
                           fieldId: useViewModel.selectedPlot.id,
                         ));
                   },
+                  child: GradientButton(
+                    height: dimension['height']! * 0.06,
+                    width: dimension['width']! * 0.2,
+                    title: AppLocalization.of(context).getTranslatedValue("yes").toString(),
+                  ),
                 ),
                 TextButton(
                   child: Text(
@@ -79,9 +92,9 @@ class SelectedPlotDetails extends HookWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
-                imageUrl:
+                imageUrl: selectedPlot.cropImage ??
                     "https://images.unsplash.com/photo-1593738226658-f3e01177c3f0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 placeholder: (context, url) => Skeleton(
                   height: dimension['height']! * 0.21,
                   width: dimension['width']!,
@@ -107,7 +120,6 @@ class SelectedPlotDetails extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    // "Paddy",
                     AppLocalization.of(context).locale.toString() == "en"
                         ? selectedPlot.cropName
                         : selectedPlot.cropNameHi,

@@ -1,4 +1,3 @@
-import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -69,34 +68,6 @@ class FeaturesCard extends StatelessWidget {
                     style: GoogleFonts.montserrat(
                         fontWeight: FontWeight.w500, fontSize: 28, color: AppColor.whiteColor),
                   ),
-                  SizedBox(
-                    height: title == "Soil Testing" || title == "मृदा परीक्षण" ? 8 : null,
-                  ),
-                  title == "Soil Testing" || title == "मृदा परीक्षण"
-                      ? Row(
-                          children: [
-                            Text(
-                              AppLocalization.of(context)
-                                  .getTranslatedValue("comingSoon")
-                                  .toString(),
-                              style: GoogleFonts.montserrat(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13,
-                                  color: const Color(0xffFFDE41)),
-                            ),
-                            //   const SizedBox(
-                            //     width: 4,
-                            //   ),
-                            //   Text(
-                            //     "20/12/2023",
-                            //     style: GoogleFonts.montserrat(
-                            //         fontWeight: FontWeight.w500,
-                            //         fontSize: 13,
-                            //         color: AppColor.whiteColor),
-                            //   ),
-                          ],
-                        )
-                      : Container(),
                 ],
               ),
             ),

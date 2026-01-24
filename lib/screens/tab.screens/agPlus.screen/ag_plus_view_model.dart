@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/crop_model.dart';
+import 'package:agriChikitsa/model/mandi_field_model.dart';
 import 'package:agriChikitsa/model/pestAndDisease.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/model/weed_protection.dart';
@@ -80,6 +82,9 @@ class AGPlusViewModel with ChangeNotifier {
   //Variable for pest disease section
   PestDiseaseData pestDiseaseData = PestDiseaseData(pests: [], diseases: []);
   bool isPestDataLoading = false;
+  bool pestsLoaded = false;
+  bool diseasesLoaded = false;
+  bool isPestDetailsLoading = false;
 
   //Location Variables
   bool isLocationEnabled = false;
@@ -87,6 +92,31 @@ class AGPlusViewModel with ChangeNotifier {
 
   //Add Sowing Date
   bool sowingDateLoader = false;
+
+  //Nearby Mandi Loaders
+  List<NearbyMandi> nearbyMandis = [];
+  bool isNearbyMandiDataLoading = false;
+
+  bool isYieldDataProcessing = false;
+  TextEditingController yieldController = TextEditingController();
+  final List<YieldUnit> yieldUnits = [
+    YieldUnit(
+      value: "kg",
+      labelEn: "Kg",
+      labelHi: "किलोग्राम",
+    ),
+    YieldUnit(
+      value: "quintal",
+      labelEn: "Quintal",
+      labelHi: "क्विंटल",
+    ),
+    YieldUnit(
+      value: "ton",
+      labelEn: "Ton",
+      labelHi: "टन",
+    ),
+  ];
+  String selectedYieldUnit = "kg";
 
   void reinitialize() {
     fieldName = "";
@@ -120,12 +150,19 @@ class AGPlusViewModel with ChangeNotifier {
     cropStateAvailabilityLoader = false;
     weedProtection = WeedProtection(organic: [], chemical: []);
     pestDiseaseData = PestDiseaseData(pests: [], diseases: []);
+    pestsLoaded = false;
+    diseasesLoaded = false;
     isWeedDataLoading = false;
     isPestDataLoading = false;
+    isPestDetailsLoading = false;
     changeCropLoader = false;
     checkLocationLoader = false;
     sowingDateLoader = false;
     selectedAdvisory = null;
+    nearbyMandis.clear();
+    isNearbyMandiDataLoading = false;
+    isYieldDataProcessing = false;
+    selectedYieldUnit = "kg";
   }
 
   void resetLoader() {
@@ -155,9 +192,13 @@ class AGPlusViewModel with ChangeNotifier {
     cropStateAvailabilityLoader = false;
     isWeedDataLoading = false;
     isPestDataLoading = false;
+    isPestDetailsLoading = false;
     changeCropLoader = false;
     checkLocationLoader = false;
     sowingDateLoader = false;
+    isNearbyMandiDataLoading = false;
+    isYieldDataProcessing = false;
+    yieldController.clear();
   }
 
   void disposeValues() {
@@ -169,13 +210,13 @@ class AGPlusViewModel with ChangeNotifier {
     reinitialize();
   }
 
-  resetReportsPage() {
+  void resetReportsPage() {
     reportsList.clear();
     totalReportsPages = 1;
     isReportsLoading = false;
   }
 
-  setSelectedTab(int value) {
+  void setSelectedTab(int value) {
     if (currentSelectTab == value) {
       return;
     }
@@ -183,7 +224,7 @@ class AGPlusViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  setActiveState(BuildContext context, CategoryHome category, bool value) {
+  void setActiveState(BuildContext context, CategoryHome category, bool value) {
     if (currentSelectedCategory == category.id) {
       return;
     }
@@ -193,31 +234,31 @@ class AGPlusViewModel with ChangeNotifier {
     getCropList(context);
   }
 
-  setGetFieldLoader(value) {
+  void setGetFieldLoader(bool value) {
     getFieldLoader = value;
   }
 
-  setSoilType(value) {
+  void setSoilType(String value) {
     soilType = value;
     notifyListeners();
   }
 
-  setCropStateAvailabilityLoader(value) {
+  void setCropStateAvailabilityLoader(bool value) {
     cropStateAvailabilityLoader = value;
     notifyListeners();
   }
 
-  setDuration(value) {
+  void setDuration(dynamic value) {
     selectedDuration = value;
     notifyListeners();
   }
 
-  setAreaUnit(value) {
+  void setAreaUnit(String value) {
     areaUnit = value;
     notifyListeners();
   }
 
-  setNotPlantedCheck(value) {
+  void setNotPlantedCheck(bool value) {
     if (sowingDate != null) {
       sowingDate = null;
     }
@@ -228,52 +269,57 @@ class AGPlusViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  setAddFieldLoader(value) {
+  void setAddFieldLoader(bool value) {
     addFieldLoader = value;
     notifyListeners();
   }
 
-  setChangeCropLoader(value) {
+  void setChangeCropLoader(bool value) {
     changeCropLoader = value;
     notifyListeners();
   }
 
-  setFieldImageLoader(value) {
+  void setFieldImageLoader(bool value) {
     fieldImageLoader = value;
     notifyListeners();
   }
 
-  setCropListLoader(value) {
+  void setCropListLoader(bool value) {
     getCropListLoader = value;
     notifyListeners();
   }
 
-  setRequestLoader(value) {
+  void setRequestLoader(bool value) {
     requestLoader = value;
     notifyListeners();
   }
 
-  setWeedProtectionLoader(value) {
+  void setWeedProtectionLoader(bool value) {
     isWeedDataLoading = value;
     notifyListeners();
   }
 
-  setPestDataLoader(value) {
+  void setPestDataLoader(bool value) {
     isPestDataLoading = value;
     notifyListeners();
   }
 
-  setSowingDateLoader(value) {
+  void setPestDetailsLoader(bool value) {
+    isPestDetailsLoading = value;
+    notifyListeners();
+  }
+
+  void setSowingDateLoader(bool value) {
     sowingDateLoader = value;
     notifyListeners();
   }
 
-  setCheckLocationLoader(value) {
+  void setCheckLocationLoader(bool value) {
     checkLocationLoader = value;
     notifyListeners();
   }
 
-  getUserDetails() async {
+  void getUserDetails() async {
     final localStorage = await SharedPreferences.getInstance();
     final rawProfile = localStorage.getString('profile');
     final profile = jsonDecode(rawProfile!);
@@ -307,7 +353,7 @@ class AGPlusViewModel with ChangeNotifier {
     return await Geolocator.getCurrentPosition();
   }
 
-  mapCurrentLocation(context) {
+  void mapCurrentLocation(BuildContext context) {
     getCurrentLocation().then((value) {
       if (!context.mounted) return;
       mapLocation["latitude"] = value.latitude.toString();
@@ -431,29 +477,23 @@ class AGPlusViewModel with ChangeNotifier {
     }));
   }
 
-  void createPlot(BuildContext context) async {
+  void createPlot(BuildContext context, {bool isBackPressed = false}) async {
     fieldName = fieldNamecontroller.text.toString().trim();
     fieldSize = fieldSizecontroller.text.toString().trim();
-    if (fieldSize.trim().isEmpty || areaUnit.isEmpty) {
+    if (!isBackPressed && (fieldSize.trim().isEmpty || areaUnit.isEmpty)) {
       Utils.toastMessage(
           AppLocalization.of(context).getTranslatedValue("warningSelectAreaUnit").toString());
       return;
     }
-    if (sowingDate == null && notPlantedCheck == false) {
+    if (!isBackPressed && sowingDate == null && notPlantedCheck == false) {
       Utils.toastMessage(
           AppLocalization.of(context).getTranslatedValue("checkSowingDate").toString());
-      return;
-    }
-    if (sowingDate != null && (varietyName.isEmpty)) {
-      // (varietyName.isEmpty || selectedDuration == null || selectedDuration!.isEmpty)) {
-      Utils.toastMessage(
-          AppLocalization.of(context).getTranslatedValue("warningVarietyDuration").toString());
       return;
     }
     setAddFieldLoader(true);
     try {
       Map<String, dynamic>? res;
-      if (sowingDate != null) {
+      if (!isBackPressed && sowingDate != null) {
         res = await _agPlusRepository
             .checkCropAvailablity(selectedCropId, {"sowingMonth": sowingDate.month.toString()});
         if (!res!["status"]) {
@@ -470,33 +510,50 @@ class AGPlusViewModel with ChangeNotifier {
       }
       final payload = {
         "feildName": fieldName,
-        "cropId": selectedCropId,
         "cropImage": plotImagePath,
         "cordinates": mapLocation,
-        "area": "$fieldSize $areaUnit",
         "soilType": soilType,
-        "sowingDate": sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
-        "sowingSeason": res != null ? res["season"] : null,
-        if (selectedDuration != null) "durationId": selectedDuration["_id"],
-        if (varietyName.isNotEmpty) "variety": varietyName,
+        if (!isBackPressed) "area": "$fieldSize $areaUnit",
+        if (!isBackPressed) "cropId": selectedCropId,
+        if (!isBackPressed)
+          "sowingDate": sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
+        if (!isBackPressed) "sowingSeason": res != null ? res["season"] : null,
+        if (!isBackPressed && selectedDuration != null) "durationId": selectedDuration["_id"],
+        if (!isBackPressed && varietyName.isNotEmpty) "variety": varietyName,
       };
       final data = await _agPlusRepository.createPlot(payload);
       if (data['message'] == "Data added Successfully") {
-        Plots newPlot = Plots(
-          id: data['data']['_id'],
-          fieldNo: (userPlotList.length + 1).toString(),
-          fieldName: fieldName,
-          cropId: selectedCropId,
-          cropName: selectedCrop.name,
-          cropNameHi: selectedCrop.name_hi,
-          cropImage: plotImagePath,
-          latitude: mapLocation['latitude'].toString(),
-          longitude: mapLocation['longitude'].toString(),
-          agristick: null,
-          area: "$fieldSize $areaUnit",
-          soilType: soilType,
-          sowingDate: sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
-        );
+        Plots newPlot;
+        if (!isBackPressed) {
+          newPlot = Plots(
+            id: data['data']['_id'],
+            fieldNo: (userPlotList.length + 1).toString(),
+            fieldName: fieldName,
+            cropId: selectedCropId,
+            cropName: selectedCrop.name,
+            cropNameHi: selectedCrop.name_hi,
+            cropImage: selectedCrop.backgroundImage,
+            plotImage: plotImagePath,
+            latitude: mapLocation['latitude'].toString(),
+            longitude: mapLocation['longitude'].toString(),
+            agristick: null,
+            area: "$fieldSize $areaUnit",
+            soilType: soilType,
+            sowingSeason: res != null ? res["season"] : null,
+            sowingDate: sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
+          );
+        } else {
+          newPlot = Plots(
+            id: data['data']['_id'],
+            fieldNo: (userPlotList.length + 1).toString(),
+            fieldName: fieldName,
+            plotImage: plotImagePath,
+            latitude: mapLocation['latitude'].toString(),
+            longitude: mapLocation['longitude'].toString(),
+            agristick: null,
+            soilType: soilType,
+          );
+        }
         userPlotList.add(newPlot);
         setSelectedField(newPlot);
         fieldStatus = true;
@@ -878,7 +935,8 @@ class AGPlusViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeCropFromField(BuildContext context, String fieldId) async {
+  void changeCropFromField(BuildContext context, String fieldId,
+      {bool wasCropEmpty = false}) async {
     fieldSize = fieldSizecontroller.text.toString().trim();
     if (fieldSize.trim().isEmpty || areaUnit.isEmpty) {
       Utils.toastMessage(
@@ -888,12 +946,6 @@ class AGPlusViewModel with ChangeNotifier {
     if (sowingDate == null && notPlantedCheck == false) {
       Utils.toastMessage(
           AppLocalization.of(context).getTranslatedValue("checkSowingDate").toString());
-      return;
-    }
-    if (sowingDate != null && (varietyName.isEmpty)) {
-      // (varietyName.isEmpty || selectedDuration == null || selectedDuration!.isEmpty)) {
-      Utils.toastMessage(
-          AppLocalization.of(context).getTranslatedValue("warningVarietyDuration").toString());
       return;
     }
     setChangeCropLoader(true);
@@ -925,10 +977,15 @@ class AGPlusViewModel with ChangeNotifier {
         if (selectedDuration != null) "durationId": selectedDuration["_id"],
         if (varietyName.isNotEmpty) "verity": varietyName,
       };
-      await _agPlusRepository.changeCrop(payload);
+      if (!wasCropEmpty) {
+        await _agPlusRepository.changeCrop(payload);
+      } else {
+        await _agPlusRepository.updateField(selectedPlot.id, payload);
+      }
       selectedPlot.cropId = selectedChangeCrop!.id;
       selectedPlot.cropName = selectedChangeCrop!.name;
       selectedPlot.cropNameHi = selectedChangeCrop!.name_hi;
+      selectedPlot.cropImage = selectedChangeCrop!.backgroundImage;
       selectedPlot.isMonitoringOpted = false;
       selectedPlot.area = "$fieldSize $areaUnit";
       selectedPlot.ndviId = null;
@@ -972,12 +1029,6 @@ class AGPlusViewModel with ChangeNotifier {
     if (sowingDate == null) {
       Utils.toastMessage(
           AppLocalization.of(context).getTranslatedValue("checkSowingDate").toString());
-      return;
-    }
-    if (sowingDate != null && (varietyName.isEmpty)) {
-      // (varietyName.isEmpty || selectedDuration == null || selectedDuration!.isEmpty)) {
-      Utils.toastMessage(
-          AppLocalization.of(context).getTranslatedValue("warningVarietyDuration").toString());
       return;
     }
     setSowingDateLoader(true);
@@ -1068,14 +1119,50 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   //Methods below are for Pest and Disease Section
-  void getPestsDiseaseData(BuildContext context, String cropId) async {
-    setPestDataLoader(true);
+  void _attachDetailsAndAudio(PestDiseaseDetailResponse response) {
+    pestDiseaseData = PestDiseaseData(
+      pests: pestDiseaseData.pests.map((obj) {
+        if (obj.id == response.id) {
+          return obj.copyWith(
+            audioEn: response.audioEn,
+            audioHi: response.audioHi,
+            details: response.details,
+          );
+        }
+        return obj;
+      }).toList(),
+      diseases: pestDiseaseData.diseases.map((obj) {
+        if (obj.id == response.id) {
+          return obj.copyWith(
+            audioEn: response.audioEn,
+            audioHi: response.audioHi,
+            details: response.details,
+          );
+        }
+        return obj;
+      }).toList(),
+    );
+  }
+
+  void getPestsDiseaseList(BuildContext context, Plots selectedPlot, String type) async {
     try {
-      final res = await _agPlusRepository.getPestAndDiseaseData(cropId);
-      if (res != null) {
-        pestDiseaseData = PestDiseaseData.fromJson(res[0]);
-      } else {
-        pestDiseaseData = PestDiseaseData(pests: [], diseases: []);
+      setPestDataLoader(true);
+
+      final localStorage = await SharedPreferences.getInstance();
+      final rawProfile = localStorage.getString('profile');
+      final profile = jsonDecode(rawProfile!);
+      final userState = profile['user']?['state'].toString().replaceAll(" ", "_").toLowerCase();
+      final res = await _agPlusRepository.getPestAndDiseaseList(selectedPlot.cropId!,
+          selectedPlot.currentStageId!, selectedPlot.sowingSeason, userState!, type);
+      if (res != null && res["data"].isNotEmpty) {
+        final parsed = PestDiseaseData.fromApiResponse(res);
+        pestDiseaseData = PestDiseaseData(
+          pests: type == "pest" ? parsed.pests : pestDiseaseData.pests,
+          diseases: type == "disease" ? parsed.diseases : pestDiseaseData.diseases,
+        );
+
+        if (type == "pest") pestsLoaded = true;
+        if (type == "disease") diseasesLoaded = true;
       }
       setPestDataLoader(false);
     } catch (error) {
@@ -1088,12 +1175,47 @@ class AGPlusViewModel with ChangeNotifier {
               context);
         }
       }
-      if (context.mounted) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-            AppLocalization.of(context).getTranslatedValue("errorMessage").toString(),
-            context);
-      }
+    }
+  }
+
+  Future<PestDiseaseResolvedData?> resolvePestDiseaseDetails(
+    BuildContext context,
+    String id,
+  ) async {
+    // 🔹 STEP 1: check cache first
+    final existing = [
+      ...pestDiseaseData.pests,
+      ...pestDiseaseData.diseases,
+    ].firstWhere(
+      (e) => e.id == id,
+    );
+
+    if (existing != null && existing.details != null && existing.details!.isNotEmpty) {
+      return PestDiseaseResolvedData(
+        details: existing.details!,
+        audioEn: existing.audioEn ?? "",
+        audioHi: existing.audioHi ?? "",
+      );
+    }
+
+    setPestDetailsLoader(true);
+    try {
+      final res = await _agPlusRepository.getPestAndDiseaseData(id);
+      if (res == null) return null;
+
+      final parsed = PestDiseaseDetailResponse.fromJson(res["data"]);
+
+      _attachDetailsAndAudio(parsed);
+
+      return PestDiseaseResolvedData(
+        details: parsed.details,
+        audioEn: parsed.audioEn,
+        audioHi: parsed.audioHi,
+      );
+    } catch (e) {
+      return null;
+    } finally {
+      setPestDetailsLoader(false);
     }
   }
 
@@ -1112,4 +1234,99 @@ class AGPlusViewModel with ChangeNotifier {
 
     return null; // fallback
   }
+
+  //Methods for mandi near field
+  void setNearbyMandiLoader(bool value) {
+    isNearbyMandiDataLoading = value;
+    notifyListeners();
+  }
+
+  void clearNearbyMandis() {
+    nearbyMandis.clear();
+    isNearbyMandiDataLoading = false;
+  }
+
+  void getNearbyMandi(BuildContext context) async {
+    setNearbyMandiLoader(true);
+    try {
+      final data = await _agPlusRepository.getFieldMandiData();
+      if (data == null || !data.containsKey("mandis") || data["mandis"] is! List) {
+        setNearbyMandiLoader(false);
+        return;
+      }
+
+      final List mandis = data["mandis"];
+
+      if (mandis.isNotEmpty) {
+        nearbyMandis = mapNearbyMandis(mandis);
+      }
+
+      setNearbyMandiLoader(false);
+    } catch (error) {
+      setNearbyMandiLoader(false);
+      if (kDebugMode && context.mounted) {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(),
+          context,
+        );
+      }
+    }
+  }
+
+  List<NearbyMandi> mapNearbyMandis(dynamic mandis) {
+    return List<NearbyMandi>.from(mandis.map((mandi) {
+      return NearbyMandi.fromJson(mandi);
+    }));
+  }
+
+  void setIsYieldDataLoader(bool value) {
+    isYieldDataProcessing = value;
+    notifyListeners();
+  }
+
+  void setSelectedYieldUnit(String value) {
+    selectedYieldUnit = value;
+    notifyListeners();
+  }
+
+  void postYieldDataFromPopup(BuildContext context, String plotId) async {
+    setIsYieldDataLoader(true);
+    try {
+      final yieldValue = yieldController.text.trim();
+      if (yieldValue.isEmpty) {
+        Utils.toastMessage(AppLocalization.of(context).getTranslatedValue("yieldError").toString());
+        return;
+      }
+      final payload = {"yieldAmount": yieldValue, "yieldUnit": selectedYieldUnit};
+      await _agPlusRepository.postYieldDataFromPopup(plotId, payload);
+      if (context.mounted) {
+        Navigator.pop(context);
+        yieldController.clear();
+      }
+      setSelectedYieldUnit("kg");
+      setIsYieldDataLoader(false);
+    } catch (error) {
+      setIsYieldDataLoader(false);
+      if (kDebugMode && context.mounted) {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(),
+          context,
+        );
+      }
+    }
+  }
+}
+
+class PestDiseaseResolvedData {
+  final List<PestDiseaseDetail> details;
+  final String audioEn;
+  final String audioHi;
+
+  PestDiseaseResolvedData({
+    required this.details,
+    required this.audioEn,
+    required this.audioHi,
+  });
 }

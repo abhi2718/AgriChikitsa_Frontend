@@ -15,8 +15,10 @@ import '../ag_plus_view_model.dart';
 import '../helper/crop_item.dart';
 
 class CropSelection extends HookWidget {
-  const CropSelection({super.key, this.fieldId, this.isFromFieldScreen = false});
+  const CropSelection(
+      {super.key, this.fieldId, this.isFromFieldScreen = false, this.wasCropEmpty = false});
   final bool isFromFieldScreen;
+  final bool wasCropEmpty;
   final String? fieldId;
   @override
   Widget build(BuildContext context) {
@@ -130,6 +132,7 @@ class CropSelection extends HookWidget {
                       context,
                       ChangeCropDuration(
                         fieldId: fieldId!,
+                        wasCropEmpty: wasCropEmpty,
                       ));
                 }
               } else {

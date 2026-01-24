@@ -1,11 +1,7 @@
-import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/soilHealthCard.screen/widgets/details_screen.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -81,63 +77,74 @@ class SoilTestingReportScreen extends HookWidget {
     final String status = report['status'];
     final String cropName = report['cropName'];
     final String sampleDate = report['sampleDate'];
-
-    // Format date using intl package
     final DateTime formattedDate = DateTime.parse(sampleDate);
     final String formattedDateString = DateFormat('dd/MM/yy h:mm a').format(formattedDate);
-    return Container(
-      height: 80,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [BoxShadow(offset: Offset(2, 2), color: Colors.black45)],
-        color: Colors.white,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  testId,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: AppColor.extraDark,
+    return InkWell(
+      onTap: () => {launchUrl(Uri.parse("https://agrichikitsa.org/soilreport/${report['_id']}"))},
+      child: Container(
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [BoxShadow(offset: Offset(2, 2), color: Colors.black45)],
+          color: Colors.white,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    testId,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppColor.extraDark,
+                    ),
                   ),
-                ),
-                Text(
-                  '${AppLocalization.of(context).getTranslatedValue("plotCropTitle").toString()}: $cropName',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18, overflow: TextOverflow.ellipsis),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Sample Date: $formattedDateString',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
+                  Text(
+                    '${AppLocalization.of(context).getTranslatedValue("plotCropTitle").toString()}: $cropName',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18, overflow: TextOverflow.ellipsis),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    'Sample Date: $formattedDateString',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          if (status == 'TESTED')
-            InkWell(
-                onTap: () =>
+            if (status == 'TESTED')
+              RawMaterialButton(
+                onPressed: () =>
                     {launchUrl(Uri.parse("https://agrichikitsa.org/soilreport/${report['_id']}"))},
-                child: const Icon(Icons.description))
-          else
-            Text(
-              status,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
-            ),
-        ],
+                elevation: 2.0,
+                fillColor: AppColor.extraDark,
+                constraints: BoxConstraints(minHeight: 0, minWidth: 0),
+                padding: EdgeInsets.all(12.0),
+                shape: CircleBorder(),
+                child: Icon(
+                  Icons.description,
+                  size: 22.0,
+                  color: AppColor.whiteColor,
+                ),
+              )
+            else
+              Text(
+                status,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+              ),
+          ],
+        ),
       ),
     );
   }

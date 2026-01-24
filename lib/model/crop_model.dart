@@ -17,3 +17,19 @@ class CropRef {
     );
   }
 }
+
+class YieldUnit {
+  final String value;
+  final String labelEn;
+  final String labelHi;
+
+  YieldUnit({
+    required this.value,
+    required this.labelEn,
+    required this.labelHi,
+  });
+
+  String getLabel(String locale) {
+    return locale.startsWith('hi') ? labelHi : labelEn;
+  }
+}

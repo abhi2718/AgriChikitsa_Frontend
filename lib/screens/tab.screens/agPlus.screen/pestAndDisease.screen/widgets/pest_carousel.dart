@@ -4,7 +4,7 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:photo_view/photo_view.dart';
 
 class PestsCarousel extends StatefulWidget {
   final List<dynamic> images;
@@ -58,7 +58,7 @@ class _PestsCarouselState extends State<PestsCarousel> {
             FullScreenImageViewer(imageUrl: widget.images[0]),
           ),
           child: CachedNetworkImage(
-            imageUrl: widget.images[0],
+            imageUrl: widget.images[0].image,
             fit: BoxFit.cover,
             width: double.infinity,
             height: dimension["height"]! * 0.35,
@@ -75,7 +75,7 @@ class _PestsCarouselState extends State<PestsCarousel> {
 
     // Else show carousel
     return SizedBox(
-      height: dimension["height"]! * 0.3,
+      height: dimension["height"]! * 0.35,
       width: double.infinity,
       child: PageView.builder(
         controller: _pageController,
@@ -84,7 +84,7 @@ class _PestsCarouselState extends State<PestsCarousel> {
           return InkWell(
             onTap: () => Utils.model(
               context,
-              FullScreenImageViewer(imageUrl: widget.images[index]),
+              FullScreenImageViewer(imageUrl: widget.images[index].image),
             ),
             child: AnimatedContainer(
               width: double.infinity,
@@ -92,18 +92,21 @@ class _PestsCarouselState extends State<PestsCarousel> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    height: (dimension["height"]! * 0.3),
-                    width: double.infinity,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.images[index],
-                      fit: BoxFit.cover,
-                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                        height: 100,
-                        width: double.infinity,
-                        radius: 0,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: (dimension["height"]! * 0.3),
+                      width: double.infinity,
+                      child: CachedNetworkImage(
+                        imageUrl: widget.images[index].image,
+                        fit: BoxFit.cover,
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                          height: 100,
+                          width: double.infinity,
+                          radius: 0,
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
                       ),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -133,20 +136,10 @@ class FullScreenImageViewer extends StatelessWidget {
         automaticallyImplyLeading: true,
       ),
       body: Center(
-        child: InteractiveViewer(
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.contain,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return const CircularProgressIndicator(color: Colors.white);
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.broken_image, color: Colors.white, size: 100);
-            },
-          ),
-        ),
-      ),
+          child: PhotoView(
+        minScale: PhotoViewComputedScale.contained,
+        imageProvider: CachedNetworkImageProvider(imageUrl),
+      )),
     );
   }
 }

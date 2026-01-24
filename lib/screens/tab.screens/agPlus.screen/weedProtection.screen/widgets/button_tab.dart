@@ -32,7 +32,11 @@ class ButtonTab extends StatelessWidget {
                   fontWeight: FontWeight.w500, fontSize: 16, color: AppColor.darkBlackColor),
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, size: 18),
+          const Icon(
+            Icons.arrow_forward_ios,
+            size: 18,
+            color: AppColor.darkBlackColor,
+          ),
         ],
       ),
     );

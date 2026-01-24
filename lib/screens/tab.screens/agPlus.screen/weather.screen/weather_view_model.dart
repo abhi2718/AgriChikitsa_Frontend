@@ -5,6 +5,11 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../../model/plots.dart';
 import '../../../../repository/AG+.repo/ag_plus_repository.dart';
@@ -15,16 +20,41 @@ class WeatherViewModel with ChangeNotifier {
   dynamic latestWeatherData;
   late String date;
   late String time;
-  bool getWeatherDataLoader = false;
+  bool getWeatherDataLoader = true;
   bool getPredictedDataLoader = false;
+  bool isPdfDownloading = false;
   List<PredictedData> predictedDataList = [];
   List<PredictedHourlyData> predictedHourlyDataList = [];
-  setWeatherDataLoader(value) {
+  void setWeatherDataLoader(value) {
     getWeatherDataLoader = value;
   }
 
-  setPredictedDataLoader(value) {
+  void setPredictedDataLoader(value) {
     getPredictedDataLoader = value;
+  }
+
+  void getCurrentDistrictWeather(BuildContext context, String district) async {
+    setWeatherDataLoader(true);
+    try {
+      final data = await _agPlusRepository.getCurrentDistrictWeather(
+          district, AppLocalization.of(context).locale.toString());
+      latestWeatherData = WeatherData.fromJson(data);
+      date = DateFormat('EEEE, d MMMM y', 'en_IN').format(DateTime.now());
+      time = DateFormat('hh:mm a', 'en_US')
+          .format(DateTime.parse(latestWeatherData.last_updated).toLocal());
+      setWeatherDataLoader(false);
+      notifyListeners();
+    } catch (error) {
+      setWeatherDataLoader(false);
+      if (kDebugMode) {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
+      }
+    }
   }
 
   void getCurrentWeather(BuildContext context, Plots currentField, String lang) async {
@@ -88,6 +118,66 @@ class WeatherViewModel with ChangeNotifier {
               context);
         }
       }
+    }
+  }
+
+  String encodeForImd(String value) {
+    return Uri.encodeComponent(value).replaceAll('+', '%20');
+  }
+
+  void toastMessage(BuildContext context) {
+    Utils.toastMessage(AppLocalization.of(context).getTranslatedValue("errorMessage").toString());
+  }
+
+  Future<void> downloadWeatherPdf({
+    required BuildContext context,
+    required String state,
+    required String district,
+  }) async {
+    if (isPdfDownloading) return;
+
+    isPdfDownloading = true;
+    notifyListeners();
+
+    try {
+      final encodedState = encodeForImd(state);
+      final encodedDistrict = encodeForImd(district);
+
+      final url = 'https://imdagrimet.gov.in/Services/DistrictBulletin.php'
+          '?state=$encodedState'
+          '&district=$encodedDistrict'
+          '&language=English';
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {"Accept": "application/pdf"},
+      );
+
+      if (response.statusCode != 200 && context.mounted) {
+        toastMessage(context);
+        return;
+      }
+
+      final contentType = response.headers['content-type']?.toLowerCase() ?? '';
+      if (!contentType.contains('application/pdf') && context.mounted) {
+        toastMessage(context);
+        return;
+      }
+
+      final dir = await getApplicationDocumentsDirectory();
+      final safeDistrict = district.replaceAll(" ", "_");
+      final filePath = '${dir.path}/Weather_Bulletin_$safeDistrict.pdf';
+
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+
+      await OpenFile.open(filePath);
+    } catch (e) {
+      debugPrint("PDF error: $e");
+      if (context.mounted) toastMessage(context);
+    } finally {
+      isPdfDownloading = false;
+      notifyListeners();
     }
   }
 }
