@@ -174,14 +174,27 @@ class SignInViewModel with ChangeNotifier {
       try {
         final data = await _authRepository.login(phoneNumber);
         if (data["newUser"]) {
+          final localStorage = await SharedPreferences.getInstance();
+          final profile = {
+            'user': data["user"],
+            'language': {"language": "hi", "country": "IN"},
+            'token': data["token"],
+          };
+          await localStorage.setString("profile", jsonEncode(profile));
+          setUserProfile(data);
+          Navigator.pop(context);
+          Navigator.of(context).pushNamed(RouteName.signUpRoute, arguments: {
+            "phoneNumber": phoneNumber,
+            "uid": uid,
+          });
           setloading(false);
-          Utils.model(
-            context,
-            SelectLanguage(
-              phoneNumber: phoneNumber,
-              firebaseId: uid,
-            ),
-          );
+          // Utils.model(
+          //   context,
+          //   SelectLanguage(
+          //     phoneNumber: phoneNumber,
+          //     firebaseId: uid,
+          //   ),
+          // );
         } else {
           final localStorage = await SharedPreferences.getInstance();
           final profile = {

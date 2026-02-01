@@ -21,6 +21,7 @@ class AllPlotsScreen extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<AGPlusViewModel>(context, listen: false);
     useEffect(() {
+      useViewModel.reinitialize();
       useViewModel.getFields(context);
     }, []);
     return Scaffold(

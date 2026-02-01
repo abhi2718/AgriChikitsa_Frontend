@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 
 class ChangeCropDuration extends HookWidget {
   final String fieldId;
-  const ChangeCropDuration({super.key, required this.fieldId});
+  final bool wasCropEmpty;
+  const ChangeCropDuration({super.key, required this.fieldId, this.wasCropEmpty = false});
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +109,7 @@ class ChangeCropDuration extends HookWidget {
                             );
                           }).toList(),
                           onChanged: (value) {
-                            provider.setAreaUnit(value);
+                            provider.setAreaUnit(value.toString());
                           }),
                     );
                   }),
@@ -164,7 +165,7 @@ class ChangeCropDuration extends HookWidget {
                           return Checkbox(
                             value: provider.notPlantedCheck,
                             onChanged: (bool? value) {
-                              provider.setNotPlantedCheck(value);
+                              provider.setNotPlantedCheck(value!);
                             },
                             activeColor: Colors.green,
                           );
@@ -255,7 +256,8 @@ class ChangeCropDuration extends HookWidget {
                       onTap: () {
                         provider.changeCropLoader
                             ? null
-                            : useViewModel.changeCropFromField(context, fieldId);
+                            : useViewModel.changeCropFromField(context, fieldId,
+                                wasCropEmpty: wasCropEmpty);
                       },
                       child: GradientButton(
                           isLoading: provider.changeCropLoader,

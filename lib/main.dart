@@ -1,8 +1,10 @@
 import 'package:agriChikitsa/screens/auth.screen/language_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/helper/pest_medicine_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post_model.dart';
@@ -33,10 +35,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-      apiKey: "AIzaSyAGfebkdT45UkYPIZZL4EA3rAQDMfpHaCE",
-      appId: "1:137132429712:android:3b1c3eabfc4909714c6315",
-      messagingSenderId: "137132429712",
-      projectId: "agrichikitsa-8be74",
+      apiKey: "AIzaSyB_bhPvCOWX7EpfBk_DDYzjM8KiHaWwEc4",
+      appId: "1:914163066722:android:a7f48a0cb947f7bf262e3b",
+      messagingSenderId: "914163066722",
+      projectId: "agrichikitsa-43cf1",
     ),
   );
   SystemChrome.setPreferredOrientations(
@@ -115,6 +117,12 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<MedicineViewModel>(
           create: (_) => MedicineViewModel(),
+        ),
+        ChangeNotifierProvider<PestMedicineViewModel>(
+          create: (_) => PestMedicineViewModel(),
+        ),
+        ChangeNotifierProvider<ExpenseViewModel>(
+          create: (_) => ExpenseViewModel(),
         ),
       ],
       child: Consumer<ProfileViewModel>(

@@ -3,14 +3,18 @@ import 'package:agriChikitsa/model/weather_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_button.dart';
+import 'package:agriChikitsa/services/auth.dart';
+import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class WeatherScreenDetails extends StatefulWidget {
-  const WeatherScreenDetails({super.key, required this.useViewModel});
+class WeatherScreenDetails extends StatefulHookWidget {
+  WeatherScreenDetails({super.key, required this.useViewModel, this.isFromJankariScreen = false});
   final WeatherViewModel useViewModel;
+  bool isFromJankariScreen;
 
   @override
   State<WeatherScreenDetails> createState() => _WeatherScreenDetailsState();
@@ -19,7 +23,6 @@ class WeatherScreenDetails extends StatefulWidget {
 class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
@@ -34,115 +37,172 @@ class _WeatherScreenDetailsState extends State<WeatherScreenDetails>
 
   @override
   Widget build(BuildContext context) {
+    final dimension = Utils.getDimensions(context, true);
+    final authService = useMemoized(() => Provider.of<AuthService>(context, listen: false));
+    final user = authService.userInfo["user"];
+    final stateToShow = (user["state_hi"] != null && user["state_hi"].toString().isNotEmpty)
+        ? user["state_hi"]
+        : user["state"];
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (authService.userInfo != null) {
+          widget.useViewModel
+              .getCurrentDistrictWeather(context, authService.userInfo["user"]["district_en"]);
+        }
+      });
+      return null;
+    }, []);
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
-              width: double.infinity, // Fill width
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    Color(0xff201C1C),
-                    Color(0xff31671E),
+      body: Consumer<WeatherViewModel>(builder: (context, provider, child) {
+        return provider.getWeatherDataLoader
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: AppColor.extraDark,
+                ),
+              )
+            : SafeArea(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+                      width: double.infinity, // Fill width
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(0xff201C1C),
+                            Color(0xff31671E),
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Icon(
+                                    Icons.arrow_back,
+                                    color: AppColor.whiteColor,
+                                  ),
+                                ),
+                                Text(
+                                  widget.isFromJankariScreen
+                                      ? "${user["district_hi"]}, $stateToShow"
+                                      : '${widget.useViewModel.latestWeatherData.region}, ${widget.useViewModel.latestWeatherData.countryName}',
+                                  style: const TextStyle(color: AppColor.whiteColor),
+                                ),
+                                const SizedBox.shrink()
+                              ],
+                            ),
+                          ),
+                          Text(
+                            widget.useViewModel.date,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w400, color: AppColor.whiteColor),
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.15,
+                              child: Image.network(
+                                  "https:${widget.useViewModel.latestWeatherData.icon}")),
+                          Text(
+                            '${widget.useViewModel.latestWeatherData.temp_c.toString()}º C',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: AppColor.whiteColor,
+                                fontSize: 18),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            widget.useViewModel.latestWeatherData.condition,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: AppColor.whiteColor,
+                                fontSize: 18),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            "${AppLocalization.of(context).getTranslatedValue("lastUpdated").toString()} ${widget.useViewModel.time}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: AppColor.whiteColor,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
+                    ),
+                    widget.isFromJankariScreen
+                        ? InkWell(
+                            onTap: provider.isPdfDownloading
+                                ? null
+                                : () {
+                                    provider.downloadWeatherPdf(
+                                      context: context,
+                                      state: user["state"],
+                                      district: user["district_en"],
+                                    );
+                                  },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 12),
+                              child: GradientButton(
+                                width: dimension['width']!,
+                                title:
+                                    "${user["district_hi"]} ${AppLocalization.of(context).getTranslatedValue("weatherPDFTitle").toString()}",
+                                icon: Icons.download,
+                                isLoading: provider.isPdfDownloading,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14.0),
+                            ),
+                            child: TabBar(
+                              controller: _tabController,
+                              labelColor: AppColor.extraDark,
+                              unselectedLabelColor: Colors.black,
+                              indicatorColor: AppColor.extraDark,
+                              tabs: [
+                                Tab(
+                                    text: AppLocalization.of(context)
+                                        .getTranslatedValue("presentDetailsWeather")
+                                        .toString()),
+                                Tab(
+                                    text: AppLocalization.of(context)
+                                        .getTranslatedValue("predictedDetailsWeather")
+                                        .toString()),
+                              ],
+                            ),
+                          ),
+                    widget.isFromJankariScreen
+                        ? const SizedBox.shrink()
+                        : Expanded(
+                            child: TabBarView(
+                              controller: _tabController,
+                              children: [
+                                PresentDetails(useViewModel: widget.useViewModel),
+                                const PredictedDetails()
+                              ],
+                            ),
+                          ),
                   ],
                 ),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: AppColor.whiteColor,
-                          ),
-                        ),
-                        Text(
-                          '${widget.useViewModel.latestWeatherData.region}, ${widget.useViewModel.latestWeatherData.countryName}',
-                          style: const TextStyle(color: AppColor.whiteColor),
-                        ),
-                        const SizedBox.shrink()
-                      ],
-                    ),
-                  ),
-                  Text(
-                    widget.useViewModel.date,
-                    style: const TextStyle(fontWeight: FontWeight.w400, color: AppColor.whiteColor),
-                  ),
-                  SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      child: Image.network("https:${widget.useViewModel.latestWeatherData.icon}")),
-                  Text(
-                    '${widget.useViewModel.latestWeatherData.temp_c.toString()}º C',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w400, color: AppColor.whiteColor, fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    widget.useViewModel.latestWeatherData.condition,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700, color: AppColor.whiteColor, fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    "${AppLocalization.of(context).getTranslatedValue("lastUpdated").toString()} ${widget.useViewModel.time}",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w400, color: AppColor.whiteColor, fontSize: 15),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14.0),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                labelColor: AppColor.extraDark,
-                unselectedLabelColor: Colors.black,
-                indicatorColor: AppColor.extraDark,
-                tabs: [
-                  Tab(
-                      text: AppLocalization.of(context)
-                          .getTranslatedValue("presentDetailsWeather")
-                          .toString()),
-                  Tab(
-                      text: AppLocalization.of(context)
-                          .getTranslatedValue("predictedDetailsWeather")
-                          .toString()),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  PresentDetails(useViewModel: widget.useViewModel),
-                  const PredictedDetails()
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+              );
+      }),
     );
   }
 }

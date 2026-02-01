@@ -49,6 +49,7 @@ class SignInScreen extends HookWidget {
                   labelText: AppLocalization.of(context)
                       .getTranslatedValue("mobileNumberCount")
                       .toString(),
+                  labelStyle: TextStyle(color: isValid ? AppColor.extraDark : AppColor.errorColor),
                   errorText: isValid ? null : useViewModel.errorMessage,
                   enabledBorder: UnderlineInputBorder(
                     borderSide:

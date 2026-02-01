@@ -1,11 +1,12 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/widgets/weather_details_Screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/mandiPrices.screen/mandi_prices.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/jankari_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/trending_post_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
-import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,7 +16,6 @@ import 'package:provider/provider.dart';
 import '../../../widgets/skeleton/skeleton.dart';
 import '../../../widgets/text.widgets/text.dart';
 import '../hometab.screen/hometab_view_model.dart';
-import '../hometab.screen/widgets/pdfScree.dart';
 
 class JankariHomeTab extends HookWidget {
   const JankariHomeTab({super.key});
@@ -24,11 +24,9 @@ class JankariHomeTab extends HookWidget {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: false));
-    final authService = Provider.of<AuthService>(context, listen: true);
+    final weatherViewModel =
+        useMemoized(() => Provider.of<WeatherViewModel>(context, listen: false));
     final profileViewModel = Provider.of<ProfileViewModel>(context, listen: true);
-    final district = authService.userInfo["user"]["district_en"];
-    final homeUseViewModel =
-        useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
     useEffect(() {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (useViewModel.jankaricardList.isEmpty) {
@@ -37,8 +35,6 @@ class JankariHomeTab extends HookWidget {
         }
       });
     }, []);
-    final url =
-        "https://mausam.imd.gov.in/imd_latest/contents/agromet/agromet-data/district/current/local-pdf/$district.pdf";
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
       body: SafeArea(
@@ -57,15 +53,13 @@ class JankariHomeTab extends HookWidget {
                         return InkWell(
                           onTap: provider.weatherPDFloader
                               ? () {}
-                              : () async {
-                                  await homeUseViewModel.openWeatherPDF(context, url).then((value) {
-                                    Utils.model(
-                                        context,
-                                        PDFScreen(
-                                          path: value[0],
-                                          filename: value[1],
-                                        ));
-                                  });
+                              : () {
+                                  Utils.model(
+                                      context,
+                                      WeatherScreenDetails(
+                                        useViewModel: weatherViewModel,
+                                        isFromJankariScreen: true,
+                                      ));
                                 },
                           child: Container(
                             height: dimension['height']! * 0.17,

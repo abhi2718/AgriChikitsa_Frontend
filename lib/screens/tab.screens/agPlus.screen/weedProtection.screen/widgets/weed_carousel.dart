@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:agriChikitsa/model/weed_protection.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/widgets/pest_carousel.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -111,40 +112,6 @@ class _WeedCarouselState extends State<WeedCarousel> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class FullScreenImageViewer extends StatelessWidget {
-  final String imageUrl;
-
-  const FullScreenImageViewer({super.key, required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: true,
-      ),
-      body: Center(
-        child: InteractiveViewer(
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.contain,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return const CircularProgressIndicator(color: Colors.white);
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.broken_image, color: Colors.white, size: 100);
-            },
-          ),
-        ),
       ),
     );
   }

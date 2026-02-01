@@ -1,8 +1,8 @@
 import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/auth.screen/language_view_model.dart';
-import 'package:agriChikitsa/screens/auth.screen/select_language.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/chattab.screen/chat_tab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
@@ -50,6 +50,7 @@ class ProfileTabScreen extends HookWidget {
       Provider.of<LanguageViewModel>(context, listen: false),
       Provider.of<ChatTabViewModel>(context, listen: false),
       Provider.of<AudioPlayerViewModel>(context, listen: false),
+      Provider.of<ExpenseViewModel>(context, listen: false),
     ];
     final profileImage = user.profileImage!;
     return Scaffold(
@@ -120,30 +121,30 @@ class ProfileTabScreen extends HookWidget {
                 width: dimension["width"]! - 32,
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ProfileButton(
-                onPress: () {
-                  Utils.model(
-                      context,
-                      SelectLanguage(
-                        phoneNumber: user.phoneNumber.toString(),
-                        firebaseId: user.firebaseId.toString(),
-                      ));
-                },
-                leftIcon: const Icon(
-                  Icons.translate,
-                  color: AppColor.iconColor,
-                ),
-                title: AppLocalization.of(context)
-                    .getTranslatedValue("changeLanguageAppBar")
-                    .toString(),
-                width: dimension["width"]! - 32,
-              ),
-            ),
+            // const SizedBox(
+            //   height: 8,
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16),
+            //   child: ProfileButton(
+            //     onPress: () {
+            //       Utils.model(
+            //           context,
+            //           SelectLanguage(
+            //             phoneNumber: user.phoneNumber.toString(),
+            //             firebaseId: user.firebaseId.toString(),
+            //           ));
+            //     },
+            //     leftIcon: const Icon(
+            //       Icons.translate,
+            //       color: AppColor.iconColor,
+            //     ),
+            //     title: AppLocalization.of(context)
+            //         .getTranslatedValue("changeLanguageAppBar")
+            //         .toString(),
+            //     width: dimension["width"]! - 32,
+            //   ),
+            // ),
             const SizedBox(
               height: 8,
             ),

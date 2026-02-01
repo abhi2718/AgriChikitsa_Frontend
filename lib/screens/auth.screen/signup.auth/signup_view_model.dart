@@ -24,15 +24,15 @@ class SignUpViewModel with ChangeNotifier {
   var village = '';
   dynamic stateList = [];
   dynamic districtList = [];
-  var selectedState = '';
+  StateModel? selectedState;
   var selectedDistrictHi = '';
   var selectedDistrictEn = '';
   dynamic userProfile;
 
-  void setSelectedState(BuildContext context, dynamic value) {
+  void setSelectedState(BuildContext context, StateModel value) {
     selectedState = value;
     notifyListeners();
-    fetchDistrict(context, selectedState);
+    fetchDistrict(context, selectedState!.state);
   }
 
   void setSelectedDistrict(value) {
@@ -126,8 +126,8 @@ class SignUpViewModel with ChangeNotifier {
     if (!isValid!) {
       return;
     }
-    if (selectedState.isEmpty || selectedDistrictHi.isEmpty || village.isEmpty) {
-      if (selectedState.isEmpty) {
+    if (selectedState == null || selectedDistrictHi.isEmpty || village.isEmpty) {
+      if (selectedState == null) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             AppLocalization.of(context).getTranslatedValue("validateState").toString(),
@@ -153,7 +153,8 @@ class SignUpViewModel with ChangeNotifier {
             "name": userName,
             "phoneNumber": mobileNumber,
             "firebaseId": firebaseId,
-            "state": selectedState,
+            "state": selectedState!.state,
+            "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
             "village": village
@@ -164,7 +165,8 @@ class SignUpViewModel with ChangeNotifier {
             "email": email,
             "phoneNumber": mobileNumber,
             "firebaseId": firebaseId,
-            "state": selectedState,
+            "state": selectedState!.state,
+            "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
             "village": village
@@ -273,7 +275,7 @@ class SignUpViewModel with ChangeNotifier {
     email = '';
     mobileNumber = '';
     districtList = [];
-    selectedState = '';
+    selectedState = null;
     selectedDistrictHi = '';
     selectedDistrictEn = '';
     village = '';

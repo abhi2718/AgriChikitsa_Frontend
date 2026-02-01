@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
@@ -330,5 +332,29 @@ class Utils {
         );
       },
     );
+  }
+
+  static Future<bool> ensureStoragePermission(BuildContext context) async {
+    if (!Platform.isAndroid) return true;
+
+    var status = await Permission.storage.status;
+
+    if (status.isGranted) return true;
+
+    // Ask again if denied
+    status = await Permission.storage.request();
+
+    if (status.isGranted) return true;
+
+    // Permanently denied → redirect to settings
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+
+    if (context.mounted) {
+      toastMessage(AppLocalization.of(context).getTranslatedValue("errorMessage").toString());
+    }
+
+    return false;
   }
 }

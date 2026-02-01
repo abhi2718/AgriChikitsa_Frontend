@@ -1,10 +1,12 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/main.dart';
 import 'package:agriChikitsa/model/plots.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_tracker.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/features_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/selected_plot_details.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_promo.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/nearbyMandi.screen/nearby_mandi_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/pestAndDiseaseScreen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/soilHealthCard.screen/soil_health_card.dart';
@@ -16,6 +18,7 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -26,13 +29,18 @@ import '../ag_plus_view_model.dart';
 import '../weather.screen/weather_view_model.dart';
 import '../helper/current_selected_plot.dart';
 
+enum _MenuAction { delete, expenseTracker }
+
 class AGPlusHome extends HookWidget {
   const AGPlusHome({super.key, required this.plotNumber});
   final int plotNumber;
 
   Future<void> checkSowingDateAndShowDialogIfNeeded(
-      BuildContext context, Plots selectedPlot, Map<String, double> dimension) async {
-    if (selectedPlot.sowingDate != null) return;
+    BuildContext context,
+    Plots selectedPlot,
+    Map<String, double> dimension,
+  ) async {
+    if (selectedPlot.cropId == null || selectedPlot.sowingDate != null) return;
 
     final prefs = await SharedPreferences.getInstance();
     final today = DateTime.now();
@@ -87,6 +95,97 @@ class AGPlusHome extends HookWidget {
     await prefs.setString(key, today.toIso8601String());
   }
 
+  void checkAndShowYieldDialog(
+    BuildContext context,
+    AGPlusViewModel useViewModel,
+    Map<String, double> dimension,
+  ) {
+    if (useViewModel.selectedPlot.cropId == null || !useViewModel.selectedPlot.isHarvesting) {
+      return;
+    }
+    final locale = AppLocalization.of(context).locale.toString();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          AppLocalization.of(ctx).getTranslatedValue("yieldTitle").toString(),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: useViewModel.yieldController,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+                signed: false,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r'^\d*\.?\d*'),
+                ),
+              ],
+              decoration: InputDecoration(
+                hintText: AppLocalization.of(ctx).getTranslatedValue("yieldError").toString(),
+                hintStyle: TextStyle(fontSize: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            /// Unit dropdown
+            Consumer<AGPlusViewModel>(
+              builder: (context, provider, _) {
+                return DropdownButtonFormField<String>(
+                  value: provider.selectedYieldUnit,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  items: provider.yieldUnits.map((unit) {
+                    return DropdownMenuItem<String>(
+                      value: unit.value,
+                      child: Text(unit.getLabel(locale)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      provider.setSelectedYieldUnit(value);
+                    }
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Text(
+              AppLocalization.of(context).getTranslatedValue("no").toString(),
+              style: const TextStyle(color: AppColor.errorColor),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              useViewModel.postYieldDataFromPopup(context, useViewModel.selectedPlot.id);
+            },
+            child: GradientButton(
+              height: dimension['height']! * 0.07,
+              width: dimension['width']! * 0.2,
+              title: AppLocalization.of(context).getTranslatedValue("yes").toString(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void warningPopups(BuildContext context, String cardName) {
     showDialog(
       context: context,
@@ -101,22 +200,14 @@ class AGPlusHome extends HookWidget {
             const SizedBox(height: 8),
             Text(
               AppLocalization.of(context).getTranslatedValue("reminderPopupTitle").toString(),
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
               textAlign: TextAlign.center,
             ),
           ],
         ),
         content: Text(
           AppLocalization.of(context).getTranslatedValue("${cardName}PopUpDescription").toString(),
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.black87,
-          ),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87),
           textAlign: TextAlign.center,
         ),
       ),
@@ -130,15 +221,17 @@ class AGPlusHome extends HookWidget {
     final weatherViewModel = Provider.of<WeatherViewModel>(context, listen: false);
     final lang = AppLocalization.of(context).locale.toString();
     useEffect(() {
-      weatherViewModel.getCurrentWeather(context, useViewModel.selectedPlot, lang);
-      checkSowingDateAndShowDialogIfNeeded(context, useViewModel.selectedPlot, dimension);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        weatherViewModel.getCurrentWeather(context, useViewModel.selectedPlot, lang);
+        checkSowingDateAndShowDialogIfNeeded(context, useViewModel.selectedPlot, dimension);
+        checkAndShowYieldDialog(context, useViewModel, dimension);
+      });
+      return null;
     }, [useViewModel.selectedPlot]);
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
       appBar: useViewModel.selectedPlot == null
-          ? AppBar(
-              automaticallyImplyLeading: false,
-            )
+          ? AppBar(automaticallyImplyLeading: false)
           : AppBar(
               backgroundColor: AppColor.whiteColor,
               foregroundColor: AppColor.darkBlackColor,
@@ -149,154 +242,221 @@ class AGPlusHome extends HookWidget {
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: InkWell(
-                      onTap: () => showDeleteFieldDialog(context, useViewModel),
-                      child: const Icon(Icons.delete)),
+                PopupMenuButton<_MenuAction>(
+                  offset: Offset(40, 40),
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    switch (value) {
+                      case _MenuAction.delete:
+                        showDeleteFieldDialog(context, useViewModel);
+                        break;
+                      case _MenuAction.expenseTracker:
+                        final plot = useViewModel.selectedPlot;
+
+                        if (plot.cropId == null) {
+                          warningPopups(context, "noCrop");
+                          return;
+                        } else if (plot.sowingDate == null) {
+                          warningPopups(context, "noSowingDate");
+                          return;
+                        } else {
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (_) => ExpenseIncomeTracker(
+                                selectedPlot: plot,
+                              ),
+                            ),
+                          );
+                        }
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: _MenuAction.expenseTracker,
+                      child: Text(
+                        AppLocalization.of(context)
+                            .getTranslatedValue("expenseIncomeCalculator")
+                            .toString(),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: _MenuAction.delete,
+                      child: Text(
+                        AppLocalization.of(context).getTranslatedValue("deleteField").toString(),
+                        style: TextStyle(color: AppColor.errorColor),
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: InkWell(
-                      onTap: () =>
-                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                              builder: (context) => PlotHistoryScreen(
-                                    selectedPlot: useViewModel.selectedPlot,
-                                  ))),
-                      child: const Icon(Icons.history)),
-                )
               ],
             ),
-      body: Consumer<AGPlusViewModel>(builder: (context, provider, child) {
-        return provider.selectedPlot == null
-            ? Container(
-                height: dimension["height"],
-                color: AppColor.whiteColor,
-              )
-            : SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8, left: 8, bottom: 16),
-                  child: Column(
-                    children: [
-                      // useViewModel.selectedPlot["is_ndvi_opted"] ? :
-                      CurrentSelectedPlot(
-                        plotNumber: plotNumber,
-                        selectedPlot: useViewModel.selectedPlot,
-                      ),
-                      SelectedPlotDetails(
-                        selectedPlot: provider.selectedPlot,
-                      ),
-                      Consumer<WeatherViewModel>(builder: (context, provider, child) {
-                        return provider.getWeatherDataLoader
-                            ? Skeleton(
-                                height: dimension["height"]! * 0.3, width: dimension["width"]!)
-                            : InkWell(
-                                onTap: () => Utils.model(
-                                    context, WeatherScreenDetails(useViewModel: provider)),
-                                child: WeatherCard(
-                                    provider: provider,
-                                    currentSelectedPlot: useViewModel.selectedPlot),
-                              );
-                      }),
-                      //To be implemented in v2.0
-                      // FeaturesCard(
-                      //     title:
-                      //         AppLocalization.of(context).getTranslatedValue("agristickTitle").toString(),
-                      //     image:
-                      //         "https://images.pexels.com/photos/612335/pexels-photo-612335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                      //     ontap: () {
-                      //       // Utils.toastMessage(
-                      //       //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
-                      //       Utils.model(
-                      //           context,
-                      //           AgriStickScreen(
-                      //             currentSelectedPlot: useViewModel.selectedPlot,
-                      //             agPlusViewModel: useViewModel,
-                      //           ));
-                      //     }),
-                      FeaturesCard(
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("soilTestingTitle")
-                              .toString(),
+      body: Consumer<AGPlusViewModel>(
+        builder: (context, provider, child) {
+          return provider.selectedPlot == null
+              ? Container(height: dimension["height"], color: AppColor.whiteColor)
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8, left: 8, bottom: 16),
+                    child: Column(
+                      children: [
+                        CurrentSelectedPlot(
+                          plotNumber: plotNumber,
+                          selectedPlot: useViewModel.selectedPlot,
+                        ),
+                        SelectedPlotDetails(selectedPlot: provider.selectedPlot),
+                        Consumer<WeatherViewModel>(
+                          builder: (context, provider, child) {
+                            return provider.getWeatherDataLoader
+                                ? Skeleton(
+                                    height: dimension["height"]! * 0.3,
+                                    width: dimension["width"]!,
+                                  )
+                                : InkWell(
+                                    onTap: () => Utils.model(
+                                      context,
+                                      WeatherScreenDetails(useViewModel: provider),
+                                    ),
+                                    child: WeatherCard(
+                                      provider: provider,
+                                      currentSelectedPlot: useViewModel.selectedPlot,
+                                    ),
+                                  );
+                          },
+                        ),
+                        //To be implemented in v2.0
+                        // FeaturesCard(
+                        //     title:
+                        //         AppLocalization.of(context).getTranslatedValue("agristickTitle").toString(),
+                        //     image:
+                        //         "https://images.pexels.com/photos/612335/pexels-photo-612335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                        //     ontap: () {
+                        //       // Utils.toastMessage(
+                        //       //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
+                        //       Utils.model(
+                        //           context,
+                        //           AgriStickScreen(
+                        //             currentSelectedPlot: useViewModel.selectedPlot,
+                        //             agPlusViewModel: useViewModel,
+                        //           ));
+                        //     }),
+                        FeaturesCard(
+                          title: AppLocalization.of(
+                            context,
+                          ).getTranslatedValue("soilTestingTitle").toString(),
                           image:
                               "https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                           ontap: () {
+                            if (useViewModel.selectedPlot.cropId == null) {
+                              warningPopups(context, "noCrop");
+                              return;
+                            }
                             // Utils.toastMessage(
                             //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
                             Utils.model(context, const SoilHealthCard());
-                          }),
-                      FeaturesCard(
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("cropMonitoringTitle")
-                              .toString(),
+                          },
+                        ),
+                        FeaturesCard(
+                          title: AppLocalization.of(
+                            context,
+                          ).getTranslatedValue("cropMonitoringTitle").toString(),
                           image: "assets/images/ndvi_banner2.jpeg",
                           ontap: () {
+                            if (useViewModel.selectedPlot.cropId == null) {
+                              warningPopups(context, "noCrop");
+                              return;
+                            }
                             if (useViewModel.selectedPlot.sowingDate == null) {
                               warningPopups(context, "ndvi");
+                              return;
                             } else {
                               Utils.model(
-                                  context,
-                                  useViewModel.selectedPlot.isMonitoringOpted
-                                      ? NDVIScreen(
-                                          selectedPlot: useViewModel.selectedPlot,
-                                        )
-                                      : NDVIPromo(selectedPlot: useViewModel.selectedPlot));
+                                context,
+                                useViewModel.selectedPlot.isMonitoringOpted
+                                    ? NDVIScreen(selectedPlot: useViewModel.selectedPlot)
+                                    : NDVIPromo(selectedPlot: useViewModel.selectedPlot),
+                              );
                             }
-                          }),
-                      // To be implemented v2.0
-                      // FeaturesCard(
-                      //     title:
-                      //         AppLocalization.of(context).getTranslatedValue("irrigationTitle").toString(),
-                      //     image:
-                      //         "https://images.unsplash.com/photo-1609583120830-7ede0764d401?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                      //     ontap: () {
-                      //       Utils.model(
-                      //           context,
-                      //           PestManagement(
-                      //             isIrrigationCardTapped: true,
-                      //             selectedPlots: useViewModel.selectedPlot,
-                      //             agPlusViewModel: useViewModel,
-                      //           ));
-                      //     }),
-                      FeaturesCard(
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("weedProtectionTitle")
-                              .toString(),
+                          },
+                        ),
+                        // To be implemented v2.0
+                        // FeaturesCard(
+                        //     title:
+                        //         AppLocalization.of(context).getTranslatedValue("irrigationTitle").toString(),
+                        //     image:
+                        //         "https://images.unsplash.com/photo-1609583120830-7ede0764d401?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        //     ontap: () {
+                        //       Utils.model(
+                        //           context,
+                        //           PestManagement(
+                        //             isIrrigationCardTapped: true,
+                        //             selectedPlots: useViewModel.selectedPlot,
+                        //             agPlusViewModel: useViewModel,
+                        //           ));
+                        //     }),
+                        FeaturesCard(
+                          title: AppLocalization.of(
+                            context,
+                          ).getTranslatedValue("weedProtectionTitle").toString(),
                           image:
                               "https://i0.wp.com/geopard.tech/wp-content/uploads/2022/03/19.2-min.jpg?resize=1024%2C555&ssl=1",
                           ontap: () {
-                            // Utils.toastMessage(
-                            //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
+                            if (useViewModel.selectedPlot.cropId == null) {
+                              warningPopups(context, "noCrop");
+                              return;
+                            }
                             Utils.model(context, const WeedCategorySelectModal());
-                          }),
-                      FeaturesCard(
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("pestAndDiseaseTitle")
-                              .toString(),
+                          },
+                        ),
+                        FeaturesCard(
+                          title: AppLocalization.of(
+                            context,
+                          ).getTranslatedValue("pestAndDiseaseTitle").toString(),
                           image:
                               "https://images.unsplash.com/photo-1491723203629-ac87f78dc19b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                           ontap: () {
+                            if (useViewModel.selectedPlot.cropId == null) {
+                              warningPopups(context, "noCrop");
+                              return;
+                            }
                             if (useViewModel.selectedPlot.sowingDate == null) {
                               warningPopups(context, "pestDisease");
+                              return;
                             } else {
                               Utils.model(context, const PestAndDiseaseSelectModal());
                             }
-                          }),
-                      // FeaturesCard(
-                      //     title: AppLocalization.of(context).getTranslatedValue("cropReport").toString(),
-                      //     image:
-                      //         "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                      //     ontap: () {
-                      //       Utils.model(context, CropReportScreen());
-                      //       Utils.model(context, CropReportScreen());
-                      //       // Utils.toastMessage(
-                      //       //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
-                      //     }),
-                    ],
+                          },
+                        ),
+                        FeaturesCard(
+                          title: AppLocalization.of(
+                            context,
+                          ).getTranslatedValue("nearbyMandis").toString(),
+                          image:
+                              "https://images.pexels.com/photos/9798970/pexels-photo-9798970.jpeg",
+                          ontap: () {
+                            Utils.model(
+                                context,
+                                NearbyMandisScreen(
+                                  selectedPlot: provider.selectedPlot,
+                                ));
+                          },
+                        ),
+                        // FeaturesCard(
+                        //     title: AppLocalization.of(context).getTranslatedValue("cropReport").toString(),
+                        //     image:
+                        //         "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                        //     ontap: () {
+                        //       Utils.model(context, CropReportScreen());
+                        //       Utils.model(context, CropReportScreen());
+                        //       // Utils.toastMessage(
+                        //       //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
+                        //     }),
+                      ],
+                    ),
                   ),
-                ),
-              );
-      }),
+                );
+        },
+      ),
     );
   }
 }

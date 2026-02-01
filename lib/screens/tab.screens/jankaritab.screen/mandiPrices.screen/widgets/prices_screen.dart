@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../res/color.dart';
 import '../../../../../utils/utils.dart';
@@ -109,13 +110,17 @@ class PricesScreen extends HookWidget {
           Container(
             width: dimension['width']! * 0.90,
             height: dimension['height']! * 0.08,
+            padding: EdgeInsets.symmetric(horizontal: 12),
             decoration:
                 BoxDecoration(color: Colors.yellow[400], borderRadius: BorderRadius.circular(18)),
             child: Center(
               child: BaseText(
-                  title:
-                      "${pricesData!['commodity']} ${AppLocalization.of(context).getTranslatedValue("priceInfoTag").toString()}",
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                title: AppLocalization.of(context).locale.toString() == "en"
+                    ? "${pricesData!['commodity']} ${AppLocalization.of(context).getTranslatedValue("priceInfoTag").toString()} on ${DateFormat('dd-MM-yyyy').format(DateTime.parse(pricesData["arrival_date"]))}"
+                    : "${DateFormat('dd-MM-yyyy').format(DateTime.parse(pricesData["arrival_date"]))} को ${pricesData!['commodity']} ${AppLocalization.of(context).getTranslatedValue("priceInfoTag").toString()}",
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           const SizedBox(

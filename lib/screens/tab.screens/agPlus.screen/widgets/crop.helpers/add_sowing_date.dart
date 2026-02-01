@@ -25,6 +25,7 @@ class AddSowingDate extends HookWidget {
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        useViewModel.setDuration(null);
         useViewModel.setSowingDateFields();
       });
       return null;

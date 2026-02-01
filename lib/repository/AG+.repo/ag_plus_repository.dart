@@ -85,6 +85,18 @@ class AGPlusRepository {
     }
   }
 
+  Future<dynamic> getCurrentDistrictWeather(String district, String lang) async {
+    try {
+      final url = lang == "en"
+          ? '${AppUrl.weatherAPIEndPoint}&q=$district&aqi=no'
+          : '${AppUrl.weatherAPIEndPoint}&q=$district&aqi=no&lang=hi';
+      final response = await _apiServices.getWeatherApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> getCurrentWeather(String latitude, String longitude, String lang) async {
     try {
       final url = lang == "en"
@@ -99,8 +111,17 @@ class AGPlusRepository {
 
   Future<dynamic> getPredictedWeather(String latitude, String longitude, String lang) async {
     try {
-      final url =
-          'http://api.weatherapi.com/v1/forecast.json?key=94488ccb442e4337ad735838231309&q=$latitude,$longitude&aqi=no&days=3&lang=$lang';
+      final url = '${AppUrl.forecastAPIEndPoint}&q=$latitude,$longitude&aqi=no&days=3&lang=$lang';
+      final response = await _apiServices.getWeatherApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getPredictedDistrictWeather(String district, String lang) async {
+    try {
+      final url = '${AppUrl.weatherAPIEndPoint}&q=$district&aqi=no&days=3&lang=$lang';
       final response = await _apiServices.getWeatherApiResponse(url);
       return response;
     } catch (e) {
@@ -219,10 +240,32 @@ class AGPlusRepository {
     }
   }
 
-  Future<dynamic> getPestAndDiseaseData(String cropId) async {
+  Future<dynamic> getPestAndDiseaseList(String cropId, String stageId, String currentSeason,
+      String userState, String selectedType) async {
     try {
-      const url =
-          "${AppUrl.pestDiseaseEnpoint}/68369d99c18deb48aba2b08f/6836b790c18deb48aba2b195/uttar_pradesh/zaid";
+      final url =
+          "${AppUrl.pestDiseaseEnpoint}/crop-problem?cropId=$cropId&stageId=$stageId&season=$currentSeason&state=$userState&type=$selectedType";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getPestAndDiseaseData(String id) async {
+    try {
+      final url = "${AppUrl.pestDiseaseEnpoint}/crop-problem-detail/$id";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //To get chemical details inside pest/disease selected medicine
+  Future<dynamic> getSolutionsData(String solutionId) async {
+    try {
+      final url = "${AppUrl.pestDiseaseEnpoint}/problem-solution-detail/$solutionId";
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
@@ -284,6 +327,38 @@ class AGPlusRepository {
     try {
       final url = "${AppUrl.advisoryEnpoint}/kharpatvar/manage/calculateDosage/$chemicalId";
       final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> calculatePestDosage(String pestMedicineId, dynamic payload) async {
+    try {
+      final url = "${AppUrl.pestDiseaseEnpoint}/calculate-dosage/$pestMedicineId";
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Get Mandi Details for field
+  Future<dynamic> getFieldMandiData() async {
+    try {
+      final url = "${AppUrl.mandiPricesEndPoint}/nearby";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Post yield data from popup when crop harvest stage
+  Future<dynamic> postYieldDataFromPopup(String plotId, dynamic payload) async {
+    try {
+      final url = "${AppUrl.fieldEndpoint}/yield/$plotId";
+      final response = await _apiServices.getPatchApiResponse(url, payload);
       return response;
     } catch (e) {
       rethrow;

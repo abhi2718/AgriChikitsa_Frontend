@@ -6,7 +6,7 @@ import '../../../../res/color.dart';
 class GradientButton extends StatelessWidget {
   const GradientButton(
       {super.key,
-      required this.height,
+      this.height,
       required this.width,
       required this.title,
       this.icon,
@@ -22,6 +22,7 @@ class GradientButton extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: height != null ? 0 : 12),
       height: height,
       width: isLoading ?? false ? width + 30 : width,
       decoration: BoxDecoration(
@@ -37,32 +38,32 @@ class GradientButton extends StatelessWidget {
       child: icon != null
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              spacing: isLoading != true ? 0 : 16,
               children: [
-                isLoading ?? false
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: AppColor.whiteColor,
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                isLoading ?? false
-                    ? const SizedBox(
-                        width: 8,
-                      )
-                    : const SizedBox.shrink(),
-                Icon(
-                  icon,
-                  color: AppColor.whiteColor,
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
-                      fontSize: 15, fontWeight: FontWeight.w600, color: AppColor.whiteColor),
+                if (isLoading == true)
+                  const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: AppColor.whiteColor,
+                    ),
+                  )
+                else ...[
+                  Icon(
+                    icon,
+                    color: AppColor.whiteColor,
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                Flexible(
+                  child: Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.whiteColor,
+                    ),
+                  ),
                 ),
               ],
             )
@@ -83,10 +84,12 @@ class GradientButton extends StatelessWidget {
                         width: 22,
                       )
                     : const SizedBox.shrink(),
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
-                      fontSize: 15, fontWeight: FontWeight.w600, color: AppColor.whiteColor),
+                Flexible(
+                  child: Text(
+                    title,
+                    style: GoogleFonts.inter(
+                        fontSize: 15, fontWeight: FontWeight.w600, color: AppColor.whiteColor),
+                  ),
                 ),
               ],
             ),

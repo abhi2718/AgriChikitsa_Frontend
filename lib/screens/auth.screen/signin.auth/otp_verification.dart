@@ -111,12 +111,10 @@ class OtpVerification extends HookWidget {
                     onCodeChanged: (String code) {
                       //handle validation or checks here
                     },
-                    //fieldWidth:((MediaQuery.of(context).size.width - 72) / 6),
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //runs when every textfield is filled
                     onSubmit: (String verificationCode) {
                       useViewModel.setOTP(verificationCode, context);
-                    }, // end onSubmit
+                    },
                   ),
                   const SizedBox(
                     height: 30,

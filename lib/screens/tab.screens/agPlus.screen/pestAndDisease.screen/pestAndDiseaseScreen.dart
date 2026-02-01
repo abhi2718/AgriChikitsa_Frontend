@@ -1,7 +1,7 @@
 import 'package:agriChikitsa/model/pestAndDisease.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/helper/pest_medicine.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/widgets/pest_carousel.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weedProtection.screen/widgets/button_tab.dart';
 import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_model.dart';
@@ -17,23 +17,42 @@ import 'package:provider/provider.dart';
 
 class PestAndDiseaseScreen extends HookWidget {
   final PestDiseaseObj selectedPestDisease;
-  const PestAndDiseaseScreen({super.key, required this.selectedPestDisease});
+  final AGPlusViewModel useViewModel;
+  const PestAndDiseaseScreen(
+      {super.key, required this.selectedPestDisease, required this.useViewModel});
 
   @override
   Widget build(BuildContext context) {
-    final dimension = Utils.getDimensions(context, true);
     final audioViewModel =
         useMemoized(() => Provider.of<AudioPlayerViewModel>(context, listen: false));
-    final medicineViewModel =
-        useMemoized(() => Provider.of<MedicineViewModel>(context, listen: false));
+    final resolvedData = useState<PestDiseaseResolvedData?>(null);
+    final localeCode = AppLocalization.of(context).locale.toString();
     useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         audioViewModel.reinitalize();
-        //To be discussed
-        // medicineViewModel.getWeedManageList(context, weedId);
+
+        resolvedData.value = await useViewModel.resolvePestDiseaseDetails(
+          context,
+          selectedPestDisease.id,
+        );
       });
       return null;
     }, []);
+    useEffect(() {
+      if (!useViewModel.isPestDetailsLoading && resolvedData.value != null) {
+        final url = localeCode == "en" ? resolvedData.value!.audioEn : resolvedData.value!.audioHi;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          audioViewModel.setAudioUrl(url);
+        });
+      }
+      return null;
+    }, [
+      useViewModel.isPestDetailsLoading,
+      resolvedData.value,
+      localeCode,
+    ]);
+
     return WillPopScope(
       onWillPop: () async {
         audioViewModel.stop();
@@ -76,10 +95,14 @@ class PestAndDiseaseScreen extends HookWidget {
         body: Consumer<AGPlusViewModel>(builder: (context, provider, child) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final locale = AppLocalization.of(context).locale.toString();
-            if (locale == "en" && selectedPestDisease.audioEn.isNotEmpty) {
-              audioViewModel.setAudioUrl(selectedPestDisease.audioEn);
-            } else if (locale == "hi" && selectedPestDisease.audioHi.isNotEmpty) {
-              audioViewModel.setAudioUrl(selectedPestDisease.audioHi);
+            if (locale == "en" &&
+                selectedPestDisease.audioEn != null &&
+                selectedPestDisease.audioEn!.isNotEmpty) {
+              audioViewModel.setAudioUrl(selectedPestDisease.audioEn!);
+            } else if (locale == "hi" &&
+                selectedPestDisease.audioHi != null &&
+                selectedPestDisease.audioHi!.isNotEmpty) {
+              audioViewModel.setAudioUrl(selectedPestDisease.audioHi!);
             } else {
               audioViewModel.setAudioUrl("");
             }
@@ -89,7 +112,7 @@ class PestAndDiseaseScreen extends HookWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                PestsCarousel(images: selectedPestDisease.images),
+                PestsCarousel(images: selectedPestDisease.carousel),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 22.0, horizontal: 14),
                   child: Column(
@@ -172,35 +195,82 @@ class PestAndDiseaseScreen extends HookWidget {
                       const SizedBox(
                         height: 12,
                       ),
-                      HtmlWidget(AppLocalization.of(context).locale.toString() == "en"
-                          ? selectedPestDisease.contentEn
-                          : selectedPestDisease.contentHi),
-                      Consumer<MedicineViewModel>(builder: (context, provider, _) {
-                        return Column(
-                          children: provider.isManageListLoading
-                              ? List.generate(
-                                  3,
-                                  (index) => Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                      child: Skeleton(
-                                          height: dimension["height"]! * 0.1,
-                                          width: dimension["width"]!)),
-                                )
-                              : List.generate(
-                                  provider.weedManageList.length,
-                                  (index) => Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                    child: ButtonTab(
-                                      text: provider.weedManageList[index][
-                                          AppLocalization.of(context).locale.toString() == "en"
-                                              ? "nameEn"
-                                              : "nameHi"],
-                                      onPressed: () {},
-                                    ),
-                                  ),
+                      provider.isPestDetailsLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : resolvedData.value == null
+                              ? const SizedBox.shrink()
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: resolvedData.value!.details.map((detail) {
+                                    return detail.contentHi.isEmpty && detail.solutions.isEmpty
+                                        ? const SizedBox.shrink()
+                                        : Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 22, horizontal: 14),
+                                            margin: const EdgeInsets.only(bottom: 12),
+                                            decoration: BoxDecoration(
+                                                color: AppColor.whiteColor,
+                                                borderRadius: BorderRadius.circular(12),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                                                    blurRadius: 12,
+                                                    spreadRadius: 0,
+                                                    offset: Offset(
+                                                      0,
+                                                      4,
+                                                    ),
+                                                  ),
+                                                ]),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Center(
+                                                    child: Text(
+                                                  AppLocalization.of(context).locale.toString() ==
+                                                          "en"
+                                                      ? detail.titleEn
+                                                      : detail.titleHi,
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold, fontSize: 15),
+                                                )),
+                                                SizedBox(
+                                                  height: 12,
+                                                ),
+                                                HtmlWidget(
+                                                  AppLocalization.of(context).locale.toString() ==
+                                                          "en"
+                                                      ? detail.contentEn
+                                                      : detail.contentHi,
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Column(
+                                                  children: detail.solutions.map((solution) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(vertical: 4.0),
+                                                      child: ButtonTab(
+                                                        text: AppLocalization.of(context)
+                                                                    .locale
+                                                                    .toString() ==
+                                                                "en"
+                                                            ? solution.nameEn
+                                                            : solution.nameHi,
+                                                        onPressed: () {
+                                                          Utils.model(
+                                                              context,
+                                                              PestMedicineScreen(
+                                                                  selectedSolution: solution));
+                                                        },
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                  }).toList(),
                                 ),
-                        );
-                      }),
                     ],
                   ),
                 ),
@@ -354,7 +424,7 @@ class AllPestsDiseasesScreen extends HookWidget {
     final useViewModel = useMemoized(() => Provider.of<AGPlusViewModel>(context, listen: false));
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        useViewModel.getPestsDiseaseData(context, useViewModel.selectedPlot.cropId);
+        useViewModel.getPestsDiseaseList(context, useViewModel.selectedPlot, selectedType);
       });
       return null;
     }, []);
@@ -378,97 +448,109 @@ class AllPestsDiseasesScreen extends HookWidget {
                   color: AppColor.extraDark,
                 ),
               )
-            : Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: GridView.builder(
-                  itemCount: selectedType == "pest"
-                      ? provider.pestDiseaseData.pests.length
-                      : provider.pestDiseaseData.diseases.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 3 / 4,
-                  ),
-                  itemBuilder: (context, index) {
-                    final PestDiseaseObj item = selectedType == "pest"
-                        ? provider.pestDiseaseData.pests[index]
-                        : provider.pestDiseaseData.diseases[index];
+            : (selectedType == "pest" && provider.pestDiseaseData.pests.isEmpty) ||
+                    (selectedType == "disease" && provider.pestDiseaseData.diseases.isEmpty)
+                ? Center(
+                    child: Text(
+                    AppLocalization.of(context).getTranslatedValue("noDataFound").toString(),
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                  ))
+                : Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: GridView.builder(
+                      itemCount: selectedType == "pest"
+                          ? provider.pestDiseaseData.pests.length
+                          : provider.pestDiseaseData.diseases.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 3 / 4.5,
+                      ),
+                      itemBuilder: (context, index) {
+                        final PestDiseaseObj item = selectedType == "pest"
+                            ? provider.pestDiseaseData.pests[index]
+                            : provider.pestDiseaseData.diseases[index];
 
-                    return GestureDetector(
-                      onTap: () {
-                        Utils.model(
-                          context,
-                          PestAndDiseaseScreen(selectedPestDisease: item),
+                        return GestureDetector(
+                          onTap: () {
+                            Utils.model(
+                              context,
+                              PestAndDiseaseScreen(
+                                selectedPestDisease: item,
+                                useViewModel: provider,
+                              ),
+                            );
+                          },
+                          child: Card(
+                            color: AppColor.whiteColor,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                ClipRRect(
+                                  borderRadius:
+                                      const BorderRadius.vertical(top: Radius.circular(12)),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        item.carousel.isNotEmpty ? item.carousel[0].image : "",
+                                    fit: BoxFit.cover,
+                                    height: 150,
+                                    width: double.infinity,
+                                    placeholder: (context, url) => Skeleton(
+                                      height: 150,
+                                      width: double.infinity,
+                                      radius: 12,
+                                    ),
+                                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          AppLocalization.of(context).locale.toString() == "en"
+                                              ? item.nameEn
+                                              : item.nameHi,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          AppLocalization.of(context).locale.toString() == "en"
+                                              ? item.nameSciEn
+                                              : item.nameSciHi,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 13,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       },
-                      child: Card(
-                        color: AppColor.whiteColor,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                              child: CachedNetworkImage(
-                                imageUrl: item.images[0],
-                                fit: BoxFit.cover,
-                                height: 150,
-                                width: double.infinity,
-                                placeholder: (context, url) => Skeleton(
-                                  height: 150,
-                                  width: double.infinity,
-                                  radius: 12,
-                                ),
-                                errorWidget: (context, url, error) => const Icon(Icons.error),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      AppLocalization.of(context).locale.toString() == "en"
-                                          ? item.nameEn
-                                          : item.nameHi,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      AppLocalization.of(context).locale.toString() == "en"
-                                          ? item.nameSciEn
-                                          : item.nameSciHi,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 13,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
+                    ),
+                  );
       }),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/states_district_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -133,42 +134,41 @@ class RegisterUser extends HookWidget {
                             ),
                             Consumer<SignUpViewModel>(builder: (context, provider, child) {
                               return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                width: dimension['width']! * 0.90,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                  color: Colors.white,
-                                ),
-                                child: DropdownButton(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  width: dimension['width']! * 0.90,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                    color: Colors.white,
+                                  ),
+                                  child: DropdownButton<StateModel>(
                                     underline: Container(),
                                     isExpanded: true,
                                     hint: BaseText(
                                       title: AppLocalization.of(context)
                                           .getTranslatedValue("signupFormSelectState")
                                           .toString(),
-                                      style: const TextStyle(),
+                                      style: TextStyle(),
                                     ),
-                                    value: provider.selectedState.isEmpty
-                                        ? null
-                                        : provider.selectedState,
-                                    alignment: AlignmentDirectional.centerStart,
+                                    value: provider.selectedState,
                                     items: provider.stateList
-                                        .map<DropdownMenuItem<String>>((dynamic value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value.state,
+                                        .map<DropdownMenuItem<StateModel>>((StateModel state) {
+                                      return DropdownMenuItem<StateModel>(
+                                        value: state,
                                         child: BaseText(
-                                          title:
-                                              AppLocalization.of(context).locale.toString() == "en"
-                                                  ? value.state
-                                                  : value.stateHi,
+                                          title: AppLocalization.of(context).locale.languageCode ==
+                                                  "en"
+                                              ? state.state
+                                              : state.stateHi,
                                           style: const TextStyle(fontSize: 14),
                                         ),
                                       );
                                     }).toList(),
-                                    onChanged: (value) {
-                                      provider.setSelectedState(context, value!);
-                                    }),
-                              );
+                                    onChanged: (StateModel? value) {
+                                      if (value != null) {
+                                        provider.setSelectedState(context, value);
+                                      }
+                                    },
+                                  ));
                             }),
                             const SizedBox(
                               height: 20,

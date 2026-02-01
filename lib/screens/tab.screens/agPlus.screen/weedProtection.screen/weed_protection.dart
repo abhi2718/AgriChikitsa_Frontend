@@ -596,16 +596,11 @@ class WeedCategorySelectModal extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(
-                      imageUrl: "https://kj1bcdn.b-cdn.net/media/40752/mulching.jpg",
-                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                        height: 40,
-                        width: 40,
-                        radius: 0,
-                      ),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                    child: Image.asset(
+                      "assets/images/organic_kharpatwar.jpeg",
+                      errorBuilder: (context, url, error) => const Icon(Icons.error),
                       width: 40,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                       height: 40,
                     ),
                   ),
@@ -658,16 +653,11 @@ class WeedCategorySelectModal extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(
-                      imageUrl: "https://kj1bcdn.b-cdn.net/media/40752/mulching.jpg",
-                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                        height: 40,
-                        width: 40,
-                        radius: 0,
-                      ),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                    child: Image.asset(
+                      "assets/images/chemical_kharpatwar.jpeg",
+                      errorBuilder: (context, url, error) => const Icon(Icons.error),
                       width: 40,
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                       height: 40,
                     ),
                   ),
