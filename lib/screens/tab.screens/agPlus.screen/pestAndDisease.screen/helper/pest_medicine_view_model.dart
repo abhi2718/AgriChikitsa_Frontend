@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/chemical_solutions.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
@@ -119,7 +121,7 @@ class PestMedicineViewModel with ChangeNotifier {
 
   void toggleMedicineLike(BuildContext context, String chemicalId) async {
     try {
-      await _agPlusRepository.toggleMedicineLike(chemicalId);
+      await _agPlusRepository.togglePestMedicineLike(chemicalId);
     } catch (error) {
       if (kDebugMode) {
         if (context.mounted) {
@@ -134,7 +136,7 @@ class PestMedicineViewModel with ChangeNotifier {
 
   void toggleMedicineDislike(BuildContext context, String chemicalId) async {
     try {
-      await _agPlusRepository.toggleMedicineDislike(chemicalId);
+      await _agPlusRepository.togglePestMedicineDislike(chemicalId);
     } catch (error) {
       if (kDebugMode) {
         if (context.mounted) {

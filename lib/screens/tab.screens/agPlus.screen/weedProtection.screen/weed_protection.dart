@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_screen.dart';
@@ -10,7 +8,6 @@ import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_mo
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

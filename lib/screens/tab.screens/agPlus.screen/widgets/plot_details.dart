@@ -89,7 +89,8 @@ class PlotDetails extends HookWidget {
                         AppLocalization.of(context).getTranslatedValue("desertSoil").toString(),
                         AppLocalization.of(context).getTranslatedValue("gravellySoil").toString(),
                         AppLocalization.of(context).getTranslatedValue("mountainSoil").toString(),
-                        AppLocalization.of(context).getTranslatedValue("marshySoil").toString()
+                        AppLocalization.of(context).getTranslatedValue("marshySoil").toString(),
+                        AppLocalization.of(context).getTranslatedValue("sandyLoamySoil").toString()
                       ].map<DropdownMenuItem<String>>((dynamic value) {
                         return DropdownMenuItem<String>(
                           value: value,

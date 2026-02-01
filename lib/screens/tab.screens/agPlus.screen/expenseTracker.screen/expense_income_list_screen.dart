@@ -36,10 +36,12 @@ class ExpenseIncomeListScreen extends HookWidget {
         backgroundColor: AppColor.notificationBgColor,
         foregroundColor: AppColor.darkBlackColor,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: vm.finalSubmitLoader
+            ? SizedBox.shrink()
+            : IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
+              ),
         title: Text(
           AppLocalization.of(context).getTranslatedValue("expenseIncomeCalculator").toString(),
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
@@ -58,23 +60,40 @@ class ExpenseIncomeListScreen extends HookWidget {
           ],
         ),
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 80),
-            child: TabBarView(
-              controller: tabController,
-              children: const [
-                ExpenseSection(),
-                IncomeSection(),
-              ],
-            ),
-          ),
-          BottomFixedButtons(
-            plot: selectedPlot,
-            activeTabIndex: tabController.index,
-          ),
-        ],
+      body: Consumer<ExpenseViewModel>(
+        builder: (_, vm, __) {
+          return Stack(
+            children: [
+              /// MAIN CONTENT
+              Padding(
+                padding: const EdgeInsets.only(bottom: 80),
+                child: TabBarView(
+                  controller: tabController,
+                  children: const [
+                    ExpenseSection(),
+                    IncomeSection(),
+                  ],
+                ),
+              ),
+
+              BottomFixedButtons(
+                plot: selectedPlot,
+                activeTabIndex: tabController.index,
+                kamaiModel: vm.kamai,
+              ),
+
+              if (vm.finalSubmitLoader)
+                Container(
+                  color: Colors.black.withOpacity(0.4),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColor.extraDark,
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -123,7 +142,9 @@ class ExpenseTile extends StatelessWidget {
       surfaceTintColor: AppColor.whiteColor,
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        title: Text(expense.category),
+        title: Text(AppLocalization.of(context).locale.toString() == "en"
+            ? expense.category
+            : getCategoryLabel(context, expense.category)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -213,7 +234,7 @@ class IncomeTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         title: Text(
-          "Yield: ${income.yieldAmount} ${income.yieldUnit}",
+          "${AppLocalization.of(context).getTranslatedValue("yieldAmount").toString()}: ${income.yieldAmount} ${income.yieldUnit}",
         ),
         subtitle: Text(
           "₹${income.totalIncome}\n${income.notes}",
@@ -222,21 +243,21 @@ class IncomeTile extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                final recordId = income.recordId; // KharchaKamaiModel id stored in ExpenseModel
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AddIncomeForm(
-                      recordId: recordId,
-                      income: income, // pass the existing expense to edit
-                    ),
-                  ),
-                );
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.edit),
+            //   onPressed: () {
+            //     final recordId = income.recordId; // KharchaKamaiModel id stored in ExpenseModel
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (_) => AddIncomeForm(
+            //           recordId: recordId,
+            //           income: income, // pass the existing expense to edit
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
@@ -256,28 +277,36 @@ class IncomeTile extends StatelessWidget {
 class BottomFixedButtons extends StatelessWidget {
   final Plots plot;
   final int activeTabIndex;
+  final KharchaKamaiModel? kamaiModel;
 
-  const BottomFixedButtons({
-    super.key,
-    required this.plot,
-    required this.activeTabIndex,
-  });
+  const BottomFixedButtons(
+      {super.key, required this.plot, required this.activeTabIndex, required this.kamaiModel});
 
   @override
   Widget build(BuildContext context) {
     final isKharchaTab = activeTabIndex == 0;
     final isKamaiTab = activeTabIndex == 1;
 
-    if (isKamaiTab && !plot.isHarvesting) {
+    final isFinalSubmitted = kamaiModel?.isFinalSubmitted == true;
+    final isHarvesting = !plot.isHarvesting;
+    final isKamaiActive = kamaiModel?.isKamaiActive == true;
+    final hasIncome = (kamaiModel?.incomeRecords.length ?? 0) > 0;
+
+    if (isFinalSubmitted) {
       return const SizedBox.shrink();
     }
+
+    final showAddExpense = isKharchaTab;
+    final showAddIncome = isKamaiTab && isHarvesting && isKamaiActive;
+    final showFinalSubmit = isKamaiTab && isHarvesting && isKamaiActive && hasIncome;
+
     return Positioned(
       bottom: 0,
       left: 0,
       right: 0,
       child: Container(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
@@ -286,10 +315,55 @@ class BottomFixedButtons extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: InkWell(
+            /// FINAL SUBMIT BUTTON (shown ABOVE add income)
+            if (showFinalSubmit)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: InkWell(
+                  onTap: () async {
+                    final vm = context.read<ExpenseViewModel>();
+
+                    final success = await vm.finalSubmitKamai(
+                      context,
+                      kamaiModel!.id,
+                    );
+
+                    if (!context.mounted) return;
+
+                    if (success) {
+                      await Utils.showAutoCloseDialog(
+                        context,
+                        title: AppLocalization.of(context).getTranslatedValue("success").toString(),
+                        message: AppLocalization.of(context)
+                            .getTranslatedValue("finalSubmitSuccess")
+                            .toString(),
+                        success: true,
+                      );
+                    } else {
+                      await Utils.showAutoCloseDialog(
+                        context,
+                        title:
+                            AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+                        message: AppLocalization.of(context)
+                            .getTranslatedValue("finalSubmitFailed")
+                            .toString(),
+                        success: false,
+                      );
+                    }
+                  },
+                  child: GradientButton(
+                    width: double.infinity,
+                    title: AppLocalization.of(context).getTranslatedValue("finalSubmit").toString(),
+                  ),
+                ),
+              ),
+
+            /// ADD EXPENSE / ADD INCOME BUTTON
+            if (showAddExpense || showAddIncome)
+              InkWell(
                 onTap: () {
                   final vm = context.read<ExpenseViewModel>();
                   final recordId = vm.kamai?.id;
@@ -303,34 +377,29 @@ class BottomFixedButtons extends StatelessWidget {
                     return;
                   }
 
-                  if (isKharchaTab) {
+                  if (showAddExpense) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => AddExpenseForm(
-                          recordId: recordId,
-                        ),
+                        builder: (_) => AddExpenseForm(recordId: recordId),
                       ),
                     );
                   } else {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => AddIncomeForm(
-                          recordId: recordId,
-                        ),
+                        builder: (_) => AddIncomeForm(recordId: recordId),
                       ),
                     );
                   }
                 },
                 child: GradientButton(
                   width: double.infinity,
-                  title: isKharchaTab
+                  title: showAddExpense
                       ? AppLocalization.of(context).getTranslatedValue("addExpense").toString()
                       : AppLocalization.of(context).getTranslatedValue("addIncome").toString(),
                 ),
               ),
-            ),
           ],
         ),
       ),

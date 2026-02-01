@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/model/ndvi_model.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/res/color.dart';
@@ -7,6 +5,7 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -309,6 +308,12 @@ class _NDVIGraphState extends State<NDVIGraph> {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
+          widget.ndviData.daysEn.isNotEmpty && widget.ndviData.daysHi.isNotEmpty
+              ? Center(
+                  child: ParagraphHeadingText(AppLocalization.of(context).locale.toString() == "en"
+                      ? widget.ndviData.daysEn
+                      : widget.ndviData.daysHi))
+              : const SizedBox.shrink(),
           Container(
             width: dimension['width']!,
             margin: const EdgeInsets.only(top: 8),

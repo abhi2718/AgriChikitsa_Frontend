@@ -95,7 +95,9 @@ class ProfileTabScreen extends HookWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                ParagraphHeadingText(user.name!)
+                ParagraphHeadingText(user.name!),
+                ParagraphText(
+                    "${user.village!}, ${AppLocalization.of(context).locale.toString() == "en" ? user.district_en : user.district_hi}")
               ]),
             ),
             Padding(

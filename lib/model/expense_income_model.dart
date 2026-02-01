@@ -16,6 +16,7 @@ class KharchaKamaiModel {
 
   final String status;
   final bool isKamaiActive;
+  final bool isFinalSubmitted;
 
   KharchaKamaiModel({
     required this.id,
@@ -31,6 +32,7 @@ class KharchaKamaiModel {
     required this.profitPerUnit,
     required this.status,
     required this.isKamaiActive,
+    required this.isFinalSubmitted,
   });
 
   factory KharchaKamaiModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +62,28 @@ class KharchaKamaiModel {
       profitPerUnit: (json['profitPerUnit'] ?? 0).toDouble(),
       status: json['status'] ?? 'active',
       isKamaiActive: json['isKamaiActive'] ?? false,
+      isFinalSubmitted: json['isFinalSubmitted'] ?? false,
+    );
+  }
+
+  KharchaKamaiModel copyWith({
+    bool? isFinalSubmitted,
+  }) {
+    return KharchaKamaiModel(
+      id: id,
+      userId: userId,
+      fieldId: fieldId,
+      cropHistoryId: cropHistoryId,
+      expenditures: expenditures,
+      totalExpenditures: totalExpenditures,
+      incomeRecords: incomeRecords,
+      totalYield: totalYield,
+      totalIncome: totalIncome,
+      netProfit: netProfit,
+      profitPerUnit: profitPerUnit,
+      status: status,
+      isKamaiActive: isKamaiActive,
+      isFinalSubmitted: isFinalSubmitted ?? this.isFinalSubmitted,
     );
   }
 }
@@ -98,7 +122,7 @@ class TotalExpenditures {
 
 class ExpenseModel {
   final String? id;
-  final String recordId; // 👈 parent KharchaKamaiModel id
+  final String recordId;
   final String category;
   final String subCategory;
   final double amount;
@@ -123,7 +147,7 @@ class ExpenseModel {
       id: json['_id'],
       recordId: recordId,
       category: json['category'],
-      subCategory: json['subCategory'] ?? '',
+      subCategory: json['subcategory'] ?? '',
       amount: (json['amount'] ?? 0).toDouble(),
       date: DateTime.parse(json['date']),
       description: json['description'] ?? '',
@@ -133,7 +157,7 @@ class ExpenseModel {
   Map<String, dynamic> toPayload() {
     return {
       "category": category,
-      "subCategory": subCategory,
+      "subcategory": subCategory,
       "amount": amount,
       "date": date.toIso8601String(),
       "description": description,
@@ -143,7 +167,7 @@ class ExpenseModel {
 
 class IncomeModel {
   final String? id;
-  final String recordId; // 👈 parent KharchaKamaiModel id
+  final String recordId;
   final double yieldAmount;
   final String yieldUnit;
   final double sellingPrice;

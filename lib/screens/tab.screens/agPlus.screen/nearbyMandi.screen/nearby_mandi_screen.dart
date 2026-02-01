@@ -36,7 +36,7 @@ class NearbyMandisScreen extends HookWidget {
     useEffect(() {
       useViewModel.clearNearbyMandis();
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        useViewModel.getNearbyMandi(context);
+        useViewModel.getNearbyMandi(context, selectedPlot.cropId!);
       });
       return null;
     }, []);

@@ -477,6 +477,21 @@ class AGPlusViewModel with ChangeNotifier {
     }));
   }
 
+  int getFieldNumber(List<dynamic> fields) {
+    int expected = 1;
+
+    for (final field in fields) {
+      final int fieldNo = int.tryParse(field.fieldNo) ?? 0;
+
+      if (fieldNo != expected) {
+        return expected;
+      }
+      expected++;
+    }
+
+    return expected;
+  }
+
   void createPlot(BuildContext context, {bool isBackPressed = false}) async {
     fieldName = fieldNamecontroller.text.toString().trim();
     fieldSize = fieldSizecontroller.text.toString().trim();
@@ -526,26 +541,26 @@ class AGPlusViewModel with ChangeNotifier {
         Plots newPlot;
         if (!isBackPressed) {
           newPlot = Plots(
-            id: data['data']['_id'],
-            fieldNo: (userPlotList.length + 1).toString(),
-            fieldName: fieldName,
-            cropId: selectedCropId,
-            cropName: selectedCrop.name,
-            cropNameHi: selectedCrop.name_hi,
-            cropImage: selectedCrop.backgroundImage,
-            plotImage: plotImagePath,
-            latitude: mapLocation['latitude'].toString(),
-            longitude: mapLocation['longitude'].toString(),
-            agristick: null,
-            area: "$fieldSize $areaUnit",
-            soilType: soilType,
-            sowingSeason: res != null ? res["season"] : null,
-            sowingDate: sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
-          );
+              id: data['data']['_id'],
+              fieldNo: data['data']['feildNo'].toString(),
+              fieldName: fieldName,
+              cropId: selectedCropId,
+              cropName: selectedCrop.name,
+              cropNameHi: selectedCrop.name_hi,
+              cropImage: selectedCrop.backgroundImage,
+              plotImage: plotImagePath,
+              latitude: mapLocation['latitude'].toString(),
+              longitude: mapLocation['longitude'].toString(),
+              agristick: null,
+              area: "$fieldSize $areaUnit",
+              soilType: soilType,
+              sowingSeason: res != null ? res["season"] : null,
+              sowingDate: sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
+              currentStageId: data['data']['currentStageId'] ?? "");
         } else {
           newPlot = Plots(
-            id: data['data']['_id'],
-            fieldNo: (userPlotList.length + 1).toString(),
+            id: data?['data']?['_id'] ?? "1",
+            fieldNo: getFieldNumber(userPlotList).toString(),
             fieldName: fieldName,
             plotImage: plotImagePath,
             latitude: mapLocation['latitude'].toString(),
@@ -564,11 +579,7 @@ class AGPlusViewModel with ChangeNotifier {
         Timer(const Duration(seconds: 3), () {
           Navigator.pop(context);
           Navigator.pop(context);
-          Utils.model(
-              context,
-              AGPlusHome(
-                plotNumber: userPlotList.length,
-              ));
+          Utils.model(context, AGPlusHome());
         });
       }
     } catch (error) {
@@ -780,7 +791,7 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   //Below Methods are for Soil Testing Feature
-  setReportsLoader(bool value) {
+  void setReportsLoader(bool value) {
     isReportsLoading = value;
     // notifyListeners();
   }
@@ -977,10 +988,11 @@ class AGPlusViewModel with ChangeNotifier {
         if (selectedDuration != null) "durationId": selectedDuration["_id"],
         if (varietyName.isNotEmpty) "verity": varietyName,
       };
+      dynamic data;
       if (!wasCropEmpty) {
-        await _agPlusRepository.changeCrop(payload);
+        data = await _agPlusRepository.changeCrop(payload);
       } else {
-        await _agPlusRepository.updateField(selectedPlot.id, payload);
+        data = await _agPlusRepository.updateField(selectedPlot.id, payload);
       }
       selectedPlot.cropId = selectedChangeCrop!.id;
       selectedPlot.cropName = selectedChangeCrop!.name;
@@ -991,6 +1003,7 @@ class AGPlusViewModel with ChangeNotifier {
       selectedPlot.ndviId = null;
       selectedPlot.sowingDate =
           sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null;
+      selectedPlot.currentStageId = data["currentStageId"] ?? "";
       if (context.mounted) {
         Navigator.pop(context);
         Navigator.pop(context);
@@ -1246,10 +1259,10 @@ class AGPlusViewModel with ChangeNotifier {
     isNearbyMandiDataLoading = false;
   }
 
-  void getNearbyMandi(BuildContext context) async {
+  void getNearbyMandi(BuildContext context, String cropId) async {
     setNearbyMandiLoader(true);
     try {
-      final data = await _agPlusRepository.getFieldMandiData();
+      final data = await _agPlusRepository.getFieldMandiData(cropId);
       if (data == null || !data.containsKey("mandis") || data["mandis"] is! List) {
         setNearbyMandiLoader(false);
         return;

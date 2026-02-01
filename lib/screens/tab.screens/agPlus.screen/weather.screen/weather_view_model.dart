@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/model/weather_model.dart';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../model/plots.dart';
@@ -25,11 +22,11 @@ class WeatherViewModel with ChangeNotifier {
   bool isPdfDownloading = false;
   List<PredictedData> predictedDataList = [];
   List<PredictedHourlyData> predictedHourlyDataList = [];
-  void setWeatherDataLoader(value) {
+  void setWeatherDataLoader(bool value) {
     getWeatherDataLoader = value;
   }
 
-  void setPredictedDataLoader(value) {
+  void setPredictedDataLoader(bool value) {
     getPredictedDataLoader = value;
   }
 
@@ -143,10 +140,16 @@ class WeatherViewModel with ChangeNotifier {
       final encodedState = encodeForImd(state);
       final encodedDistrict = encodeForImd(district);
 
-      final url = 'https://imdagrimet.gov.in/Services/DistrictBulletin.php'
+      final lang = AppLocalization.of(context).locale.toString();
+      String url = 'https://imdagrimet.gov.in/Services/DistrictBulletin.php'
           '?state=$encodedState'
           '&district=$encodedDistrict'
           '&language=English';
+      // if (lang == "hi") {
+      //   url = "$url&language=Hindi";
+      // } else {
+      //   url = "$url&lanugage=English";
+      // }
 
       final response = await http.get(
         Uri.parse(url),

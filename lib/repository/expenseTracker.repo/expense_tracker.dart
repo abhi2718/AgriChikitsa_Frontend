@@ -94,4 +94,24 @@ class ExpenseTrackerRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> verifySubmission(String recordId) async {
+    try {
+      final url = '${AppUrl.kharchaKamaiEnpoint}/$recordId/verify-submission';
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> finalSubmit(String recordId, dynamic payload) async {
+    try {
+      final url = '${AppUrl.kharchaKamaiEnpoint}/$recordId/final-submit';
+      final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

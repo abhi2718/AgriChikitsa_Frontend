@@ -94,7 +94,6 @@ class AllPlotsScreen extends HookWidget {
                                 padding: const EdgeInsets.only(top: 16),
                                 child: Column(
                                   children: [
-                                    // ...provider.userPlotList.map((plot) {
                                     ...provider.userPlotList.asMap().entries.map((plot) {
                                       return Container(
                                         alignment: Alignment.center,
@@ -172,11 +171,7 @@ class AllPlotsScreen extends HookWidget {
                                                 InkWell(
                                                   onTap: () {
                                                     provider.setSelectedField(plot.value);
-                                                    Utils.model(
-                                                        context,
-                                                        AGPlusHome(
-                                                          plotNumber: plot.key + 1,
-                                                        ));
+                                                    Utils.model(context, AGPlusHome());
                                                   },
                                                   child: Container(
                                                     alignment: Alignment.center,
