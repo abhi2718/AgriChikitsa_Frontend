@@ -253,6 +253,7 @@ class AddIncomeForm extends HookWidget {
                     onChanged: (v) => vm.setYieldAmount(double.tryParse(v) ?? 0),
                     validator: (v) => v == null || double.tryParse(v) == null ? "Required" : null,
                   ),
+                  const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     value: vm.yieldUnit,
                     items: const [
@@ -285,10 +286,10 @@ class AddIncomeForm extends HookWidget {
                             context: context,
                             firstDate: DateTime(2020),
                             lastDate: DateTime.now(),
-                            initialDate: vm.expenseDate ?? DateTime.now(),
+                            initialDate: vm.saleDate ?? DateTime.now(),
                           );
                           if (picked != null) {
-                            vm.setExpenseDate(picked);
+                            vm.setSaleDate(picked);
                           }
                         },
                         child: InputDecorator(
@@ -296,14 +297,13 @@ class AddIncomeForm extends HookWidget {
                             AppLocalization.of(context).getTranslatedValue("selectDate").toString(),
                           ),
                           child: Text(
-                            vm.expenseDate == null
-                                ? ""
-                                : vm.expenseDate!.toString().split(" ").first,
+                            vm.saleDate == null ? "" : vm.saleDate!.toString().split(" ").first,
                           ),
                         ),
                       );
                     },
                   ),
+                  const SizedBox(height: 12),
                   TextFormField(
                     decoration: greenOutlinedInput(
                       AppLocalization.of(context).getTranslatedValue("notes").toString(),

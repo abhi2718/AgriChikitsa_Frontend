@@ -3,6 +3,7 @@ import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_income_list_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_button.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -55,15 +56,12 @@ class ExpenseIncomeTracker extends HookWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              FieldInfoCard(selectedPlot: selectedPlot),
-              CropInfoCard(selectedPlot: selectedPlot),
-              ActionButtonsCard(plot: selectedPlot)
-            ],
-          ),
+        child: Column(
+          children: [
+            FieldInfoCard(selectedPlot: selectedPlot),
+            CropInfoCard(selectedPlot: selectedPlot),
+            ActionButtonsCard(plot: selectedPlot)
+          ],
         ),
       ),
     );
@@ -80,6 +78,7 @@ class FieldInfoCard extends StatelessWidget {
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       height: dimension['height']! * 0.21,
       width: dimension['width']!,
       decoration: BoxDecoration(
@@ -165,6 +164,7 @@ class CropInfoCard extends StatelessWidget {
     final dimension = Utils.getDimensions(context, true);
     return Container(
       margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       height: dimension['height']! * 0.21,
       width: dimension['width']!,
       decoration: BoxDecoration(
@@ -258,10 +258,22 @@ class ActionButtonsCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         children: [
-          GradientButton(
-            height: dimension["height"]! * 0.08,
-            width: dimension["width"]!,
-            title: AppLocalization.of(context).getTranslatedValue("oldCropsBtn").toString(),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PlotHistoryScreen(
+                    selectedPlot: plot,
+                  ),
+                ),
+              );
+            },
+            child: GradientButton(
+              height: dimension["height"]! * 0.08,
+              width: dimension["width"]!,
+              title: AppLocalization.of(context).getTranslatedValue("oldCropsBtn").toString(),
+            ),
           ),
           const SizedBox(height: 8),
           InkWell(

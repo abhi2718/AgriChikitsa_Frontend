@@ -40,10 +40,10 @@ class ChemicalSolutionCarousel {
   final String companyNameEn;
   final String companyNameHi;
   final String image;
-  final int likesCount;
-  final int dislikesCount;
-  final bool isLiked;
-  final bool isDisliked;
+  int likesCount;
+  int dislikesCount;
+  bool isLiked;
+  bool isDisliked;
 
   ChemicalSolutionCarousel({
     required this.id,

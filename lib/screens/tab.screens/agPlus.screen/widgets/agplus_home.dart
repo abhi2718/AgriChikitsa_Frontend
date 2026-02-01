@@ -1,5 +1,4 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
-import 'package:agriChikitsa/main.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_tracker.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/features_card.dart';
@@ -8,7 +7,6 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/nearbyMandi.screen/nearby_mandi_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/pestAndDiseaseScreen.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/soilHealthCard.screen/soil_health_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/widgets/weather_details_Screen.dart';
@@ -32,8 +30,7 @@ import '../helper/current_selected_plot.dart';
 enum _MenuAction { delete, expenseTracker }
 
 class AGPlusHome extends HookWidget {
-  const AGPlusHome({super.key, required this.plotNumber});
-  final int plotNumber;
+  const AGPlusHome({super.key});
 
   Future<void> checkSowingDateAndShowDialogIfNeeded(
     BuildContext context,
@@ -301,7 +298,6 @@ class AGPlusHome extends HookWidget {
                     child: Column(
                       children: [
                         CurrentSelectedPlot(
-                          plotNumber: plotNumber,
                           selectedPlot: useViewModel.selectedPlot,
                         ),
                         SelectedPlotDetails(selectedPlot: provider.selectedPlot),
@@ -431,8 +427,7 @@ class AGPlusHome extends HookWidget {
                           title: AppLocalization.of(
                             context,
                           ).getTranslatedValue("nearbyMandis").toString(),
-                          image:
-                              "https://images.pexels.com/photos/9798970/pexels-photo-9798970.jpeg",
+                          image: "assets/images/nearbyMandiBanner.jpeg",
                           ontap: () {
                             Utils.model(
                                 context,

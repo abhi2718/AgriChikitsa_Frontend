@@ -333,6 +333,26 @@ class AGPlusRepository {
     }
   }
 
+  Future<dynamic> togglePestMedicineLike(String chemicalId) async {
+    try {
+      final url = "${AppUrl.pestDiseaseEnpoint}/solution-chemical/$chemicalId/like";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> togglePestMedicineDislike(String chemicalId) async {
+    try {
+      final url = "${AppUrl.pestDiseaseEnpoint}/solution-chemical/$chemicalId/dislike";
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> calculatePestDosage(String pestMedicineId, dynamic payload) async {
     try {
       final url = "${AppUrl.pestDiseaseEnpoint}/calculate-dosage/$pestMedicineId";
@@ -344,9 +364,9 @@ class AGPlusRepository {
   }
 
   //Get Mandi Details for field
-  Future<dynamic> getFieldMandiData() async {
+  Future<dynamic> getFieldMandiData(String cropId) async {
     try {
-      final url = "${AppUrl.mandiPricesEndPoint}/nearby";
+      final url = "${AppUrl.mandiPricesEndPoint}/nearby/$cropId";
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {

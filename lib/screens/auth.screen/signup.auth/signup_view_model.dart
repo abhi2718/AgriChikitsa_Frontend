@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/states_district_model.dart';
 import 'package:flutter/foundation.dart';
@@ -27,6 +26,7 @@ class SignUpViewModel with ChangeNotifier {
   StateModel? selectedState;
   var selectedDistrictHi = '';
   var selectedDistrictEn = '';
+  var block = '';
   dynamic userProfile;
 
   void setSelectedState(BuildContext context, StateModel value) {
@@ -71,6 +71,11 @@ class SignUpViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setBlock(String value) {
+    block = value;
+    notifyListeners();
+  }
+
   void setUserInfo(String name, String companyId) {
     userName = name;
     notifyListeners();
@@ -106,7 +111,7 @@ class SignUpViewModel with ChangeNotifier {
       districtList = mapDistricts(data['districts']);
       notifyListeners();
     } catch (error) {
-      if (kDebugMode) {
+      if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
@@ -137,6 +142,11 @@ class SignUpViewModel with ChangeNotifier {
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             AppLocalization.of(context).getTranslatedValue("validateVillage").toString(),
             context);
+      } else if (block.isEmpty) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateBlock").toString(),
+            context);
       } else {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
@@ -157,6 +167,7 @@ class SignUpViewModel with ChangeNotifier {
             "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
+            "block": block,
             "village": village
           }
         : {
@@ -169,6 +180,7 @@ class SignUpViewModel with ChangeNotifier {
             "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
+            "block": block,
             "village": village
           };
     FocusManager.instance.primaryFocus!.unfocus();
@@ -193,12 +205,23 @@ class SignUpViewModel with ChangeNotifier {
     return null;
   }
 
+  String? blockFieldValidator(BuildContext context, value) {
+    if (value!.isEmpty) {
+      return AppLocalization.of(context).getTranslatedValue("validateBlock").toString();
+    }
+    return null;
+  }
+
   void onSavedNameField(value) {
     userName = value;
   }
 
   void onSavedvillageField(value) {
     village = value;
+  }
+
+  void onSavedBlockField(value) {
+    block = value;
   }
 
   Widget suffixIconForEmail() {
@@ -278,6 +301,7 @@ class SignUpViewModel with ChangeNotifier {
     selectedState = null;
     selectedDistrictHi = '';
     selectedDistrictEn = '';
+    block = '';
     village = '';
     userProfile = null;
     registerUserformKey.currentState?.dispose();

@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:agriChikitsa/model/chemical_solutions.dart';
 import 'package:agriChikitsa/res/color.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/helper/pest_medicine_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/pestAndDisease.screen/widgets/pest_carousel.dart';
-import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weedProtection.screen/widgets/weed_carousel.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -59,41 +57,41 @@ class _PestMedicineCarouselState extends State<PestMedicineCarousel> {
     super.dispose();
   }
 
-  void _handleLike(dynamic chemical) {
+  void _handleLike(ChemicalSolutionCarousel chemical) {
     setState(() {
-      if (chemical["isLiked"]) {
-        chemical["isLiked"] = false;
-        if (chemical["likes"].isNotEmpty) {
-          chemical["likes"].removeLast();
+      if (chemical.isLiked) {
+        chemical.isLiked = false;
+        if (chemical.likesCount > 0) {
+          chemical.likesCount--;
         }
       } else {
-        chemical["isLiked"] = true;
-        chemical["likes"].add("");
-        chemical["isDisliked"] = false;
+        chemical.isLiked = true;
+        chemical.likesCount++;
+        chemical.isDisliked = false;
       }
     });
 
-    _debounceTimers[chemical["_id"]]?.cancel();
-    _debounceTimers[chemical["_id"]] = Timer(const Duration(milliseconds: 600), () {
-      widget.pestMedicineViewModel.toggleMedicineLike(context, chemical["_id"]);
+    _debounceTimers[chemical.id]?.cancel();
+    _debounceTimers[chemical.id] = Timer(const Duration(milliseconds: 600), () {
+      widget.pestMedicineViewModel.toggleMedicineLike(context, chemical.id);
     });
   }
 
-  void _handleDislike(dynamic chemical) {
+  void _handleDislike(ChemicalSolutionCarousel chemical) {
     setState(() {
-      if (chemical["isDisliked"]) {
-        chemical["isDisliked"] = false;
+      if (chemical.isDisliked) {
+        chemical.isDisliked = false;
       } else {
-        chemical["isDisliked"] = true;
-        if (chemical["likes"].isNotEmpty) {
-          chemical["likes"].removeLast();
+        chemical.isDisliked = true;
+        if (chemical.likesCount > 0) {
+          chemical.likesCount--;
         }
-        chemical["isLiked"] = false;
+        chemical.isLiked = false;
       }
     });
-    _debounceTimers[chemical["_id"]]?.cancel();
-    _debounceTimers[chemical["_id"]] = Timer(const Duration(milliseconds: 600), () {
-      widget.pestMedicineViewModel.toggleMedicineDislike(context, chemical["_id"]);
+    _debounceTimers[chemical.id]?.cancel();
+    _debounceTimers[chemical.id] = Timer(const Duration(milliseconds: 600), () {
+      widget.pestMedicineViewModel.toggleMedicineDislike(context, chemical.id);
     });
   }
 
@@ -188,29 +186,29 @@ class _PestMedicineCarouselState extends State<PestMedicineCarousel> {
                         ],
                       ),
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.start,
-                    //   children: [
-                    //     IconButton(
-                    //       onPressed: () => _handleLike(chemical),
-                    //       icon: Icon(
-                    //         Icons.thumb_up,
-                    //         color: chemical.isLiked ? Colors.green : Colors.grey,
-                    //       ),
-                    //     ),
-                    //     Text(
-                    //       chemical.likesCount.toString(),
-                    //       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                    //     ),
-                    //     IconButton(
-                    //       onPressed: () => _handleDislike(chemical),
-                    //       icon: Icon(
-                    //         Icons.thumb_down,
-                    //         color: chemical.isDisliked ? Colors.red : Colors.grey,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () => _handleLike(chemical),
+                          icon: Icon(
+                            Icons.thumb_up,
+                            color: chemical.isLiked ? Colors.green : Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          chemical.likesCount.toString(),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
+                        IconButton(
+                          onPressed: () => _handleDislike(chemical),
+                          icon: Icon(
+                            Icons.thumb_down,
+                            color: chemical.isDisliked ? Colors.red : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ],

@@ -270,6 +270,26 @@ class RegisterUser extends HookWidget {
                               ),
                             ),
                             const SizedBox(
+                              height: 20,
+                            ),
+                            Consumer<SignUpViewModel>(
+                              builder: (context, provider, child) => Input(
+                                labelText: AppLocalization.of(context)
+                                    .getTranslatedValue("signupFormBlock")
+                                    .toString(),
+                                keyboardType: TextInputType.name,
+                                textInputAction: TextInputAction.done,
+                                suffixIcon: useViewModel.suffixIconForVillage(),
+                                validator: (value) =>
+                                    useViewModel.blockFieldValidator(context, value),
+                                onSaved: useViewModel.onSavedvillageField,
+                                onChanged: (value) => useViewModel.onSavedBlockField(value),
+                                onFieldSubmitted: (value) {
+                                  useViewModel.setBlock(value);
+                                },
+                              ),
+                            ),
+                            const SizedBox(
                               height: 40,
                             ),
                             Consumer<SignUpViewModel>(

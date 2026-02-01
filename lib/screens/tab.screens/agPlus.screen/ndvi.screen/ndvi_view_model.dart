@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/ndvi_model.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
@@ -19,12 +17,12 @@ class NDVIViewModel with ChangeNotifier {
     addForMonitoringLoader = false;
   }
 
-  setReponseLoader(value) {
+  void setReponseLoader(bool value) {
     responseLoader = value;
     notifyListeners();
   }
 
-  setAddForMonitoringLoader(value) {
+  void setAddForMonitoringLoader(bool value) {
     addForMonitoringLoader = value;
     notifyListeners();
   }

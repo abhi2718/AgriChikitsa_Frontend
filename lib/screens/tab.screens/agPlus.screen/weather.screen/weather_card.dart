@@ -23,15 +23,61 @@ void showDeleteFieldDialog(BuildContext context, AGPlusViewModel useViewModel) {
           TextButton(
             child: BaseText(
                 title: AppLocalization.of(context).getTranslatedValue("yes").toString(),
-                style: const TextStyle(fontSize: 16, color: AppColor.extraDark)),
+                style: const TextStyle(fontSize: 16, color: AppColor.errorColor)),
             onPressed: () {
-              useViewModel.deleteField(context);
+              Navigator.of(dialogContext).pop(); // close first dialog
+              showFinalWarningDialog(context, useViewModel);
             },
           ),
           TextButton(
             child: BaseText(
                 title: AppLocalization.of(context).getTranslatedValue("no").toString(),
                 style: const TextStyle(fontSize: 16, color: AppColor.extraDark)),
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showFinalWarningDialog(BuildContext context, AGPlusViewModel useViewModel) {
+  showDialog(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
+        title: BaseText(
+          title: AppLocalization.of(context).getTranslatedValue("warningTitle").toString(),
+          style: TextStyle(color: AppColor.errorColor),
+        ),
+        content: const BaseText(
+          title: "All data related to this field will be deleted, do you still want to proceed?",
+          style: TextStyle(),
+        ),
+        actions: [
+          TextButton(
+            child: BaseText(
+              title: AppLocalization.of(context).getTranslatedValue("deleteTitle").toString(),
+              style: TextStyle(
+                fontSize: 16,
+                color: AppColor.errorColor,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              useViewModel.deleteField(context);
+            },
+          ),
+          TextButton(
+            child: BaseText(
+              title: AppLocalization.of(context).getTranslatedValue("no").toString(),
+              style: TextStyle(
+                fontSize: 16,
+                color: AppColor.extraDark,
+              ),
+            ),
             onPressed: () {
               Navigator.of(dialogContext).pop();
             },

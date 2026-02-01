@@ -29,7 +29,7 @@ class JankariHomeTab extends HookWidget {
     final profileViewModel = Provider.of<ProfileViewModel>(context, listen: true);
     useEffect(() {
       Future.delayed(const Duration(milliseconds: 500), () {
-        if (useViewModel.jankaricardList.isEmpty) {
+        if (useViewModel.jankaricardList.isEmpty && context.mounted) {
           useViewModel.getJankariCategory(context);
           useViewModel.fetchTrendingPosts(context);
         }

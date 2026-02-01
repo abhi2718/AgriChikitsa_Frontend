@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
@@ -26,6 +28,7 @@ class PlotHistoryViewModel extends ChangeNotifier {
     setHistoryLoader(true);
     try {
       final data = await _agPlusRepository.fetchPlotHistory(fieldId);
+      log(data.toString());
       if (data['data'].isNotEmpty) {
         plotHistory = data['data'];
       } else {

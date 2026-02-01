@@ -9,9 +9,8 @@ import '../../../../utils/utils.dart';
 import '../../../../widgets/skeleton/skeleton.dart';
 
 class CurrentSelectedPlot extends StatelessWidget {
-  const CurrentSelectedPlot({super.key, required this.selectedPlot, required this.plotNumber});
+  const CurrentSelectedPlot({super.key, required this.selectedPlot});
   final Plots selectedPlot;
-  final int plotNumber;
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -56,7 +55,7 @@ class CurrentSelectedPlot extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "${AppLocalization.of(context).getTranslatedValue("plotCountTitle").toString()} ${plotNumber.toString()}",
+                  "${AppLocalization.of(context).getTranslatedValue("plotCountTitle").toString()} ${selectedPlot.fieldNo}",
                   style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w500, fontSize: 28, color: AppColor.whiteColor),
                 ),

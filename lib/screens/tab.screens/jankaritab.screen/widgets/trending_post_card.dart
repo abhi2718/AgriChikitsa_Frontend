@@ -26,50 +26,53 @@ class CustomCarousel extends StatefulWidget {
 }
 
 class _CustomCarouselState extends State<CustomCarousel> {
-  final PageController _pageController = PageController(viewportFraction: 0.8);
-  int _currentPage = 0;
+  late final PageController _pageController;
   Timer? _autoScrollTimer;
+
+  static const int _initialPage = 1000;
+
   @override
   void initState() {
     super.initState();
-    _pageController.addListener(() {
-      setState(() {
-        _currentPage = _pageController.page!.round();
-      });
-    });
+
+    _pageController = PageController(
+      viewportFraction: 0.8,
+      initialPage: _initialPage,
+    );
 
     _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (_currentPage < widget.trendingPosts.length - 1) {
-        _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.ease);
-      }
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
     });
   }
 
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+
     return SizedBox(
       height: dimension["height"]! * 0.22,
       width: dimension['width']!,
       child: PageView.builder(
         controller: _pageController,
-        itemCount: widget.trendingPosts.length,
         itemBuilder: (context, index) {
+          final realIndex = index % widget.trendingPosts.length;
+          final post = widget.trendingPosts[realIndex];
+
           return InkWell(
-            onTap: () =>
-                Utils.model(context, TrendingPostDetails(post: widget.trendingPosts[index])),
+            onTap: () => Utils.model(context, TrendingPostDetails(post: post)),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 10,
-              ),
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
@@ -85,19 +88,16 @@ class _CustomCarouselState extends State<CustomCarousel> {
                       height: (dimension["height"]! * 0.22) * 0.6,
                       width: double.infinity,
                       child: CachedNetworkImage(
-                        imageUrl: widget.trendingPosts[index].imageUrl,
+                        imageUrl: post.imageUrl,
                         fit: BoxFit.fill,
-                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                        progressIndicatorBuilder: (_, __, ___) => Skeleton(
                           height: 100,
                           width: double.infinity,
                           radius: 0,
                         ),
-                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                        errorWidget: (_, __, ___) => const Icon(Icons.error),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 15,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -107,28 +107,23 @@ class _CustomCarouselState extends State<CustomCarousel> {
                         Flexible(
                           child: Text(
                             AppLocalization.of(context).locale.toString() == "en"
-                                ? widget.trendingPosts[index].title
-                                : widget.trendingPosts[index].hindiTitle,
+                                ? post.title
+                                : post.hindiTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                overflow: TextOverflow.ellipsis),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            Text(widget.trendingPosts[index].likesCount.toString())
+                            const Icon(Icons.favorite, color: Colors.red),
+                            const SizedBox(width: 4),
+                            Text(post.likesCount.toString()),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),

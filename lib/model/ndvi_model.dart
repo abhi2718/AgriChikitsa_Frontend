@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 class NDVIResponse {
@@ -15,6 +13,8 @@ class NDVIResponse {
   final Color statusColor;
   final String currentStagingEn;
   final String currentStagingHi;
+  final String daysEn;
+  final String daysHi;
 
   NDVIResponse({
     required this.messageHi,
@@ -28,23 +28,26 @@ class NDVIResponse {
     required this.statusCode,
     required this.currentStagingEn,
     required this.currentStagingHi,
+    required this.daysEn,
+    required this.daysHi,
   }) : statusColor = _getStatusColor(statusCode);
 
   factory NDVIResponse.fromJson(Map<String, dynamic>? json, int? statusCode) {
     if (json == null || statusCode == null) {
       return NDVIResponse(
-        messageHi: 'कोई डेटा मौजूद नहीं।',
-        messageEn: 'No data available',
-        advisoryEn: 'कोई डेटा मौजूद नहीं।',
-        advisoryHi: 'No data available',
-        audioEn: "",
-        audioHi: "",
-        ndviHistory: [],
-        totalRecords: 0,
-        statusCode: 0,
-        currentStagingEn: "Not Available",
-        currentStagingHi: "उपलब्ध नहीं",
-      );
+          messageHi: 'कोई डेटा मौजूद नहीं।',
+          messageEn: 'No data available',
+          advisoryEn: 'कोई डेटा मौजूद नहीं।',
+          advisoryHi: 'No data available',
+          audioEn: "",
+          audioHi: "",
+          ndviHistory: [],
+          totalRecords: 0,
+          statusCode: 0,
+          currentStagingEn: "Not Available",
+          currentStagingHi: "उपलब्ध नहीं",
+          daysEn: "",
+          daysHi: "");
     }
     return NDVIResponse(
       messageHi: json['message_hi'] ?? 'कोई डेटा मौजूद नहीं।',
@@ -61,6 +64,8 @@ class NDVIResponse {
       statusCode: statusCode,
       currentStagingEn: json["currentCropStage_en"] ?? "N/A",
       currentStagingHi: json["currentCropStage_hi"] ?? "N/A",
+      daysEn: json["days_en"] ?? "",
+      daysHi: json["days_hi"] ?? "",
     );
   }
 

@@ -775,18 +775,18 @@ class _FeedState extends State<Feed> {
     return VisibilityDetector(
         key: Key(videoUrl),
         onVisibilityChanged: (visibilityInfo) {
-          if (visibilityInfo.visibleFraction > 0.5) {
-            if (_currentVideoController != videoController) {
-              _currentVideoController?.pause();
-              _currentVideoController = videoController;
-              videoController.initialize().then((_) {
-                videoController.play();
-                homeTabViewModel.increaseViews(context, feedId);
-              });
-            }
-          } else if (_currentVideoController == videoController) {
-            videoController.pause();
-          }
+          // if (visibilityInfo.visibleFraction > 0.5) {
+          //   if (_currentVideoController != videoController) {
+          //     _currentVideoController?.pause();
+          //     _currentVideoController = videoController;
+          //     videoController.initialize().then((_) {
+          //       videoController.play();
+          //       homeTabViewModel.increaseViews(context, feedId);
+          //     });
+          //   }
+          // } else if (_currentVideoController == videoController) {
+          //   videoController.pause();
+          // }
         },
         child: AspectRatio(
           aspectRatio: 16 / 9,
@@ -812,12 +812,12 @@ class _FeedState extends State<Feed> {
     return VisibilityDetector(
       key: Key(videoUrl),
       onVisibilityChanged: (visibilityInfo) {
-        if (visibilityInfo.visibleFraction > 0.5) {
-          youtubeController.play();
-          homeTabViewModel.increaseViews(context, feedId);
-        } else {
-          youtubeController.pause();
-        }
+        // if (visibilityInfo.visibleFraction > 0.5) {
+        //   youtubeController.play();
+        //   homeTabViewModel.increaseViews(context, feedId);
+        // } else {
+        //   youtubeController.pause();
+        // }
       },
       child: YoutubePlayer(
         controller: youtubeController,

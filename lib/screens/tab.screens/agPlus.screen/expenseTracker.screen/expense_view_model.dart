@@ -18,15 +18,18 @@ class ExpenseViewModel with ChangeNotifier {
   bool _expenseLoader = false;
   bool _incomeLoader = false;
   bool _listLoader = false;
+  bool _finalSubmitLoader = false;
 
   bool get expenseLoader => _expenseLoader;
   bool get incomeLoader => _incomeLoader;
   bool get listLoader => _listLoader;
+  bool get finalSubmitLoader => _finalSubmitLoader;
 
   void _setLoader(String type, bool value) {
     if (type == 'expense') _expenseLoader = value;
     if (type == 'income') _incomeLoader = value;
     if (type == 'list') _listLoader = value;
+    if (type == 'finalSubmit') _finalSubmitLoader = value;
     notifyListeners();
   }
 
@@ -212,7 +215,6 @@ class ExpenseViewModel with ChangeNotifier {
 
     // notes are optional → trim
     final notes = _incomeNotes == null ? null : _incomeNotes!.trim();
-
     return IncomeModel(
       recordId: "",
       yieldAmount: _yieldAmount!,
@@ -464,6 +466,59 @@ class ExpenseViewModel with ChangeNotifier {
           context,
         );
       }
+    }
+  }
+
+  Future<bool> finalSubmitKamai(BuildContext context, String recordId) async {
+    try {
+      _setLoader("finalSubmit", true);
+
+      /// 1️⃣ VERIFY SUBMISSION
+      final verifyRes = await _repo.verifySubmission(recordId);
+
+      if ((verifyRes == null || verifyRes["success"] != true) && context.mounted) {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          verifyRes?["message"] ?? "Verification failed",
+          context,
+        );
+        return false;
+      }
+
+      final payload = {
+        "confirmed": true,
+      };
+
+      final submitRes = await _repo.finalSubmit(recordId, payload);
+
+      if (submitRes != null && submitRes["success"] == true) {
+        /// update local kamai state so UI hides buttons instantly
+        if (kamai != null) {
+          kamai = kamai!.copyWith(isFinalSubmitted: true);
+          notifyListeners();
+        }
+        return true;
+      } else {
+        if (context.mounted && kDebugMode) {
+          Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            submitRes?["message"] ?? "Final submission failed",
+            context,
+          );
+        }
+        return false;
+      }
+    } catch (e) {
+      if (context.mounted && kDebugMode) {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          e.toString(),
+          context,
+        );
+      }
+      return false;
+    } finally {
+      _setLoader("finalSubmit", false);
     }
   }
 
