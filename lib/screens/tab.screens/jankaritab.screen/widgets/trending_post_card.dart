@@ -253,9 +253,10 @@ class TrendingPostDetails extends HookWidget {
                           InkWell(
                               onTap: () async {
                                 final xfile = await useViewModel.shareFiles(post.imageUrl);
-                                await Share.shareXFiles([xfile],
+                                await SharePlus.instance.share(ShareParams(
                                     text:
-                                        "${post.hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${post.id}");
+                                        "${post.hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${post.id}",
+                                    files: [xfile]));
                               },
                               child: const SizedBox(
                                   height: 40, width: 40, child: Icon(Remix.share_line))),

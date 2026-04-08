@@ -96,7 +96,7 @@ class ProfileViewModel with ChangeNotifier {
 
   void openPrivacyPolicy(BuildContext context) {
     try {
-      final Uri toLaunch = Uri(scheme: 'https', host: 'agrichikitsa.org', path: '/privicyPolicy');
+      final Uri toLaunch = Uri(scheme: 'https', host: 'agrichikitsa.org', path: '/privacy-policy');
       Utils.launchInWebViewWithoutJavaScript(toLaunch);
     } catch (error) {
       if (kDebugMode) {

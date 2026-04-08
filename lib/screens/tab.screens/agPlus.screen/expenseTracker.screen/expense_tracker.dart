@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/expense_income_model.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_income_list_screen.dart';
@@ -7,11 +8,9 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.scree
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_button.dart';
 import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/utils/utils.dart';
-import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseIncomeTracker extends HookWidget {
@@ -24,12 +23,13 @@ class ExpenseIncomeTracker extends HookWidget {
     final userId = authService.userInfo["user"]["_id"];
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!selectedPlot.kharchaKamaiRecord) {
+        if (selectedPlot.kharchaKamaiRecord == null) {
           useViewModel.createRecord(
               context, selectedPlot, userId, selectedPlot.id, selectedPlot.cropHistoryId!);
         } else {
           useViewModel.fetchExpenseIncome(context, selectedPlot.id, selectedPlot.cropHistoryId!);
         }
+        useViewModel.getProfitBreakdownByField(context, selectedPlot.id);
       });
       return null;
     }, []);
@@ -58,189 +58,68 @@ class ExpenseIncomeTracker extends HookWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            FieldInfoCard(selectedPlot: selectedPlot),
-            CropInfoCard(selectedPlot: selectedPlot),
-            ActionButtonsCard(plot: selectedPlot)
+            ActionButtonsCard(plot: selectedPlot),
+            Consumer<ExpenseViewModel>(
+              builder: (_, vm, __) {
+                if (vm.profitLoader) {
+                  return SizedBox();
+                  //Can be used later
+                  // return Container(
+                  //   height: 340,
+                  //   width: double.infinity,
+                  //   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  //   padding: const EdgeInsets.all(16),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white,
+                  //     borderRadius: BorderRadius.circular(20),
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.black.withOpacity(0.25),
+                  //         blurRadius: 12,
+                  //         offset: const Offset(4, 8),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: const Center(
+                  //     child: SizedBox(
+                  //       height: 30,
+                  //       width: 30,
+                  //       child: CircularProgressIndicator(
+                  //         color: AppColor.extraDark,
+                  //         strokeWidth: 3,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
+                }
+
+                if (vm.cropProfits.isEmpty) {
+                  return const SizedBox();
+                }
+
+                return CropProfitChart(
+                  crops: vm.cropProfits,
+                  currentPage: vm.currentPage,
+                  totalPages: vm.totalPages,
+                  onNext: vm.currentPage < vm.totalPages
+                      ? () => vm.getProfitBreakdownByField(
+                            context,
+                            selectedPlot.id,
+                            page: vm.currentPage + 1,
+                          )
+                      : null,
+                  onPrev: vm.currentPage > 1
+                      ? () => vm.getProfitBreakdownByField(
+                            context,
+                            selectedPlot.id,
+                            page: vm.currentPage - 1,
+                          )
+                      : null,
+                );
+              },
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class FieldInfoCard extends StatelessWidget {
-  final Plots selectedPlot;
-
-  const FieldInfoCard({super.key, required this.selectedPlot});
-
-  @override
-  Widget build(BuildContext context) {
-    final dimension = Utils.getDimensions(context, true);
-    return Container(
-      margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-      height: dimension['height']! * 0.21,
-      width: dimension['width']!,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: CachedNetworkImage(
-              imageUrl:
-                  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-              fit: BoxFit.fill,
-              placeholder: (context, url) => Skeleton(
-                height: dimension['height']! * 0.21,
-                width: dimension['width']!,
-                radius: 12,
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(12),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(28.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  selectedPlot.fieldName,
-                  style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500, fontSize: 18, color: AppColor.whiteColor),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppLocalization.of(context).getTranslatedValue("enterSoilType").toString(),
-                      style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 13,
-                          color: const Color(0xffFFDE41)),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      selectedPlot.soilType,
-                      style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.w500, fontSize: 13, color: AppColor.whiteColor),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CropInfoCard extends StatelessWidget {
-  final Plots selectedPlot;
-
-  const CropInfoCard({super.key, required this.selectedPlot});
-
-  @override
-  Widget build(BuildContext context) {
-    final dimension = Utils.getDimensions(context, true);
-    return Container(
-      margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-      height: dimension['height']! * 0.21,
-      width: dimension['width']!,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: CachedNetworkImage(
-              imageUrl: selectedPlot.cropImage ??
-                  "https://images.unsplash.com/photo-1593738226658-f3e01177c3f0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Skeleton(
-                height: dimension['height']! * 0.21,
-                width: dimension['width']!,
-                radius: 12,
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(12),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(28.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalization.of(context).locale.toString() == "en"
-                      ? selectedPlot.cropName
-                      : selectedPlot.cropNameHi,
-                  style: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.w500, fontSize: 28, color: AppColor.whiteColor),
-                ),
-                Text(
-                  "${AppLocalization.of(context).getTranslatedValue("area").toString()} : ${selectedPlot.area}",
-                  style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500, fontSize: 18, color: AppColor.whiteColor),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      AppLocalization.of(context).getTranslatedValue("dateOfPlantation").toString(),
-                      style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 13,
-                          color: const Color(0xffFFDE41)),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      selectedPlot.sowingDate ??
-                          AppLocalization.of(context)
-                              .getTranslatedValue("notPlantedYet")
-                              .toString(),
-                      style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.w500, fontSize: 12, color: AppColor.whiteColor),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -263,6 +142,24 @@ class ActionButtonsCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  builder: (_) => ExpenseIncomeListScreen(
+                    selectedPlot: plot,
+                  ),
+                ),
+              );
+            },
+            child: GradientButton(
+              height: dimension["height"]! * 0.08,
+              width: dimension["width"]!,
+              title: AppLocalization.of(context).getTranslatedValue("addExpenseBtn").toString(),
+            ),
+          ),
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
                   builder: (_) => PlotHistoryScreen(
                     selectedPlot: plot,
                   ),
@@ -275,22 +172,205 @@ class ActionButtonsCard extends StatelessWidget {
               title: AppLocalization.of(context).getTranslatedValue("oldCropsBtn").toString(),
             ),
           ),
-          const SizedBox(height: 8),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ExpenseIncomeListScreen(
-                    selectedPlot: plot,
+        ],
+      ),
+    );
+  }
+}
+
+class CropProfitChart extends StatelessWidget {
+  final List<CropProfitModel> crops;
+  final int currentPage;
+  final int totalPages;
+  final VoidCallback? onNext;
+  final VoidCallback? onPrev;
+
+  const CropProfitChart({
+    super.key,
+    required this.crops,
+    required this.currentPage,
+    required this.totalPages,
+    this.onNext,
+    this.onPrev,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    double maxY = 0;
+    double minY = 0;
+
+    for (final crop in crops) {
+      if (crop.netProfit > maxY) maxY = crop.netProfit;
+      if (crop.netProfit < minY) minY = crop.netProfit;
+    }
+
+    final roundedMax = (maxY / 1000).ceil() * 1000;
+    final roundedMin = (minY / 1000).floor() * 1000;
+
+    return Container(
+      height: 340,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 12,
+            offset: const Offset(4, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          /// ───── Header with Navigation ─────
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppLocalization.of(context).getTranslatedValue("cropWiseProfitTitle").toString(),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: onPrev,
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 18,
+                      color: onPrev == null ? Colors.grey : Colors.black,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: onNext,
+                    icon: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 18,
+                      color: onNext == null ? Colors.grey : Colors.black,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          /// ───── Chart ─────
+          Expanded(
+            child: BarChart(
+              BarChartData(
+                groupsSpace: 16,
+                minY: roundedMin.toDouble(),
+                maxY: roundedMax.toDouble(),
+                baselineY: 0,
+                gridData: const FlGridData(show: false),
+                borderData: FlBorderData(
+                  show: true,
+                  border: const Border(
+                    left: BorderSide(color: AppColor.extraDark),
+                    bottom: BorderSide(color: AppColor.extraDark),
                   ),
                 ),
-              );
-            },
-            child: GradientButton(
-              height: dimension["height"]! * 0.08,
-              width: dimension["width"]!,
-              title: AppLocalization.of(context).getTranslatedValue("addExpenseBtn").toString(),
+
+                /// ───── Tooltip ─────
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (group) => Colors.black87,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final crop = crops[group.x.toInt()];
+                      return BarTooltipItem(
+                        "${crop.cropNameHi ?? crop.cropName}\n₹${crop.netProfit.toStringAsFixed(0)}",
+                        const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                /// ───── Titles ─────
+                titlesData: FlTitlesData(
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+
+                  /// Left Axis
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 45,
+                      interval: (roundedMax - roundedMin) / 4,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          "₹${value.toInt()}",
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  /// Bottom Axis (Crop Image)
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        if (value.toInt() >= crops.length) {
+                          return const SizedBox();
+                        }
+
+                        final crop = crops[value.toInt()];
+
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.network(
+                              crop.cropImage,
+                              width: 20,
+                              height: 20,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
+                /// ───── Bars ─────
+                barGroups: List.generate(crops.length, (index) {
+                  final profit = crops[index].netProfit;
+
+                  final isPositive = profit >= 0;
+
+                  return BarChartGroupData(
+                    x: index,
+                    barRods: [
+                      BarChartRodData(
+                        toY: profit.toDouble(),
+                        width: 18,
+                        borderRadius: BorderRadius.circular(8),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: isPositive
+                              ? [Colors.green.shade400, Colors.green.shade700]
+                              : [Colors.red.shade400, Colors.red.shade700],
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ),
             ),
           ),
         ],

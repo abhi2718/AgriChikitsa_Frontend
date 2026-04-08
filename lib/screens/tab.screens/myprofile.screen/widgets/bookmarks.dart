@@ -386,7 +386,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                                 "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                           }
                         }
-                        await Share.shareXFiles([xfile], text: text);
+                        await SharePlus.instance.share(ShareParams(files: [xfile], text: text));
                       } else {
                         if (widget.feed.containsKey("repostedFrom")) {
                           text =
@@ -400,9 +400,11 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                                 "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                           }
                         }
-                        Share.share(text);
+                        SharePlus.instance.share(ShareParams(text: text));
                       }
-                      Navigator.pop(context);
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     },
                     child: const Icon(Icons.reply_all)),
               ],

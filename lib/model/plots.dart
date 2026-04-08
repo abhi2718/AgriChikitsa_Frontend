@@ -19,8 +19,10 @@ class Plots {
   String? ndviId;
   String? currentStageId;
   bool isHarvesting;
-  bool kharchaKamaiRecord;
+  dynamic kharchaKamaiRecord;
   String? cropHistoryId;
+  bool? isCropCycleComplete;
+  bool isYieldAdded;
 
   Plots(
       {this.id = "1",
@@ -43,12 +45,14 @@ class Plots {
       this.ndviId,
       this.currentStageId,
       this.isHarvesting = false,
-      this.kharchaKamaiRecord = false,
-      this.cropHistoryId});
+      this.kharchaKamaiRecord,
+      this.cropHistoryId,
+      this.isCropCycleComplete,
+      this.isYieldAdded = false});
 
   factory Plots.fromJson(Map<String, dynamic> json) {
     return Plots(
-        plotImage: json['cropImage'],
+        plotImage: json['fieldImage'],
         cropImage: json['crop']?['image'],
         cropId: json['crop']?['_id'],
         cropName: json["crop"] != null ? json['crop']['name'] : "N/A",
@@ -56,8 +60,8 @@ class Plots {
         area: json['area'] ?? "N/A",
         latitude: json['cordinates']?['latitude'],
         longitude: json['cordinates']?['longitude'],
-        fieldName: json['feildName'] ?? '',
-        fieldNo: json['feildNo']?.toString() ?? "1",
+        fieldName: json['fieldName'] ?? '',
+        fieldNo: json['fieldNo']?.toString() ?? "1",
         soilType: json['soilType'] ?? '',
         sowingDate: json['sowingDate'],
         sowingSeason: json['sowingSeason'] ?? '',
@@ -67,7 +71,9 @@ class Plots {
         currentStageId: json["currentCropStage"]?["_id"] ?? "",
         ndviId: json["ndvi_ref"],
         isHarvesting: json["isHarvesting"] ?? false,
-        kharchaKamaiRecord: json["kharchaKamaiRecord"] ?? false,
+        isCropCycleComplete: json["isCropCycleCompleted"] ?? false,
+        isYieldAdded: json["isYieldAdded"] ?? false,
+        kharchaKamaiRecord: json["kharchaKamaiRecord"],
         cropHistoryId: json["activeCropHistoryId"] ?? "");
   }
 }

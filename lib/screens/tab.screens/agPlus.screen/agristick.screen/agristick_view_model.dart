@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/widgets/activateAgristickStatusScreen.dart';
 import 'package:agriChikitsa/widgets/scanner/qr_scanner_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:intl/intl.dart';
 

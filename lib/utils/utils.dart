@@ -212,8 +212,6 @@ class Utils {
     try {
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: imagePath,
-        maxHeight: (dimension['width']! - 16).toInt(),
-        maxWidth: (dimension['width']! - 16).toInt(),
         aspectRatio:
             CropAspectRatio(ratioX: dimension['width']! - 16, ratioY: dimension['width']! - 16),
         uiSettings: [

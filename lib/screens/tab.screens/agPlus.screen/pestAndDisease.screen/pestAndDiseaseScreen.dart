@@ -452,8 +452,11 @@ class AllPestsDiseasesScreen extends HookWidget {
                     (selectedType == "disease" && provider.pestDiseaseData.diseases.isEmpty)
                 ? Center(
                     child: Text(
-                    AppLocalization.of(context).getTranslatedValue("noDataFound").toString(),
+                    AppLocalization.of(context)
+                        .getTranslatedValue("${selectedType}EmptyMessage")
+                        .toString(),
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
+                    textAlign: TextAlign.center,
                   ))
                 : Padding(
                     padding: const EdgeInsets.all(12.0),

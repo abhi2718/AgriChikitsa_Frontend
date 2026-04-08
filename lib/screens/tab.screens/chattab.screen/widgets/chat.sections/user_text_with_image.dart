@@ -11,7 +11,6 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:developer';
 import 'package:jumping_dot/jumping_dot.dart';
 
 class UserMessageWithYesNo extends StatelessWidget {

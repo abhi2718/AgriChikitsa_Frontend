@@ -96,76 +96,185 @@ class NearbyMandisScreen extends HookWidget {
                   itemBuilder: (context, index) {
                     final mandi = provider.nearbyMandis[index];
 
-                    return Card(
-                      color: AppColor.whiteColor,
-                      margin: const EdgeInsets.only(bottom: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 14),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColor.lightColor,
+                            AppColor.whiteColor,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColor.extraDark.withOpacity(0.12),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: AppColor.lightColor,
+                          width: 1,
+                        ),
                       ),
-                      elevation: 3,
                       child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Stack(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            /// Top Row: Market + Distance Badge
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                /// Commodity
-                                Text(
-                                  mandi.market,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.pin_drop,
+                                /// Market Name
+                                Expanded(
+                                  child: Text(
+                                    mandi.market,
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700,
                                       color: AppColor.extraDark,
                                     ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text(
-                                      "${mandi.distance.toString()} km",
-                                      style: TextStyle(fontWeight: FontWeight.w500),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    _priceText(
-                                        AppLocalization.of(context)
-                                            .getTranslatedValue("minPrice")
-                                            .toString(),
-                                        mandi.minPrice),
-                                    const SizedBox(width: 16),
-                                    _priceText(
-                                        AppLocalization.of(context)
-                                            .getTranslatedValue("maxPrice")
-                                            .toString(),
-                                        mandi.maxPrice),
-                                  ],
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
 
-                                const SizedBox(height: 12),
+                                const SizedBox(width: 8),
 
-                                /// Arrival date
-                                Text(
-                                  "${AppLocalization.of(context).getTranslatedValue("arrival").toString()}: ${_formatDate(mandi.arrivalDate)}",
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.w500),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                /// Distance Badge
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColor.extraDark,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        "${mandi.distance} km",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            /// Price Row
+                            Row(
+                              children: [
+                                /// Min Price Card
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: AppColor.lightColor,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("minPrice")
+                                              .toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: AppColor.midBlackColor,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "₹${mandi.minPrice}",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColor.errorColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(width: 12),
+
+                                /// Max Price Card
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.extraDark,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          AppLocalization.of(context)
+                                              .getTranslatedValue("maxPrice")
+                                              .toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "₹${mandi.maxPrice}",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            /// Arrival Date Chip
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColor.lightColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                "${AppLocalization.of(context).getTranslatedValue("arrival")}: ${_formatDate(mandi.arrivalDate)}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColor.extraDark,
+                                ),
+                              ),
                             ),
                           ],
                         ),

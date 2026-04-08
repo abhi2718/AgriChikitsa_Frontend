@@ -224,9 +224,10 @@ class JankariPost extends HookWidget {
                                         onTap: () async {
                                           final xfile = await provider.shareFiles(
                                               provider.jankariSubcategoryPostList[index].imageUrl);
-                                          await Share.shareXFiles([xfile],
+                                          await SharePlus.instance.share(ShareParams(
                                               text:
-                                                  "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}");
+                                                  "${provider.jankariSubcategoryPostList[index].hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${provider.jankariSubcategoryPostList[index].id}",
+                                              files: [xfile]));
                                         },
                                         child: const SizedBox(
                                             height: 40, width: 40, child: Icon(Remix.share_line))),

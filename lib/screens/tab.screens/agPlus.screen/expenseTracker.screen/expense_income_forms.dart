@@ -57,12 +57,18 @@ class AddExpenseForm extends HookWidget {
                 children: [
                   /// CATEGORY
                   DropdownButtonFormField<String>(
-                    value: vm.expenseCategory.isEmpty ? null : vm.expenseCategory,
-                    items: expenseCategoryMap.keys
+                    initialValue: vm.expenseCategory.isEmpty ? null : vm.expenseCategory,
+                    items: expenseCategories
                         .map(
-                          (key) => DropdownMenuItem(
-                            value: key,
-                            child: Text(getCategoryLabel(context, key)),
+                          (category) => DropdownMenuItem(
+                            value: category.key,
+                            child: Row(
+                              children: [
+                                Icon(category.icon, size: 18),
+                                const SizedBox(width: 8),
+                                Text(getCategoryLabel(context, category.key)),
+                              ],
+                            ),
                           ),
                         )
                         .toList(),
@@ -255,7 +261,7 @@ class AddIncomeForm extends HookWidget {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: vm.yieldUnit,
+                    initialValue: vm.yieldUnit,
                     items: const [
                       DropdownMenuItem(value: 'quintal', child: Text('Quintal')),
                       DropdownMenuItem(value: 'kg', child: Text('Kg')),
@@ -365,20 +371,78 @@ class AddIncomeForm extends HookWidget {
   }
 }
 
-const Map<String, String> expenseCategoryMap = {
-  'seeds': 'बीज',
-  'fertilisers': 'उर्वरक',
-  'pesticides': 'कीटनाशक',
-  'machinery': 'मशीनरी',
-  'labour': 'मजदूरी',
-  'irrigation': 'सिंचाई',
-  'electricity': 'बिजली',
-  'harvest': 'कटाई',
-  'other': 'अन्य',
-};
+const List<ExpenseCategoryData> expenseCategories = [
+  ExpenseCategoryData(
+    key: 'seeds',
+    englishLabel: 'Seeds / Nursery',
+    hindiLabel: 'बीज',
+    icon: Icons.grass,
+  ),
+  ExpenseCategoryData(
+    key: 'fertilisers',
+    englishLabel: 'Fertilisers',
+    hindiLabel: 'उर्वरक',
+    icon: Icons.spa,
+  ),
+  ExpenseCategoryData(
+    key: 'pesticides',
+    englishLabel: 'Pesticides',
+    hindiLabel: 'कीटनाशक',
+    icon: Icons.bug_report,
+  ),
+  ExpenseCategoryData(
+    key: 'machinery',
+    englishLabel: 'Machinery',
+    hindiLabel: 'मशीनरी',
+    icon: Icons.agriculture,
+  ),
+  ExpenseCategoryData(
+    key: 'labour',
+    englishLabel: 'Labour',
+    hindiLabel: 'मजदूरी',
+    icon: Icons.people,
+  ),
+  ExpenseCategoryData(
+    key: 'irrigation',
+    englishLabel: 'Irrigation',
+    hindiLabel: 'सिंचाई',
+    icon: Icons.water_drop,
+  ),
+  ExpenseCategoryData(
+    key: 'electricity',
+    englishLabel: 'Electricity',
+    hindiLabel: 'बिजली',
+    icon: Icons.electric_bolt,
+  ),
+  ExpenseCategoryData(
+    key: 'harvest',
+    englishLabel: 'Harvest',
+    hindiLabel: 'कटाई',
+    icon: Icons.content_cut,
+  ),
+  ExpenseCategoryData(
+    key: 'other',
+    englishLabel: 'Other',
+    hindiLabel: 'अन्य',
+    icon: Icons.category,
+  ),
+];
+
+ExpenseCategoryData getExpenseCategory(String key) {
+  return expenseCategories.firstWhere(
+    (element) => element.key == key,
+    orElse: () => expenseCategories.last,
+  );
+}
+
 String getCategoryLabel(BuildContext context, String key) {
-  final isHindi = Localizations.localeOf(context).languageCode == 'hi';
-  return isHindi ? expenseCategoryMap[key]! : key;
+  final isHindi = AppLocalization.of(context).locale.toString() == 'hi';
+  final category = getExpenseCategory(key);
+  return isHindi ? category.hindiLabel : category.englishLabel;
+}
+
+IconData getCategoryIcon(String key) {
+  return getExpenseCategory(key).icon;
 }
 
 InputDecoration greenOutlinedInput(String label) {

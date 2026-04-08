@@ -441,7 +441,8 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                                               "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                                         }
                                       }
-                                      await Share.shareXFiles([xfile], text: text);
+                                      await SharePlus.instance
+                                          .share(ShareParams(files: [xfile], text: text));
                                     } else if (widget.feed['mediaType'] == "video") {
                                       List<String> temp = widget.feed['videoUrl'].split('/');
                                       if (widget.feed.containsKey("repostedFrom")) {
@@ -456,7 +457,7 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                                               "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                                         }
                                       }
-                                      Share.share(text);
+                                      SharePlus.instance.share(ShareParams(text: text));
                                     } else {
                                       if (widget.feed.containsKey("repostedFrom")) {
                                         text =
@@ -470,7 +471,7 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                                               "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                                         }
                                       }
-                                      Share.share(text);
+                                      SharePlus.instance.share(ShareParams(text: text));
                                     }
                                     if (context.mounted) {
                                       Navigator.pop(context);

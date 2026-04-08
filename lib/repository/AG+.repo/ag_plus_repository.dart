@@ -180,8 +180,8 @@ class AGPlusRepository {
     }
   }
 
-  Future<dynamic> changeCrop(dynamic payload) async {
-    const url = AppUrl.changeCropEndPoint;
+  Future<dynamic> changeCrop(dynamic payload, String fieldId) async {
+    final url = "${AppUrl.changeCropEndPoint}/$fieldId";
     try {
       final response = await _apiServices.getPostApiResponse(url, payload);
       return response;
@@ -375,9 +375,9 @@ class AGPlusRepository {
   }
 
   //Post yield data from popup when crop harvest stage
-  Future<dynamic> postYieldDataFromPopup(String plotId, dynamic payload) async {
+  Future<dynamic> postYieldDataFromPopup(String cropHistoryId, dynamic payload) async {
     try {
-      final url = "${AppUrl.fieldEndpoint}/yield/$plotId";
+      final url = "${AppUrl.fieldEndpoint}/yield/$cropHistoryId";
       final response = await _apiServices.getPatchApiResponse(url, payload);
       return response;
     } catch (e) {

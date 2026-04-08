@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -257,9 +256,6 @@ class ChatTabViewModel with ChangeNotifier {
       if (cropImage2.isNotEmpty) "userImageAttachment": cropImage2,
       if (userImageAttachments.isNotEmpty) "userImageAttachments": userImageAttachments
     };
-    if (kDebugMode) {
-      log(payloadStructure.toString());
-    }
     await _chatTabRepository.postChatQuestion(payloadStructure);
   }
 

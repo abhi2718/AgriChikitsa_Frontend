@@ -1,4 +1,4 @@
-package com.freshnic.agriChikitsa
+package com.freshnic.agriChikitsa.app
 
 import io.flutter.embedding.android.FlutterActivity
 

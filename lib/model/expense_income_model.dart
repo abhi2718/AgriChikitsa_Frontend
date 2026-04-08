@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class KharchaKamaiModel {
   final String id;
   final String userId;
@@ -10,8 +12,8 @@ class KharchaKamaiModel {
   final List<IncomeModel> incomeRecords;
 
   final double totalYield;
-  final double totalIncome;
-  final double netProfit;
+  double totalIncome;
+  double netProfit;
   final double profitPerUnit;
 
   final String status;
@@ -68,6 +70,7 @@ class KharchaKamaiModel {
 
   KharchaKamaiModel copyWith({
     bool? isFinalSubmitted,
+    TotalExpenditures? totalExpenditures,
   }) {
     return KharchaKamaiModel(
       id: id,
@@ -75,7 +78,7 @@ class KharchaKamaiModel {
       fieldId: fieldId,
       cropHistoryId: cropHistoryId,
       expenditures: expenditures,
-      totalExpenditures: totalExpenditures,
+      totalExpenditures: totalExpenditures ?? this.totalExpenditures,
       incomeRecords: incomeRecords,
       totalYield: totalYield,
       totalIncome: totalIncome,
@@ -89,19 +92,25 @@ class KharchaKamaiModel {
 }
 
 class TotalExpenditures {
-  final double seedNursery;
-  final double fertilisers;
-  final double pesticides;
-  final double tractorMachinery;
-  final double labour;
-  final double other;
-  final double grandTotal;
+  double seeds;
+  double machinery;
+  double irrigation;
+  double electricity;
+  double harvest;
+  double fertilisers;
+  double pesticides;
+  double labour;
+  double other;
+  double grandTotal;
 
   TotalExpenditures({
-    required this.seedNursery,
+    required this.seeds,
+    required this.machinery,
+    required this.irrigation,
+    required this.electricity,
+    required this.harvest,
     required this.fertilisers,
     required this.pesticides,
-    required this.tractorMachinery,
     required this.labour,
     required this.other,
     required this.grandTotal,
@@ -109,10 +118,13 @@ class TotalExpenditures {
 
   factory TotalExpenditures.fromJson(Map<String, dynamic> json) {
     return TotalExpenditures(
-      seedNursery: (json['seedNursery'] ?? 0).toDouble(),
+      seeds: (json['seeds'] ?? 0).toDouble(),
+      machinery: (json['machinery'] ?? 0).toDouble(),
+      irrigation: (json['irrigation'] ?? 0).toDouble(),
+      electricity: (json['electricity'] ?? 0).toDouble(),
+      harvest: (json['harvest'] ?? 0).toDouble(),
       fertilisers: (json['fertilisers'] ?? 0).toDouble(),
       pesticides: (json['pesticides'] ?? 0).toDouble(),
-      tractorMachinery: (json['tractorMachinery'] ?? 0).toDouble(),
       labour: (json['labour'] ?? 0).toDouble(),
       other: (json['other'] ?? 0).toDouble(),
       grandTotal: (json['grandTotal'] ?? 0).toDouble(),
@@ -214,6 +226,76 @@ class IncomeModel {
       "totalIncome": totalIncome,
       "saleDate": saleDate.toIso8601String(),
       "notes": notes,
+    };
+  }
+}
+
+class ExpenseCategoryData {
+  final String key;
+  final String englishLabel;
+  final String hindiLabel;
+  final IconData icon;
+
+  const ExpenseCategoryData({
+    required this.key,
+    required this.englishLabel,
+    required this.hindiLabel,
+    required this.icon,
+  });
+}
+
+class CropProfitModel {
+  final String recordId;
+  final String cropHistoryId;
+  final String cropName;
+  final String? cropNameHi;
+  final String cropImage;
+  final String? cropVariety;
+  final String status;
+  final double totalIncome;
+  final double totalExpenditure;
+  final double netProfit;
+
+  CropProfitModel({
+    required this.recordId,
+    required this.cropHistoryId,
+    required this.cropName,
+    this.cropNameHi,
+    required this.cropImage,
+    this.cropVariety,
+    required this.status,
+    required this.totalIncome,
+    required this.totalExpenditure,
+    required this.netProfit,
+  });
+
+  factory CropProfitModel.fromJson(Map<String, dynamic> json) {
+    return CropProfitModel(
+      recordId: json['recordId'] ?? '',
+      cropHistoryId: json['cropHistoryId'] ?? '',
+      cropName: json['cropName'] ?? '',
+      cropNameHi: json['cropNameHi'],
+      cropImage: json['cropImage'] ?? '',
+      cropVariety: json['cropVariety'],
+      status: json['status'] ?? '',
+      totalIncome: (json['totalIncome'] ?? 0).toDouble(),
+      totalExpenditure: (json['totalExpenditure'] ?? 0).toDouble(),
+      netProfit: (json['netProfit'] ?? 0).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "recordId": recordId,
+      "cropHistoryId": cropHistoryId,
+      "cropName": cropName,
+      "cropNameHi": cropNameHi,
+      "cropImage": cropImage,
+      "cropVariety": cropVariety,
+      "status": status,
+      "totalIncome": totalIncome,
+      "totalExpenditure": totalExpenditure,
+      "netProfit": netProfit,
     };
   }
 }

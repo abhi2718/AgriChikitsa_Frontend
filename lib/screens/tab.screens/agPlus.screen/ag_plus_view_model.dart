@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/crop_model.dart';
 import 'package:agriChikitsa/model/mandi_field_model.dart';
@@ -97,6 +96,9 @@ class AGPlusViewModel with ChangeNotifier {
   List<NearbyMandi> nearbyMandis = [];
   bool isNearbyMandiDataLoading = false;
 
+  //Delete Field Loader
+  bool isFieldDeleting = false;
+
   bool isYieldDataProcessing = false;
   TextEditingController yieldController = TextEditingController();
   final List<YieldUnit> yieldUnits = [
@@ -163,6 +165,7 @@ class AGPlusViewModel with ChangeNotifier {
     isNearbyMandiDataLoading = false;
     isYieldDataProcessing = false;
     selectedYieldUnit = "kg";
+    isFieldDeleting = false;
   }
 
   void resetLoader() {
@@ -199,6 +202,7 @@ class AGPlusViewModel with ChangeNotifier {
     isNearbyMandiDataLoading = false;
     isYieldDataProcessing = false;
     yieldController.clear();
+    isFieldDeleting = false;
   }
 
   void disposeValues() {
@@ -225,12 +229,12 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   void setActiveState(BuildContext context, CategoryHome category, bool value) {
+    setCropListLoader(true);
     if (currentSelectedCategory == category.id) {
       return;
     }
     selectedCropId = "";
     currentSelectedCategory = category.id;
-    notifyListeners();
     getCropList(context);
   }
 
@@ -316,6 +320,11 @@ class AGPlusViewModel with ChangeNotifier {
 
   void setCheckLocationLoader(bool value) {
     checkLocationLoader = value;
+    notifyListeners();
+  }
+
+  void setDeleteLoader(bool value) {
+    isFieldDeleting = value;
     notifyListeners();
   }
 
@@ -410,14 +419,16 @@ class AGPlusViewModel with ChangeNotifier {
       setCropListLoader(false);
     } catch (error) {
       setCropListLoader(false);
-      Navigator.pop(context);
-      fieldStatus = false;
-      addPlotStatus(context);
-      if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
-            context);
+      if (context.mounted) {
+        Navigator.pop(context);
+        fieldStatus = false;
+        addPlotStatus(context);
+        if (kDebugMode) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
       }
     }
   }
@@ -524,8 +535,8 @@ class AGPlusViewModel with ChangeNotifier {
         }
       }
       final payload = {
-        "feildName": fieldName,
-        "cropImage": plotImagePath,
+        "fieldName": fieldName,
+        "fieldImage": plotImagePath,
         "cordinates": mapLocation,
         "soilType": soilType,
         if (!isBackPressed) "area": "$fieldSize $areaUnit",
@@ -541,8 +552,8 @@ class AGPlusViewModel with ChangeNotifier {
         Plots newPlot;
         if (!isBackPressed) {
           newPlot = Plots(
-              id: data['data']['_id'],
-              fieldNo: data['data']['feildNo'].toString(),
+              id: data['data']['fieldId'],
+              fieldNo: data['data']['fieldNo'].toString(),
               fieldName: fieldName,
               cropId: selectedCropId,
               cropName: selectedCrop.name,
@@ -556,10 +567,11 @@ class AGPlusViewModel with ChangeNotifier {
               soilType: soilType,
               sowingSeason: res != null ? res["season"] : null,
               sowingDate: sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
-              currentStageId: data['data']['currentStageId'] ?? "");
+              currentStageId: data['data']['currentCropStage'] ?? "",
+              cropHistoryId: data['data']['cropHistoryId'] ?? "");
         } else {
           newPlot = Plots(
-            id: data?['data']?['_id'] ?? "1",
+            id: data?['data']?['fieldId'] ?? "1",
             fieldNo: getFieldNumber(userPlotList).toString(),
             fieldName: fieldName,
             plotImage: plotImagePath,
@@ -604,18 +616,26 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   void deleteField(BuildContext context) async {
+    setDeleteLoader(true);
     try {
       await _agPlusRepository.deleteField(selectedPlot.id);
       final int selectedIndex = userPlotList.indexOf(selectedPlot);
-      if (selectedIndex != -1) {
+      if (selectedIndex != -1 && context.mounted) {
         userPlotList.removeAt(selectedIndex);
         selectedPlot = null;
         Navigator.pop(context);
         Navigator.pop(context);
       }
-      notifyListeners();
+      setDeleteLoader(false);
     } catch (error) {
-      if (kDebugMode) {
+      setDeleteLoader(false);
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("errorMessage").toString(),
+            context);
+      }
+      if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),
@@ -980,8 +1000,7 @@ class AGPlusViewModel with ChangeNotifier {
       }
       final payload = {
         'cropId': selectedChangeCrop!.id,
-        'cropImage': selectedChangeCrop!.backgroundImage,
-        'feildId': fieldId,
+        'fieldId': fieldId,
         "area": "$fieldSize $areaUnit",
         "sowingDate": sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
         "sowingSeason": res != null ? res["season"] : null,
@@ -990,7 +1009,7 @@ class AGPlusViewModel with ChangeNotifier {
       };
       dynamic data;
       if (!wasCropEmpty) {
-        data = await _agPlusRepository.changeCrop(payload);
+        data = await _agPlusRepository.changeCrop(payload, fieldId);
       } else {
         data = await _agPlusRepository.updateField(selectedPlot.id, payload);
       }
@@ -1003,7 +1022,8 @@ class AGPlusViewModel with ChangeNotifier {
       selectedPlot.ndviId = null;
       selectedPlot.sowingDate =
           sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null;
-      selectedPlot.currentStageId = data["currentStageId"] ?? "";
+      selectedPlot.currentStageId = data['data']["currentCropStage"] ?? "";
+      selectedPlot.cropHistoryId = data['data']["cropHistoryId"] ?? "";
       if (context.mounted) {
         Navigator.pop(context);
         Navigator.pop(context);
@@ -1303,7 +1323,8 @@ class AGPlusViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void postYieldDataFromPopup(BuildContext context, String plotId) async {
+  void postYieldDataFromPopup(BuildContext context, String cropHistoryId,
+      {bool isFromCropChangeCard = false}) async {
     setIsYieldDataLoader(true);
     try {
       final yieldValue = yieldController.text.trim();
@@ -1312,13 +1333,29 @@ class AGPlusViewModel with ChangeNotifier {
         return;
       }
       final payload = {"yieldAmount": yieldValue, "yieldUnit": selectedYieldUnit};
-      await _agPlusRepository.postYieldDataFromPopup(plotId, payload);
-      if (context.mounted) {
-        Navigator.pop(context);
+      await _agPlusRepository.postYieldDataFromPopup(cropHistoryId, payload);
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+        if (isFromCropChangeCard) {
+          Future.microtask(() {
+            if (context.mounted) {
+              fetchCropCategories(context);
+              Utils.model(
+                  context,
+                  CropSelection(
+                    isFromFieldScreen: true,
+                    fieldId: selectedPlot.id,
+                  ));
+            }
+          });
+        }
         yieldController.clear();
-      }
-      setSelectedYieldUnit("kg");
-      setIsYieldDataLoader(false);
+        selectedPlot.isHarvesting = true;
+        setSelectedYieldUnit("kg");
+        setIsYieldDataLoader(false);
+      });
     } catch (error) {
       setIsYieldDataLoader(false);
       if (kDebugMode && context.mounted) {

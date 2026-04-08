@@ -20,10 +20,24 @@ void takeAPhotoDialog(BuildContext context, dynamic dimension, AGPlusViewModel p
                 padding: const EdgeInsets.all(16.0),
                 height: dimension["height"]! * 0.50,
                 child: provider.fieldImageLoader
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                        color: AppColor.extraDark,
-                      ))
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Center(
+                              child: CircularProgressIndicator(
+                            color: AppColor.extraDark,
+                          )),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            AppLocalization.of(context)
+                                .getTranslatedValue("addFieldLoaderMessage")
+                                .toString(),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      )
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -57,11 +71,13 @@ void takeAPhotoDialog(BuildContext context, dynamic dimension, AGPlusViewModel p
                                 return;
                               }
                               provider.checkLocation(context).then((value) {
-                                if (provider.isLocationEnabled) {
+                                if (provider.isLocationEnabled && context.mounted) {
                                   provider.mapCurrentLocation(context);
                                 } else {
-                                  Navigator.pop(context);
-                                  takeLocationDialog(context, provider);
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                    takeLocationDialog(context, provider);
+                                  }
                                 }
                               });
                             },
