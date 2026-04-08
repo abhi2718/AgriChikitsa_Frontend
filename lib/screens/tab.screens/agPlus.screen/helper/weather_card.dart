@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:agriChikitsa/l10n/app_localizations.dart';
-
 import '../../../../model/plots.dart';
 import '../../../../res/color.dart';
 import '../../../../utils/utils.dart';

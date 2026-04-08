@@ -62,7 +62,6 @@ class _PlayerState extends State<Player> {
       _controller.addListener(_videoListener);
       _controllerInitialized = true;
     } catch (e) {
-      debugPrint("Controller initialization failed: $e");
       _controllerInitialized = false;
     }
   }

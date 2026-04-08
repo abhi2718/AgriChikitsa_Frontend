@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:agriChikitsa/l10n/app_localizations.dart';
@@ -61,7 +60,6 @@ class CreatePostModel with ChangeNotifier {
       imagePath = [];
     }
     currentSelectedCategory = feed.containsKey('categoryRef') ? feed['categoryRef'] : "";
-    log(imagePath.toString());
     // notifyListeners();
   }
 
@@ -197,6 +195,14 @@ class CreatePostModel with ChangeNotifier {
         );
       }
     }
+  }
+
+  static String formatBytes(int bytes, [int decimals = 2]) {
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB"];
+    int i = (bytes.bitLength - 1) ~/ 10;
+    double size = bytes / (1 << (i * 10));
+    return "${size.toStringAsFixed(decimals)} ${suffixes[i]}";
   }
 
   //For removing selected images

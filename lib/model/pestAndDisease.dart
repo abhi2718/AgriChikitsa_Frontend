@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class PestDiseaseData {
   final List<PestDiseaseObj> pests;
   final List<PestDiseaseObj> diseases;

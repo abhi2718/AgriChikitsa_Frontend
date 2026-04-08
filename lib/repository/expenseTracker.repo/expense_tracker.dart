@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../data/network/network_api_service.dart';
 import '../../res/app_url.dart';
 
@@ -109,6 +111,17 @@ class ExpenseTrackerRepository {
     try {
       final url = '${AppUrl.kharchaKamaiEnpoint}/$recordId/final-submit';
       final response = await _apiServices.getPostApiResponse(url, payload);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Profit breakdown for field
+  Future<dynamic> getProfitBreakdownByField(String fieldId, int page) async {
+    try {
+      final url = '${AppUrl.kharchaKamaiEnpoint}/feild/$fieldId/profit-breakdown?page=$page';
+      final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
       rethrow;

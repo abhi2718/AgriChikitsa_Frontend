@@ -219,7 +219,7 @@ class _FeedState extends State<Feed> {
                                       AppLocalization.of(context)
                                           .getTranslatedValue('deleteTitle')
                                           .toString(),
-                                      style: const TextStyle(color: AppColor.darkBlackColor),
+                                      style: const TextStyle(color: AppColor.errorColor),
                                     ),
                                   ),
                           ],
@@ -261,6 +261,7 @@ class _FeedState extends State<Feed> {
                             }
                             if (value == 'delete') {
                               showDialog(
+                                barrierDismissible: false,
                                 context: context,
                                 builder: (BuildContext dialogContext) {
                                   return myProfileViewModel.deleteLoader
@@ -304,7 +305,7 @@ class _FeedState extends State<Feed> {
                                                       .getTranslatedValue("yes")
                                                       .toString(),
                                                   style: const TextStyle(
-                                                      fontSize: 16, color: AppColor.extraDark)),
+                                                      fontSize: 16, color: AppColor.errorColor)),
                                               onPressed: () {
                                                 myProfileViewModel.postDelete(
                                                     context, widget.feed['_id'], useViewModel);
@@ -574,10 +575,10 @@ class _FeedState extends State<Feed> {
                                               .toString()),
                                           onTap: () async {
                                             String text = "";
-                                            if (widget.feed.containsKey("imgurl") &&
-                                                widget.feed['imgurl'].isNotEmpty) {
+                                            if (widget.feed.containsKey("imgurls") &&
+                                                widget.feed['imgurls'].isNotEmpty) {
                                               final xfile = await JankariViewModel()
-                                                  .shareFiles(widget.feed['imgurl']);
+                                                  .shareFiles(widget.feed['imgurls'][0]);
                                               if (widget.feed.containsKey("repostedFrom")) {
                                                 text =
                                                     "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
@@ -590,7 +591,8 @@ class _FeedState extends State<Feed> {
                                                       "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                                                 }
                                               }
-                                              await Share.shareXFiles([xfile], text: text);
+                                              await SharePlus.instance
+                                                  .share(ShareParams(text: text, files: [xfile]));
                                             } else if (widget.feed['mediaType'] == "video") {
                                               List<String> temp =
                                                   widget.feed['videoUrl'].split('/');
@@ -606,7 +608,8 @@ class _FeedState extends State<Feed> {
                                                       "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                                                 }
                                               }
-                                              Share.share(text);
+                                              await SharePlus.instance
+                                                  .share(ShareParams(text: text));
                                             } else {
                                               if (widget.feed.containsKey("repostedFrom")) {
                                                 text =
@@ -620,10 +623,8 @@ class _FeedState extends State<Feed> {
                                                       "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
                                                 }
                                               }
-                                              Share.share(text);
-                                            }
-                                            if (context.mounted) {
-                                              Navigator.pop(context);
+                                              await SharePlus.instance
+                                                  .share(ShareParams(text: text));
                                             }
                                           }),
                                     ],

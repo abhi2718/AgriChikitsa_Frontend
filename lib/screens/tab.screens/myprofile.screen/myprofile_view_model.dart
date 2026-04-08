@@ -115,13 +115,13 @@ class MyProfileViewModel with ChangeNotifier {
   void postDelete(BuildContext context, String feedId, HomeTabViewModel homeTabViewModel) async {
     setDeleteLoader(true);
     try {
-      await _myProfileTabRepository.deletePost(feedId);
       feedList.removeWhere((e) => e["_id"] == feedId);
       homeTabViewModel.removeUserDeletedPost(feedId);
       isAnyPostDeleted = true;
       if (context.mounted) {
         Navigator.pop(context);
       }
+      await _myProfileTabRepository.deletePost(feedId);
       setDeleteLoader(false);
     } catch (error) {
       setDeleteLoader(false);

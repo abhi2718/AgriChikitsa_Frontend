@@ -87,7 +87,7 @@ class JankariTagsScreen extends StatelessWidget {
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 6.0,
                                   mainAxisSpacing: 6.0,
-                                  childAspectRatio: ((dimension['width']! - 10) / 2) / 180,
+                                  childAspectRatio: ((dimension['width']! - 10) / 2) / 200,
                                 ),
                                 itemBuilder: (BuildContext context, int count) {
                                   final subCategory =
@@ -143,13 +143,25 @@ class JankariTagsScreen extends StatelessWidget {
                                             ),
                                           ),
                                           const SizedBox(height: 8),
-                                          Container(
-                                            alignment: Alignment.center,
-                                            child: subCategory["name_hi"].length > 8
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(horizontal: 20),
-                                                    child: BaseText(
+                                          Expanded(
+                                            child: Center(
+                                              child: subCategory["name_hi"].length > 8
+                                                  ? Padding(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 20),
+                                                      child: BaseText(
+                                                        title:
+                                                            profileViewModel.locale["language"] ==
+                                                                    "en"
+                                                                ? subCategory["name"]
+                                                                : subCategory["name_hi"],
+                                                        style: const TextStyle(
+                                                            color: AppColor.darkBlackColor,
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w600),
+                                                      ),
+                                                    )
+                                                  : BaseText(
                                                       title: profileViewModel.locale["language"] ==
                                                               "en"
                                                           ? subCategory["name"]
@@ -159,17 +171,7 @@ class JankariTagsScreen extends StatelessWidget {
                                                           fontSize: 14,
                                                           fontWeight: FontWeight.w600),
                                                     ),
-                                                  )
-                                                : BaseText(
-                                                    title:
-                                                        profileViewModel.locale["language"] == "en"
-                                                            ? subCategory["name"]
-                                                            : subCategory["name_hi"],
-                                                    style: const TextStyle(
-                                                        color: AppColor.darkBlackColor,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w600),
-                                                  ),
+                                            ),
                                           ),
                                         ],
                                       ),

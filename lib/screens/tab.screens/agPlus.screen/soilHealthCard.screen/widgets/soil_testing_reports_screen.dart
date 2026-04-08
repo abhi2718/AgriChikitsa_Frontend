@@ -84,10 +84,13 @@ class SoilTestingReportScreen extends HookWidget {
     final String cropName = report['cropName'];
     final String sampleDate = report['sampleDate'];
     final DateTime formattedDate = DateTime.parse(sampleDate);
-    final String formattedDateString = DateFormat('dd/MM/yy h:mm a').format(formattedDate);
+    final String formattedDateString =
+        DateFormat('dd/MM/yy h:mm a').format(formattedDate.toLocal());
     return InkWell(
-      onTap: () =>
-          {launchUrl(Uri.parse("https://agrichikitsa.org/public/soil-report/${report['_id']}"))},
+      onTap: () => {
+        if (status == 'TESTED')
+          launchUrl(Uri.parse("https://agrichikitsa.org/public/soil-report/${report['_id']}"))
+      },
       child: Container(
         height: 80,
         padding: const EdgeInsets.symmetric(horizontal: 16),

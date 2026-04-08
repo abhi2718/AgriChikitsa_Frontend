@@ -40,6 +40,11 @@ class ExpenseViewModel with ChangeNotifier {
   final List<ExpenseModel> _expenses = [];
   final List<IncomeModel> _incomes = [];
 
+  List<CropProfitModel> cropProfits = [];
+  int currentPage = 1;
+  int totalPages = 1;
+  bool profitLoader = false;
+
   List<ExpenseModel> get expenses => _expenses;
   List<IncomeModel> get incomes => _incomes;
 
@@ -308,17 +313,93 @@ class ExpenseViewModel with ChangeNotifier {
     String recordId,
     ExpenseModel expense,
   ) async {
-    // optimistic update
+    // optimistic expense list update
     _expenses.insert(0, expense);
+
+    // ----------------------------
+    // OPTIMISTIC TOTAL UPDATE
+    // ----------------------------
+    if (kamai != null) {
+      final oldTotals = kamai!.totalExpenditures;
+      final amount = expense.amount;
+
+      double seeds = oldTotals.seeds;
+      double machinery = oldTotals.machinery;
+      double irrigation = oldTotals.irrigation;
+      double electricity = oldTotals.electricity;
+      double harvest = oldTotals.harvest;
+      double fertilisers = oldTotals.fertilisers;
+      double pesticides = oldTotals.pesticides;
+      double labour = oldTotals.labour;
+      double other = oldTotals.other;
+
+      switch (expense.category) {
+        case 'seeds':
+          seeds += amount;
+          break;
+        case 'machinery':
+          machinery += amount;
+          break;
+        case 'irrigation':
+          irrigation += amount;
+          break;
+        case 'electricity':
+          electricity += amount;
+          break;
+        case 'harvest':
+          harvest += amount;
+          break;
+        case 'fertilisers':
+          fertilisers += amount;
+          break;
+        case 'pesticides':
+          pesticides += amount;
+          break;
+        case 'labour':
+          labour += amount;
+          break;
+        default:
+          other += amount;
+      }
+
+      final newGrandTotal = seeds +
+          machinery +
+          irrigation +
+          electricity +
+          harvest +
+          fertilisers +
+          pesticides +
+          labour +
+          other;
+
+      final newTotals = TotalExpenditures(
+        seeds: seeds,
+        machinery: machinery,
+        irrigation: irrigation,
+        electricity: electricity,
+        harvest: harvest,
+        fertilisers: fertilisers,
+        pesticides: pesticides,
+        labour: labour,
+        other: other,
+        grandTotal: newGrandTotal,
+      );
+
+      kamai = kamai!.copyWith(
+        totalExpenditures: newTotals,
+      );
+    }
+
     notifyListeners();
 
     _setLoader('expense', true);
+
     try {
       await _repo.addExpenditure(recordId, expense.toPayload());
     } catch (error) {
-      // rollback if needed
       _expenses.remove(expense);
       notifyListeners();
+
       if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage(
           AppLocalization.of(context).getTranslatedValue("alert").toString(),
@@ -367,13 +448,25 @@ class ExpenseViewModel with ChangeNotifier {
     BuildContext context,
     ExpenseModel expense,
   ) async {
-    _expenses.remove(expense);
+    final index = _expenses.indexOf(expense);
+
+    if (index == -1) return;
+
+    /// remove immediately (CRITICAL FIX)
+    _expenses.removeAt(index);
+
+    /// update totals locally
+    _subtractExpenseFromTotals(expense);
+
     notifyListeners();
 
     try {
       await _repo.deleteExpense(expense.recordId, expense.id!);
     } catch (error) {
-      _expenses.add(expense);
+      _expenses.insert(index, expense);
+
+      _addExpenseToTotals(expense);
+
       notifyListeners();
       if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage(
@@ -395,8 +488,8 @@ class ExpenseViewModel with ChangeNotifier {
     IncomeModel income,
   ) async {
     _incomes.insert(0, income);
-    notifyListeners();
-
+    kamai!.totalIncome += income.totalIncome;
+    kamai!.netProfit += income.totalIncome;
     _setLoader('income', true);
     try {
       await _repo.addIncome(recordId, income.toPayload());
@@ -451,13 +544,25 @@ class ExpenseViewModel with ChangeNotifier {
     BuildContext context,
     IncomeModel income,
   ) async {
-    _incomes.remove(income);
-    notifyListeners();
+    final index = _incomes.indexOf(income);
 
+    if (index == -1) return;
+
+    _incomes.removeAt(index);
+
+    kamai!.totalIncome -= income.totalIncome;
+    _recalculateProfit();
+
+    notifyListeners();
     try {
       await _repo.deleteIncome(income.recordId, income.id!);
     } catch (error) {
-      _incomes.add(income);
+      _incomes.insert(index, income);
+
+      kamai!.totalIncome += income.totalIncome;
+
+      _recalculateProfit();
+
       notifyListeners();
       if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage(
@@ -522,6 +627,128 @@ class ExpenseViewModel with ChangeNotifier {
     }
   }
 
+  Future<void> getProfitBreakdownByField(
+    BuildContext context,
+    String fieldId, {
+    int page = 1,
+  }) async {
+    profitLoader = true;
+    notifyListeners();
+
+    try {
+      final res = await _repo.getProfitBreakdownByField(fieldId, page);
+      final cropsJson = res['data']['crops'] as List;
+      cropProfits = cropsJson.map((e) => CropProfitModel.fromJson(e)).toList();
+      currentPage = res["currentPage"];
+      totalPages = res["totalPages"];
+    } catch (error) {
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(),
+          context,
+        );
+      }
+    }
+
+    profitLoader = false;
+    notifyListeners();
+  }
+
+  void _addExpenseToTotals(ExpenseModel expense) {
+    final totals = kamai!.totalExpenditures;
+
+    switch (expense.category) {
+      case "seeds":
+        totals.seeds += expense.amount;
+        break;
+
+      case "machinery":
+        totals.machinery += expense.amount;
+        break;
+
+      case "irrigation":
+        totals.irrigation += expense.amount;
+        break;
+
+      case "electricity":
+        totals.electricity += expense.amount;
+        break;
+
+      case "harvest":
+        totals.harvest += expense.amount;
+        break;
+
+      case "fertilisers":
+        totals.fertilisers += expense.amount;
+        break;
+
+      case "pesticides":
+        totals.pesticides += expense.amount;
+        break;
+
+      case "labour":
+        totals.labour += expense.amount;
+        break;
+
+      default:
+        totals.other += expense.amount;
+    }
+
+    totals.grandTotal += expense.amount;
+
+    _recalculateProfit();
+  }
+
+  void _subtractExpenseFromTotals(ExpenseModel expense) {
+    final totals = kamai!.totalExpenditures;
+
+    switch (expense.category) {
+      case "seeds":
+        totals.seeds -= expense.amount;
+        break;
+
+      case "machinery":
+        totals.machinery -= expense.amount;
+        break;
+
+      case "irrigation":
+        totals.irrigation -= expense.amount;
+        break;
+
+      case "electricity":
+        totals.electricity -= expense.amount;
+        break;
+
+      case "harvest":
+        totals.harvest -= expense.amount;
+        break;
+
+      case "fertilisers":
+        totals.fertilisers -= expense.amount;
+        break;
+
+      case "pesticides":
+        totals.pesticides -= expense.amount;
+        break;
+
+      case "labour":
+        totals.labour -= expense.amount;
+        break;
+
+      default:
+        totals.other -= expense.amount;
+    }
+
+    totals.grandTotal -= expense.amount;
+
+    _recalculateProfit();
+  }
+
+  void _recalculateProfit() {
+    kamai!.netProfit = kamai!.totalIncome - kamai!.totalExpenditures.grandTotal;
+  }
+
   /* --------------------------------------------------
    * CLEAR / RESET
    * -------------------------------------------------- */
@@ -539,6 +766,10 @@ class ExpenseViewModel with ChangeNotifier {
   void reintialize() {
     clearExpenses();
     clearIncomes();
+    cropProfits.clear();
+    currentPage = 1;
+    totalPages = 1;
+    profitLoader = false;
     kamai = null;
   }
 

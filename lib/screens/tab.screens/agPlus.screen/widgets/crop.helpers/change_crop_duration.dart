@@ -98,7 +98,9 @@ class ChangeCropDuration extends HookWidget {
                           alignment: AlignmentDirectional.centerStart,
                           items: [
                             AppLocalization.of(context).getTranslatedValue("acre").toString(),
-                            AppLocalization.of(context).getTranslatedValue("hectare").toString()
+                            AppLocalization.of(context).getTranslatedValue("hectare").toString(),
+                            AppLocalization.of(context).getTranslatedValue("guntha").toString(),
+                            AppLocalization.of(context).getTranslatedValue("bigha").toString(),
                           ].map<DropdownMenuItem<String>>((dynamic value) {
                             return DropdownMenuItem<String>(
                               value: value,

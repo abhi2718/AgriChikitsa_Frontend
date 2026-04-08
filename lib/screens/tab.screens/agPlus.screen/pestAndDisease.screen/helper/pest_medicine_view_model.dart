@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/chemical_solutions.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
@@ -22,7 +20,7 @@ class PestMedicineViewModel with ChangeNotifier {
   final List<Map<String, dynamic>> areaUnits = [
     {"id": 1, "textEn": "Acre", "textHi": "एकड़", "value": "acre"},
     {"id": 2, "textEn": "Hectare", "textHi": "हेक्टेयर", "value": "hectare"},
-    {"id": 3, "textEn": "Gunta", "textHi": "गुंता", "value": "hunta"},
+    {"id": 3, "textEn": "Guntha", "textHi": "गुंठा", "value": "guntha"},
     {"id": 4, "textEn": "Bigha", "textHi": "बीघा", "value": "bigha"}
   ];
 

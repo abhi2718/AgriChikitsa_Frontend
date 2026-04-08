@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_tracker.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/delete_field_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/features_card.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/selected_plot_details.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_promo.dart';
@@ -97,7 +98,9 @@ class AGPlusHome extends HookWidget {
     AGPlusViewModel useViewModel,
     Map<String, double> dimension,
   ) {
-    if (useViewModel.selectedPlot.cropId == null || !useViewModel.selectedPlot.isHarvesting) {
+    if (useViewModel.selectedPlot.cropId == null ||
+        !useViewModel.selectedPlot.isCropCycleComplete ||
+        useViewModel.selectedPlot.isYieldAdded) {
       return;
     }
     final locale = AppLocalization.of(context).locale.toString();
@@ -136,7 +139,7 @@ class AGPlusHome extends HookWidget {
             Consumer<AGPlusViewModel>(
               builder: (context, provider, _) {
                 return DropdownButtonFormField<String>(
-                  value: provider.selectedYieldUnit,
+                  initialValue: provider.selectedYieldUnit,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -170,7 +173,7 @@ class AGPlusHome extends HookWidget {
           ),
           InkWell(
             onTap: () {
-              useViewModel.postYieldDataFromPopup(context, useViewModel.selectedPlot.id);
+              useViewModel.postYieldDataFromPopup(context, useViewModel.selectedPlot.cropHistoryId);
             },
             child: GradientButton(
               height: dimension['height']! * 0.07,
@@ -245,7 +248,12 @@ class AGPlusHome extends HookWidget {
                   onSelected: (value) {
                     switch (value) {
                       case _MenuAction.delete:
-                        showDeleteFieldDialog(context, useViewModel);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const DeleteFieldWarningScreen(),
+                          ),
+                        );
                         break;
                       case _MenuAction.expenseTracker:
                         final plot = useViewModel.selectedPlot;
@@ -257,6 +265,15 @@ class AGPlusHome extends HookWidget {
                           warningPopups(context, "noSowingDate");
                           return;
                         } else {
+                          if (plot.cropHistoryId! == null) {
+                            Utils.flushBarErrorMessage(
+                                AppLocalization.of(context).getTranslatedValue("alert").toString(),
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("errorMessage")
+                                    .toString(),
+                                context);
+                            return;
+                          }
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
                               builder: (_) => ExpenseIncomeTracker(
@@ -346,6 +363,9 @@ class AGPlusHome extends HookWidget {
                             if (useViewModel.selectedPlot.cropId == null) {
                               warningPopups(context, "noCrop");
                               return;
+                            } else if (useViewModel.selectedPlot.isCropCycleComplete) {
+                              warningPopups(context, "cropCycleEnd");
+                              return;
                             }
                             // Utils.toastMessage(
                             //     AppLocalization.of(context).getTranslatedValue("comingSoon").toString());
@@ -364,6 +384,9 @@ class AGPlusHome extends HookWidget {
                             }
                             if (useViewModel.selectedPlot.sowingDate == null) {
                               warningPopups(context, "ndvi");
+                              return;
+                            } else if (useViewModel.selectedPlot.isCropCycleComplete) {
+                              warningPopups(context, "cropCycleEnd");
                               return;
                             } else {
                               Utils.model(
@@ -400,6 +423,9 @@ class AGPlusHome extends HookWidget {
                             if (useViewModel.selectedPlot.cropId == null) {
                               warningPopups(context, "noCrop");
                               return;
+                            } else if (useViewModel.selectedPlot.isCropCycleComplete) {
+                              warningPopups(context, "cropCycleEnd");
+                              return;
                             }
                             Utils.model(context, const WeedCategorySelectModal());
                           },
@@ -417,6 +443,9 @@ class AGPlusHome extends HookWidget {
                             }
                             if (useViewModel.selectedPlot.sowingDate == null) {
                               warningPopups(context, "pestDisease");
+                              return;
+                            } else if (useViewModel.selectedPlot.isCropCycleComplete) {
+                              warningPopups(context, "cropCycleEnd");
                               return;
                             } else {
                               Utils.model(context, const PestAndDiseaseSelectModal());

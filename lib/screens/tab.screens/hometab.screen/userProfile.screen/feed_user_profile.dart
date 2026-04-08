@@ -400,8 +400,9 @@ class UserProfileFeed extends StatelessWidget {
                           ),
                         );
                       } else if (value == 'share') {
-                        Share.share(
-                            "Check out what ${account['name']} posted!\n ${feed["hindiCaption"]}");
+                        SharePlus.instance.share(ShareParams(
+                            text:
+                                "Check out what ${account['name']} posted!\n ${feed["hindiCaption"]}"));
                       }
                     },
                   ),

@@ -1,8 +1,10 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/widgets/old_expense_crop_basis.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/plotHistory.screen/plot_history_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -49,73 +51,141 @@ class PlotHistoryScreen extends HookWidget {
                     child: Column(
                       children: List.generate(
                         provider.plotHistory.length,
-                        (index) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        (index) => InkWell(
+                          onTap: () {
+                            if (provider.plotHistory[index]['isPresentCropHistory']) {
+                              Utils.flushBarErrorMessage(
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("attentionTitle")
+                                      .toString(),
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("activeCropHistory")
+                                      .toString(),
+                                  context);
+                              return;
+                            } else if (provider.plotHistory[index]['kharchaKamaiRecord'] == null) {
+                              Utils.toastMessage(AppLocalization.of(context)
+                                  .getTranslatedValue("noKharchaKamaiForCrop")
+                                  .toString());
+                              return;
+                            } else {
+                              Utils.model(
+                                  context,
+                                  OldExpenseCropBasis(
+                                      plotId: provider.plotHistory[index]['fieldRef'],
+                                      cropHistoryId: provider.plotHistory[index]['cropHistoryId'],
+                                      cropName: provider.plotHistory[index]['cropName'],
+                                      cropNameHi: provider.plotHistory[index]['cropNameHi']));
+                              return;
+                            }
+                          },
                           child: Container(
-                            padding: const EdgeInsets.all(12.0),
+                            margin: const EdgeInsets.only(top: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                            height: dimension['height']! * 0.22,
                             width: dimension['width']!,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.4),
-                                    blurRadius: 30,
-                                    spreadRadius: -7,
-                                    offset: const Offset(0, 10),
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(12)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Stack(
+                              fit: StackFit.expand,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              provider.plotHistory[index]['cropImage']),
-                                        ),
-                                        const SizedBox(
-                                          width: 14,
-                                        ),
-                                        Text(
-                                          '${AppLocalization.of(context).getTranslatedValue('plotCropTitle')} - ${AppLocalization.of(context).locale.toString() == "en" ? provider.plotHistory[index]['cropName'] : provider.plotHistory[index]['cropNameHi']}',
-                                          style: GoogleFonts.inter(
-                                              fontSize: 16, fontWeight: FontWeight.bold),
-                                        )
-                                      ],
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: CachedNetworkImage(
+                                    imageUrl: provider.plotHistory[index]['cropImage'],
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Skeleton(
+                                      height: dimension['height']! * 0.21,
+                                      width: dimension['width']!,
+                                      radius: 12,
                                     ),
-                                    provider.plotHistory[index]['isPresentCropHistory']
-                                        ? Container(
-                                            margin: const EdgeInsets.symmetric(vertical: 10),
-                                            width: 15,
-                                            height: 15,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
-                                  ],
+                                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Text(
-                                  "${AppLocalization.of(context).getTranslatedValue('cropAddedTitle')} - ${DateFormat('MMMM d, yyyy').format(DateTime.parse(provider.plotHistory[index]['dateAdded']))}",
-                                  style:
-                                      GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.5),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 provider.plotHistory[index]['isPresentCropHistory']
-                                    ? const SizedBox.shrink()
-                                    : Text(
-                                        "${AppLocalization.of(context).getTranslatedValue('cropRemovedTitle')} - ${DateFormat('MMMM d, yyyy').format(DateTime.parse(provider.plotHistory[index]['dateRemoved']))}",
-                                        style: GoogleFonts.inter(
-                                            fontSize: 14, fontWeight: FontWeight.w500),
+                                    ? Positioned(
+                                        top: 5,
+                                        right: provider.plotHistory[index]['kharchaKamaiRecord'] ==
+                                                null
+                                            ? dimension["width"]! * 0.15
+                                            : 20,
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(vertical: 10),
+                                          width: 15,
+                                          height: 15,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.green,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                                //Warning icon for no record here
+                                Positioned(
+                                  top: 10,
+                                  right: 20,
+                                  child: provider.plotHistory[index]['kharchaKamaiRecord'] == null
+                                      ? Tooltip(
+                                          message: AppLocalization.of(context)
+                                              .getTranslatedValue("noKharchaKamaiForCrop")
+                                              .toString(),
+                                          triggerMode: TooltipTriggerMode.tap,
+                                          verticalOffset: 20,
+                                          textStyle: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 13,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black87,
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: const Icon(
+                                            Icons.error,
+                                            color: AppColor.errorColor,
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(28.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${AppLocalization.of(context).getTranslatedValue('plotCropTitle')} - ${AppLocalization.of(context).locale.toString() == "en" ? provider.plotHistory[index]['cropName'] : provider.plotHistory[index]['cropNameHi']}',
+                                        style: GoogleFonts.montserrat(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 28,
+                                            color: AppColor.whiteColor),
                                       ),
+                                      Text(
+                                        "${AppLocalization.of(context).getTranslatedValue(provider.plotHistory[index]['sowingDate'] != null ? 'sowingAddedTitle' : 'cropAddedTitle')} - ${DateFormat('MMMM d, yyyy').format(DateTime.parse("${provider.plotHistory[index]['sowingDate'] ?? provider.plotHistory[index]['dateAdded']}"))}",
+                                        style: GoogleFonts.inter(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColor.whiteColor),
+                                      ),
+                                      provider.plotHistory[index]['isPresentCropHistory']
+                                          ? const SizedBox.shrink()
+                                          : Text(
+                                              "${AppLocalization.of(context).getTranslatedValue('cropRemovedTitle')} - ${DateFormat('MMMM d, yyyy').format(DateTime.parse(provider.plotHistory[index]['dateRemoved']))}",
+                                              style: GoogleFonts.inter(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppColor.whiteColor),
+                                            ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
