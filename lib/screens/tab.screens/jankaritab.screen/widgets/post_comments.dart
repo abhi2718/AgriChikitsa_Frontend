@@ -1,0 +1,367 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/comment.dart';
+import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
+import 'package:agriChikitsa/services/auth.dart';
+import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
+import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:provider/provider.dart';
+import 'package:remixicon/remixicon.dart';
+
+class PostComments extends HookWidget {
+  const PostComments({
+    super.key,
+    required this.postId,
+  });
+  final String postId;
+  @override
+  Widget build(BuildContext context) {
+    final dimension = Utils.getDimensions(context, false);
+    final textEditingController = TextEditingController();
+    final useViewModel = useMemoized(() => Provider.of<JankariViewModel>(context, listen: false));
+    final authService = Provider.of<AuthService>(context, listen: false);
+    useEffect(() {
+      Future.delayed(Duration.zero, () {
+        useViewModel.fetchComments(context, postId);
+      });
+    }, []);
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Remix.close_circle_line,
+              ),
+            ),
+            SizedBox(
+              height: (dimension["height"]! - 100) * 0.9,
+              width: dimension['width']!,
+              child: Consumer<JankariViewModel>(
+                builder: (context, provider, child) {
+                  return provider.commentLoading
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 28, right: 32, top: 16),
+                          child: ListView.builder(
+                              itemCount: 10,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Row(
+                                    children: [
+                                      Skeleton(
+                                        height: 40,
+                                        width: 40,
+                                        radius: 20,
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Skeleton(height: 10, width: 140),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Skeleton(height: 10, width: 80),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }),
+                        )
+                      : provider.commentsList.isEmpty
+                          ? Center(
+                              child: Text(AppLocalization.of(context)
+                                  .getTranslatedValue("noCommentFeed")
+                                  .toString()),
+                            )
+                          : SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 16),
+                                    child: SizedBox(
+                                      height: (dimension["height"]! - 100) * 0.9,
+                                      child: ListView.builder(
+                                        itemCount: provider.commentsList.length,
+                                        itemBuilder: (context, index) {
+                                          final comment = provider.commentsList[index];
+                                          final profileImage = comment.user.profileImage;
+                                          String commentTime =
+                                              Utils().formatCommentTimeDifference(comment.time);
+                                          return Padding(
+                                            padding: const EdgeInsets.only(bottom: 16.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius: BorderRadius.circular(20),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: profileImage,
+                                                          progressIndicatorBuilder:
+                                                              (context, url, downloadProgress) =>
+                                                                  Skeleton(
+                                                            height: 40,
+                                                            width: 40,
+                                                            radius: 0,
+                                                          ),
+                                                          errorWidget: (context, url, error) =>
+                                                              const Icon(Icons.error),
+                                                          width: 40,
+                                                          fit: BoxFit.cover,
+                                                          height: 40,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SizedBox(
+                                                        width: dimension['width']! - 98,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment.center,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                BaseText(
+                                                                  title: comment.user.name,
+                                                                  style: const TextStyle(
+                                                                      fontSize: 15,
+                                                                      fontWeight: FontWeight.w700),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 4,
+                                                                ),
+                                                                BaseText(
+                                                                  title: commentTime,
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      color: Colors.grey[600]),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 4,
+                                                            ),
+                                                            BaseText(
+                                                              title: comment.comment,
+                                                              style: const TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.w400,
+                                                                  color: Colors.black),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () =>
+                                                          provider.likeComment(context, comment),
+                                                      child: Icon(
+                                                        comment.hasLiked
+                                                            ? Icons.favorite_rounded
+                                                            : Icons.favorite_outline_rounded,
+                                                        color: comment.hasLiked
+                                                            ? Colors.red
+                                                            : Colors.grey,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      comment.likeCount.toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 12, color: Colors.grey[800]),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                },
+              ),
+            ),
+            SizedBox(
+              child: InkWell(
+                onTap: () {
+                  Utils.model(
+                      context,
+                      WillPopScope(
+                        onWillPop: () async {
+                          Navigator.pop(context);
+                          return false;
+                        },
+                        child: SizedBox(
+                          height: dimension['height']! * 0.60,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: const Icon(
+                                      Remix.close_circle_line,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Consumer<AuthService>(builder: (context, provider, child) {
+                                    if (provider.userInfo != null) {
+                                      final user = provider.userInfo["user"];
+                                      final userImage = user['profileImage'];
+                                      return SizedBox(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: CachedNetworkImage(
+                                            imageUrl: userImage,
+                                            progressIndicatorBuilder:
+                                                (context, url, downloadProgress) => Skeleton(
+                                              height: 40,
+                                              width: 40,
+                                              radius: 0,
+                                            ),
+                                            errorWidget: (context, url, error) =>
+                                                const Icon(Icons.error),
+                                            width: 40,
+                                            fit: BoxFit.cover,
+                                            height: 40,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return Container();
+                                  }),
+                                  SizedBox(
+                                    width: dimension['width']! - 150,
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                        hintText: AppLocalization.of(context)
+                                            .getTranslatedValue("addCommentFeed"),
+                                        hintStyle: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: AppColor.extraDark,
+                                          ),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: AppColor.extraDark,
+                                          ),
+                                        ),
+                                        border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      controller: textEditingController,
+                                      autofocus: true,
+                                    ),
+                                  ),
+                                  Consumer<JankariViewModel>(builder: (context, provider, child) {
+                                    return InkWell(
+                                      onTap: () {
+                                        useViewModel.addComment(
+                                            context,
+                                            postId,
+                                            textEditingController.text,
+                                            User.fromJson(
+                                              authService.userInfo["user"],
+                                            ));
+                                        Navigator.pop(context);
+                                      },
+                                      child: Image.asset(
+                                        "assets/icons/send_icon.png",
+                                        height: 30,
+                                        width: 30,
+                                      ),
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ));
+                },
+                child: SizedBox(
+                  width: dimension['width'],
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
+                    margin: const EdgeInsets.only(right: 10, left: 10, bottom: 14),
+                    decoration: const BoxDecoration(
+                      color: AppColor.notificationBgColor,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BaseText(
+                          title: AppLocalization.of(context)
+                              .getTranslatedValue("addCommentFeed")
+                              .toString(),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

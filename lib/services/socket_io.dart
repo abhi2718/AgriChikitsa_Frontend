@@ -35,11 +35,7 @@ class SocketService with ChangeNotifier {
 
   void handleTaskStatus(String id) {
     Utils.toastMessage("clickedTaskStatus");
-    final payload = {
-      "channelID": "taskChannel",
-      "status": "Awaiting approval",
-      "taskId": id
-    };
+    final payload = {"channelID": "taskChannel", "status": "Awaiting approval", "taskId": id};
     socket.emit("changeTaskStatus", payload);
   }
 

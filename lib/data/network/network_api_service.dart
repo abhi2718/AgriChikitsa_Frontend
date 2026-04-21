@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'package:retry/retry.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import './base_api_services.dart';
@@ -27,56 +30,68 @@ class NetworkApiService extends BaseApiServices {
   @override
   Future<dynamic> getGetApiResponse(String url) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
-          .get(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 10));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+    final response = await retry(
+      () => http.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
+  Future<dynamic> getWeatherApiResponse(String url) async {
+    final response = await retry(
+      () => http.get(Uri.parse(url)).timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
   @override
   Future getPostApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
-          .post(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 10));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+    final response = await http.post(Uri.parse(url), headers: headers, body: jsonEncode(payload));
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
   @override
   Future getPatchApiResponse(String url, dynamic payload) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
+    final response = await retry(
+      () => http
           .patch(Uri.parse(url), headers: headers, body: jsonEncode(payload))
-          .timeout(const Duration(seconds: 10));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+          .timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
+  @override
+  Future getPutApiResponse(String url) async {
+    final headers = await getHeaders();
+    final response = await http.put(Uri.parse(url), headers: headers);
+    _jsonResponse = returnResponse(response);
+    return _jsonResponse;
+  }
+
+  @override
+  Future getPutFeedApiResponse(String url, dynamic payload) async {
+    final headers = await getHeaders();
+    final response = await http.put(Uri.parse(url), headers: headers, body: jsonEncode(payload));
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
   @override
   Future getDeleteApiResponse(String url) async {
     final headers = await getHeaders();
-    try {
-      final response = await http
-          .patch(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 10));
-      _jsonResponse = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException("No Internet connection!");
-    }
+    final response = await retry(
+      () => http.delete(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = returnResponse(response);
     return _jsonResponse;
   }
 
@@ -94,5 +109,21 @@ class NetworkApiService extends BaseApiServices {
       default:
         throw FetchDataException(body["message"].toString());
     }
+  }
+
+  // FOR NDVI DATA
+  Future<dynamic> getNDVIApiResponse(String url) async {
+    final headers = await getHeaders();
+    final response = await retry(
+      () => http
+          .get(
+            Uri.parse(url),
+            headers: headers,
+          )
+          .timeout(const Duration(seconds: 4)),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+    );
+    _jsonResponse = jsonDecode(response.body);
+    return [_jsonResponse, response.statusCode];
   }
 }

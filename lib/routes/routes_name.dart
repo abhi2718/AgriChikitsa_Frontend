@@ -5,5 +5,10 @@ class RouteName {
   static const String authLandingRoute = "/auth/landing";
   static const String otpVerificationRoute = "/otp/verification";
   static const String homeRoute = "/home";
+  static const String agPlusRoute = "/agPlus";
   static const String editProfileRoute = "/edit/profile";
+  static const String createPostRoute = "/create/post";
+  static const String chatBotRoute = "/chat/bot";
+  static const String myProfileScreenRoute = "/myProfileScreen";
+  static const String notificationScreenRoute = "/notificationsScreen";
 }

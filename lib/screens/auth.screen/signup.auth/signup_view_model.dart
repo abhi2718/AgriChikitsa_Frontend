@@ -1,7 +1,10 @@
-import 'dart:async';
 import 'dart:convert';
+import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/states_district_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
@@ -17,7 +20,29 @@ class SignUpViewModel with ChangeNotifier {
   var email = '';
   var mobileNumber = '';
   var firebaseId = '';
+  var village = '';
+  dynamic stateList = [];
+  dynamic districtList = [];
+  StateModel? selectedState;
+  var selectedDistrictHi = '';
+  var selectedDistrictEn = '';
+  var block = '';
   dynamic userProfile;
+
+  void setSelectedState(BuildContext context, StateModel value) {
+    selectedState = value;
+    notifyListeners();
+    fetchDistrict(context, selectedState!.state);
+  }
+
+  void setSelectedDistrict(value) {
+    selectedDistrictHi = value;
+    notifyListeners();
+  }
+
+  void setSelectedDistrictEn(value) {
+    selectedDistrictEn = value.name;
+  }
 
   bool get loading {
     return _loading;
@@ -41,6 +66,16 @@ class SignUpViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setVillage(value) {
+    village = value;
+    notifyListeners();
+  }
+
+  void setBlock(String value) {
+    block = value;
+    notifyListeners();
+  }
+
   void setUserInfo(String name, String companyId) {
     userName = name;
     notifyListeners();
@@ -50,31 +85,129 @@ class SignUpViewModel with ChangeNotifier {
     Navigator.pop(context);
   }
 
-// User Registration Logic
+  void fetchStates(BuildContext context) async {
+    try {
+      final data = await _authRepository.fetchStates();
+      stateList = mapStates(data['states']);
+      notifyListeners();
+    } catch (error) {
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(), context);
+    }
+  }
+
+  List<StateModel> mapStates(dynamic states) {
+    return List<StateModel>.from(states.map((state) {
+      return StateModel.fromJson(state);
+    }));
+  }
+
+  void fetchDistrict(BuildContext context, String selectedDistrict) async {
+    try {
+      districtList.clear();
+      selectedDistrictEn = "";
+      selectedDistrictHi = "";
+      final data = await _authRepository.fetchDistricts(selectedDistrict);
+      districtList = mapDistricts(data['districts']);
+      notifyListeners();
+    } catch (error) {
+      if (kDebugMode && context.mounted) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
+    }
+  }
+
+  List<DistrictModel> mapDistricts(dynamic districts) {
+    return List<DistrictModel>.from(districts.map((district) {
+      return DistrictModel.fromJson(district);
+    }));
+  }
+
   void saveRegisterUserForm(BuildContext context) {
     final isValid = registerUserformKey.currentState?.validate();
     if (!isValid!) {
       return;
     }
+    if (selectedState == null || selectedDistrictHi.isEmpty || village.isEmpty) {
+      if (selectedState == null) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateState").toString(),
+            context);
+      } else if (village.isEmpty) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateVillage").toString(),
+            context);
+      } else if (block.isEmpty) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateBlock").toString(),
+            context);
+      } else {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateDistrict").toString(),
+            context);
+      }
+      return;
+    }
     registerUserformKey.currentState?.save();
-    final userInfo = {
-      "roles": "User",
-      "name": userName,
-      "email": email,
-      "phoneNumber": mobileNumber,
-      "firebaseId": firebaseId
-    };
+
+    final userInfo = email.isEmpty
+        ? {
+            "roles": "User",
+            "name": userName,
+            "phoneNumber": mobileNumber,
+            "firebaseId": firebaseId,
+            "state": selectedState!.state,
+            "state_hi": selectedState!.stateHi,
+            "district_en": selectedDistrictEn,
+            "district_hi": selectedDistrictHi,
+            "block": block,
+            "village": village
+          }
+        : {
+            "roles": "User",
+            "name": userName,
+            "email": email,
+            "phoneNumber": mobileNumber,
+            "firebaseId": firebaseId,
+            "state": selectedState!.state,
+            "state_hi": selectedState!.stateHi,
+            "district_en": selectedDistrictEn,
+            "district_hi": selectedDistrictHi,
+            "block": block,
+            "village": village
+          };
+    FocusManager.instance.primaryFocus!.unfocus();
     register(userInfo, context);
   }
 
-// Name TextField
   Widget suffixIconForName() {
     return const Icon(Icons.person);
   }
 
-  String? nameFieldValidator(value) {
+  String? nameFieldValidator(BuildContext context, value) {
     if (value!.isEmpty) {
-      return "Name is required!";
+      return AppLocalization.of(context).getTranslatedValue("validateName").toString();
+    }
+    return null;
+  }
+
+  String? villageFieldValidator(BuildContext context, value) {
+    if (value!.isEmpty) {
+      return AppLocalization.of(context).getTranslatedValue("validateVillage").toString();
+    }
+    return null;
+  }
+
+  String? blockFieldValidator(BuildContext context, value) {
+    if (value!.isEmpty) {
+      return AppLocalization.of(context).getTranslatedValue("validateBlock").toString();
     }
     return null;
   }
@@ -83,9 +216,20 @@ class SignUpViewModel with ChangeNotifier {
     userName = value;
   }
 
-  // Email TextField
+  void onSavedvillageField(value) {
+    village = value;
+  }
+
+  void onSavedBlockField(value) {
+    block = value;
+  }
+
   Widget suffixIconForEmail() {
     return const Icon(Icons.email);
+  }
+
+  Widget suffixIconForVillage() {
+    return const Icon(Icons.cottage);
   }
 
   bool validateEmail(String email) {
@@ -94,10 +238,12 @@ class SignUpViewModel with ChangeNotifier {
     return regExp.hasMatch(email);
   }
 
-  String? emailFieldValidator(value) {
-    bool isValid = validateEmail(value);
-    if (!isValid) {
-      return "Please enter a valid email";
+  String? emailFieldValidator(BuildContext context, value) {
+    if (value != null && value.isNotEmpty) {
+      bool isValid = validateEmail(value);
+      if (!isValid) {
+        return AppLocalization.of(context).getTranslatedValue("validateEmail").toString();
+      }
     }
     return null;
   }
@@ -111,7 +257,6 @@ class SignUpViewModel with ChangeNotifier {
   }
 
   void register(dynamic payload, BuildContext context) {
-    Utils.toastMessage(payload.toString());
     final localContext = context;
     setloading(true);
     void handleRegister(context) async {
@@ -120,15 +265,22 @@ class SignUpViewModel with ChangeNotifier {
         final localStorage = await SharedPreferences.getInstance();
         final profile = {
           'user': data["newUser"],
+          'language': {
+            "language": AppLocalization.of(context).locale.toString(),
+            "country": AppLocalization.of(context).locale.toString() == "en" ? "US" : "IN"
+          },
           'token': data["token"],
         };
         await localStorage.setString("profile", jsonEncode(profile));
         setUserProfile(data);
         setloading(false);
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+        Navigator.of(context).pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+        disposeValues();
       } catch (error) {
-        Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
         setloading(false);
       }
     }
@@ -145,6 +297,13 @@ class SignUpViewModel with ChangeNotifier {
     userName = '';
     email = '';
     mobileNumber = '';
+    districtList = [];
+    selectedState = null;
+    selectedDistrictHi = '';
+    selectedDistrictEn = '';
+    block = '';
+    village = '';
     userProfile = null;
+    registerUserformKey.currentState?.dispose();
   }
 }

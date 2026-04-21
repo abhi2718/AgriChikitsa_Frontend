@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
- const MaterialColor primaryswatch = MaterialColor(_primaryswatchPrimaryValue, <int, Color>{
+const MaterialColor primaryswatch = MaterialColor(_primaryswatchPrimaryValue, <int, Color>{
   50: Color(0xFFE3F1E1),
   100: Color(0xFFB8DBB5),
   200: Color(0xFF89C484),
@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
   800: Color(0xFF0B6B04),
   900: Color(0xFF065802),
 });
- const int _primaryswatchPrimaryValue = 0xFF138808;
+const int _primaryswatchPrimaryValue = 0xFF138808;
 
- const MaterialColor primaryswatchAccent = MaterialColor(_primaryswatchAccentValue, <int, Color>{
+const MaterialColor primaryswatchAccent = MaterialColor(_primaryswatchAccentValue, <int, Color>{
   100: Color(0xFF8CFF8A),
   200: Color(_primaryswatchAccentValue),
   400: Color(0xFF27FF24),
   700: Color(0xFF0EFF0A),
 });
- const int _primaryswatchAccentValue = 0xFF59FF57;
+const int _primaryswatchAccentValue = 0xFF59FF57;

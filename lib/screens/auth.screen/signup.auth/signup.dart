@@ -14,8 +14,10 @@ class SignUpScreen extends HookWidget {
     var phoneNumber = arguments['phoneNumber']!;
     var uid = arguments['uid']!;
     return Consumer<SignUpViewModel>(
-      builder: (context, provider, child) =>
-           RegisterUser(phoneNumber: phoneNumber,uid: uid,),
+      builder: (context, provider, child) => RegisterUser(
+        phoneNumber: phoneNumber,
+        uid: uid,
+      ),
     );
   }
 }

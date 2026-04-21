@@ -1,7 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../model/user_model.dart';
 import '../../../../repository/auth.repo/auth_repository.dart';
 import '../../../../services/auth.dart';
@@ -12,8 +16,9 @@ class EditProfileViewModel with ChangeNotifier {
   final nameFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
   var _loading = false;
-  var userName = '';
-  var email = '';
+  var userName = "";
+  var email = "";
+  var imageLoading = false;
 
   bool get loading {
     return _loading;
@@ -21,6 +26,11 @@ class EditProfileViewModel with ChangeNotifier {
 
   void setloading(bool value) {
     _loading = value;
+    notifyListeners();
+  }
+
+  void setImageLoading(bool value) {
+    imageLoading = value;
     notifyListeners();
   }
 
@@ -43,9 +53,9 @@ class EditProfileViewModel with ChangeNotifier {
     return const Icon(Icons.person);
   }
 
-  String? nameFieldValidator(value) {
-    if (value!.isEmpty) {
-      return "Name is required!";
+  String? nameFieldValidator(BuildContext context, value) {
+    if (value!.isEmpty || value.trim().isEmpty) {
+      return AppLocalization.of(context).getTranslatedValue("editProfileNameRequired").toString();
     }
     return null;
   }
@@ -65,13 +75,12 @@ class EditProfileViewModel with ChangeNotifier {
     return regExp.hasMatch(email);
   }
 
-  String? emailFieldValidator(value) {
-    if (value!.isEmpty) {
-      return "Email is required!";
-    }
-    bool isValid = validateEmail(value);
-    if (!isValid) {
-      return "Please enter a valid email";
+  String? emailFieldValidator(BuildContext context, value) {
+    if (value != null && value.isNotEmpty) {
+      bool isValid = validateEmail(value);
+      if (!isValid) {
+        return AppLocalization.of(context).getTranslatedValue("validateEmail").toString();
+      }
     }
     return null;
   }
@@ -86,27 +95,50 @@ class EditProfileViewModel with ChangeNotifier {
       return;
     }
     editUserformKey.currentState?.save();
-    final userInfo = {"name": userName, "email": email, "_id": user.sId};
+
+    final userInfo = email.isEmpty
+        ? {
+            "name": userName,
+          }
+        : {
+            "name": userName,
+            "email": email,
+          };
+    FocusManager.instance.primaryFocus!.unfocus();
     updateProfile(userInfo, context, authService);
   }
+
+  void saveRegisterUserForm(BuildContext context) {}
 
   void updateProfile(userInfo, context, AuthService authService) async {
     try {
       setloading(true);
-      final data =
-          await _authRepository.updateProfile(userInfo["_id"], userInfo);
+      final user = User.fromJson(authService.userInfo["user"]);
+      final data = await _authRepository.updateProfile(user.sId!, userInfo);
       final localStorage = await SharedPreferences.getInstance();
-      final profile = {
-        'user': data["user"],
+      final mapString = localStorage.getString('profile');
+      final profile = jsonDecode(mapString!);
+      final updatedProfile = {
+        ...profile,
+        "user": data["user"],
         'token': data["token"],
       };
-      await localStorage.setString("profile", jsonEncode(profile));
+      await localStorage.setString("profile", jsonEncode(updatedProfile));
       setloading(false);
-      authService.setUser(profile);
-      Utils.toastMessage("Profile updated successfully! .");
+      if (imageLoading) {
+        setImageLoading(false);
+      }
+      authService.setUser(updatedProfile);
+      Utils.toastMessage(
+          AppLocalization.of(context).getTranslatedValue("updateSuccessful").toString());
     } catch (error) {
       setloading(false);
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
     }
   }
 
@@ -114,31 +146,43 @@ class EditProfileViewModel with ChangeNotifier {
     try {
       final data = await Utils.pickImage();
       if (data != null) {
+        setImageLoading(true);
         final response = await Utils.uploadImage(data);
         final user = User.fromJson(authService.userInfo["user"]);
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      setImageLoading(false);
+      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          error.toString(), context);
     }
   }
 
   void captureProfileImage(context, AuthService authService) async {
     try {
+      if (!context.mounted) return;
       final data = await Utils.capturePhoto();
       if (data != null) {
+        setImageLoading(true);
         final response = await Utils.uploadImage(data);
         final user = User.fromJson(authService.userInfo["user"]);
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
       }
     } catch (error) {
-      Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+      setImageLoading(false);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(),
+            context);
+      }
     }
   }
 
   void disposeValues() {
+    editUserformKey.currentState?.dispose();
     _loading = false;
     userName = '';
     email = '';

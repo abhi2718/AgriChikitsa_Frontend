@@ -1,10 +1,10 @@
+import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
+import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:agriChikitsa/routes/routes_name.dart';
-import 'package:agriChikitsa/utils/utils.dart';
-import '../../../widgets/button.widgets/outlined_button.dart';
+
 import '../../../widgets/text.widgets/text.dart';
 import '../signin.auth/signin.dart';
 
@@ -24,82 +24,110 @@ class LandingAuthScreen extends HookWidget {
     void handleLogin() {
       if (!isTermsAndConditions.value) {
         return Utils.flushBarErrorMessage(
-            "Alert!", "Please check the terms and conditions box.", context);
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("warningCheckTerms").toString(),
+            context);
       }
       Utils.model(context, const SignInScreen());
     }
 
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(child: Column(
+          body: SizedBox(
+        height: dimension["height"],
+        child: Stack(
           children: [
-            SizedBox(
-              width: double.infinity,
-              height: dimension["height"]! * 0.7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/landing.png",
-                    height: (dimension["height"]! * 0.7) - 100,
-                    width: dimension["width"]! - 32,
-                  )
-                ],
-              ),
-            ),
             Container(
-              width: double.infinity,
-              color: AppColor.lightColor,
-              height: dimension["height"]! * 0.3,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: (dimension["height"]! * 0.3) - 40,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                       Column(
-                        children:const [
-                          SizedBox(
-                            width: double.infinity,
-                            child: HeadingText("Account"),
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ParagraphText("Login/Create Account"),
-                          ),
-                        ],
-                      ),
-                      CustomElevatedButton(
-                        width: dimension["width"]! - 32,
-                        title: "Login",
-                        onPress: handleLogin,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            value: isTermsAndConditions.value,
-                            onChanged: handleToggle,
-                          ),
-                          const ParagraphText("I agree with"),
-                          const InkWell(
-                            child: ParagraphHeadingText('Terms & Conditions.'),
-                          ),
-                        ],
-                      )
-                    ],
+              height: dimension["height"]! * 0.75,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/loginGif.gif"), fit: BoxFit.cover)),
+            ),
+            Positioned(
+              top: dimension["height"]! * 0.70,
+              child: Container(
+                height: dimension["height"]! * 0.30,
+                width: dimension["width"],
+                decoration: const BoxDecoration(
+                    color: AppColor.lightColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(18), topRight: Radius.circular(18))),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: (dimension["height"]! * 0.3) - 40,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: HeadingText(AppLocalization.of(context)
+                                  .getTranslatedValue("accountHeading")
+                                  .toString()),
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ParagraphText(AppLocalization.of(context)
+                                  .getTranslatedValue("loginCreateAccount")
+                                  .toString()),
+                            ),
+                          ],
+                        ),
+                        CustomElevatedButton(
+                          width: dimension["width"]! - 32,
+                          title: AppLocalization.of(context).getTranslatedValue("login").toString(),
+                          onPress: handleLogin,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Checkbox(
+                              activeColor: AppColor.extraDark,
+                              value: isTermsAndConditions.value,
+                              onChanged: handleToggle,
+                            ),
+                            ParagraphText(AppLocalization.of(context)
+                                .getTranslatedValue("iAgreeWith")
+                                .toString()),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                try {
+                                  final Uri toLaunch = Uri(
+                                      scheme: 'https',
+                                      host: 'agrichikitsa.org',
+                                      path: '/termsAndCondition');
+                                  Utils.launchInWebViewWithoutJavaScript(toLaunch);
+                                } catch (error) {
+                                  Utils.flushBarErrorMessage(
+                                      AppLocalization.of(context)
+                                          .getTranslatedValue("alert")
+                                          .toString(),
+                                      error.toString(),
+                                      context);
+                                }
+                              },
+                              child: ParagraphHeadingText(AppLocalization.of(context)
+                                  .getTranslatedValue("termsAndCondition")
+                                  .toString()),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             )
           ],
         ),
-      ),
-      ),
+      )),
     );
   }
 }

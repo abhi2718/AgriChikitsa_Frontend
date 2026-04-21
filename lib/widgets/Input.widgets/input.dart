@@ -11,6 +11,9 @@ class Input extends StatelessWidget {
   final Widget suffixIcon;
   final TextInputAction textInputAction;
   final void Function(String)? onFieldSubmitted;
+  final void Function(String)? onChanged;
+  final void Function()? onEditingComplete;
+  final void Function(PointerDownEvent)? onTapOutside;
   final String initialValue;
   final bool autoFocus;
   final FocusNode? focusNode;
@@ -24,6 +27,9 @@ class Input extends StatelessWidget {
       this.suffixIcon = const SizedBox(),
       this.textInputAction = TextInputAction.done,
       this.onFieldSubmitted,
+      this.onChanged,
+      this.onEditingComplete,
+      this.onTapOutside,
       this.autoFocus = false,
       this.initialValue = '',
       this.focusNode});
@@ -31,6 +37,7 @@ class Input extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: keyboardType,
       focusNode: focusNode,
       autofocus: autoFocus,
@@ -38,29 +45,28 @@ class Input extends StatelessWidget {
       validator: validator,
       initialValue: initialValue,
       obscureText: obscureText,
-      // To show keyboard done button or next button
       textInputAction: textInputAction,
-      // onFieldSubmitted -> this will run when user will press done button from keyboard
       onFieldSubmitted: onFieldSubmitted,
+      onEditingComplete: onEditingComplete,
+      onChanged: onChanged,
+      onTapOutside: onTapOutside,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         suffixIconColor: AppColor.darkColor,
         labelText: labelText,
-        // when text field is disabled i.e enabled: false
+        labelStyle: const TextStyle(color: AppColor.extraDark),
         disabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.darkColor,
             width: borderWidth,
           ),
         ),
-        // when textField is inactive
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.extraDark,
             width: borderWidth,
           ),
         ),
-        // when inputBox receive focous (when user clicks)
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.darkColor,

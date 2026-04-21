@@ -1,8 +1,12 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
+import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/auth.screen/select_language.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../repository/auth.repo/auth_repository.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
@@ -46,6 +50,26 @@ class SignInViewModel with ChangeNotifier {
     }
   }
 
+  void disposeValues() {
+    phoneNumberController.clear();
+    phoneNumber = "";
+    errorMessage = "";
+    countDown = 30;
+    showTimmer = false;
+    _loading = false;
+    showResendOTPButton = false;
+    otp = "";
+    verificationIdToken = "";
+    userProfile = null;
+    auth.signOut();
+  }
+
+  void resetTimer() {
+    countDown = 30;
+    showResendOTPButton = false;
+    showTimmer = true;
+  }
+
   void setResendOTPButton() {
     showResendOTPButton = true;
     notifyListeners();
@@ -60,10 +84,11 @@ class SignInViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void onPhoneNumberChanged(String phoneNumber) {
+  void onPhoneNumberChanged(BuildContext context, String phoneNumber) {
     phoneNumber = phoneNumber;
     if (!validateMobileNumber('+91$phoneNumber')) {
-      errorMessage = "Please enter a valid 10 digit mobile number";
+      errorMessage =
+          AppLocalization.of(context).getTranslatedValue("mobileNumberCountWarning").toString();
       notifyListeners();
     } else {
       errorMessage = '';
@@ -88,28 +113,35 @@ class SignInViewModel with ChangeNotifier {
   void verifyUserPhoneNumber(BuildContext context) {
     if (!validateMobileNumber('+91${phoneNumberController.text}')) {
       Utils.flushBarErrorMessage(
-          "Alert!", "Please enter a valid 10 digit mobile number", context);
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          AppLocalization.of(context).getTranslatedValue("mobileNumberCountWarning").toString(),
+          context);
       return;
+    } else {
+      setloading(true);
+      phoneNumber = phoneNumberController.text;
+      requestOTP(context, '+91${phoneNumberController.text}');
     }
-    phoneNumber = phoneNumberController.text;
-    requestOTP(context, '+91${phoneNumberController.text}');
   }
 
   void requestOTP(BuildContext context, phoneNumber) {
     auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth.signInWithCredential(credential).then(
-              (value) => print('Logged In Successfully'),
-            );
+        await auth.signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException e) {
-        Utils.flushBarErrorMessage("Alert!", e.message.toString(), context);
+        setloading(false);
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            e.message.toString(),
+            context);
         return;
       },
       codeSent: (String verificationId, int? resendToken) {
         verificationIdToken = verificationId;
         notifyListeners();
+        setloading(false);
         Navigator.pushNamed(context, RouteName.otpVerificationRoute);
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
@@ -126,7 +158,12 @@ class SignInViewModel with ChangeNotifier {
       final userCredential = await auth.signInWithCredential(credential);
       login(phoneNumber, context, userCredential.user!.uid);
     } catch (e) {
-      Utils.flushBarErrorMessage("Alert", e.toString().split("]")[1], context);
+      if (kDebugMode) {
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            AppLocalization.of(context).getTranslatedValue("invalidOtp").toString(),
+            context);
+      }
       setloading(false);
     }
   }
@@ -136,27 +173,51 @@ class SignInViewModel with ChangeNotifier {
     void handleLogin(context) async {
       try {
         final data = await _authRepository.login(phoneNumber);
-        Utils.toastMessage(data.toString());
         if (data["newUser"]) {
-          setloading(false);
+          final localStorage = await SharedPreferences.getInstance();
+          final profile = {
+            'user': data["user"],
+            'language': {"language": "hi", "country": "IN"},
+            'token': data["token"],
+          };
+          await localStorage.setString("profile", jsonEncode(profile));
+          setUserProfile(data);
+          Navigator.pop(context);
           Navigator.of(context).pushNamed(RouteName.signUpRoute, arguments: {
             "phoneNumber": phoneNumber,
             "uid": uid,
           });
+          setloading(false);
+          // Utils.model(
+          //   context,
+          //   SelectLanguage(
+          //     phoneNumber: phoneNumber,
+          //     firebaseId: uid,
+          //   ),
+          // );
         } else {
           final localStorage = await SharedPreferences.getInstance();
           final profile = {
             'user': data["user"],
+            'language': {
+              "language": AppLocalization.of(context).locale.toString(),
+              "country": AppLocalization.of(context).locale.toString() == "en" ? "US" : "IN"
+            },
             'token': data["token"],
           };
           await localStorage.setString("profile", jsonEncode(profile));
           setUserProfile(data);
           setloading(false);
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
+          resetTimer();
+          Navigator.of(context).pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         }
       } catch (error) {
-        Utils.flushBarErrorMessage("Alert!", error.toString(), context);
+        if (kDebugMode) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
         setloading(false);
       }
     }

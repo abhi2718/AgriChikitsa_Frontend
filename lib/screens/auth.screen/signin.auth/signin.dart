@@ -1,11 +1,12 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/utils.dart';
-import '../../../widgets/Input.widgets/input.dart';
 import '../../../widgets/button.widgets/elevated_button.dart';
 import '../../../widgets/text.widgets/text.dart';
-import '../../../widgets/tools.widgets/tools.dart';
 import 'signin_view_model.dart';
 
 class SignInScreen extends HookWidget {
@@ -14,50 +15,67 @@ class SignInScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final useViewModel =
-        useMemoized(() => Provider.of<SignInViewModel>(context, listen: false));
+    final useViewModel = useMemoized(() => Provider.of<SignInViewModel>(context, listen: false));
     return (SizedBox(
       height: dimension['height']! - 150,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const SizedBox(
+            SizedBox(
               width: double.infinity,
-              child: SubHeadingText("LOGIN"),
+              child: SubHeadingText(
+                  AppLocalization.of(context).getTranslatedValue("login").toString()),
             ),
-            const SizedBox(
+            SizedBox(
               width: double.infinity,
-              child: ParagraphText("Enter your phone number to proceed"),
+              child: ParagraphText(
+                  AppLocalization.of(context).getTranslatedValue("enterPhoneNumber").toString()),
             ),
             const SizedBox(
               height: 26,
             ),
             Consumer<SignInViewModel>(builder: (context, provider, child) {
+              final isValid = useViewModel.phoneNumberController.text.length == 10;
               return TextField(
+                autofillHints: const [AutofillHints.telephoneNumber],
                 controller: useViewModel.phoneNumberController,
                 keyboardType: TextInputType.number,
                 autofocus: true,
                 maxLength: 10,
-                onChanged: useViewModel.onPhoneNumberChanged,
+                onChanged: (value) => useViewModel.onPhoneNumberChanged(context, value),
+                onSubmitted: (value) => useViewModel.verifyUserPhoneNumber(context),
                 decoration: InputDecoration(
-                  labelText: '10 digit mobile number',
-                  errorText: useViewModel.errorMessage,
+                  labelText: AppLocalization.of(context)
+                      .getTranslatedValue("mobileNumberCount")
+                      .toString(),
+                  labelStyle: TextStyle(color: isValid ? AppColor.extraDark : AppColor.errorColor),
+                  errorText: isValid ? null : useViewModel.errorMessage,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: isValid ? AppColor.extraDark : AppColor.errorColor),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: isValid ? AppColor.extraDark : AppColor.errorColor, width: 2),
+                  ),
                 ),
               );
             }),
             const SizedBox(
               height: 16,
             ),
-            CustomElevatedButton(
-              title: "Continue",
-              onPress: () => useViewModel.verifyUserPhoneNumber(context),
-              width: (dimension["width"]! - 32),
-            )
+            Consumer<SignInViewModel>(builder: (context, provider, child) {
+              return CustomElevatedButton(
+                title: AppLocalization.of(context).getTranslatedValue("continue").toString(),
+                loading: provider.loading,
+                onPress: () => useViewModel.verifyUserPhoneNumber(context),
+                width: (dimension["width"]! - 32),
+              );
+            })
           ],
         ),
       ),
     ));
   }
 }
-

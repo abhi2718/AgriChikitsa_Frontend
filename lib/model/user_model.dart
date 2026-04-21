@@ -31,7 +31,13 @@ class User {
   int? iV;
   String? email;
   int? phoneNumber;
+  String? firebaseId;
+  String? state;
+  String? district_en;
+  String? district_hi;
+  String? village;
   String? profileImage;
+  List? timeline;
 
   User({
     this.isProfileCompleted,
@@ -44,8 +50,14 @@ class User {
     this.updatedAt,
     this.iV,
     this.email,
+    this.state,
+    this.district_en,
+    this.district_hi,
+    this.village,
     this.phoneNumber,
+    this.firebaseId,
     this.profileImage,
+    this.timeline,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -59,8 +71,14 @@ class User {
     updatedAt = json['updatedAt'];
     iV = json['__v'];
     email = json['email'];
+    state = json['state'];
+    district_en = json['district_en'];
+    district_hi = json['district_hi'];
+    village = json['village'];
     phoneNumber = json['phoneNumber'];
+    firebaseId = json['firebaseId'];
     profileImage = json['profileImage'];
+    timeline = json['timeLine'];
   }
 
   Map<String, dynamic> toJson() {
@@ -75,8 +93,14 @@ class User {
     data['updatedAt'] = updatedAt;
     data['__v'] = iV;
     data['email'] = email;
+    data['state'] = state;
+    data['district_en'] = district_en;
+    data['district_hi'] = district_hi;
+    data['village'] = village;
     data['phoneNumber'] = phoneNumber;
+    data['firebaseId'] = firebaseId;
     data['profileImage'] = profileImage;
+    data['timeLine'] = timeline;
     return data;
   }
 }

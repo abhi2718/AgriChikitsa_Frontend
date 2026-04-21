@@ -33,4 +33,34 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<dynamic> deleteUser(String reason) async {
+    final url = '${AppUrl.userEndPoint}/?reason=$reason';
+    try {
+      final response = await _apiServices.getDeleteApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchStates() async {
+    const url = AppUrl.registerStatesEndPoint;
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> fetchDistricts(String state) async {
+    final url = '${AppUrl.registerDistrictEndPoint}/$state';
+    try {
+      final response = await _apiServices.getGetApiResponse(url);
+      return response;
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

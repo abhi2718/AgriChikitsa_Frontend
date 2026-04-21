@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/widgets/card.widgets/card.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
@@ -5,7 +6,7 @@ import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 class ProfileButton extends StatelessWidget {
   final double width;
   final String title;
-  final String leftIcon;
+  final Widget leftIcon;
   final void Function()? onPress;
 
   const ProfileButton({
@@ -30,21 +31,16 @@ class ProfileButton extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Image.asset(
-                    leftIcon,
-                    height: 20,
-                    width: 20,
-                  ),
+                  leftIcon,
                   const SizedBox(
                     width: 20,
                   ),
                   ParagraphHeadingText(title)
                 ],
               ),
-              Image.asset(
-                "assets/images/arrow.png",
-                height: 16,
-                width: 16,
+              const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: AppColor.extraDark,
               )
             ],
           ),
