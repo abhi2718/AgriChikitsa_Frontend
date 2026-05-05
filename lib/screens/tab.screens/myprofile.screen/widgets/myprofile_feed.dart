@@ -425,20 +425,20 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                                       .toString()),
                                   onTap: () async {
                                     String text = "";
-                                    if (widget.feed.containsKey("imgurl") &&
-                                        widget.feed['imgurl'].isNotEmpty) {
+                                    if (widget.feed.containsKey("images") &&
+                                        widget.feed['images'].isNotEmpty) {
                                       final xfile = await JankariViewModel()
-                                          .shareFiles(widget.feed['imgurl']);
+                                          .shareFiles(widget.feed['images'][0]['originalUrl']);
                                       if (widget.feed.containsKey("repostedFrom")) {
                                         text =
-                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                       } else {
                                         if (widget.feed["hindiCaption"] == null) {
                                           text =
-                                              "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                         } else {
                                           text =
-                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                         }
                                       }
                                       await SharePlus.instance
@@ -447,28 +447,28 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                                       List<String> temp = widget.feed['videoUrl'].split('/');
                                       if (widget.feed.containsKey("repostedFrom")) {
                                         text =
-                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                       } else {
                                         if (widget.feed["hindiCaption"] == null) {
                                           text =
-                                              "Check out what ${user['name']} posted!\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              "Check out what ${user['name']} posted!\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                         } else {
                                           text =
-                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                         }
                                       }
                                       SharePlus.instance.share(ShareParams(text: text));
                                     } else {
                                       if (widget.feed.containsKey("repostedFrom")) {
                                         text =
-                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                            "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                       } else {
                                         if (widget.feed["hindiCaption"] == null) {
                                           text =
-                                              "Check out what ${user['name']} posted!\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              "Check out what ${user['name']} posted!\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                         } else {
                                           text =
-                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                              "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                         }
                                       }
                                       SharePlus.instance.share(ShareParams(text: text));
@@ -538,9 +538,7 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
             context,
             MaterialPageRoute(
               builder: (context) => FullScreenImage(
-                images: feed["imgurls"].isNotEmpty
-                    ? (feed["imgurls"] as List<dynamic>).cast<String>()
-                    : [feed["imgurl"]],
+                images: feed["images"],
                 feed: feed,
                 useViewModel: useViewModel,
               ),
@@ -554,12 +552,10 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                 Expanded(
                   child: PageView.builder(
                     controller: pageController,
-                    itemCount: feed["imgurls"].isNotEmpty ? feed["imgurls"].length : 1,
+                    itemCount: feed["images"].isNotEmpty ? feed["images"].length : 1,
                     itemBuilder: (context, pagePosition) {
                       return CachedNetworkImage(
-                        imageUrl: feed["imgurls"].isNotEmpty
-                            ? feed['imgurls'][pagePosition]
-                            : feed['imgurl'],
+                        imageUrl: feed['images'][pagePosition]["thumbnailUrl"],
                         progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: dimension["width"]! - 16,
                           width: dimension["width"]! - 16,
@@ -571,12 +567,12 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                     },
                   ),
                 ),
-                if (feed["imgurls"].isNotEmpty) // Add dots only if there are multiple images
+                if (feed["images"].length > 1) // Add dots only if there are multiple images
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: SmoothPageIndicator(
                       controller: pageController,
-                      count: feed["imgurls"].length,
+                      count: feed["images"].length,
                       effect: const SlideEffect(
                         dotHeight: 8,
                         dotWidth: 8,

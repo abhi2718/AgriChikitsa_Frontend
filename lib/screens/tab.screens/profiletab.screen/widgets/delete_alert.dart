@@ -72,7 +72,7 @@ void showDeleteAccountDialog(
                 TextButton(
                   child: BaseText(
                       title: AppLocalization.of(context).getTranslatedValue("yes").toString(),
-                      style: const TextStyle(fontSize: 16, color: AppColor.extraDark)),
+                      style: const TextStyle(fontSize: 16, color: AppColor.errorColor)),
                   onPressed: () {
                     if (useViewModel.deleteReason.isNotEmpty &&
                         useViewModel.deleteReason.length > 3) {

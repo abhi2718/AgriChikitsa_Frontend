@@ -28,8 +28,8 @@ class ExpenseIncomeTracker extends HookWidget {
               context, selectedPlot, userId, selectedPlot.id, selectedPlot.cropHistoryId!);
         } else {
           useViewModel.fetchExpenseIncome(context, selectedPlot.id, selectedPlot.cropHistoryId!);
+          useViewModel.getProfitBreakdownByField(context, selectedPlot.id);
         }
-        useViewModel.getProfitBreakdownByField(context, selectedPlot.id);
       });
       return null;
     }, []);

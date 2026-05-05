@@ -35,7 +35,7 @@ class CreatePostModel with ChangeNotifier {
   var buttonloading = false;
   var caption = '';
   var category = '';
-  List<XFile> pickedImages = [];
+  List<PostImageItem> postImages = [];
   bool isUploading = false;
 
   void setfetchMyPost(bool val) {
@@ -52,10 +52,10 @@ class CreatePostModel with ChangeNotifier {
       caption = feed["hindiCaption"] ?? "";
       captionController.text = feed['hindiCaption'] ?? "";
     }
-    if (feed['mediaType'] == "image" && feed['imgurls'].isNotEmpty) {
-      imagePath = feed['imgurls'];
-    } else if (feed['mediaType'] == "image" && feed['imgurl'].isNotEmpty) {
-      imagePath = [feed['imgurl']];
+    if (feed['mediaType'] == "image" && feed['images'].isNotEmpty && feed["images"].length > 1) {
+      imagePath = feed['images'];
+    } else if (feed['mediaType'] == "image" && feed['images'].length == 1) {
+      imagePath = [feed['images'][0]];
     } else {
       imagePath = [];
     }
@@ -101,7 +101,7 @@ class CreatePostModel with ChangeNotifier {
       caption = "";
       currentSelectedCategory = "";
       buttonloading = false;
-      pickedImages = [];
+      postImages = [];
     });
   }
 
@@ -127,7 +127,7 @@ class CreatePostModel with ChangeNotifier {
 
   void clearImagePath() {
     imagePath.clear();
-    pickedImages.clear();
+    postImages.clear();
     notifyListeners();
   }
 
@@ -164,8 +164,8 @@ class CreatePostModel with ChangeNotifier {
       if (images.length > 4) {
         if (context.mounted) {
           Utils.flushBarErrorMessage(
-            "You can only select up to 4 images.",
-            "Please deselect some images.",
+            AppLocalization.of(context).getTranslatedValue("multipleImageWarning").toString(),
+            AppLocalization.of(context).getTranslatedValue("deselctImageWarning").toString(),
             context,
           );
         }
@@ -174,13 +174,15 @@ class CreatePostModel with ChangeNotifier {
       if (images.isNotEmpty) {
         for (var image in images) {
           // Crop each image
+          final original = image;
           final croppedFile = await Utils.cropImage(image.path, dimension);
           if (croppedFile != null) {
-            pickedImages.add(XFile(croppedFile.path));
+            postImages
+                .add(PostImageItem(originalFile: original, croppedFile: XFile(croppedFile.path)));
           }
         }
 
-        if (pickedImages.isNotEmpty) {
+        if (postImages.isNotEmpty) {
           isPostPicked = true;
           Navigator.pop(context);
           notifyListeners();
@@ -207,9 +209,9 @@ class CreatePostModel with ChangeNotifier {
 
   //For removing selected images
   void removeImage(int index) {
-    if (index >= 0 && index < pickedImages.length) {
-      pickedImages.removeAt(index);
-      if (pickedImages.isEmpty) {
+    if (index >= 0 && index < postImages.length) {
+      postImages.removeAt(index);
+      if (postImages.isEmpty) {
         isPostPicked = false;
       }
       notifyListeners();
@@ -320,7 +322,7 @@ class CreatePostModel with ChangeNotifier {
 
   void createPost(BuildContext context, VoidCallback onPostCreated) async {
     if (currentSelectedCategory.isNotEmpty &&
-        (pickedImages.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
+        (postImages.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
       setUploading(true);
 
       // Navigate to Home Screen immediately
@@ -337,16 +339,41 @@ class CreatePostModel with ChangeNotifier {
     }
   }
 
+  bool checkPostImageData() {
+    for (var postImage in postImages) {
+      if (postImage.thumbnailUrl == null ||
+          postImage.originalUrl == null ||
+          postImage.thumbnailUrl!.isEmpty ||
+          postImage.originalUrl!.isEmpty) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  List<Map<String, String>> getFeedImagePayload() {
+    List<Map<String, String>> imagesPayload = [];
+    for (var postImage in postImages) {
+      imagesPayload.add({
+        "originalUrl": postImage.originalUrl ?? "",
+        "thumbnailUrl": postImage.thumbnailUrl ?? "",
+      });
+    }
+    return imagesPayload;
+  }
+
   Future<void> uploadPostInBackground(BuildContext context, VoidCallback onPostCreated) async {
     List<String> uploadedImageUrls = [];
     var response;
 
     // Upload images
-    if (pickedImages.isNotEmpty) {
-      for (var imagePath in pickedImages) {
-        var imageResponse = await Utils.uploadImage(imagePath);
-        if (imageResponse['success']) {
-          uploadedImageUrls.add(imageResponse['imgurl']);
+    if (postImages.isNotEmpty) {
+      for (var postItem in postImages) {
+        var croppedResponse = await Utils.uploadImage(postItem.croppedFile!);
+        var ogImgResponse = await Utils.uploadImage(postItem.originalFile!);
+        if (croppedResponse['success']) {
+          postItem.thumbnailUrl = croppedResponse['imgurl'];
+          postItem.originalUrl = ogImgResponse['imgurl'];
         } else {
           Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
@@ -366,14 +393,15 @@ class CreatePostModel with ChangeNotifier {
       response = {'success': true, 'url': youtubeVideoPath};
     }
 
-    if (response['success'] || uploadedImageUrls.isNotEmpty) {
-      final passedUrl = uploadedImageUrls.isNotEmpty ? uploadedImageUrls : response['url'];
+    bool isImageUploaded = checkPostImageData();
+    if (response['success'] || isImageUploaded) {
+      final passedUrl = isImageUploaded ? getFeedImagePayload() : response['url'];
       final data = await _homeTabViewModel.createPost(
         context,
         currentSelectedCategory,
         caption,
         passedUrl,
-        uploadedImageUrls.isNotEmpty,
+        isImageUploaded,
       );
 
       if (data) {
@@ -425,4 +453,19 @@ class CreatePostModel with ChangeNotifier {
           AppLocalization.of(context).getTranslatedValue("fillAllDetails").toString(), context);
     }
   }
+}
+
+class PostImageItem {
+  XFile? originalFile;
+  XFile? croppedFile;
+
+  String? originalUrl;
+  String? thumbnailUrl;
+
+  PostImageItem({
+    this.originalFile,
+    this.croppedFile,
+    this.originalUrl,
+    this.thumbnailUrl,
+  });
 }

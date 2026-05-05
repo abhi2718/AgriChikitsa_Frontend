@@ -17,7 +17,7 @@ class ChatHistory1 extends HookWidget {
       useViewModel.getAllChatHistory(context);
     }, []);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColor.notificationBgColor,
       appBar: AppBar(
         foregroundColor: AppColor.darkBlackColor,
         backgroundColor: AppColor.whiteColor,

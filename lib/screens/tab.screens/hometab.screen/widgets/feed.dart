@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/create_post.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/helper/video_controls.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile_view_model.dart';
@@ -10,12 +11,14 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/reshare_
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/fullScreenImage.widget/full_screen_image.dart';
-import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_video.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube_feed.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/helper/active_video_manager.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/helper/video_position_manager.dart';
 import 'package:agriChikitsa/widgets/like.icon/heart_icon.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -42,8 +45,215 @@ class Feed extends StatefulHookWidget {
   State<Feed> createState() => _FeedState();
 }
 
-class _FeedState extends State<Feed> {
-  VideoPlayerController? _currentVideoController;
+class _FeedState extends State<Feed> with WidgetsBindingObserver {
+  // Normal video
+  VideoPlayerController? _videoController;
+  bool _videoInitialized = false;
+
+  // YouTube
+  YoutubePlayerController? _youtubeController;
+
+  // Shared UI state
+  final ValueNotifier<bool> _isMuted = ValueNotifier(false);
+  final ValueNotifier<bool> _showControls = ValueNotifier(false);
+
+  String get _feedId => widget.feed['_id'] as String;
+  String get _videoUrl => widget.feed['videoUrl'] as String;
+  String get _mediaType => widget.feed['mediaType'] as String;
+
+  Size _videoSize = const Size(16, 9);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    ActiveVideoManager.instance.addListener(_onActiveVideoChanged);
+
+    if (_mediaType == 'video') {
+      _initVideoController();
+    }
+    // YouTube controller initialized in build via YoutubePlayerBuilder
+  }
+
+  // REPLACE _initVideoController with:
+  void _initVideoController() {
+    var temp = _videoUrl.split('/');
+    _videoController = VideoPlayerController.networkUrl(
+      Uri.parse(
+        "https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}",
+      ),
+    );
+    _videoController!.initialize().then((_) {
+      if (!mounted) return;
+      final saved = VideoPositionManager.instance.get(_videoUrl);
+      if (saved > Duration.zero) _videoController!.seekTo(saved);
+      _videoController!.setVolume(0); // start muted, unmute on visibility
+      final size = _videoController!.value.size;
+      if (size.width > 0 && size.height > 0) {
+        _videoSize = size;
+      }
+      if (mounted) setState(() => _videoInitialized = true);
+    });
+  }
+
+  YoutubePlayerController _buildYoutubeController() {
+    final videoId = YoutubePlayer.convertUrlToId(_videoUrl)!;
+    final saved = VideoPositionManager.instance.get(_videoUrl);
+    return YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        startAt: saved.inSeconds,
+        hideControls: false,
+        enableCaption: false,
+        forceHD: false,
+      ),
+    );
+  }
+
+  void _onActiveVideoChanged() {
+    if (!mounted) return;
+    if (ActiveVideoManager.instance.activeKey != _feedId) {
+      _videoController?.pause();
+      _youtubeController?.pause();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      _videoController?.pause();
+      _youtubeController?.pause();
+      ActiveVideoManager.instance.clearAll();
+    }
+  }
+
+  void _onVisibilityChanged(VisibilityInfo info, HomeTabViewModel vm) {
+    if (!mounted) return;
+    if (info.visibleFraction >= 0.9) {
+      ActiveVideoManager.instance.setActive(_feedId);
+      if (_mediaType == 'video') {
+        _videoController?.setVolume(_isMuted.value ? 0 : 1);
+        _videoController?.play();
+      } else if (_mediaType == 'youtube') {
+        if (_isMuted.value) {
+          _youtubeController?.mute();
+        } else {
+          _youtubeController?.unMute();
+        }
+        _youtubeController?.play();
+      }
+      vm.increaseViews(context, _feedId);
+    } else {
+      if (_mediaType == 'video') {
+        _videoController?.pause();
+      } else if (_mediaType == 'youtube') {
+        _youtubeController?.pause();
+      }
+      ActiveVideoManager.instance.clearIfActive(_feedId);
+    }
+  }
+
+  void _onTap() {
+    _showControls.value = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) _showControls.value = false;
+    });
+  }
+
+  Future<void> _openVideoFullScreen() async {
+    final position = _videoController!.value.position;
+    _videoController!.pause();
+    VideoPositionManager.instance.save(_videoUrl, position);
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FullScreenVideo(
+          videoUrl: _videoUrl,
+          videoSize: _videoSize,
+          startAt: position,
+          isMuted: _isMuted.value,
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+    final resumed = VideoPositionManager.instance.get(_videoUrl);
+    await _videoController!.seekTo(resumed);
+    _videoController!.play();
+  }
+
+  Future<void> _openYoutubeFullScreen() async {
+    if (_youtubeController == null) return;
+    final position = _youtubeController!.value.position;
+    _youtubeController!.pause();
+    VideoPositionManager.instance.save(_videoUrl, position);
+
+    final videoId = YoutubePlayer.convertUrlToId(_videoUrl)!;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FullScreenYoutubeFeed(
+          videoId: videoId,
+          url: _videoUrl,
+          startAt: position,
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+    final resumed = VideoPositionManager.instance.get(_videoUrl);
+    _youtubeController!.seekTo(resumed);
+    _youtubeController!.play();
+  }
+
+  Widget _muteOverlay({required VoidCallback onToggle}) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _showControls,
+      builder: (_, show, __) {
+        if (!show) return const SizedBox.shrink();
+        return Positioned(
+          top: 8,
+          right: 8,
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _isMuted,
+            builder: (_, muted, __) => GestureDetector(
+              onTap: onToggle,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(6),
+                child: Icon(
+                  muted ? Icons.volume_off : Icons.volume_up,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    ActiveVideoManager.instance.removeListener(_onActiveVideoChanged);
+    _isMuted.dispose();
+    _showControls.dispose();
+    _videoController?.dispose();
+    _youtubeController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -575,20 +785,20 @@ class _FeedState extends State<Feed> {
                                               .toString()),
                                           onTap: () async {
                                             String text = "";
-                                            if (widget.feed.containsKey("imgurls") &&
-                                                widget.feed['imgurls'].isNotEmpty) {
-                                              final xfile = await JankariViewModel()
-                                                  .shareFiles(widget.feed['imgurls'][0]);
+                                            if (widget.feed.containsKey("images") &&
+                                                widget.feed['images'].isNotEmpty) {
+                                              final xfile = await JankariViewModel().shareFiles(
+                                                  widget.feed['images'][0]["originalUrl"]);
                                               if (widget.feed.containsKey("repostedFrom")) {
                                                 text =
-                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                               } else {
                                                 if (widget.feed["hindiCaption"] == null) {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                      "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 } else {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 }
                                               }
                                               await SharePlus.instance
@@ -598,14 +808,14 @@ class _FeedState extends State<Feed> {
                                                   widget.feed['videoUrl'].split('/');
                                               if (widget.feed.containsKey("repostedFrom")) {
                                                 text =
-                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                               } else {
                                                 if (widget.feed["hindiCaption"] == null) {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                      "Check out what ${user['name']} posted!\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 } else {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 }
                                               }
                                               await SharePlus.instance
@@ -613,14 +823,14 @@ class _FeedState extends State<Feed> {
                                             } else {
                                               if (widget.feed.containsKey("repostedFrom")) {
                                                 text =
-                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                               } else {
                                                 if (widget.feed["hindiCaption"] == null) {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                      "Check out what ${user['name']} posted!\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 } else {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 }
                                               }
                                               await SharePlus.instance
@@ -705,9 +915,7 @@ class _FeedState extends State<Feed> {
             context,
             MaterialPageRoute(
               builder: (context) => FullScreenImage(
-                images: feed["imgurls"].isNotEmpty
-                    ? (feed["imgurls"] as List<dynamic>).cast<String>()
-                    : [feed["imgurl"]],
+                images: feed["images"],
                 feed: feed,
                 useViewModel: useViewModel,
               ),
@@ -721,12 +929,10 @@ class _FeedState extends State<Feed> {
                 Expanded(
                   child: PageView.builder(
                     controller: pageController,
-                    itemCount: feed["imgurls"].isNotEmpty ? feed["imgurls"].length : 1,
+                    itemCount: feed["images"].isNotEmpty ? feed["images"].length : 1,
                     itemBuilder: (context, pagePosition) {
                       return CachedNetworkImage(
-                        imageUrl: feed["imgurls"].isNotEmpty
-                            ? feed['imgurls'][pagePosition]
-                            : feed['imgurl'],
+                        imageUrl: feed['images'][pagePosition]["thumbnailUrl"],
                         progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: dimension["width"]! - 16,
                           width: dimension["width"]! - 16,
@@ -738,12 +944,12 @@ class _FeedState extends State<Feed> {
                     },
                   ),
                 ),
-                if (feed["imgurls"].isNotEmpty && feed["imgurls"].length > 1)
+                if (feed["images"].isNotEmpty && feed["images"].length > 1)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: SmoothPageIndicator(
                       controller: pageController,
-                      count: feed["imgurls"].length,
+                      count: feed["images"].length,
                       effect: const SlideEffect(
                         dotHeight: 8,
                         dotWidth: 8,
@@ -759,69 +965,74 @@ class _FeedState extends State<Feed> {
       );
     }
     if (feed['mediaType'] == "video") {
-      return _buildVideoPlayer(feed['videoUrl'], useViewModel, feed["_id"]);
+      return _buildVideoPlayer(useViewModel);
     }
     if (feed['mediaType'] == "youtube") {
-      return _buildYoutubePlayer(feed['videoUrl'], useViewModel, feed["_id"]);
+      return _buildYoutubePlayer(useViewModel);
     } else {
       return const SizedBox.shrink();
     }
   }
 
-  Widget _buildVideoPlayer(String videoUrl, HomeTabViewModel homeTabViewModel, String feedId) {
-    var temp = videoUrl.split('/');
-    final videoController = VideoPlayerController.networkUrl(
-        Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"));
+  // REPLACE _buildVideoPlayer:
+  Widget _buildVideoPlayer(HomeTabViewModel vm) {
+    final aspectRatio = _videoSize.width / _videoSize.height;
 
     return VisibilityDetector(
-        key: Key(videoUrl),
-        onVisibilityChanged: (visibilityInfo) {
-          // if (visibilityInfo.visibleFraction > 0.5) {
-          //   if (_currentVideoController != videoController) {
-          //     _currentVideoController?.pause();
-          //     _currentVideoController = videoController;
-          //     videoController.initialize().then((_) {
-          //       videoController.play();
-          //       homeTabViewModel.increaseViews(context, feedId);
-          //     });
-          //   }
-          // } else if (_currentVideoController == videoController) {
-          //   videoController.pause();
-          // }
-        },
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Chewie(
-            controller: ChewieController(
-              videoPlayerController: videoController,
-              autoPlay: false,
-              looping: false,
-            ),
+      key: Key('video_$_feedId'),
+      onVisibilityChanged: (info) => _onVisibilityChanged(info, vm),
+      child: AspectRatio(
+        aspectRatio: 16 / 9, // card height stays fixed at 16:9
+        child: Container(
+          color: Colors.black,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Video centered with correct aspect ratio, no stretch
+              Center(
+                child: _videoInitialized && _videoController != null
+                    ? AspectRatio(
+                        aspectRatio: aspectRatio,
+                        child: VideoPlayer(_videoController!),
+                      )
+                    : const CircularProgressIndicator(color: AppColor.darkColor),
+              ),
+              // Tap to show/hide controls
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _onTap,
+              ),
+              // Controls overlay
+              ValueListenableBuilder<bool>(
+                valueListenable: _showControls,
+                builder: (_, show, __) {
+                  if (!show || !_videoInitialized || _videoController == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return VideoControls(
+                    controller: _videoController!,
+                    isMuted: _isMuted,
+                    onMuteToggle: () {
+                      _isMuted.value = !_isMuted.value;
+                      _videoController?.setVolume(_isMuted.value ? 0 : 1);
+                    },
+                    onFullScreen: _openVideoFullScreen,
+                  );
+                },
+              ),
+            ],
           ),
-        ));
-  }
-
-  Widget _buildYoutubePlayer(String videoUrl, HomeTabViewModel homeTabViewModel, String feedId) {
-    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-    final youtubeController = YoutubePlayerController(
-      initialVideoId: videoId!,
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
+        ),
       ),
     );
+  }
 
-    return VisibilityDetector(
-      key: Key(videoUrl),
-      onVisibilityChanged: (visibilityInfo) {
-        // if (visibilityInfo.visibleFraction > 0.5) {
-        //   youtubeController.play();
-        //   homeTabViewModel.increaseViews(context, feedId);
-        // } else {
-        //   youtubeController.pause();
-        // }
-      },
-      child: YoutubePlayer(
-        controller: youtubeController,
+  Widget _buildYoutubePlayer(HomeTabViewModel vm) {
+    return YoutubePlayerBuilder(
+      onEnterFullScreen: () {}, // no-op
+      onExitFullScreen: () {}, // no-op
+      player: YoutubePlayer(
+        controller: _youtubeController ??= _buildYoutubeController(),
         showVideoProgressIndicator: true,
         bottomActions: [
           CurrentPosition(),
@@ -829,29 +1040,39 @@ class _FeedState extends State<Feed> {
             isExpanded: true,
             colors: const ProgressBarColors(playedColor: AppColor.darkColor),
           ),
+          RemainingDuration(),
           IconButton(
-            icon: const Icon(
-              Icons.fullscreen,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () {
-              setState(() {
-                youtubeController.pause();
-              });
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FullScreenYoutube(
-                    url: videoUrl,
-                  ),
-                ),
-              );
-            },
+            icon: const Icon(Icons.fullscreen, color: Colors.white, size: 30),
+            onPressed: _openYoutubeFullScreen,
           ),
         ],
+        topActions: const [SizedBox.shrink()],
       ),
+      builder: (context, player) {
+        // Store controller reference after builder fires
+        return VisibilityDetector(
+          key: Key('youtube_$_feedId'),
+          onVisibilityChanged: (info) => _onVisibilityChanged(info, vm),
+          child: GestureDetector(
+            onTap: _onTap,
+            child: Stack(
+              children: [
+                player,
+                _muteOverlay(
+                  onToggle: () {
+                    _isMuted.value = !_isMuted.value;
+                    if (_isMuted.value) {
+                      _youtubeController?.mute();
+                    } else {
+                      _youtubeController?.unMute();
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/crop_model.dart';
 import 'package:agriChikitsa/model/mandi_field_model.dart';
@@ -8,6 +9,7 @@ import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/model/weed_protection.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/add_field_status_screen.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/helper/delete_field_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/medicine.screen/medicine_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop.helpers/change_crop_duration.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/crop_details.dart';
@@ -118,7 +120,7 @@ class AGPlusViewModel with ChangeNotifier {
       labelHi: "टन",
     ),
   ];
-  String selectedYieldUnit = "kg";
+  String selectedYieldUnit = "quintal";
 
   void reinitialize() {
     fieldName = "";
@@ -164,7 +166,7 @@ class AGPlusViewModel with ChangeNotifier {
     nearbyMandis.clear();
     isNearbyMandiDataLoading = false;
     isYieldDataProcessing = false;
-    selectedYieldUnit = "kg";
+    selectedYieldUnit = "quintal";
     isFieldDeleting = false;
   }
 
@@ -484,6 +486,7 @@ class AGPlusViewModel with ChangeNotifier {
 
   List<Plots> mapFields(dynamic fields) {
     return List<Plots>.from(fields.map((field) {
+      log(field.toString());
       return Plots.fromJson(field);
     }));
   }
@@ -549,6 +552,7 @@ class AGPlusViewModel with ChangeNotifier {
       };
       final data = await _agPlusRepository.createPlot(payload);
       if (data['message'] == "Data added Successfully") {
+        log(data.toString());
         Plots newPlot;
         if (!isBackPressed) {
           newPlot = Plots(
@@ -568,18 +572,24 @@ class AGPlusViewModel with ChangeNotifier {
               sowingSeason: res != null ? res["season"] : null,
               sowingDate: sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null,
               currentStageId: data['data']['currentCropStage'] ?? "",
-              cropHistoryId: data['data']['cropHistoryId'] ?? "");
+              cropHistoryId: data['data']['cropHistoryId'] ?? "",
+              isCropCycleComplete: data['data']["isCropCycleComplete"] ?? false,
+              isYieldAdded: data['data']["isYieldAdded"] ?? false,
+              isHarvesting: data['data']["isHarvesting"] ?? false,
+              kharchaKamaiRecord: null);
         } else {
           newPlot = Plots(
-            id: data?['data']?['fieldId'] ?? "1",
-            fieldNo: getFieldNumber(userPlotList).toString(),
-            fieldName: fieldName,
-            plotImage: plotImagePath,
-            latitude: mapLocation['latitude'].toString(),
-            longitude: mapLocation['longitude'].toString(),
-            agristick: null,
-            soilType: soilType,
-          );
+              id: data?['data']?['fieldId'] ?? "1",
+              fieldNo: getFieldNumber(userPlotList).toString(),
+              fieldName: fieldName,
+              plotImage: plotImagePath,
+              latitude: mapLocation['latitude'].toString(),
+              longitude: mapLocation['longitude'].toString(),
+              agristick: null,
+              soilType: soilType,
+              isCropCycleComplete: false,
+              isYieldAdded: false,
+              isHarvesting: false);
         }
         userPlotList.add(newPlot);
         setSelectedField(newPlot);
@@ -1324,7 +1334,7 @@ class AGPlusViewModel with ChangeNotifier {
   }
 
   void postYieldDataFromPopup(BuildContext context, String cropHistoryId,
-      {bool isFromCropChangeCard = false}) async {
+      {bool isFromDelete = false}) async {
     setIsYieldDataLoader(true);
     try {
       final yieldValue = yieldController.text.trim();
@@ -1334,13 +1344,14 @@ class AGPlusViewModel with ChangeNotifier {
       }
       final payload = {"yieldAmount": yieldValue, "yieldUnit": selectedYieldUnit};
       await _agPlusRepository.postYieldDataFromPopup(cropHistoryId, payload);
+      selectedPlot.isYieldAdded = true;
       Future.delayed(const Duration(milliseconds: 300), () {
         if (context.mounted) {
           Navigator.pop(context);
         }
-        if (isFromCropChangeCard) {
-          Future.microtask(() {
-            if (context.mounted) {
+        Future.microtask(() {
+          if (context.mounted) {
+            if (!isFromDelete) {
               fetchCropCategories(context);
               Utils.model(
                   context,
@@ -1348,9 +1359,16 @@ class AGPlusViewModel with ChangeNotifier {
                     isFromFieldScreen: true,
                     fieldId: selectedPlot.id,
                   ));
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const DeleteFieldWarningScreen(),
+                ),
+              );
             }
-          });
-        }
+          }
+        });
         yieldController.clear();
         selectedPlot.isHarvesting = true;
         setSelectedYieldUnit("kg");

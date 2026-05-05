@@ -309,12 +309,10 @@ class _ResharePostState extends State<ResharePost> {
               Expanded(
                 child: PageView.builder(
                   controller: pageController,
-                  itemCount: feed["imgurls"].isNotEmpty ? feed["imgurls"].length : 1,
+                  itemCount: feed["images"].isNotEmpty ? feed["images"].length : 1,
                   itemBuilder: (context, pagePosition) {
                     return CachedNetworkImage(
-                      imageUrl: feed["imgurls"].isNotEmpty
-                          ? feed['imgurls'][pagePosition]
-                          : feed['imgurl'],
+                      imageUrl: feed['images'][pagePosition]["thumbnailUrl"],
                       progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                         height: dimension["width"]! - 16,
                         width: dimension["width"]! - 16,
@@ -326,12 +324,12 @@ class _ResharePostState extends State<ResharePost> {
                   },
                 ),
               ),
-              if (feed["imgurls"].isNotEmpty) // Add dots only if there are multiple images
+              if (feed["images"].length > 1) // Add dots only if there are multiple images
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: SmoothPageIndicator(
                     controller: pageController,
-                    count: feed["imgurls"].length,
+                    count: feed["images"].length,
                     effect: const SlideEffect(
                       dotHeight: 8,
                       dotWidth: 8,

@@ -214,6 +214,117 @@ class AGPlusHome extends HookWidget {
     );
   }
 
+  void checkAndShowYieldDialogOnDelete(
+    BuildContext context,
+    AGPlusViewModel useViewModel,
+    Map<String, double> dimension,
+  ) {
+    if (useViewModel.selectedPlot.cropId == null ||
+        !useViewModel.selectedPlot.isHarvesting ||
+        useViewModel.selectedPlot.isYieldAdded) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const DeleteFieldWarningScreen(),
+        ),
+      );
+      return;
+    }
+    final locale = AppLocalization.of(context).locale.toString();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Consumer<AGPlusViewModel>(builder: (context, provider, child) {
+        return AlertDialog(
+          title: provider.isYieldDataProcessing
+              ? SizedBox.shrink()
+              : Text(
+                  AppLocalization.of(ctx).getTranslatedValue("yieldTitle").toString(),
+                ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: provider.isYieldDataProcessing
+                ? [
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: AppColor.extraDark,
+                      ),
+                    )
+                  ]
+                : [
+                    TextField(
+                      controller: provider.yieldController,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                        signed: false,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d*\.?\d*'),
+                        ),
+                      ],
+                      decoration: InputDecoration(
+                        hintText:
+                            AppLocalization.of(ctx).getTranslatedValue("yieldError").toString(),
+                        hintStyle: TextStyle(fontSize: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    /// Unit dropdown
+                    DropdownButtonFormField<String>(
+                      initialValue: provider.selectedYieldUnit,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      items: provider.yieldUnits.map((unit) {
+                        return DropdownMenuItem<String>(
+                          value: unit.value,
+                          child: Text(unit.getLabel(locale)),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          provider.setSelectedYieldUnit(value);
+                        }
+                      },
+                    ),
+                  ],
+          ),
+          actions: provider.isYieldDataProcessing
+              ? []
+              : [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text(
+                      AppLocalization.of(context).getTranslatedValue("no").toString(),
+                      style: const TextStyle(color: AppColor.errorColor),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      provider.postYieldDataFromPopup(context, provider.selectedPlot.cropHistoryId,
+                          isFromDelete: true);
+                    },
+                    child: GradientButton(
+                      height: dimension['height']! * 0.07,
+                      width: dimension['width']! * 0.2,
+                      title: AppLocalization.of(context).getTranslatedValue("yes").toString(),
+                    ),
+                  ),
+                ],
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
@@ -248,12 +359,7 @@ class AGPlusHome extends HookWidget {
                   onSelected: (value) {
                     switch (value) {
                       case _MenuAction.delete:
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const DeleteFieldWarningScreen(),
-                          ),
-                        );
+                        checkAndShowYieldDialogOnDelete(context, useViewModel, dimension);
                         break;
                       case _MenuAction.expenseTracker:
                         final plot = useViewModel.selectedPlot;
@@ -458,6 +564,10 @@ class AGPlusHome extends HookWidget {
                           ).getTranslatedValue("nearbyMandis").toString(),
                           image: "assets/images/nearbyMandiBanner.jpeg",
                           ontap: () {
+                            if (useViewModel.selectedPlot.cropId == null) {
+                              warningPopups(context, "noCrop");
+                              return;
+                            }
                             Utils.model(
                                 context,
                                 NearbyMandisScreen(

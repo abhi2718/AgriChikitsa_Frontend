@@ -133,10 +133,12 @@ class TotalExpenditures {
 }
 
 class ExpenseModel {
-  final String? id;
-  final String recordId;
+  String? id;
+  String recordId;
   final String category;
   final String subCategory;
+  double? quantity;
+  String? unit;
   final double amount;
   final DateTime date;
   final String description;
@@ -149,6 +151,8 @@ class ExpenseModel {
     required this.amount,
     required this.date,
     required this.description,
+    this.quantity,
+    this.unit,
   });
 
   factory ExpenseModel.fromJson(
@@ -163,6 +167,8 @@ class ExpenseModel {
       amount: (json['amount'] ?? 0).toDouble(),
       date: DateTime.parse(json['date']),
       description: json['description'] ?? '',
+      quantity: (json['quantity'] ?? 0).toDouble(),
+      unit: json['unit'],
     );
   }
 
@@ -173,13 +179,15 @@ class ExpenseModel {
       "amount": amount,
       "date": date.toIso8601String(),
       "description": description,
+      "quantity": quantity,
+      "unit": unit,
     };
   }
 }
 
 class IncomeModel {
-  final String? id;
-  final String recordId;
+  String? id;
+  String recordId;
   final double yieldAmount;
   final String yieldUnit;
   final double sellingPrice;
@@ -298,4 +306,12 @@ class CropProfitModel {
       "netProfit": netProfit,
     };
   }
+}
+
+class UnitOption {
+  final String key;
+  final String en;
+  final String hi;
+
+  UnitOption({required this.key, required this.en, required this.hi});
 }

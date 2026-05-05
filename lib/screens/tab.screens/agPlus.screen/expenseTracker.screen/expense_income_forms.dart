@@ -1,5 +1,6 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/expense_income_model.dart';
+import 'package:agriChikitsa/model/plots.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/expenseTracker.screen/expense_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_button.dart';
@@ -20,7 +21,6 @@ class AddExpenseForm extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isEdit = expense != null;
     final dimension = Utils.getDimensions(context, true);
     final vm = Provider.of<ExpenseViewModel>(context, listen: false);
     final formKey = useMemoized(
@@ -73,7 +73,11 @@ class AddExpenseForm extends HookWidget {
                         )
                         .toList(),
                     onChanged: (val) => vm.setExpenseCategory(val!),
-                    validator: (val) => val == null ? "Select category" : null,
+                    validator: (val) => val == null
+                        ? AppLocalization.of(context).locale.toString() == "en"
+                            ? "Select category"
+                            : "श्रेणी चूने"
+                        : null,
                     decoration: greenOutlinedInput(
                       AppLocalization.of(context)
                           .getTranslatedValue("selectCategoryPost")
@@ -90,7 +94,83 @@ class AddExpenseForm extends HookWidget {
                       AppLocalization.of(context).getTranslatedValue("subcategory").toString(),
                     ),
                     onChanged: vm.setExpenseSubCategory,
-                    validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                    validator: (v) => v == null || v.isEmpty
+                        ? AppLocalization.of(context).locale.toString() == "en"
+                            ? "Required"
+                            : "आवश्यक"
+                        : null,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// QUANTITY + UNIT
+                  Consumer<ExpenseViewModel>(
+                    builder: (_, vm, __) {
+                      final units = categoryUnitMap[vm.expenseCategory] ?? [];
+
+                      return Row(
+                        children: [
+                          /// NUMBER INPUT
+                          Expanded(
+                            flex: 2,
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              maxLength: 7,
+                              decoration: greenOutlinedInput(
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("quantity")
+                                    .toString(),
+                              ).copyWith(counterText: ""),
+                              onChanged: (v) => vm.setQuantity(double.tryParse(v) ?? 0),
+                              validator: (v) {
+                                if (v == null || v.isEmpty) {
+                                  return AppLocalization.of(context).locale.toString() == "en"
+                                      ? "Required"
+                                      : "आवश्यक";
+                                }
+                                if (v.length > 7) {
+                                  return AppLocalization.of(context).locale.toString() == "en"
+                                      ? "Max 7 digits"
+                                      : "अधिकतम 7 अंक";
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+
+                          const SizedBox(width: 12),
+
+                          /// UNIT DROPDOWN
+                          Expanded(
+                            flex: 3,
+                            child: DropdownButtonFormField<String>(
+                              value: vm.unit,
+                              items: units
+                                  .map(
+                                    (u) => DropdownMenuItem(
+                                      value: u.key,
+                                      child: Text(
+                                        AppLocalization.of(context).locale.toString() == "en"
+                                            ? u.en
+                                            : u.hi,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (val) => vm.setUnit(val!),
+                              validator: (val) => val == null
+                                  ? (AppLocalization.of(context).locale.toString() == "en"
+                                      ? "Select unit"
+                                      : "इकाई चुनें")
+                                  : null,
+                              decoration: greenOutlinedInput(
+                                AppLocalization.of(context).getTranslatedValue("unit").toString(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 12),
@@ -102,8 +182,11 @@ class AddExpenseForm extends HookWidget {
                       AppLocalization.of(context).getTranslatedValue("amount").toString(),
                     ),
                     onChanged: (v) => vm.setExpenseAmount(double.tryParse(v) ?? 0),
-                    validator: (v) =>
-                        v == null || double.tryParse(v) == null ? "Enter valid amount" : null,
+                    validator: (v) => v == null || double.tryParse(v) == null
+                        ? AppLocalization.of(context).locale.toString() == "en"
+                            ? "Enter valid amount"
+                            : "वैध राशि दर्ज करें"
+                        : null,
                   ),
 
                   const SizedBox(height: 12),
@@ -162,9 +245,11 @@ class AddExpenseForm extends HookWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: InkWell(
                 onTap: () async {
-                  if (!formKey.currentState!.validate()) return;
+                  if (vm.expenseLoader || vm.updateLoader || !formKey.currentState!.validate()) {
+                    return;
+                  }
 
-                  final expenseModel = vm.buildExpenseFromForm();
+                  final expenseModel = vm.buildExpenseFromForm(context);
                   if (expenseModel == null) return;
 
                   if (expense != null) {
@@ -192,6 +277,7 @@ class AddExpenseForm extends HookWidget {
                 child: GradientButton(
                   height: dimension["height"]! * 0.1,
                   width: double.infinity,
+                  isLoading: vm.expenseLoader || vm.updateLoader,
                   title: AppLocalization.of(context).getTranslatedValue("save").toString(),
                 ),
               ),
@@ -206,10 +292,12 @@ class AddExpenseForm extends HookWidget {
 class AddIncomeForm extends HookWidget {
   final String recordId;
   final IncomeModel? income;
+  final Plots selectedPlot;
 
   const AddIncomeForm({
     super.key,
     required this.recordId,
+    required this.selectedPlot,
     this.income,
   });
 
@@ -257,16 +345,30 @@ class AddIncomeForm extends HookWidget {
                     ),
                     keyboardType: TextInputType.number,
                     onChanged: (v) => vm.setYieldAmount(double.tryParse(v) ?? 0),
-                    validator: (v) => v == null || double.tryParse(v) == null ? "Required" : null,
+                    validator: (v) => v == null || double.tryParse(v) == null
+                        ? AppLocalization.of(context).locale.toString() == "en"
+                            ? "Enter yield amount"
+                            : "उत्पादन की मात्रा दर्ज करें"
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     initialValue: vm.yieldUnit,
-                    items: const [
-                      DropdownMenuItem(value: 'quintal', child: Text('Quintal')),
-                      DropdownMenuItem(value: 'kg', child: Text('Kg')),
-                      DropdownMenuItem(value: 'ton', child: Text('Ton')),
-                    ],
+                    // items: const [
+                    //   DropdownMenuItem(value: 'quintal', child: Text('Quintal')),
+                    //   DropdownMenuItem(value: 'kg', child: Text('Kg')),
+                    //   DropdownMenuItem(value: 'ton', child: Text('Ton')),
+                    // ],
+                    items: priceUnitMap
+                        .map(
+                          (u) => DropdownMenuItem(
+                            value: u.key,
+                            child: Text(
+                              AppLocalization.of(context).locale.toString() == "en" ? u.en : u.hi,
+                            ),
+                          ),
+                        )
+                        .toList(),
                     onChanged: (val) {
                       if (val != null) vm.setYieldUnit(val);
                     },
@@ -281,7 +383,11 @@ class AddIncomeForm extends HookWidget {
                     ),
                     keyboardType: TextInputType.number,
                     onChanged: (v) => vm.setSellingPrice(double.tryParse(v) ?? 0),
-                    validator: (v) => v == null || double.tryParse(v) == null ? "Required" : null,
+                    validator: (v) => v == null || double.tryParse(v) == null
+                        ? AppLocalization.of(context).locale.toString() == "en"
+                            ? "Enter selling price"
+                            : "बिक्री दर दर्ज करें"
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   Consumer<ExpenseViewModel>(
@@ -332,7 +438,7 @@ class AddIncomeForm extends HookWidget {
                 onTap: () async {
                   if (!formKey.currentState!.validate()) return;
 
-                  final incomeModel = vm.buildIncomeFromForm();
+                  final incomeModel = vm.buildIncomeFromForm(context);
                   if (incomeModel == null) return;
 
                   if (income != null) {
@@ -345,11 +451,7 @@ class AddIncomeForm extends HookWidget {
                     );
                   } else {
                     // ➕ ADD MODE
-                    await vm.addIncome(
-                      context,
-                      recordId,
-                      incomeModel,
-                    );
+                    await vm.addIncome(context, recordId, incomeModel, selectedPlot);
                   }
 
                   vm.clearIncomeForm();
@@ -480,3 +582,64 @@ InputDecoration greenOutlinedInput(String label) {
     ),
   );
 }
+
+final Map<String, List<UnitOption>> categoryUnitMap = {
+  "seeds": [
+    UnitOption(key: "kg", en: "Kilogram", hi: "किलोग्राम"),
+    UnitOption(key: "g", en: "Gram", hi: "ग्राम"),
+    UnitOption(key: "quintal", en: "Quintal", hi: "क्विंटल"),
+    UnitOption(key: "count", en: "Count", hi: "संख्या"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "fertilisers": [
+    UnitOption(key: "kg", en: "Kilogram", hi: "किलोग्राम"),
+    UnitOption(key: "g", en: "Gram", hi: "ग्राम"),
+    UnitOption(key: "quintal", en: "Quintal", hi: "क्विंटल"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "pesticides": [
+    UnitOption(key: "ltr", en: "Liter", hi: "लीटर"),
+    UnitOption(key: "ml", en: "Milliliter", hi: "मिलीलीटर"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "machinery": [
+    UnitOption(key: "hour", en: "Hour", hi: "घंटा"),
+    UnitOption(key: "day", en: "Day", hi: "दिन"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "labour": [
+    UnitOption(key: "person", en: "Person", hi: "व्यक्ति"),
+    UnitOption(key: "day", en: "Day", hi: "दिन"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "irrigation": [
+    UnitOption(key: "hour", en: "Hour", hi: "घंटा"),
+    UnitOption(key: "count", en: "Count", hi: "संख्या"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "electricity": [
+    UnitOption(key: "unit", en: "Unit", hi: "यूनिट"),
+    UnitOption(key: "hour", en: "Hour", hi: "घंटा"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "harvest": [
+    UnitOption(key: "count", en: "Count", hi: "संख्या"),
+    UnitOption(key: "hour", en: "Hour", hi: "घंटा"),
+    UnitOption(key: "day", en: "Day", hi: "दिन"),
+    UnitOption(key: "person", en: "Person", hi: "व्यक्ति"),
+    UnitOption(key: "quintal", en: "Quintal", hi: "क्विंटल"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+  "other": [
+    UnitOption(key: "kg", en: "Kilogram", hi: "किलोग्राम"),
+    UnitOption(key: "ltr", en: "Liter", hi: "लीटर"),
+    UnitOption(key: "count", en: "Count", hi: "संख्या"),
+    UnitOption(key: "other", en: "Other", hi: "अन्य"),
+  ],
+};
+
+final List<UnitOption> priceUnitMap = [
+  UnitOption(key: "kg", en: "Kilogram", hi: "किलोग्राम"),
+  UnitOption(key: "quintal", en: "Quintal", hi: "क्विंटल"),
+  UnitOption(key: "ton", en: "Ton", hi: "टन"),
+];

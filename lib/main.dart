@@ -1,3 +1,4 @@
+import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/auth.screen/language_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/agristick.screen/agristick_view_model.dart';
@@ -22,7 +23,6 @@ import 'l10n/app_localizations.dart';
 import 'routes/routes.dart';
 import './screens/auth.screen/signin.auth/signin_view_model.dart';
 import './screens/tab.screens/hometab.screen/hometab_view_model.dart';
-import './res/primary_swatch.dart';
 import './screens/auth.screen/signup.auth/signup_view_model.dart';
 import './services/auth.dart';
 import './screens/tab.screens/profiletab.screen/profile_view_model.dart';
@@ -130,7 +130,12 @@ class App extends StatelessWidget {
           return MaterialApp(
             title: 'Agrichikitsa',
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(primarySwatch: primaryswatch),
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: AppColor.extraDark,
+              ),
+              primaryColor: AppColor.extraDark,
+            ),
             routes: Routes().routes,
             locale: Locale(provider.locale["language"]!, provider.locale["country"]!),
             supportedLocales: const [
