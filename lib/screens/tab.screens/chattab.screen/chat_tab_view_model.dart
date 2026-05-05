@@ -65,7 +65,7 @@ class ChatTabViewModel with ChangeNotifier {
 
   //Feedback
   bool isFeedbackLoading = false;
-  double chatRating = 5;
+  double chatRating = 3.5;
   TextEditingController userFeedbackController = TextEditingController();
 
   void setShowCameraButton(bool value) {
@@ -124,7 +124,7 @@ class ChatTabViewModel with ChangeNotifier {
     isSecondTry = false;
     isFeedbackLoading = false;
     userFeedbackController.clear();
-    chatRating = 5;
+    chatRating = 3.5;
   }
 
   void disposeValues() {
@@ -136,17 +136,17 @@ class ChatTabViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  setChatHistoryLoader(value) {
+  void setChatHistoryLoader(bool value) {
     chatHistoryLoader = value;
     notifyListeners();
   }
 
-  setChatRestartLoader(value) {
+  void setChatRestartLoader(bool value) {
     chatRestartLoader = value;
     notifyListeners();
   }
 
-  setImageCheck(bool value, BuildContext context, String? selectedOption) async {
+  void setImageCheck(bool value, BuildContext context, String? selectedOption) async {
     imageConfirm = value;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
@@ -174,7 +174,7 @@ class ChatTabViewModel with ChangeNotifier {
     }
   }
 
-  setChatLoader(value) {
+  void setChatLoader(bool value) {
     chatLoader = value;
   }
 
@@ -896,7 +896,7 @@ class ChatTabViewModel with ChangeNotifier {
     }
   }
 
-  setImageAfterText(bool value, BuildContext context, String selectedOption) {
+  void setImageAfterText(bool value, BuildContext context, String selectedOption) {
     enableKeyboard(value);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
@@ -993,7 +993,7 @@ class ChatTabViewModel with ChangeNotifier {
           "feedback": userFeedbackController.text.trim(),
       };
       final data = await _chatTabRepository.postchatRating(chatId, payloadStructure);
-      chatRating = 5;
+      chatRating = 3.5;
       userFeedbackController.clear();
       setIsFeedbackLoader(false);
       return data;

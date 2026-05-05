@@ -3,10 +3,8 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/comment_widget.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_test_widget.dart';
-import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_video_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/report_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/fullScreenImage.widget/full_screen_image.dart';
@@ -74,8 +72,6 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
     }
 
     final user = widget.feed['user'];
-    final imageName = widget.feed['imgurl'];
-    final profileImage = user['profileImage'];
     final dimension = Utils.getDimensions(context, true);
     useEffect(() {
       if (homeViewModel.toogleLikeBookMarkedFeed["id"] == widget.feed['_id'] &&
@@ -372,32 +368,33 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                 GestureDetector(
                     onTap: () async {
                       String text = "";
-                      if (widget.feed.containsKey("imgurl") && widget.feed['imgurl'].isNotEmpty) {
-                        final xfile = await JankariViewModel().shareFiles(widget.feed['imgurl']);
+                      if (widget.feed.containsKey("images") && widget.feed['images'].isNotEmpty) {
+                        final xfile = await JankariViewModel()
+                            .shareFiles(widget.feed['images'][0]['originalUrl']);
                         if (widget.feed.containsKey("repostedFrom")) {
                           text =
-                              "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                              "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                         } else {
                           if (widget.feed["hindiCaption"] == null) {
                             text =
-                                "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                           } else {
                             text =
-                                "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                           }
                         }
                         await SharePlus.instance.share(ShareParams(files: [xfile], text: text));
                       } else {
                         if (widget.feed.containsKey("repostedFrom")) {
                           text =
-                              "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                              "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                         } else {
                           if (widget.feed["hindiCaption"] == null) {
                             text =
-                                "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                           } else {
                             text =
-                                "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa";
+                                "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                           }
                         }
                         SharePlus.instance.share(ShareParams(text: text));
@@ -476,9 +473,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
             context,
             MaterialPageRoute(
               builder: (context) => FullScreenImage(
-                images: feed["imgurls"].isNotEmpty
-                    ? (feed["imgurls"] as List<dynamic>).cast<String>()
-                    : [feed["imgurl"]],
+                images: feed["images"],
                 feed: feed,
                 useViewModel: useViewModel,
               ),
@@ -492,12 +487,10 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                 Expanded(
                   child: PageView.builder(
                     controller: pageController,
-                    itemCount: feed["imgurls"].isNotEmpty ? feed["imgurls"].length : 1,
+                    itemCount: feed["images"].isNotEmpty ? feed["images"].length : 1,
                     itemBuilder: (context, pagePosition) {
                       return CachedNetworkImage(
-                        imageUrl: feed["imgurls"].isNotEmpty
-                            ? feed['imgurls'][pagePosition]
-                            : feed['imgurl'],
+                        imageUrl: feed['images'][pagePosition]["thumbnailUrl"],
                         progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: dimension["width"]! - 16,
                           width: dimension["width"]! - 16,
@@ -509,12 +502,12 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                     },
                   ),
                 ),
-                if (feed["imgurls"].isNotEmpty) // Add dots only if there are multiple images
+                if (feed["images"].length > 1) // Add dots only if there are multiple images
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: SmoothPageIndicator(
                       controller: pageController,
-                      count: feed["imgurls"].length,
+                      count: feed["images"].length,
                       effect: const SlideEffect(
                         dotHeight: 8,
                         dotWidth: 8,

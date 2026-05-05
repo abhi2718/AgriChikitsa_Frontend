@@ -64,6 +64,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
       width: dimension['width']!,
       child: PageView.builder(
         controller: _pageController,
+        itemCount: widget.trendingPosts.isEmpty ? 0 : null,
         itemBuilder: (context, index) {
           final realIndex = index % widget.trendingPosts.length;
           final post = widget.trendingPosts[realIndex];

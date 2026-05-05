@@ -19,17 +19,20 @@ class ExpenseViewModel with ChangeNotifier {
   bool _incomeLoader = false;
   bool _listLoader = false;
   bool _finalSubmitLoader = false;
+  bool _updateLoader = false;
 
   bool get expenseLoader => _expenseLoader;
   bool get incomeLoader => _incomeLoader;
   bool get listLoader => _listLoader;
   bool get finalSubmitLoader => _finalSubmitLoader;
+  bool get updateLoader => _updateLoader;
 
   void _setLoader(String type, bool value) {
     if (type == 'expense') _expenseLoader = value;
     if (type == 'income') _incomeLoader = value;
     if (type == 'list') _listLoader = value;
     if (type == 'finalSubmit') _finalSubmitLoader = value;
+    if (type == 'updateLoader') _updateLoader = value;
     notifyListeners();
   }
 
@@ -57,14 +60,19 @@ class ExpenseViewModel with ChangeNotifier {
   double _expenseAmount = 0;
   DateTime? _expenseDate;
   String _expenseDescription = '';
+  double? quantity;
+  String? unit;
 
   String get expenseCategory => _expenseCategory;
   String get expenseSubCategory => _expenseSubCategory;
   double get expenseAmount => _expenseAmount;
   DateTime? get expenseDate => _expenseDate;
   String get expenseDescription => _expenseDescription;
+
   void setExpenseCategory(String value) {
     _expenseCategory = value;
+    unit = null;
+    quantity = null;
     notifyListeners();
   }
 
@@ -88,27 +96,46 @@ class ExpenseViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  ExpenseModel? buildExpenseFromForm() {
+  void setQuantity(double val) {
+    quantity = val;
+    notifyListeners();
+  }
+
+  void setUnit(String val) {
+    unit = val;
+    notifyListeners();
+  }
+
+  ExpenseModel? buildExpenseFromForm(BuildContext context) {
+    final isEnglish = AppLocalization.of(context).locale.toString() == "en";
+
     if (_expenseCategory.trim().isEmpty) {
-      Utils.toastMessage("Please select expense category");
+      Utils.toastMessage(isEnglish ? "Please select expense category" : "कृपया खर्च श्रेणी चुनें");
       return null;
     }
 
-    // sub-category
     if (_expenseSubCategory.trim().isEmpty) {
-      Utils.toastMessage("Please enter sub category");
+      Utils.toastMessage(isEnglish ? "Please enter sub category" : "कृपया उप-श्रेणी दर्ज करें");
       return null;
     }
 
-    // amount
+    if (quantity == null ||
+        quantity!.toString().trim().isEmpty ||
+        unit == null ||
+        unit!.trim().isEmpty) {
+      Utils.toastMessage(
+          isEnglish ? "Please enter quantity and unit" : "कृपया मात्रा और इकाई दर्ज करें");
+      return null;
+    }
+
     if (_expenseAmount <= 0) {
-      Utils.toastMessage("Please enter valid expense amount");
+      Utils.toastMessage(
+          isEnglish ? "Please enter valid expense amount" : "कृपया मान्य खर्च राशि दर्ज करें");
       return null;
     }
 
-    // date
     if (_expenseDate == null) {
-      Utils.toastMessage("Please select expense date");
+      Utils.toastMessage(isEnglish ? "Please select expense date" : "कृपया खर्च की तारीख चुनें");
       return null;
     }
 
@@ -119,6 +146,8 @@ class ExpenseViewModel with ChangeNotifier {
       category: _expenseCategory.trim(),
       subCategory: _expenseSubCategory.trim(),
       amount: _expenseAmount,
+      quantity: quantity!,
+      unit: unit!.trim(),
       date: _expenseDate!,
       description: description!,
     );
@@ -130,6 +159,8 @@ class ExpenseViewModel with ChangeNotifier {
     _expenseAmount = 0;
     _expenseDate = null;
     _expenseDescription = '';
+    quantity = null;
+    unit = null;
   }
 
   /* --------------------------------------------------
@@ -158,6 +189,7 @@ class ExpenseViewModel with ChangeNotifier {
 
   void setYieldUnit(String value) {
     _yieldUnit = value;
+    _priceUnit = value;
     notifyListeners();
   }
 
@@ -181,40 +213,44 @@ class ExpenseViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  IncomeModel? buildIncomeFromForm() {
+  IncomeModel? buildIncomeFromForm(BuildContext context) {
+    final isEnglish = AppLocalization.of(context).locale.toString() == "en";
     // yield amount
     if (_yieldAmount <= 0) {
-      Utils.toastMessage("Please enter valid yield amount");
+      Utils.toastMessage(isEnglish
+          ? "Please enter valid yield amount"
+          : "कृपया मान्य उत्पादन की मात्रा दर्ज करें");
       return null;
     }
 
     // yield unit
     if (_yieldUnit.trim().isEmpty) {
-      Utils.toastMessage("Please select yield unit");
+      Utils.toastMessage(isEnglish ? "Please select yield unit" : "कृपया उत्पादन इकाई चुनें");
       return null;
     }
 
     // selling price
     if (_sellingPrice <= 0) {
-      Utils.toastMessage("Please enter valid selling price");
+      Utils.toastMessage(
+          isEnglish ? "Please enter valid selling price" : "कृपया मान्य बिक्री दर दर्ज करें");
       return null;
     }
 
     // price unit
     if (_priceUnit.trim().isEmpty) {
-      Utils.toastMessage("Please select price unit");
+      Utils.toastMessage(isEnglish ? "Please select price unit" : "कृपया दर इकाई चुनें");
       return null;
     }
 
     // total income (derived but still must be valid)
     if (totalIncome <= 0) {
-      Utils.toastMessage("Total income is invalid");
+      Utils.toastMessage(isEnglish ? "Total income is invalid" : "कृपया मान्य आय दर्ज करें");
       return null;
     }
 
     // sale date
     if (_saleDate == null) {
-      Utils.toastMessage("Please select sale date");
+      Utils.toastMessage(isEnglish ? "Please select sale date" : "कृपया बिक्री की तारीख चुनें");
       return null;
     }
 
@@ -256,7 +292,7 @@ class ExpenseViewModel with ChangeNotifier {
       final payload = {"userId": userId, "feildId": fieldId, "cropHistoryId": cropHistoryId};
       final res = await _repo.createExpenseRecord(payload);
       if (res["success"]) {
-        selectedPlot.kharchaKamaiRecord = true;
+        selectedPlot.kharchaKamaiRecord = res["data"]["id"];
         kamai = KharchaKamaiModel.fromJson(res["data"]);
       }
     } catch (error) {
@@ -282,6 +318,7 @@ class ExpenseViewModel with ChangeNotifier {
         cropHistoryId,
       );
       if (res["success"]) {
+        log(res.toString());
         kamai = KharchaKamaiModel.fromJson(res["data"]);
       }
       _expenses
@@ -315,6 +352,7 @@ class ExpenseViewModel with ChangeNotifier {
   ) async {
     // optimistic expense list update
     _expenses.insert(0, expense);
+    kamai!.expenditures.insert(0, expense);
 
     // ----------------------------
     // OPTIMISTIC TOTAL UPDATE
@@ -390,12 +428,12 @@ class ExpenseViewModel with ChangeNotifier {
       );
     }
 
-    notifyListeners();
-
     _setLoader('expense', true);
-
     try {
-      await _repo.addExpenditure(recordId, expense.toPayload());
+      final expenseRes = await _repo.addExpenditure(recordId, expense.toPayload());
+      kamai!.expenditures[0].recordId = expenseRes["data"]["_id"];
+      kamai!.expenditures[0].id =
+          expenseRes["data"]["expenditures"][kamai!.expenditures.length - 1]["_id"];
     } catch (error) {
       _expenses.remove(expense);
       notifyListeners();
@@ -423,7 +461,8 @@ class ExpenseViewModel with ChangeNotifier {
 
     final old = _expenses[index];
     _expenses[index] = updated;
-    notifyListeners();
+
+    _setLoader('updateLoader', true);
 
     try {
       await _repo.updateExpenditure(
@@ -441,6 +480,8 @@ class ExpenseViewModel with ChangeNotifier {
           context,
         );
       }
+    } finally {
+      _setLoader('updateLoader', false);
     }
   }
 
@@ -483,18 +524,21 @@ class ExpenseViewModel with ChangeNotifier {
    * -------------------------------------------------- */
 
   Future<void> addIncome(
-    BuildContext context,
-    String recordId,
-    IncomeModel income,
-  ) async {
+      BuildContext context, String recordId, IncomeModel income, Plots selectedPlot) async {
     _incomes.insert(0, income);
+    kamai!.incomeRecords.insert(0, income);
     kamai!.totalIncome += income.totalIncome;
     kamai!.netProfit += income.totalIncome;
+    selectedPlot.isYieldAdded = true;
     _setLoader('income', true);
     try {
-      await _repo.addIncome(recordId, income.toPayload());
+      final incomeRes = await _repo.addIncome(recordId, income.toPayload());
+      kamai!.incomeRecords[0].recordId = incomeRes["data"]["_id"];
+      kamai!.incomeRecords[0].id =
+          incomeRes["data"]["incomeRecords"][kamai!.incomeRecords.length - 1]["_id"];
     } catch (error) {
       _incomes.remove(income);
+      selectedPlot.isYieldAdded = false;
       notifyListeners();
       if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage(
@@ -543,6 +587,7 @@ class ExpenseViewModel with ChangeNotifier {
   Future<void> deleteIncome(
     BuildContext context,
     IncomeModel income,
+    Plots selectedPlot,
   ) async {
     final index = _incomes.indexOf(income);
 
@@ -551,6 +596,8 @@ class ExpenseViewModel with ChangeNotifier {
     _incomes.removeAt(index);
 
     kamai!.totalIncome -= income.totalIncome;
+    kamai!.incomeRecords.clear();
+    selectedPlot.isYieldAdded = false;
     _recalculateProfit();
 
     notifyListeners();
@@ -560,7 +607,7 @@ class ExpenseViewModel with ChangeNotifier {
       _incomes.insert(index, income);
 
       kamai!.totalIncome += income.totalIncome;
-
+      selectedPlot.isYieldAdded = true;
       _recalculateProfit();
 
       notifyListeners();

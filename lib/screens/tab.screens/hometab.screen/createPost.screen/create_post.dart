@@ -32,6 +32,10 @@ class CreatePostScreen extends HookWidget {
     final hometabViewModel =
         useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: true);
+
+    print(feed);
+    print(isEdit);
+
     useEffect(() {
       useViewModel.fetchFeedsCategory(context, hometabViewModel);
       if (feed != null) {
@@ -283,7 +287,7 @@ class CreatePostScreen extends HookWidget {
                                   ],
                                 ),
                               )
-                            : useViewModel.imagePath.isEmpty && useViewModel.pickedImages.isEmpty
+                            : useViewModel.imagePath.isEmpty && useViewModel.postImages.isEmpty
                                 ? feed != null
                                     ? feed['mediaType'] == 'video'
                                         ? PostWidget(videoUrl: feed['videoUrl'])
@@ -315,7 +319,8 @@ class CreatePostScreen extends HookWidget {
                                               return Stack(
                                                 children: [
                                                   CachedNetworkImage(
-                                                    imageUrl: provider.imagePath[index],
+                                                    imageUrl: provider.imagePath[index]
+                                                        ["thumbnailUrl"],
                                                     fit: BoxFit.cover,
                                                     height: dimension['width']! - 16,
                                                     width: dimension['width']! - 16,
@@ -348,12 +353,13 @@ class CreatePostScreen extends HookWidget {
                                         children: [
                                           PageView.builder(
                                             controller: pageController,
-                                            itemCount: provider.pickedImages.length,
+                                            itemCount: provider.postImages.length,
                                             itemBuilder: (context, index) {
                                               return Stack(
                                                 children: [
                                                   Image.file(
-                                                    File(provider.pickedImages[index].path),
+                                                    File(provider
+                                                        .postImages[index].croppedFile!.path),
                                                     height: dimension['width']! - 16,
                                                     width: dimension['width']! - 16,
                                                     fit: BoxFit.cover,
@@ -371,7 +377,7 @@ class CreatePostScreen extends HookWidget {
                                               );
                                             },
                                           ),
-                                          if (provider.pickedImages.length > 1)
+                                          if (provider.postImages.length > 1)
                                             Positioned(
                                               bottom: 16,
                                               left: 0,
@@ -379,7 +385,7 @@ class CreatePostScreen extends HookWidget {
                                               child: Center(
                                                 child: SmoothPageIndicator(
                                                   controller: pageController,
-                                                  count: provider.pickedImages.length,
+                                                  count: provider.postImages.length,
                                                   effect: WormEffect(
                                                     activeDotColor: Colors.red,
                                                     dotColor: Colors.grey.withOpacity(0.5),

@@ -109,8 +109,7 @@ class SelectedPlotDetails extends HookWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      provider.postYieldDataFromPopup(context, provider.selectedPlot.cropHistoryId,
-                          isFromCropChangeCard: true);
+                      provider.postYieldDataFromPopup(context, provider.selectedPlot.cropHistoryId);
                     },
                     child: GradientButton(
                       height: dimension['height']! * 0.07,

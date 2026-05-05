@@ -12,9 +12,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class WeatherScreenDetails extends StatefulHookWidget {
-  WeatherScreenDetails({super.key, required this.useViewModel, this.isFromJankariScreen = false});
+  const WeatherScreenDetails(
+      {super.key, required this.useViewModel, this.isFromJankariScreen = false});
   final WeatherViewModel useViewModel;
-  bool isFromJankariScreen;
+  final bool isFromJankariScreen;
 
   @override
   State<WeatherScreenDetails> createState() => _WeatherScreenDetailsState();

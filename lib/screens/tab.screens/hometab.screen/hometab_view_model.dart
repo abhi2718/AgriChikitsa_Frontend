@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/category_model.dart';
@@ -446,7 +447,7 @@ class HomeTabViewModel with ChangeNotifier {
       if (caption == "") {
         payload = {"categoryId": id};
         if (isImgUploaded) {
-          payload["imgurls"] = passedUrl; // imageUrls should be a List of URLs
+          payload["images"] = passedUrl; // imageUrls should be a List of URLs
           payload["mediaType"] = "image";
         } else {
           payload["videoUrl"] = passedUrl;
@@ -460,7 +461,7 @@ class HomeTabViewModel with ChangeNotifier {
         List<String> tags = extractHashtags(caption);
         payload = {"categoryId": id, "hindiCaption": caption, "tags": tags};
         if (isImgUploaded) {
-          payload["imgurls"] = passedUrl; // imageUrls should be a List of URLs
+          payload["images"] = passedUrl; // imageUrls should be a List of URLs
           payload["mediaType"] = "image";
         } else {
           payload["videoUrl"] = passedUrl;

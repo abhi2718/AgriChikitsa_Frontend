@@ -6,6 +6,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed.dar
 import 'package:agriChikitsa/screens/tab.screens/notifications.screen/notification_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/profiletab.screen/profile_view_model.dart';
 import 'package:agriChikitsa/utils/utils.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/helper/active_video_manager.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,8 +70,9 @@ class HomeTabScreen1 extends HookWidget {
         if (state == AppLifecycleState.resumed) {
           Future.delayed(Duration.zero, () {
             notificationViewModel.fetchNotifications(context);
-            //useViewModel.fetchFeeds(context);
           });
+        } else {
+          ActiveVideoManager.instance.clearAll();
         }
       });
       binding.addObserver(observer);
@@ -153,14 +155,14 @@ class HomeTabScreen1 extends HookWidget {
               ),
               // Scrollable content
               Expanded(
-                child: RefreshIndicator(
-                  onRefresh: refresh,
-                  color: AppColor.darkColor,
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: Consumer<HomeTabViewModel>(builder: (context, provider, child) {
-                      if (provider.loading) {
-                        return Column(
+                child: Consumer<HomeTabViewModel>(
+                  builder: (context, provider, child) {
+                    if (provider.loading) {
+                      return RefreshIndicator(
+                        onRefresh: refresh,
+                        color: AppColor.darkColor,
+                        child: ListView(
+                          controller: scrollController,
                           children: [
                             Container(
                               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
@@ -173,11 +175,7 @@ class HomeTabScreen1 extends HookWidget {
                                     padding: const EdgeInsets.symmetric(horizontal: 8),
                                     child: Row(
                                       children: [
-                                        Skeleton(
-                                          height: 40,
-                                          width: 40,
-                                          radius: 30,
-                                        ),
+                                        Skeleton(height: 40, width: 40, radius: 30),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 10),
                                           child: Skeleton(
@@ -205,32 +203,44 @@ class HomeTabScreen1 extends HookWidget {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: 10,
-                                itemBuilder: (context, index) {
-                                  return const FeedLoader();
-                                },
+                            ...List.generate(10, (_) => const FeedLoader()),
+                          ],
+                        ),
+                      );
+                    }
+
+                    if (provider.feedList.isEmpty) {
+                      return RefreshIndicator(
+                        onRefresh: refresh,
+                        color: AppColor.darkColor,
+                        child: ListView(
+                          controller: scrollController,
+                          children: [
+                            SizedBox(
+                              height: dimension['height']! - 100,
+                              child: Center(
+                                child: Text(
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("noPostYet")
+                                      .toString(),
+                                ),
                               ),
                             ),
                           ],
-                        );
-                      } else if (provider.feedList.isEmpty) {
-                        return SizedBox(
-                          height: dimension['height']! - 100,
-                          child: Center(
-                            child: Text(AppLocalization.of(context)
-                                .getTranslatedValue("noPostYet")
-                                .toString()),
-                          ),
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            CreatePostCard(
+                        ),
+                      );
+                    }
+
+                    // Main feed — fully lazy, Feed widgets mount only when scrolled into view
+                    return RefreshIndicator(
+                      onRefresh: refresh,
+                      color: AppColor.darkColor,
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: provider.feedList.length + 1, // +1 for CreatePostCard header
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return CreatePostCard(
                               onPostedCreated: () {
                                 Utils.flushBarErrorMessage(
                                   AppLocalization.of(context)
@@ -242,21 +252,13 @@ class HomeTabScreen1 extends HookWidget {
                                   context,
                                 );
                               },
-                            ),
-                            ListView.builder(
-                              controller: scrollController,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: provider.feedList.length,
-                              itemBuilder: (context, index) {
-                                return Feed(feed: provider.feedList[index]);
-                              },
-                            ),
-                          ],
-                        );
-                      }
-                    }),
-                  ),
+                            );
+                          }
+                          return Feed(feed: provider.feedList[index - 1]);
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

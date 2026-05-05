@@ -80,7 +80,7 @@ class _ChatHistoryTileState extends State<ChatHistoryTile> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColor.notificationBgColor,
+                  color: AppColor.whiteColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ListTile(
@@ -135,7 +135,7 @@ class _ChatHistoryTileState extends State<ChatHistoryTile> {
             )
           : Container(
               decoration: BoxDecoration(
-                color: AppColor.notificationBgColor,
+                color: AppColor.whiteColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ListTile(

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class NearbyMandi {
   String id;
   String district;
@@ -8,9 +6,9 @@ class NearbyMandi {
   String variety;
   String commodity;
   double distance;
-  int maxPrice;
-  int minPrice;
-  int modalPrice;
+  double maxPrice;
+  double minPrice;
+  double modalPrice;
   dynamic arrivalDate;
 
   NearbyMandi(
@@ -34,10 +32,10 @@ class NearbyMandi {
       market: json['market'] ?? "N/A",
       variety: json['variety'] ?? "N/A",
       commodity: json['commodity'] ?? "N/A",
-      distance: json['distance'] ?? 0.0,
-      maxPrice: json['max_price'] ?? 0,
-      minPrice: json['min_price'] ?? 0,
-      modalPrice: json['modal_price'] ?? 0,
+      distance: (json['distance'] as num?)?.toDouble() ?? 0.0,
+      maxPrice: (json['max_price'] as num?)?.toDouble() ?? 0.0,
+      minPrice: (json['min_price'] as num?)?.toDouble() ?? 0.0,
+      modalPrice: (json['modal_price'] as num?)?.toDouble() ?? 0.0,
       arrivalDate: json['arrival_date'],
     );
   }

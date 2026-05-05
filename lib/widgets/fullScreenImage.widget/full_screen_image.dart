@@ -11,7 +11,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class FullScreenImage extends StatefulWidget {
   const FullScreenImage(
       {super.key, required this.images, required this.feed, required this.useViewModel});
-  final List<String> images;
+  final List<dynamic> images;
   final dynamic feed;
   final HomeTabViewModel useViewModel;
 
@@ -50,7 +50,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
               itemCount: widget.images.length,
               itemBuilder: (context, index) {
                 return CachedNetworkImage(
-                  imageUrl: widget.images[index],
+                  imageUrl: widget.images[index]["originalUrl"],
                   progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                     height: dimension["width"]! - 16,
                     width: dimension["width"]! - 16,
@@ -67,7 +67,7 @@ class _FullScreenImageState extends State<FullScreenImage> {
             right: 0,
             bottom: 0,
             child: Container(
-              padding: const EdgeInsets.only(top: 80, right: 16, left: 16, bottom: 16),
+              padding: const EdgeInsets.only(top: 50, right: 16, left: 16, bottom: 16),
               decoration: BoxDecoration(
                 color: AppColor.darkBlackColor.withOpacity(0.3),
                 boxShadow: [
@@ -117,8 +117,8 @@ class _FullScreenImageState extends State<FullScreenImage> {
                           ],
                         )
                       : Container(),
-                  const SizedBox(
-                    height: 16,
+                  SizedBox(
+                    height: widget.feed["hindiCaption"] != null ? 16 : 0,
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

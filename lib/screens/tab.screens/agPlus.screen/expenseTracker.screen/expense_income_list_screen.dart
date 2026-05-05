@@ -72,9 +72,9 @@ class ExpenseIncomeListScreen extends HookWidget {
                 padding: EdgeInsets.only(bottom: vm.kamai?.isFinalSubmitted == true ? 0 : 80),
                 child: TabBarView(
                   controller: tabController,
-                  children: const [
+                  children: [
                     ExpenseSection(),
-                    IncomeSection(),
+                    IncomeSection(selectedPlot: selectedPlot),
                   ],
                 ),
               ),
@@ -83,6 +83,7 @@ class ExpenseIncomeListScreen extends HookWidget {
                 plot: selectedPlot,
                 activeTabIndex: tabController.index,
                 kamaiModel: vm.kamai,
+                selectedPlot: selectedPlot,
               ),
 
               if (vm.finalSubmitLoader)
@@ -234,6 +235,8 @@ class ExpenseTile extends StatelessWidget {
               _row(AppLocalization.of(context).getTranslatedValue("subcategory").toString(),
                   expense.subCategory),
               const SizedBox(height: 8),
+              _row(AppLocalization.of(context).getTranslatedValue("quantity").toString(),
+                  "${expense.quantity != null ? expense.quantity!.toStringAsFixed(2) : ''} ${expense.unit ?? ''}"),
               _row(AppLocalization.of(context).getTranslatedValue("selectedDate").toString(),
                   formatFullDate(expense.date)),
               const SizedBox(height: 8),
@@ -351,7 +354,8 @@ class ExpenseTile extends StatelessWidget {
 }
 
 class IncomeSection extends StatelessWidget {
-  const IncomeSection({super.key});
+  const IncomeSection({super.key, required this.selectedPlot});
+  final Plots selectedPlot;
 
   @override
   Widget build(BuildContext context) {
@@ -424,6 +428,7 @@ class IncomeSection extends StatelessWidget {
                     return IncomeTile(
                       income: vm.incomes[i],
                       isLast: isLast,
+                      selectedPlot: selectedPlot,
                     );
                   },
                 ),
@@ -439,19 +444,30 @@ class IncomeSection extends StatelessWidget {
 class IncomeTile extends StatelessWidget {
   final IncomeModel income;
   final bool isLast;
+  final Plots selectedPlot;
 
   const IncomeTile({
     super.key,
     required this.income,
     required this.isLast,
+    required this.selectedPlot,
   });
+
+  String getLocalizedUnit(String key, Locale locale) {
+    final unit = priceUnitMap.firstWhere(
+      (e) => e.key == key,
+      orElse: () => UnitOption(key: key, en: key, hi: key),
+    );
+
+    return locale.languageCode == 'hi' ? unit.hi : unit.en;
+  }
 
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<ExpenseViewModel>(context, listen: false);
 
     return InkWell(
-      onLongPress: () => _showDeleteIncomeDialog(context, vm, income),
+      onLongPress: () => _showDeleteIncomeDialog(context, vm, income, selectedPlot),
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -479,7 +495,7 @@ class IncomeTile extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          "${income.yieldAmount.toStringAsFixed(0)} ${income.yieldUnit}",
+                          "${income.yieldAmount.toStringAsFixed(0)} ${getLocalizedUnit(income.yieldUnit, AppLocalization.of(context).locale)}",
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
@@ -541,16 +557,21 @@ class BottomFixedButtons extends StatelessWidget {
   final Plots plot;
   final int activeTabIndex;
   final KharchaKamaiModel? kamaiModel;
+  final Plots selectedPlot;
 
   const BottomFixedButtons(
-      {super.key, required this.plot, required this.activeTabIndex, required this.kamaiModel});
+      {super.key,
+      required this.plot,
+      required this.activeTabIndex,
+      required this.kamaiModel,
+      required this.selectedPlot});
 
   @override
   Widget build(BuildContext context) {
     final isKharchaTab = activeTabIndex == 0;
     final isKamaiTab = activeTabIndex == 1;
     final isFinalSubmitted = kamaiModel?.isFinalSubmitted == true;
-    final isHarvesting = !plot.isHarvesting;
+    final isHarvesting = plot.isHarvesting;
     final isKamaiActive = kamaiModel?.isKamaiActive == true;
     final hasIncome = (kamaiModel?.incomeRecords.length ?? 0) > 0;
 
@@ -559,7 +580,7 @@ class BottomFixedButtons extends StatelessWidget {
     }
 
     final showAddExpense = isKharchaTab;
-    final showAddIncome = isKamaiTab && isHarvesting && isKamaiActive;
+    final showAddIncome = isKamaiTab && isHarvesting && isKamaiActive && !hasIncome;
     final showFinalSubmit = isKamaiTab && isHarvesting && isKamaiActive && hasIncome;
 
     return Positioned(
@@ -650,7 +671,8 @@ class BottomFixedButtons extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => AddIncomeForm(recordId: recordId),
+                        builder: (_) =>
+                            AddIncomeForm(recordId: recordId, selectedPlot: selectedPlot),
                       ),
                     );
                   }
@@ -1068,7 +1090,8 @@ void _showDeleteExpenseDialog(BuildContext context, ExpenseViewModel vm, Expense
   );
 }
 
-void _showDeleteIncomeDialog(BuildContext context, ExpenseViewModel vm, IncomeModel income) {
+void _showDeleteIncomeDialog(
+    BuildContext context, ExpenseViewModel vm, IncomeModel income, Plots selectedPlot) {
   showDialog(
     context: context,
     builder: (_) {
@@ -1100,7 +1123,7 @@ void _showDeleteIncomeDialog(BuildContext context, ExpenseViewModel vm, IncomeMo
             ),
             onPressed: () async {
               Navigator.pop(context);
-              await vm.deleteIncome(context, income);
+              await vm.deleteIncome(context, income, selectedPlot);
             },
           ),
         ],

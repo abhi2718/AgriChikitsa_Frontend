@@ -167,7 +167,8 @@ class SignUpViewModel with ChangeNotifier {
             "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
-            "block": block,
+            "block_en": block,
+            "block_hi": block,
             "village": village
           }
         : {
@@ -180,7 +181,8 @@ class SignUpViewModel with ChangeNotifier {
             "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
-            "block": block,
+            "block_en": block,
+            "block_hi": block,
             "village": village
           };
     FocusManager.instance.primaryFocus!.unfocus();
