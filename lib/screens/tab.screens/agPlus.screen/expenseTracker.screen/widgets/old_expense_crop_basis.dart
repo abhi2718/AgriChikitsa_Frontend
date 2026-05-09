@@ -217,6 +217,9 @@ class ExpenseTile extends StatelessWidget {
               _row(AppLocalization.of(context).getTranslatedValue("subcategory").toString(),
                   expense.subCategory),
               const SizedBox(height: 8),
+              _row(AppLocalization.of(context).getTranslatedValue("quantity").toString(),
+                  "${expense.quantity != null ? expense.quantity!.toStringAsFixed(2) : ''} ${expense.unit ?? ''}"),
+              const SizedBox(height: 8),
               _row(AppLocalization.of(context).getTranslatedValue("selectedDate").toString(),
                   formatFullDate(expense.date)),
               const SizedBox(height: 8),
@@ -358,8 +361,11 @@ class IncomeSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  AppLocalization.of(context).getTranslatedValue("noKamaiActive").toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  AppLocalization.of(context).getTranslatedValue("oldNoKamaiActive").toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -370,6 +376,7 @@ class IncomeSection extends StatelessWidget {
           return Center(
               child: Text(
             AppLocalization.of(context).getTranslatedValue("noIncome").toString(),
+            textAlign: TextAlign.center,
           ));
         }
 
