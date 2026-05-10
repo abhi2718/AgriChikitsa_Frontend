@@ -328,6 +328,7 @@
     "allIncomes": "All Expenses",
     "noExpense": "No expense added yet!",
     "noIncome": "No income added yet!",
+    "oldNoIncome": "You have not added any income for this crop.",
     "noKamaiActive": "Your crop hasn't yet reached the maturity/harvest stage. Therefore, this income section isn't currently available. Once your crop reaches the maturity/harvest stage, this section will automatically activate, allowing you to enter complete details of your earnings.",
     "oldNoKamaiActive": "You have changed this crop in the initial stage, so its income cannot be displayed.",
     "activeCropHistory": "This crop is active right now. Please submit final data in kharcha kamai section.",

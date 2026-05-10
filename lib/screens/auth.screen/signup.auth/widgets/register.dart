@@ -151,7 +151,8 @@ class RegisterUser extends HookWidget {
                                     ),
                                     value: provider.selectedState,
                                     items: provider.stateList
-                                        .map<DropdownMenuItem<StateModel>>((StateModel state) {
+                                        .cast<StateModel>()
+                                        .map<DropdownMenuItem<StateModel>>((state) {
                                       return DropdownMenuItem<StateModel>(
                                         value: state,
                                         child: BaseText(
@@ -224,6 +225,7 @@ class RegisterUser extends HookWidget {
                                               : provider.selectedDistrictHi,
                                           alignment: AlignmentDirectional.centerStart,
                                           items: provider.districtList
+                                              .cast<DistrictModel>()
                                               .map<DropdownMenuItem<String>>((value) {
                                             return DropdownMenuItem<String>(
                                               onTap: () {

@@ -14,11 +14,13 @@ class OldExpenseCropBasis extends HookWidget {
       required this.plotId,
       required this.cropHistoryId,
       required this.cropName,
-      required this.cropNameHi});
+      required this.cropNameHi,
+      required this.isHarvesting});
   final String plotId;
   final String cropHistoryId;
   final String cropName;
   final String cropNameHi;
+  final bool isHarvesting;
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<ExpenseViewModel>(context, listen: false);
@@ -72,9 +74,11 @@ class OldExpenseCropBasis extends HookWidget {
               /// MAIN CONTENT
               TabBarView(
                 controller: tabController,
-                children: const [
+                children: [
                   ExpenseSection(),
-                  IncomeSection(),
+                  IncomeSection(
+                    isHarvesting: isHarvesting,
+                  ),
                 ],
               ),
             ],
@@ -334,7 +338,86 @@ class ExpenseTile extends StatelessWidget {
 }
 
 class IncomeSection extends StatelessWidget {
-  const IncomeSection({super.key});
+  const IncomeSection({super.key, required this.isHarvesting});
+  final bool isHarvesting;
+
+  String getLocalizedUnit(String key, Locale locale) {
+    final unit = priceUnitMap.firstWhere(
+      (e) => e.key == key,
+      orElse: () => UnitOption(key: key, en: key, hi: key),
+    );
+
+    return locale.languageCode == 'hi' ? unit.hi : unit.en;
+  }
+
+  Widget yieldInfo(BuildContext ctx, String yieldAmount, String yieldUnit) {
+    final locale = AppLocalization.of(ctx).locale;
+    final isHindi = locale.languageCode == 'hi';
+
+    final title = isHindi ? "इस फसल की कुल उपज" : "Total Yield for this Crop";
+
+    final unit = getLocalizedUnit(yieldUnit, locale);
+
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.green.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.green.shade100),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.grass,
+                  size: 20,
+                  color: Colors.green,
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              /// TEXT CONTENT
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// Label
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  /// Value (highlighted)
+                  Text(
+                    "$yieldAmount $unit",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -347,7 +430,10 @@ class IncomeSection extends StatelessWidget {
           ));
         }
 
-        if (!vm.kamai!.isKamaiActive && !vm.kamai!.isFinalSubmitted && vm.incomes.isEmpty) {
+        if (!isHarvesting &&
+            !vm.kamai!.isFinalSubmitted &&
+            vm.kamai!.totalYield == 0 &&
+            vm.incomes.isEmpty) {
           return Padding(
             padding: const EdgeInsets.all(22.0),
             child: Column(
@@ -372,52 +458,56 @@ class IncomeSection extends StatelessWidget {
           );
         }
 
-        if (vm.incomes.isEmpty) {
+        if (isHarvesting && vm.kamai!.totalYield == 0 && vm.incomes.isEmpty) {
           return Center(
               child: Text(
-            AppLocalization.of(context).getTranslatedValue("noIncome").toString(),
+            AppLocalization.of(context).getTranslatedValue("oldNoIncome").toString(),
             textAlign: TextAlign.center,
           ));
         }
 
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ExpenseSummaryCard(
-                kamai: vm.kamai!,
-                isIncomeScreen: true,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 16),
-                child: Text(
-                  AppLocalization.of(context).getTranslatedValue("allIncomes").toString(),
-                  style: TextStyle(
-                      color: AppColor.darkBlackColor, fontSize: 16, fontWeight: FontWeight.w500),
+        return vm.incomes.isEmpty && vm.kamai!.totalYield > 0
+            ? yieldInfo(context, vm.kamai!.totalYield.toStringAsFixed(0), vm.kamai!.yieldUnit)
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ExpenseSummaryCard(
+                      kamai: vm.kamai!,
+                      isIncomeScreen: true,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0, top: 16),
+                      child: Text(
+                        AppLocalization.of(context).getTranslatedValue("allIncomes").toString(),
+                        style: TextStyle(
+                            color: AppColor.darkBlackColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: vm.incomes.length,
+                        itemBuilder: (_, i) {
+                          final isLast = i == vm.incomes.length - 1;
+                          return IncomeTile(
+                            income: vm.incomes[i],
+                            isLast: isLast,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: vm.incomes.length,
-                  itemBuilder: (_, i) {
-                    final isLast = i == vm.incomes.length - 1;
-                    return IncomeTile(
-                      income: vm.incomes[i],
-                      isLast: isLast,
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
+              );
       },
     );
   }
