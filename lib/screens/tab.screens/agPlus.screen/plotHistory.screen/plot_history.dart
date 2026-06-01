@@ -64,11 +64,13 @@ class PlotHistoryScreen extends HookWidget {
                                     Utils.model(
                                         context,
                                         OldExpenseCropBasis(
-                                            plotId: provider.plotHistory[index]['fieldRef'],
-                                            cropHistoryId: provider.plotHistory[index]
-                                                ['cropHistoryId'],
-                                            cropName: provider.plotHistory[index]['cropName'],
-                                            cropNameHi: provider.plotHistory[index]['cropNameHi']));
+                                          plotId: provider.plotHistory[index]['fieldRef'],
+                                          cropHistoryId: provider.plotHistory[index]
+                                              ['cropHistoryId'],
+                                          cropName: provider.plotHistory[index]['cropName'],
+                                          cropNameHi: provider.plotHistory[index]['cropNameHi'],
+                                          isHarvesting: provider.plotHistory[index]['isHarvesting'],
+                                        ));
                                     return;
                                   }
                                 },

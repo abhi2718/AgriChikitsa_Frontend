@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/crop_model.dart';
 import 'package:agriChikitsa/model/mandi_field_model.dart';
@@ -486,7 +485,6 @@ class AGPlusViewModel with ChangeNotifier {
 
   List<Plots> mapFields(dynamic fields) {
     return List<Plots>.from(fields.map((field) {
-      log(field.toString());
       return Plots.fromJson(field);
     }));
   }
@@ -552,7 +550,6 @@ class AGPlusViewModel with ChangeNotifier {
       };
       final data = await _agPlusRepository.createPlot(payload);
       if (data['message'] == "Data added Successfully") {
-        log(data.toString());
         Plots newPlot;
         if (!isBackPressed) {
           newPlot = Plots(
@@ -1034,6 +1031,10 @@ class AGPlusViewModel with ChangeNotifier {
           sowingDate != null ? sowingDate.toLocal().toString().split(' ')[0] : null;
       selectedPlot.currentStageId = data['data']["currentCropStage"] ?? "";
       selectedPlot.cropHistoryId = data['data']["cropHistoryId"] ?? "";
+      selectedPlot.isYieldAdded = false;
+      selectedPlot.isHarvesting = data['data']["isHarvesting"] ?? false;
+      selectedPlot.isCropCycleComplete = data['data']["isCropCycleComplete"] ?? false;
+      selectedPlot.kharchaKamaiRecord = null;
       if (context.mounted) {
         Navigator.pop(context);
         Navigator.pop(context);
@@ -1370,6 +1371,7 @@ class AGPlusViewModel with ChangeNotifier {
           }
         });
         yieldController.clear();
+        selectedPlot.kharchaKamaiRecord = null;
         selectedPlot.isHarvesting = true;
         setSelectedYieldUnit("kg");
         setIsYieldDataLoader(false);

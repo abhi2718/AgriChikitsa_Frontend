@@ -384,6 +384,7 @@ class IncomeSection extends StatelessWidget {
                 Text(
                   AppLocalization.of(context).getTranslatedValue("noKamaiActive").toString(),
                   style: TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),

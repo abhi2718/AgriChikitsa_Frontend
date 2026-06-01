@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
-import 'package:agriChikitsa/screens/auth.screen/select_language.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

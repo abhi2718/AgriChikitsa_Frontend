@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/expense_income_model.dart';
 import 'package:agriChikitsa/model/plots.dart';
@@ -318,7 +316,6 @@ class ExpenseViewModel with ChangeNotifier {
         cropHistoryId,
       );
       if (res["success"]) {
-        log(res.toString());
         kamai = KharchaKamaiModel.fromJson(res["data"]);
       }
       _expenses

@@ -1,6 +1,6 @@
 class AppUrl {
-  // static const String baseUrl = "https://agrichikitsa.org/api/v1";
-  static const String baseUrl = "http://192.168.0.195:9090/api/v1"; //For Local Testing
+  static const String baseUrl = "https://agrichikitsa.org/api/v1";
+  // static const String baseUrl = "http://192.168.0.195:9090/api/v1"; //For Local Testing
   static const String statsEndpoint = '$baseUrl/stats';
   static const String shareLinkEndpoint = 'https://agrichikitsa.org/post';
   static const String loginEndPoint = '$baseUrl/auth/checkuser';

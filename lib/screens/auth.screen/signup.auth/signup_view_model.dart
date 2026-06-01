@@ -21,8 +21,8 @@ class SignUpViewModel with ChangeNotifier {
   var mobileNumber = '';
   var firebaseId = '';
   var village = '';
-  dynamic stateList = [];
-  dynamic districtList = [];
+  List<StateModel> stateList = [];
+  List<DistrictModel> districtList = [];
   StateModel? selectedState;
   var selectedDistrictHi = '';
   var selectedDistrictEn = '';

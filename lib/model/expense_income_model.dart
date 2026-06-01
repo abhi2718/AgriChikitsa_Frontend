@@ -12,6 +12,7 @@ class KharchaKamaiModel {
   final List<IncomeModel> incomeRecords;
 
   final double totalYield;
+  final String yieldUnit;
   double totalIncome;
   double netProfit;
   final double profitPerUnit;
@@ -29,6 +30,7 @@ class KharchaKamaiModel {
     required this.totalExpenditures,
     required this.incomeRecords,
     required this.totalYield,
+    required this.yieldUnit,
     required this.totalIncome,
     required this.netProfit,
     required this.profitPerUnit,
@@ -65,12 +67,14 @@ class KharchaKamaiModel {
       status: json['status'] ?? 'active',
       isKamaiActive: json['isKamaiActive'] ?? false,
       isFinalSubmitted: json['isFinalSubmitted'] ?? false,
+      yieldUnit: json['yieldUnit'] ?? '',
     );
   }
 
   KharchaKamaiModel copyWith({
     bool? isFinalSubmitted,
     TotalExpenditures? totalExpenditures,
+    String? yieldUnit,
   }) {
     return KharchaKamaiModel(
       id: id,
@@ -87,6 +91,7 @@ class KharchaKamaiModel {
       status: status,
       isKamaiActive: isKamaiActive,
       isFinalSubmitted: isFinalSubmitted ?? this.isFinalSubmitted,
+      yieldUnit: yieldUnit ?? this.yieldUnit,
     );
   }
 }
