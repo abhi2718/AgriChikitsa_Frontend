@@ -866,6 +866,7 @@ class AGPlusViewModel with ChangeNotifier {
           "irrigationMode": "Drip",
           "block": "Central",
           "cropName": selectedPlot.cropName,
+          "cropId": selectedPlot.cropId,
           "fieldId": fieldId
         };
         requestStatus = false;
@@ -886,7 +887,7 @@ class AGPlusViewModel with ChangeNotifier {
       if (context.mounted) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
+            Utils.getBackendErrorMessage(error, context),
             context);
       }
     }
