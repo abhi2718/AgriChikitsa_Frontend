@@ -1,10 +1,18 @@
 class AppException implements Exception {
-  final String _message;
-  AppException(this._message,);
+  final dynamic message;
+  AppException(this.message);
 
   @override
   String toString() {
-    return _message;
+    if (message is Map) {
+      if (message.containsKey("message_en") && message["message_en"] != null) {
+        return message["message_en"].toString();
+      }
+      if (message.containsKey("message") && message["message"] != null) {
+        return message["message"].toString();
+      }
+    }
+    return message.toString();
   }
 }
 

@@ -32,7 +32,7 @@ android {
         applicationId = "com.freshnic.agriChikitsa.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
+        versionCode = 13
         versionName = flutter.versionName
         multiDexEnabled = true
         ndk {

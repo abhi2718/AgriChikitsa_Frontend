@@ -2,7 +2,6 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/ndvi_model.dart';
 import 'package:agriChikitsa/repository/AG+.repo/ag_plus_repository.dart';
 import 'package:agriChikitsa/utils/utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class NDVIViewModel with ChangeNotifier {
@@ -35,18 +34,10 @@ class NDVIViewModel with ChangeNotifier {
       return {...res, "success": true};
     } catch (error) {
       setAddForMonitoringLoader(false);
-      if (kDebugMode) {
-        if (context.mounted) {
-          Utils.flushBarErrorMessage(
-              AppLocalization.of(context).getTranslatedValue("alert").toString(),
-              error.toString(),
-              context);
-        }
-      }
       if (context.mounted) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            AppLocalization.of(context).getTranslatedValue("errorMessage").toString(),
+            Utils.getBackendErrorMessage(error, context),
             context);
       }
       return {"success": false};
@@ -68,14 +59,12 @@ class NDVIViewModel with ChangeNotifier {
       }
     } catch (error) {
       setReponseLoader(false);
-      if (kDebugMode) {
-        if (context.mounted) {
-          Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            error.toString(),
-            context,
-          );
-        }
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          Utils.getBackendErrorMessage(error, context),
+          context,
+        );
       }
     }
     return false;

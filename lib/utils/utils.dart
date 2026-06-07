@@ -96,6 +96,38 @@ class Utils {
     );
   }
 
+  static String getBackendErrorMessage(dynamic error, BuildContext context) {
+    if (error is AppException) {
+      final message = error.message;
+      if (message is Map) {
+        final localeCode = AppLocalization.of(context).locale.languageCode;
+        if (localeCode == "hi" && message.containsKey("message_hi") && message["message_hi"] != null) {
+          return message["message_hi"].toString();
+        }
+        if (message.containsKey("message_en") && message["message_en"] != null) {
+          return message["message_en"].toString();
+        }
+        if (message.containsKey("message") && message["message"] != null) {
+          return message["message"].toString();
+        }
+      }
+      return message.toString();
+    }
+    if (error is Map) {
+      final localeCode = AppLocalization.of(context).locale.languageCode;
+      if (localeCode == "hi" && error.containsKey("message_hi") && error["message_hi"] != null) {
+        return error["message_hi"].toString();
+      }
+      if (error.containsKey("message_en") && error["message_en"] != null) {
+        return error["message_en"].toString();
+      }
+      if (error.containsKey("message") && error["message"] != null) {
+        return error["message"].toString();
+      }
+    }
+    return error.toString();
+  }
+
   static void snackbar(String message, BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

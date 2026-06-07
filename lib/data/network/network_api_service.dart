@@ -102,11 +102,11 @@ class NetworkApiService extends BaseApiServices {
       case 201:
         return body;
       case 400:
-        throw BadRequestException(body["message"].toString());
+        throw BadRequestException(body);
       case 404:
-        throw UnAuthorisedException(body["message"].toString());
+        throw UnAuthorisedException(body);
       default:
-        throw FetchDataException(body["message"].toString());
+        throw FetchDataException(body);
     }
   }
 
