@@ -173,76 +173,78 @@ class RegisterUser extends HookWidget {
                             const SizedBox(
                               height: 20,
                             ),
-                            useViewModel.districtList.isEmpty
-                                ? InkWell(
-                                    onTap: () => Utils.snackbar(
-                                        AppLocalization.of(context)
-                                            .getTranslatedValue("validateState")
-                                            .toString(),
-                                        context),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                                      width: dimension['width']! * 0.90,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                        color: Colors.white,
-                                      ),
-                                      child: DropdownButton(
-                                          underline: Container(),
-                                          isExpanded: true,
-                                          hint: BaseText(
-                                            title: AppLocalization.of(context)
-                                                .getTranslatedValue("signupFormSelectDistrict")
+                            Consumer<SignUpViewModel>(
+                              builder: (context, provider, child) {
+                                return provider.districtList.isEmpty
+                                    ? InkWell(
+                                        onTap: () => Utils.snackbar(
+                                            AppLocalization.of(context)
+                                                .getTranslatedValue("validateState")
                                                 .toString(),
-                                            style: const TextStyle(),
+                                            context),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          width: dimension['width']! * 0.90,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                            color: Colors.white,
                                           ),
-                                          value: null,
-                                          alignment: AlignmentDirectional.centerStart,
-                                          items: const [],
-                                          onChanged: (_) {}),
-                                    ),
-                                  )
-                                : Consumer<SignUpViewModel>(builder: (context, provider, child) {
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                                      width: dimension['width']! * 0.90,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                        color: Colors.white,
-                                      ),
-                                      child: DropdownButton<DistrictModel>(
-                                          underline: Container(),
-                                          isExpanded: true,
-                                          hint: BaseText(
-                                            title: AppLocalization.of(context)
-                                                .getTranslatedValue("signupFormSelectDistrict")
-                                                .toString(),
-                                            style: const TextStyle(),
-                                          ),
-                                          value: provider.selectedDistrict,
-                                          alignment: AlignmentDirectional.centerStart,
-                                          items: provider.districtList
-                                              .map<DropdownMenuItem<DistrictModel>>((value) {
-                                            return DropdownMenuItem<DistrictModel>(
-                                              value: value,
-                                              child: BaseText(
+                                          child: DropdownButton(
+                                              underline: Container(),
+                                              isExpanded: true,
+                                              hint: BaseText(
                                                 title: AppLocalization.of(context)
-                                                            .locale
-                                                            .languageCode ==
-                                                        "en"
-                                                    ? value.name
-                                                    : value.nameHi,
-                                                style: const TextStyle(fontSize: 14),
+                                                    .getTranslatedValue("signupFormSelectDistrict")
+                                                    .toString(),
+                                                style: const TextStyle(),
                                               ),
-                                            );
-                                          }).toList(),
-                                          onChanged: (value) {
-                                            if (value != null) {
-                                              provider.setSelectedDistrict(value);
-                                            }
-                                          }),
-                                    );
-                                  }),
+                                              value: null,
+                                              alignment: AlignmentDirectional.centerStart,
+                                              items: const [],
+                                              onChanged: (_) {}),
+                                        ),
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        width: dimension['width']! * 0.90,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                          color: Colors.white,
+                                        ),
+                                        child: DropdownButton<DistrictModel>(
+                                            underline: Container(),
+                                            isExpanded: true,
+                                            hint: BaseText(
+                                              title: AppLocalization.of(context)
+                                                  .getTranslatedValue("signupFormSelectDistrict")
+                                                  .toString(),
+                                              style: const TextStyle(),
+                                            ),
+                                            value: provider.selectedDistrict,
+                                            alignment: AlignmentDirectional.centerStart,
+                                            items: provider.districtList
+                                                .map<DropdownMenuItem<DistrictModel>>((value) {
+                                              return DropdownMenuItem<DistrictModel>(
+                                                value: value,
+                                                child: BaseText(
+                                                  title: AppLocalization.of(context)
+                                                              .locale
+                                                              .languageCode ==
+                                                          "en"
+                                                      ? value.name
+                                                      : value.nameHi,
+                                                  style: const TextStyle(fontSize: 14),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (value) {
+                                              if (value != null) {
+                                                provider.setSelectedDistrict(value);
+                                              }
+                                            }),
+                                      );
+                              },
+                            ),
                             const SizedBox(
                               height: 20,
                             ),
@@ -266,76 +268,78 @@ class RegisterUser extends HookWidget {
                             const SizedBox(
                               height: 20,
                             ),
-                            useViewModel.blockList.isEmpty
-                                ? InkWell(
-                                    onTap: () => Utils.snackbar(
-                                        AppLocalization.of(context)
-                                            .getTranslatedValue("validateDistrict")
-                                            .toString(),
-                                        context),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                                      width: dimension['width']! * 0.90,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                        color: Colors.white,
-                                      ),
-                                      child: DropdownButton(
-                                          underline: Container(),
-                                          isExpanded: true,
-                                          hint: BaseText(
-                                            title: AppLocalization.of(context)
-                                                .getTranslatedValue("signupFormSelectBlock")
+                            Consumer<SignUpViewModel>(
+                              builder: (context, provider, child) {
+                                return provider.blockList.isEmpty
+                                    ? InkWell(
+                                        onTap: () => Utils.snackbar(
+                                            AppLocalization.of(context)
+                                                .getTranslatedValue("validateDistrict")
                                                 .toString(),
-                                            style: const TextStyle(),
+                                            context),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          width: dimension['width']! * 0.90,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                            color: Colors.white,
                                           ),
-                                          value: null,
-                                          alignment: AlignmentDirectional.centerStart,
-                                          items: const [],
-                                          onChanged: (_) {}),
-                                    ),
-                                  )
-                                : Consumer<SignUpViewModel>(builder: (context, provider, child) {
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                                      width: dimension['width']! * 0.90,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                        color: Colors.white,
-                                      ),
-                                      child: DropdownButton<BlockModel>(
-                                          underline: Container(),
-                                          isExpanded: true,
-                                          hint: BaseText(
-                                            title: AppLocalization.of(context)
-                                                .getTranslatedValue("signupFormSelectBlock")
-                                                .toString(),
-                                            style: const TextStyle(),
-                                          ),
-                                          value: provider.selectedBlock,
-                                          alignment: AlignmentDirectional.centerStart,
-                                          items: provider.blockList
-                                              .map<DropdownMenuItem<BlockModel>>((value) {
-                                            return DropdownMenuItem<BlockModel>(
-                                              value: value,
-                                              child: BaseText(
+                                          child: DropdownButton(
+                                              underline: Container(),
+                                              isExpanded: true,
+                                              hint: BaseText(
                                                 title: AppLocalization.of(context)
-                                                            .locale
-                                                            .languageCode ==
-                                                        "en"
-                                                    ? value.name
-                                                    : value.nameHi,
-                                                style: const TextStyle(fontSize: 14),
+                                                    .getTranslatedValue("signupFormSelectBlock")
+                                                    .toString(),
+                                                style: const TextStyle(),
                                               ),
-                                            );
-                                          }).toList(),
-                                          onChanged: (value) {
-                                            if (value != null) {
-                                              provider.setSelectedBlock(value);
-                                            }
-                                          }),
-                                    );
-                                  }),
+                                              value: null,
+                                              alignment: AlignmentDirectional.centerStart,
+                                              items: const [],
+                                              onChanged: (_) {}),
+                                        ),
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        width: dimension['width']! * 0.90,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                          color: Colors.white,
+                                        ),
+                                        child: DropdownButton<BlockModel>(
+                                            underline: Container(),
+                                            isExpanded: true,
+                                            hint: BaseText(
+                                              title: AppLocalization.of(context)
+                                                  .getTranslatedValue("signupFormSelectBlock")
+                                                  .toString(),
+                                              style: const TextStyle(),
+                                            ),
+                                            value: provider.selectedBlock,
+                                            alignment: AlignmentDirectional.centerStart,
+                                            items: provider.blockList
+                                                .map<DropdownMenuItem<BlockModel>>((value) {
+                                              return DropdownMenuItem<BlockModel>(
+                                                value: value,
+                                                child: BaseText(
+                                                  title: AppLocalization.of(context)
+                                                              .locale
+                                                              .languageCode ==
+                                                          "en"
+                                                      ? value.name
+                                                      : value.nameHi,
+                                                  style: const TextStyle(fontSize: 14),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (value) {
+                                              if (value != null) {
+                                                provider.setSelectedBlock(value);
+                                              }
+                                            }),
+                                      );
+                              },
+                            ),
                             const SizedBox(
                               height: 40,
                             ),

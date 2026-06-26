@@ -157,12 +157,12 @@ class SignUpViewModel with ChangeNotifier {
       );
       
       if (stateData.isNotEmpty) {
-        final districts = stateData['districts'] as List<dynamic>;
+        final districts = List<Map<String, dynamic>>.from(stateData['districts']);
         final districtData = districts.firstWhere(
           (element) => element['name'] == districtNameEn,
-          orElse: () => null,
+          orElse: () => <String, dynamic>{},
         );
-        if (districtData != null) {
+        if (districtData.isNotEmpty) {
           blockList = mapBlocks(districtData['blocks']);
         }
       }
