@@ -272,23 +272,82 @@ class RegisterUser extends HookWidget {
                             const SizedBox(
                               height: 20,
                             ),
-                            Consumer<SignUpViewModel>(
-                              builder: (context, provider, child) => Input(
-                                labelText: AppLocalization.of(context)
-                                    .getTranslatedValue("signupFormBlock")
-                                    .toString(),
-                                keyboardType: TextInputType.name,
-                                textInputAction: TextInputAction.done,
-                                suffixIcon: useViewModel.suffixIconForVillage(),
-                                validator: (value) =>
-                                    useViewModel.blockFieldValidator(context, value),
-                                onSaved: useViewModel.onSavedvillageField,
-                                onChanged: (value) => useViewModel.onSavedBlockField(value),
-                                onFieldSubmitted: (value) {
-                                  useViewModel.setBlock(value);
-                                },
-                              ),
-                            ),
+                            useViewModel.blockList.isEmpty
+                                ? InkWell(
+                                    onTap: () => Utils.snackbar(
+                                        AppLocalization.of(context)
+                                            .getTranslatedValue("validateDistrict")
+                                            .toString(),
+                                        context),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      width: dimension['width']! * 0.90,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                        color: Colors.white,
+                                      ),
+                                      child: DropdownButton(
+                                          underline: Container(),
+                                          isExpanded: true,
+                                          hint: BaseText(
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectBlock")
+                                                .toString(),
+                                            style: const TextStyle(),
+                                          ),
+                                          value: null,
+                                          alignment: AlignmentDirectional.centerStart,
+                                          items: const [],
+                                          onChanged: (_) {}),
+                                    ),
+                                  )
+                                : Consumer<SignUpViewModel>(builder: (context, provider, child) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      width: dimension['width']! * 0.90,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                        color: Colors.white,
+                                      ),
+                                      child: DropdownButton(
+                                          underline: Container(),
+                                          isExpanded: true,
+                                          hint: BaseText(
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectBlock")
+                                                .toString(),
+                                            style: const TextStyle(),
+                                          ),
+                                          value: provider.selectedBlockHi.isEmpty
+                                              ? null
+                                              : provider.selectedBlockHi,
+                                          alignment: AlignmentDirectional.centerStart,
+                                          items: provider.blockList
+                                              .map<DropdownMenuItem<String>>((value) {
+                                            return DropdownMenuItem<String>(
+                                              onTap: () {
+                                                provider.setSelectedBlockEn(value);
+                                              },
+                                              value:
+                                                  AppLocalization.of(context).locale.toString() ==
+                                                          "en"
+                                                      ? value.name
+                                                      : value.nameHi,
+                                              child: BaseText(
+                                                title:
+                                                    AppLocalization.of(context).locale.toString() ==
+                                                            "en"
+                                                        ? value.name
+                                                        : value.nameHi,
+                                                style: const TextStyle(fontSize: 14),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            provider.setSelectedBlock(value!);
+                                          }),
+                                    );
+                                  }),
                             const SizedBox(
                               height: 40,
                             ),

@@ -25,3 +25,17 @@ class DistrictModel {
     );
   }
 }
+
+class BlockModel {
+  final String name;
+  final String nameHi;
+
+  BlockModel({required this.name, required this.nameHi});
+
+  factory BlockModel.fromJson(Map<String, dynamic> json) {
+    return BlockModel(
+      name: json['name'],
+      nameHi: json['nameHi'],
+    );
+  }
+}

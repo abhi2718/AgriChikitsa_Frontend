@@ -292,7 +292,7 @@ class ExpenseViewModel with ChangeNotifier {
       final payload = {"userId": userId, "feildId": fieldId, "cropHistoryId": cropHistoryId};
       final res = await _repo.createExpenseRecord(payload);
       if (res["success"]) {
-        selectedPlot.kharchaKamaiRecord = res["data"]["id"];
+        selectedPlot.kharchaKamaiRecord = res["data"]["_id"];
         kamai = KharchaKamaiModel.fromJson(res["data"]);
       }
     } catch (error) {

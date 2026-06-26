@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/states_district_model.dart';
+import 'package:agriChikitsa/res/up_location_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,10 +24,12 @@ class SignUpViewModel with ChangeNotifier {
   var village = '';
   dynamic stateList = [];
   dynamic districtList = [];
+  dynamic blockList = [];
   StateModel? selectedState;
   var selectedDistrictHi = '';
   var selectedDistrictEn = '';
-  var block = '';
+  var selectedBlockHi = '';
+  var selectedBlockEn = '';
   dynamic userProfile;
 
   void setSelectedState(BuildContext context, StateModel value) {
@@ -38,10 +41,20 @@ class SignUpViewModel with ChangeNotifier {
   void setSelectedDistrict(value) {
     selectedDistrictHi = value;
     notifyListeners();
+    fetchBlocks(selectedDistrictEn);
   }
 
   void setSelectedDistrictEn(value) {
     selectedDistrictEn = value.name;
+  }
+
+  void setSelectedBlock(value) {
+    selectedBlockHi = value;
+    notifyListeners();
+  }
+
+  void setSelectedBlockEn(value) {
+    selectedBlockEn = value.name;
   }
 
   bool get loading {
@@ -71,11 +84,6 @@ class SignUpViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setBlock(String value) {
-    block = value;
-    notifyListeners();
-  }
-
   void setUserInfo(String name, String companyId) {
     userName = name;
     notifyListeners();
@@ -87,8 +95,7 @@ class SignUpViewModel with ChangeNotifier {
 
   void fetchStates(BuildContext context) async {
     try {
-      final data = await _authRepository.fetchStates();
-      stateList = mapStates(data['states']);
+      stateList = mapStates(upLocationData);
       notifyListeners();
     } catch (error) {
       Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
@@ -102,13 +109,22 @@ class SignUpViewModel with ChangeNotifier {
     }));
   }
 
-  void fetchDistrict(BuildContext context, String selectedDistrict) async {
+  void fetchDistrict(BuildContext context, String selectedStateName) async {
     try {
       districtList.clear();
       selectedDistrictEn = "";
       selectedDistrictHi = "";
-      final data = await _authRepository.fetchDistricts(selectedDistrict);
-      districtList = mapDistricts(data['districts']);
+      blockList.clear();
+      selectedBlockEn = "";
+      selectedBlockHi = "";
+      
+      final stateData = upLocationData.firstWhere(
+        (element) => element['state'] == selectedStateName,
+        orElse: () => {},
+      );
+      if (stateData.isNotEmpty) {
+        districtList = mapDistricts(stateData['districts']);
+      }
       notifyListeners();
     } catch (error) {
       if (kDebugMode && context.mounted) {
@@ -126,31 +142,68 @@ class SignUpViewModel with ChangeNotifier {
     }));
   }
 
+  void fetchBlocks(String districtNameEn) {
+    try {
+      blockList.clear();
+      selectedBlockEn = "";
+      selectedBlockHi = "";
+      
+      if (selectedState == null) return;
+      
+      final stateData = upLocationData.firstWhere(
+        (element) => element['state'] == selectedState!.state,
+        orElse: () => {},
+      );
+      
+      if (stateData.isNotEmpty) {
+        final districts = stateData['districts'] as List<dynamic>;
+        final districtData = districts.firstWhere(
+          (element) => element['name'] == districtNameEn,
+          orElse: () => null,
+        );
+        if (districtData != null) {
+          blockList = mapBlocks(districtData['blocks']);
+        }
+      }
+      notifyListeners();
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error fetching blocks: $error');
+      }
+    }
+  }
+
+  List<BlockModel> mapBlocks(dynamic blocks) {
+    return List<BlockModel>.from(blocks.map((block) {
+      return BlockModel.fromJson(block);
+    }));
+  }
+
   void saveRegisterUserForm(BuildContext context) {
     final isValid = registerUserformKey.currentState?.validate();
     if (!isValid!) {
       return;
     }
-    if (selectedState == null || selectedDistrictHi.isEmpty || village.isEmpty) {
+    if (selectedState == null || selectedDistrictHi.isEmpty || selectedBlockHi.isEmpty || village.isEmpty) {
       if (selectedState == null) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             AppLocalization.of(context).getTranslatedValue("validateState").toString(),
             context);
-      } else if (village.isEmpty) {
+      } else if (selectedDistrictHi.isEmpty) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            AppLocalization.of(context).getTranslatedValue("validateVillage").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateDistrict").toString(),
             context);
-      } else if (block.isEmpty) {
+      } else if (selectedBlockHi.isEmpty) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             AppLocalization.of(context).getTranslatedValue("validateBlock").toString(),
             context);
-      } else {
+      } else if (village.isEmpty) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            AppLocalization.of(context).getTranslatedValue("validateDistrict").toString(),
+            AppLocalization.of(context).getTranslatedValue("validateVillage").toString(),
             context);
       }
       return;
@@ -167,8 +220,8 @@ class SignUpViewModel with ChangeNotifier {
             "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
-            "block_en": block,
-            "block_hi": block,
+            "block_en": selectedBlockEn,
+            "block_hi": selectedBlockHi,
             "village": village
           }
         : {
@@ -181,8 +234,8 @@ class SignUpViewModel with ChangeNotifier {
             "state_hi": selectedState!.stateHi,
             "district_en": selectedDistrictEn,
             "district_hi": selectedDistrictHi,
-            "block_en": block,
-            "block_hi": block,
+            "block_en": selectedBlockEn,
+            "block_hi": selectedBlockHi,
             "village": village
           };
     FocusManager.instance.primaryFocus!.unfocus();
@@ -207,23 +260,12 @@ class SignUpViewModel with ChangeNotifier {
     return null;
   }
 
-  String? blockFieldValidator(BuildContext context, value) {
-    if (value!.isEmpty) {
-      return AppLocalization.of(context).getTranslatedValue("validateBlock").toString();
-    }
-    return null;
-  }
-
   void onSavedNameField(value) {
     userName = value;
   }
 
   void onSavedvillageField(value) {
     village = value;
-  }
-
-  void onSavedBlockField(value) {
-    block = value;
   }
 
   Widget suffixIconForEmail() {
@@ -291,7 +333,7 @@ class SignUpViewModel with ChangeNotifier {
   }
 
   void disposeRegisterUserformKey() {
-    registerUserformKey.currentState?.dispose();
+    registerUserformKey.currentState?.reset();
   }
 
   void disposeValues() {
@@ -300,12 +342,14 @@ class SignUpViewModel with ChangeNotifier {
     email = '';
     mobileNumber = '';
     districtList = [];
+    blockList = [];
     selectedState = null;
     selectedDistrictHi = '';
     selectedDistrictEn = '';
-    block = '';
+    selectedBlockHi = '';
+    selectedBlockEn = '';
     village = '';
     userProfile = null;
-    registerUserformKey.currentState?.dispose();
+    registerUserformKey.currentState?.reset();
   }
 }
