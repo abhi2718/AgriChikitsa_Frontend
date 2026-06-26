@@ -52,7 +52,7 @@ class Plots {
 
   factory Plots.fromJson(Map<String, dynamic> json) {
     return Plots(
-        plotImage: json['fieldImage'],
+        plotImage: json['fieldImage'] ?? '',
         cropImage: json['crop']?['image'],
         cropId: json['crop']?['_id'],
         cropName: json["crop"] != null ? json['crop']['name'] : "N/A",
