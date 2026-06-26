@@ -87,7 +87,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Moradabad",
-        "nameHi": "सिविल लाइनें",
+        "nameHi": "मुरादाबाद",
         "blocks": [
           {
             "name": "Thakurdwara",
@@ -99,7 +99,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Moradabad",
-            "nameHi": "सिविल लाइनें"
+            "nameHi": "मुरादाबाद"
           },
           {
             "name": "Bilari",
@@ -147,7 +147,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Jyotiba Phule Nagar",
-        "nameHi": "ज्योतिबा फुले नगर जिला",
+        "nameHi": "ज्योतिबा फुले नगर",
         "blocks": [
           {
             "name": "Dhanaura",
@@ -227,7 +227,7 @@ const List<Map<String, dynamic>> upLocationData = [
         "blocks": [
           {
             "name": "Dadri",
-            "nameHi": "दादरी, उत्तर प्रदेश"
+            "nameHi": "दादरी"
           },
           {
             "name": "Gautam Buddha Nagar",
@@ -279,11 +279,11 @@ const List<Map<String, dynamic>> upLocationData = [
         "blocks": [
           {
             "name": "Khair",
-            "nameHi": "खैर, कत्था"
+            "nameHi": "खैर"
           },
           {
             "name": "Gabhana",
-            "nameHi": "गाबाना"
+            "nameHi": "गभाना"
           },
           {
             "name": "Atrauli",
@@ -323,7 +323,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Mathura",
-        "nameHi": "Hindi",
+        "nameHi": "मथुरा",
         "blocks": [
           {
             "name": "Chhata",
@@ -331,7 +331,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Mat",
-            "nameHi": "मैटalbania_ districts. kgm"
+            "nameHi": "मांट"
           },
           {
             "name": "Mahavan",
@@ -339,7 +339,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Mathura",
-            "nameHi": "Hindi"
+            "nameHi": "मथुरा"
           }
         ]
       },
@@ -369,7 +369,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Bah",
-            "nameHi": "बाहEsfand"
+            "nameHi": "बाह"
           }
         ]
       },
@@ -653,7 +653,7 @@ const List<Map<String, dynamic>> upLocationData = [
         "blocks": [
           {
             "name": "Maharajganj",
-            "nameHi": "s / o ka kya matlab hai iska"
+            "nameHi": "महाराजगंज"
           },
           {
             "name": "Tiloi",
@@ -683,7 +683,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Farrukhabad",
-        "nameHi": "Hariyana",
+        "nameHi": "फर्रुखाबाद",
         "blocks": [
           {
             "name": "Kaimganj",
@@ -695,7 +695,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Farrukhabad",
-            "nameHi": "Hariyana"
+            "nameHi": "फर्रुखाबाद"
           }
         ]
       },
@@ -819,7 +819,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Orai",
-            "nameHi": "ओआरएआई"
+            "nameHi": "उरई"
           },
           {
             "name": "Konch",
@@ -833,7 +833,7 @@ const List<Map<String, dynamic>> upLocationData = [
         "blocks": [
           {
             "name": "Moth",
-            "nameHi": "Description"
+            "nameHi": "मोठ"
           },
           {
             "name": "Garautha",
@@ -895,7 +895,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Mahoba",
-        "nameHi": "Do not call malik said bro",
+        "nameHi": "महोबा",
         "blocks": [
           {
             "name": "Kulpahar",
@@ -907,17 +907,17 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Mahoba",
-            "nameHi": "Do not call malik said bro"
+            "nameHi": "महोबा"
           }
         ]
       },
       {
         "name": "Banda",
-        "nameHi": "बंद",
+        "nameHi": "बांदा",
         "blocks": [
           {
             "name": "Banda",
-            "nameHi": "बंद"
+            "nameHi": "बांदा"
           },
           {
             "name": "Baberu",
@@ -929,7 +929,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Naraini",
-            "nameHi": "नारायणी"
+            "nameHi": "नरैनी"
           }
         ]
       },
@@ -943,7 +943,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Mau",
-            "nameHi": "mau"
+            "nameHi": "मऊ"
           }
         ]
       },
@@ -975,7 +975,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Kunda",
-            "nameHi": "कुंदाCity name (optional, probably does not need a translation)"
+            "nameHi": "कुंडा"
           },
           {
             "name": "Pratapgarh",
@@ -983,7 +983,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Patti",
-            "nameHi": "Patti"
+            "nameHi": "पट्टी"
           },
           {
             "name": "Raniganj",
@@ -1005,7 +1005,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Chail",
-            "nameHi": "Chail"
+            "nameHi": "चायल"
           }
         ]
       },
@@ -1015,7 +1015,7 @@ const List<Map<String, dynamic>> upLocationData = [
         "blocks": [
           {
             "name": "Soraon",
-            "nameHi": "सोराँ"
+            "nameHi": "सोरांव"
           },
           {
             "name": "Phulpur",
@@ -1069,7 +1069,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Ramsanehighat",
-            "nameHi": "रामसेनहिघाट"
+            "nameHi": "रामसनेहीघाट"
           },
           {
             "name": "Haidergarh",
@@ -1105,7 +1105,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Ambedkar Nagar",
-        "nameHi": "जिला अंबेडकर नगर ",
+        "nameHi": "अंबेडकर नगर",
         "blocks": [
           {
             "name": "Tanda",
@@ -1213,7 +1213,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Utraula",
-            "nameHi": "Utraula"
+            "nameHi": "उतरौला"
           }
         ]
       },
@@ -1267,7 +1267,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Basti",
-        "nameHi": "Basti",
+        "nameHi": "बस्ती",
         "blocks": [
           {
             "name": "Bhanpur",
@@ -1279,7 +1279,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Basti",
-            "nameHi": "Basti"
+            "nameHi": "बस्ती"
           },
           {
             "name": "Rudhauli",
@@ -1323,7 +1323,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Maharajganj",
-            "nameHi": "s / o ka kya matlab hai iska"
+            "nameHi": "महाराजगंज"
           }
         ]
       },
@@ -1357,7 +1357,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Gola",
-            "nameHi": "Gola"
+            "nameHi": "गोला"
           }
         ]
       },
@@ -1385,11 +1385,11 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Deoria",
-        "nameHi": "Mujh garao hai ki mai bharti hu",
+        "nameHi": "देवरिया",
         "blocks": [
           {
             "name": "Deoria",
-            "nameHi": "Mujh garao hai ki mai bharti hu"
+            "nameHi": "देवरिया"
           },
           {
             "name": "Rudrapur",
@@ -1445,7 +1445,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Mau",
-        "nameHi": "mau",
+        "nameHi": "मऊ",
         "blocks": [
           {
             "name": "Ghosi",
@@ -1467,7 +1467,7 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Ballia",
-        "nameHi": "Ballia",
+        "nameHi": "बलिया",
         "blocks": [
           {
             "name": "Belthara Road",
@@ -1483,7 +1483,7 @@ const List<Map<String, dynamic>> upLocationData = [
           },
           {
             "name": "Ballia",
-            "nameHi": "Ballia"
+            "nameHi": "बलिया"
           },
           {
             "name": "Bansdih",
@@ -1643,15 +1643,15 @@ const List<Map<String, dynamic>> upLocationData = [
       },
       {
         "name": "Etah",
-        "nameHi": "औरैया",
+        "nameHi": "एटा",
         "blocks": [
           {
             "name": "Aliganj",
-            "nameHi": "Aliganj"
+            "nameHi": "अलीगंज"
           },
           {
             "name": "Etah",
-            "nameHi": "औरैया"
+            "nameHi": "एटा"
           },
           {
             "name": "Jalesar",
