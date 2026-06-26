@@ -65,8 +65,9 @@ class NotificationViewModel with ChangeNotifier {
   void fetchPushNotification() async {
     try {
       final data = await _notificationTabRepository.fetchNotifications();
-      notificationsList = data['notifications'];
-      notificationCount = data['unReadNotificationsCount'] ?? 0;
+      final notificationsData = data['data'] != null ? data['data']['notifications'] : data['notifications'];
+      notificationsList = (notificationsData as List<dynamic>?) ?? [];
+      notificationCount = (data['data'] != null ? data['data']['unreadCount'] : data['unReadNotificationsCount']) ?? 0;
       notifyListeners();
     } catch (error) {
       if (kDebugMode) {
@@ -79,8 +80,9 @@ class NotificationViewModel with ChangeNotifier {
     setloading(true);
     try {
       final data = await _notificationTabRepository.fetchNotifications();
-      notificationsList = data['notifications'];
-      notificationCount = data['unReadNotificationsCount'] ?? 0;
+      final notificationsData = data['data'] != null ? data['data']['notifications'] : data['notifications'];
+      notificationsList = (notificationsData as List<dynamic>?) ?? [];
+      notificationCount = (data['data'] != null ? data['data']['unreadCount'] : data['unReadNotificationsCount']) ?? 0;
       notifyListeners();
       setloading(false);
     } catch (error) {

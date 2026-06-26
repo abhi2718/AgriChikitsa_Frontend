@@ -684,8 +684,8 @@ class ExpenseViewModel with ChangeNotifier {
 
     try {
       final res = await _repo.getProfitBreakdownByField(fieldId, page);
-      final cropsJson = res['data']['crops'] as List;
-      cropProfits = cropsJson.map((e) => CropProfitModel.fromJson(e)).toList();
+      final cropsJson = res['data']?['crops'] as List<dynamic>?;
+      cropProfits = cropsJson?.map((e) => CropProfitModel.fromJson(e)).toList() ?? [];
       currentPage = res["currentPage"];
       totalPages = res["totalPages"];
     } catch (error) {

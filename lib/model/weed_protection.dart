@@ -11,10 +11,14 @@ class WeedProtection {
 
   factory WeedProtection.fromJson(Map<String, dynamic> json) {
     return WeedProtection(
-      organic:
-          (json['organic'] as List<dynamic>).map((item) => WeedAdvisory.fromJson(item)).toList(),
-      chemical:
-          (json['chemical'] as List<dynamic>).map((item) => WeedAdvisory.fromJson(item)).toList(),
+      organic: (json['organic'] as List<dynamic>?)
+              ?.map((item) => WeedAdvisory.fromJson(item))
+              .toList() ??
+          [],
+      chemical: (json['chemical'] as List<dynamic>?)
+              ?.map((item) => WeedAdvisory.fromJson(item))
+              .toList() ??
+          [],
     );
   }
 

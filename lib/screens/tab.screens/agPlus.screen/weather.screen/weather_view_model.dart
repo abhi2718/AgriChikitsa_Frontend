@@ -89,24 +89,30 @@ class WeatherViewModel with ChangeNotifier {
       predictedHourlyDataList.clear();
       final data = await _agPlusRepository.getPredictedWeather(
           currentField.latitude, currentField.longitude, lang);
-      predictedDataList = (data["forecast"]['forecastday'] as List)
-          .map((day) => PredictedData.fromJson(day))
-          .toList();
+      final forecastdayData = data["forecast"] != null ? data["forecast"]['forecastday'] : null;
+      predictedDataList = (forecastdayData as List<dynamic>?)
+              ?.map((day) => PredictedData.fromJson(day))
+              .toList() ??
+          [];
 
       final now = DateTime.now();
-      predictedHourlyDataList = (data['forecast']['forecastday'][0]['hour'] as List)
-          .map((hour) => PredictedHourlyData.fromJson(hour))
-          .where((hourData) {
-        final parsedTime = DateFormat('hh:mm a').parse(hourData.time);
-        final hourlyDateTime = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          parsedTime.hour,
-          parsedTime.minute,
-        );
-        return hourlyDateTime.isAfter(now) || hourlyDateTime.hour == now.hour;
-      }).toList();
+      final hourData = (forecastdayData != null && (forecastdayData as List).isNotEmpty)
+          ? forecastdayData[0]['hour']
+          : null;
+      predictedHourlyDataList = (hourData as List<dynamic>?)
+              ?.map((hour) => PredictedHourlyData.fromJson(hour))
+              .where((hourData) {
+            final parsedTime = DateFormat('hh:mm a').parse(hourData.time);
+            final hourlyDateTime = DateTime(
+              now.year,
+              now.month,
+              now.day,
+              parsedTime.hour,
+              parsedTime.minute,
+            );
+            return hourlyDateTime.isAfter(now) || hourlyDateTime.hour == now.hour;
+          }).toList() ??
+          [];
       setPredictedDataLoader(false);
       notifyListeners();
     } catch (error) {
