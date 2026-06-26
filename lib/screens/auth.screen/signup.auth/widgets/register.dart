@@ -210,7 +210,7 @@ class RegisterUser extends HookWidget {
                                         border: Border.all(color: AppColor.extraDark, width: 2.0),
                                         color: Colors.white,
                                       ),
-                                      child: DropdownButton(
+                                      child: DropdownButton<DistrictModel>(
                                           underline: Container(),
                                           isExpanded: true,
                                           hint: BaseText(
@@ -219,33 +219,27 @@ class RegisterUser extends HookWidget {
                                                 .toString(),
                                             style: const TextStyle(),
                                           ),
-                                          value: provider.selectedDistrictHi.isEmpty
-                                              ? null
-                                              : provider.selectedDistrictHi,
+                                          value: provider.selectedDistrict,
                                           alignment: AlignmentDirectional.centerStart,
                                           items: provider.districtList
-                                              .map<DropdownMenuItem<String>>((value) {
-                                            return DropdownMenuItem<String>(
-                                              onTap: () {
-                                                provider.setSelectedDistrictEn(value);
-                                              },
-                                              value:
-                                                  AppLocalization.of(context).locale.toString() ==
-                                                          "en"
-                                                      ? value.name
-                                                      : value.nameHi,
+                                              .map<DropdownMenuItem<DistrictModel>>((value) {
+                                            return DropdownMenuItem<DistrictModel>(
+                                              value: value,
                                               child: BaseText(
-                                                title:
-                                                    AppLocalization.of(context).locale.toString() ==
-                                                            "en"
-                                                        ? value.name
-                                                        : value.nameHi,
+                                                title: AppLocalization.of(context)
+                                                            .locale
+                                                            .languageCode ==
+                                                        "en"
+                                                    ? value.name
+                                                    : value.nameHi,
                                                 style: const TextStyle(fontSize: 14),
                                               ),
                                             );
                                           }).toList(),
                                           onChanged: (value) {
-                                            provider.setSelectedDistrict(value!);
+                                            if (value != null) {
+                                              provider.setSelectedDistrict(value);
+                                            }
                                           }),
                                     );
                                   }),
@@ -309,7 +303,7 @@ class RegisterUser extends HookWidget {
                                         border: Border.all(color: AppColor.extraDark, width: 2.0),
                                         color: Colors.white,
                                       ),
-                                      child: DropdownButton(
+                                      child: DropdownButton<BlockModel>(
                                           underline: Container(),
                                           isExpanded: true,
                                           hint: BaseText(
@@ -318,33 +312,27 @@ class RegisterUser extends HookWidget {
                                                 .toString(),
                                             style: const TextStyle(),
                                           ),
-                                          value: provider.selectedBlockHi.isEmpty
-                                              ? null
-                                              : provider.selectedBlockHi,
+                                          value: provider.selectedBlock,
                                           alignment: AlignmentDirectional.centerStart,
                                           items: provider.blockList
-                                              .map<DropdownMenuItem<String>>((value) {
-                                            return DropdownMenuItem<String>(
-                                              onTap: () {
-                                                provider.setSelectedBlockEn(value);
-                                              },
-                                              value:
-                                                  AppLocalization.of(context).locale.toString() ==
-                                                          "en"
-                                                      ? value.name
-                                                      : value.nameHi,
+                                              .map<DropdownMenuItem<BlockModel>>((value) {
+                                            return DropdownMenuItem<BlockModel>(
+                                              value: value,
                                               child: BaseText(
-                                                title:
-                                                    AppLocalization.of(context).locale.toString() ==
-                                                            "en"
-                                                        ? value.name
-                                                        : value.nameHi,
+                                                title: AppLocalization.of(context)
+                                                            .locale
+                                                            .languageCode ==
+                                                        "en"
+                                                    ? value.name
+                                                    : value.nameHi,
                                                 style: const TextStyle(fontSize: 14),
                                               ),
                                             );
                                           }).toList(),
                                           onChanged: (value) {
-                                            provider.setSelectedBlock(value!);
+                                            if (value != null) {
+                                              provider.setSelectedBlock(value);
+                                            }
                                           }),
                                     );
                                   }),

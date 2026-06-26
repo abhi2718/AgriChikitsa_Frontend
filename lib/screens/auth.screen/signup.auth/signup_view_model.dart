@@ -26,6 +26,8 @@ class SignUpViewModel with ChangeNotifier {
   dynamic districtList = [];
   dynamic blockList = [];
   StateModel? selectedState;
+  DistrictModel? selectedDistrict;
+  BlockModel? selectedBlock;
   var selectedDistrictHi = '';
   var selectedDistrictEn = '';
   var selectedBlockHi = '';
@@ -38,23 +40,19 @@ class SignUpViewModel with ChangeNotifier {
     fetchDistrict(context, selectedState!.state);
   }
 
-  void setSelectedDistrict(value) {
-    selectedDistrictHi = value;
-    notifyListeners();
-    fetchBlocks(selectedDistrictEn);
-  }
-
-  void setSelectedDistrictEn(value) {
+  void setSelectedDistrict(DistrictModel value) {
+    selectedDistrict = value;
     selectedDistrictEn = value.name;
-  }
-
-  void setSelectedBlock(value) {
-    selectedBlockHi = value;
+    selectedDistrictHi = value.nameHi;
     notifyListeners();
+    fetchBlocks(value.name);
   }
 
-  void setSelectedBlockEn(value) {
+  void setSelectedBlock(BlockModel value) {
+    selectedBlock = value;
     selectedBlockEn = value.name;
+    selectedBlockHi = value.nameHi;
+    notifyListeners();
   }
 
   bool get loading {
@@ -112,12 +110,14 @@ class SignUpViewModel with ChangeNotifier {
   void fetchDistrict(BuildContext context, String selectedStateName) async {
     try {
       districtList.clear();
+      selectedDistrict = null;
       selectedDistrictEn = "";
       selectedDistrictHi = "";
       blockList.clear();
+      selectedBlock = null;
       selectedBlockEn = "";
       selectedBlockHi = "";
-      
+
       final stateData = upLocationData.firstWhere(
         (element) => element['state'] == selectedStateName,
         orElse: () => {},
@@ -145,9 +145,10 @@ class SignUpViewModel with ChangeNotifier {
   void fetchBlocks(String districtNameEn) {
     try {
       blockList.clear();
+      selectedBlock = null;
       selectedBlockEn = "";
       selectedBlockHi = "";
-      
+
       if (selectedState == null) return;
       
       final stateData = upLocationData.firstWhere(
@@ -344,6 +345,8 @@ class SignUpViewModel with ChangeNotifier {
     districtList = [];
     blockList = [];
     selectedState = null;
+    selectedDistrict = null;
+    selectedBlock = null;
     selectedDistrictHi = '';
     selectedDistrictEn = '';
     selectedBlockHi = '';
