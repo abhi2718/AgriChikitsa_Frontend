@@ -1,10 +1,6 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
-import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/chat_description.dart';
-import 'package:agriChikitsa/screens/tab.screens/notifications.screen/widgets/chat_history.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -44,119 +40,102 @@ class NotificationTile extends HookWidget {
         onTap: () => handleLike(),
         child: Card(
           elevation: 0.0,
+          clipBehavior: Clip.antiAlias,
+          color: isRead.value ? const Color(0xFFF2F6F3) : AppColor.whiteColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: Row(
-            children: [
-              Expanded(
-                child: ExpansionTile(
-                  shape: const Border(),
-                  initiallyExpanded: isRead.value ? false : true,
-                  textColor: AppColor.darkBlackColor,
-                  childrenPadding: const EdgeInsets.only(top: 2, left: 15, right: 15, bottom: 8),
-                  collapsedBackgroundColor: AppColor.whiteColor,
-                  backgroundColor: AppColor.whiteColor,
-                  title: BaseText(
-                    title: notificationItem['title'],
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+          child: ExpansionTile(
+            shape: const Border(),
+            initiallyExpanded: isRead.value ? false : true,
+            textColor: AppColor.darkBlackColor,
+            childrenPadding: const EdgeInsets.only(top: 2, left: 15, right: 15, bottom: 8),
+            collapsedBackgroundColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
+            title: BaseText(
+              title: notificationItem['title'],
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+            expandedAlignment: Alignment.centerLeft,
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Divider(
+                thickness: 1.2,
+                color: AppColor.notificationBgColor,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: BaseText(
+                  title:
+                      "${AppLocalization.of(context).getTranslatedValue("notificationReplyHeader").toString()} ${notificationItem['message']}",
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  expandedAlignment: Alignment.centerLeft,
-                  expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const Divider(
-                      thickness: 1.2,
-                      color: AppColor.notificationBgColor,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: BaseText(
-                        title:
-                            "${AppLocalization.of(context).getTranslatedValue("notificationReplyHeader").toString()} ${notificationItem['message']}",
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    notificationItem['url'] != null
-                        ? notificationItem != ""
-                            ? Row(
-                                children: [
-                                  Text(
-                                      AppLocalization.of(context)
-                                          .getTranslatedValue("notificationLink")
-                                          .toString(),
-                                      style: GoogleFonts.inter(
+                ),
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              notificationItem['url'] != null
+                  ? notificationItem != ""
+                      ? Row(
+                          children: [
+                            Text(
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("notificationLink")
+                                    .toString(),
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                            Flexible(
+                              child: InkWell(
+                                onTap: () {
+                                  launchUrl(Uri.parse(notificationItem['url']));
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                                  width: dimension['width']! * 0.65,
+                                  child: Text(
+                                    "${notificationItem['url']}",
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                      )),
-                                  Flexible(
-                                    child: InkWell(
-                                      onTap: () {
-                                        launchUrl(Uri.parse(notificationItem['url']));
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                                        width: dimension['width']! * 0.65,
-                                        child: Text(
-                                          "${notificationItem['url']}",
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColor.hyperlinkColor),
-                                          textWidthBasis: TextWidthBasis.parent,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ),
+                                        color: AppColor.hyperlinkColor),
+                                    textWidthBasis: TextWidthBasis.parent,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ],
-                              )
-                            : Container()
-                        : Container(),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    notificationImage != null
-                        ? Container(
-                            height: dimension['height']! * 0.30,
-                            width: dimension['width']!,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: notificationImage,
-                                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                    Skeleton(
-                                  height: dimension['height']! * 0.30,
-                                  width: dimension['width']!,
-                                  radius: 10,
                                 ),
-                                errorWidget: (context, url, error) => const Icon(Icons.error),
-                                fit: BoxFit.cover,
                               ),
                             ),
-                          )
-                        : Container(),
-                  ],
-                ),
+                          ],
+                        )
+                      : Container()
+                  : Container(),
+              const SizedBox(
+                height: 4,
               ),
-              Center(
-                child: IconButton(
-                  onPressed: () {
-                    Utils.model(
-                        context,
-                        ChatDescription(
-                          chat: notificationItem,
-                          isFromNotifications: true,
-                        ));
-                  },
-                  icon: const Icon(Icons.description),
-                ),
-              ),
+              notificationImage != null
+                  ? Container(
+                      height: dimension['height']! * 0.30,
+                      width: dimension['width']!,
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl: notificationImage,
+                          progressIndicatorBuilder: (context, url, downloadProgress) =>
+                              Skeleton(
+                            height: dimension['height']! * 0.30,
+                            width: dimension['width']!,
+                            radius: 10,
+                          ),
+                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),
