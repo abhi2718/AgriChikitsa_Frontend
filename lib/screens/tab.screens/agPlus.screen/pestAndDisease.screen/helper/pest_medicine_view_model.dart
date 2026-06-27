@@ -25,9 +25,9 @@ class PestMedicineViewModel with ChangeNotifier {
   ];
 
   final List<Map<String, dynamic>> pumpSizes = [
-    {"id": 1, "textEn": "15 Liter", "textHi": "15 Liter", "value": "15"},
-    {"id": 2, "textEn": "20 Liter", "textHi": "20 Liter", "value": "20"},
-    {"id": 3, "textEn": "25 Liter", "textHi": "25 Liter", "value": "25"},
+    {"id": 1, "textEn": "15 Liter", "textHi": "15 लीटर", "value": "15"},
+    {"id": 2, "textEn": "20 Liter", "textHi": "20 लीटर", "value": "20"},
+    {"id": 3, "textEn": "25 Liter", "textHi": "25 लीटर", "value": "25"},
   ];
 
   void reinitialize() {
