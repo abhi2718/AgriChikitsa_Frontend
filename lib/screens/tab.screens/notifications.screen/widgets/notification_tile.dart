@@ -70,7 +70,7 @@ class NotificationTile extends HookWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: ExpansionTile(
             shape: const Border(),
-            initiallyExpanded: isRead.value ? false : true,
+            initiallyExpanded: false,
             onExpansionChanged: (expanded) {
               handleLike();
             },
