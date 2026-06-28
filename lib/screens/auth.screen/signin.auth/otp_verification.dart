@@ -109,7 +109,7 @@ class OtpVerification extends HookWidget {
                     showFieldAsBox: !true,
                     //runs when a code is typed in
                     onCodeChanged: (String code) {
-                      //handle validation or checks here
+                      useViewModel.updateOTP(code);
                     },
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     onSubmit: (String verificationCode) {

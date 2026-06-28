@@ -40,6 +40,10 @@ class SignInViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateOTP(String code) {
+    otp = code;
+  }
+
   void setCountDown() {
     if (countDown >= 0) {
       countDown = countDown - 1;
@@ -128,7 +132,19 @@ class SignInViewModel with ChangeNotifier {
     auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        await auth.signInWithCredential(credential);
+        try {
+          setloading(true);
+          final userCredential = await auth.signInWithCredential(credential);
+          if (userCredential.user != null) {
+            login(phoneNumber, context, userCredential.user!.uid);
+          }
+        } catch (e) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              e.toString(),
+              context);
+          setloading(false);
+        }
       },
       verificationFailed: (FirebaseAuthException e) {
         setloading(false);
@@ -158,12 +174,10 @@ class SignInViewModel with ChangeNotifier {
       final userCredential = await auth.signInWithCredential(credential);
       login(phoneNumber, context, userCredential.user!.uid);
     } catch (e) {
-      if (kDebugMode) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            AppLocalization.of(context).getTranslatedValue("invalidOtp").toString(),
-            context);
-      }
+      Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("alert").toString(),
+          AppLocalization.of(context).getTranslatedValue("invalidOtp").toString(),
+          context);
       setloading(false);
     }
   }
@@ -182,11 +196,14 @@ class SignInViewModel with ChangeNotifier {
           };
           await localStorage.setString("profile", jsonEncode(profile));
           setUserProfile(data);
-          Navigator.pop(context);
-          Navigator.of(context).pushNamed(RouteName.signUpRoute, arguments: {
-            "phoneNumber": phoneNumber,
-            "uid": uid,
-          });
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            RouteName.signUpRoute,
+            (route) => route.isFirst,
+            arguments: {
+              "phoneNumber": phoneNumber,
+              "uid": uid,
+            },
+          );
           setloading(false);
           // Utils.model(
           //   context,
@@ -212,12 +229,10 @@ class SignInViewModel with ChangeNotifier {
           Navigator.of(context).pushNamedAndRemoveUntil(RouteName.homeRoute, (route) => false);
         }
       } catch (error) {
-        if (kDebugMode) {
-          Utils.flushBarErrorMessage(
-              AppLocalization.of(context).getTranslatedValue("alert").toString(),
-              error.toString(),
-              context);
-        }
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            Utils.getBackendErrorMessage(error, context),
+            context);
         setloading(false);
       }
     }
