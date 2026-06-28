@@ -55,22 +55,15 @@ class PlotHistoryScreen extends HookWidget {
                             ? const SizedBox.shrink()
                             : InkWell(
                                 onTap: () {
-                                  if (provider.plotHistory[index]['kharchaKamaiRecord'] == null) {
-                                    Utils.toastMessage(AppLocalization.of(context)
-                                        .getTranslatedValue("noKharchaKamaiForCrop")
-                                        .toString());
-                                    return;
-                                  } else {
-                                    Utils.model(
-                                        context,
-                                        OldExpenseCropBasis(
-                                            plotId: provider.plotHistory[index]['fieldRef'],
-                                            cropHistoryId: provider.plotHistory[index]
-                                                ['cropHistoryId'],
-                                            cropName: provider.plotHistory[index]['cropName'],
-                                            cropNameHi: provider.plotHistory[index]['cropNameHi']));
-                                    return;
-                                  }
+                                  Utils.model(
+                                      context,
+                                      OldExpenseCropBasis(
+                                          plotId: provider.plotHistory[index]['fieldRef'],
+                                          cropHistoryId: provider.plotHistory[index]
+                                              ['cropHistoryId'],
+                                          cropName: provider.plotHistory[index]['cropName'],
+                                          cropNameHi: provider.plotHistory[index]['cropNameHi'],
+                                          selectedPlot: selectedPlot));
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(top: 4),
