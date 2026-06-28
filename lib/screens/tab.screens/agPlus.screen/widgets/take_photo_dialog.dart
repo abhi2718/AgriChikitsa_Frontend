@@ -44,7 +44,7 @@ void takeAPhotoDialog(BuildContext context, dynamic dimension, AGPlusViewModel p
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.asset(
-                              'assets/images/enable_camera.png',
+                              'assets/images/enable-camera.png',
                               fit: BoxFit.fill,
                               height: (dimension['height']! * 0.4) * 0.6,
                               width: dimension['width'],
