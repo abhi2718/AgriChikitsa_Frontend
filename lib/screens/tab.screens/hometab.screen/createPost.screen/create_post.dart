@@ -41,6 +41,9 @@ class CreatePostScreen extends HookWidget {
       if (feed != null) {
         useViewModel.setFeedData(feed);
       }
+      return () {
+        useViewModel.reinitialize();
+      };
     }, []);
 
     return Scaffold(
@@ -74,187 +77,186 @@ class CreatePostScreen extends HookWidget {
                             Utils.model(
                                 context,
                                 Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 32, left: 22, right: 22, bottom: 16),
-                                  height: dimension['height']! * 0.15,
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  height: dimension['height']! * 0.18,
                                   width: dimension['width']!,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        // onTap: () => provider.pickPostImage(context, authService),
-                                        onTap: () => provider.pickPostImages(context, dimension),
-                                        child: Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.collections,
-                                              color: AppColor.extraDark,
-                                            ),
-                                            const SizedBox(
-                                              width: 8,
-                                            ),
-                                            Text(AppLocalization.of(context)
-                                                .getTranslatedValue("uploadImagePost")
-                                                .toString()),
-                                          ],
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        ListTile(
+                                          leading: const Icon(
+                                            Icons.collections,
+                                            color: AppColor.extraDark,
+                                          ),
+                                          title: Text(AppLocalization.of(context)
+                                              .getTranslatedValue("uploadImagePost")
+                                              .toString()),
+                                          onTap: () {
+                                            provider.pickPostImages(context, dimension);
+                                          },
                                         ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () => Utils.model(
-                                            context,
-                                            Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 32, left: 22, right: 22, bottom: 16),
-                                              height: dimension['height']! * 0.25,
-                                              width: dimension['width']!,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    AppLocalization.of(context)
-                                                        .getTranslatedValue("pickVideoFrom")
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 18, fontWeight: FontWeight.bold),
-                                                  ),
-                                                  GestureDetector(
-                                                    onTap: () => provider.pickPostVideo(
-                                                        context, authService),
-                                                    child: Row(
+                                        ListTile(
+                                          leading: const Icon(
+                                            Icons.video_library,
+                                            color: AppColor.extraDark,
+                                          ),
+                                          title: Text(AppLocalization.of(context)
+                                              .getTranslatedValue("uploadVideoPost")
+                                              .toString()),
+                                          onTap: () {
+                                            Utils.model(
+                                                context,
+                                                Container(
+                                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                                  height: dimension['height']! * 0.22,
+                                                  width: dimension['width']!,
+                                                  child: Material(
+                                                    color: Colors.transparent,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                       children: [
-                                                        const Icon(
-                                                          Icons.video_library,
-                                                          color: AppColor.extraDark,
+                                                        Padding(
+                                                          padding: const EdgeInsets.symmetric(
+                                                              horizontal: 16.0, vertical: 4.0),
+                                                          child: Text(
+                                                            AppLocalization.of(context)
+                                                                .getTranslatedValue("pickVideoFrom")
+                                                                .toString(),
+                                                            style: const TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
                                                         ),
-                                                        const SizedBox(
-                                                          width: 8,
+                                                        ListTile(
+                                                          leading: const Icon(
+                                                            Icons.video_library,
+                                                            color: AppColor.extraDark,
+                                                          ),
+                                                          title: Text(AppLocalization.of(context)
+                                                              .getTranslatedValue("gallery")
+                                                              .toString()),
+                                                          onTap: () {
+                                                            provider.pickPostVideo(
+                                                                context, authService);
+                                                          },
                                                         ),
-                                                        Text(AppLocalization.of(context)
-                                                            .getTranslatedValue("gallery")
-                                                            .toString()),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext dialogContext) {
-                                                          return Dialog(
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(20)),
-                                                            child: IntrinsicHeight(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.all(16.0),
-                                                                child: Column(
-                                                                  mainAxisSize: MainAxisSize.min,
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment.start,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text(
-                                                                      AppLocalization.of(context)
-                                                                          .getTranslatedValue(
-                                                                              "youtubeLink")
-                                                                          .toString(),
-                                                                      style: const TextStyle(
-                                                                          fontSize: 20,
-                                                                          fontWeight:
-                                                                              FontWeight.w500),
-                                                                    ),
-                                                                    const SizedBox(height: 16),
-                                                                    TextField(
-                                                                      controller: provider
-                                                                          .youtubeUrlController,
-                                                                      decoration: InputDecoration(
-                                                                        hintText:
+                                                        ListTile(
+                                                          leading: const Icon(
+                                                            Icons.smart_display,
+                                                            color: AppColor.extraDark,
+                                                          ),
+                                                          title: Text(AppLocalization.of(context)
+                                                              .getTranslatedValue("youtube")
+                                                              .toString()),
+                                                          onTap: () {
+                                                            showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (BuildContext dialogContext) {
+                                                                return Dialog(
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(20)),
+                                                                  child: IntrinsicHeight(
+                                                                    child: Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              16.0),
+                                                                      child: Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Text(
                                                                             AppLocalization.of(
                                                                                     context)
                                                                                 .getTranslatedValue(
-                                                                                    "enterHere")
+                                                                                    "youtubeLink")
                                                                                 .toString(),
-                                                                        enabledBorder:
-                                                                            OutlineInputBorder(
-                                                                          borderSide:
-                                                                              const BorderSide(
-                                                                                  color:
-                                                                                      Colors.grey),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                  8.0),
-                                                                        ),
-                                                                        focusedBorder:
-                                                                            OutlineInputBorder(
-                                                                          borderSide:
-                                                                              const BorderSide(
-                                                                                  color:
-                                                                                      Colors.green),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                  8.0),
-                                                                        ),
+                                                                            style:
+                                                                                const TextStyle(
+                                                                                    fontSize: 20,
+                                                                                    fontWeight:
+                                                                                        FontWeight.w500),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              height: 16),
+                                                                          TextField(
+                                                                            controller: provider
+                                                                                .youtubeUrlController,
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              hintText: AppLocalization
+                                                                                      .of(context)
+                                                                                  .getTranslatedValue(
+                                                                                      "enterHere")
+                                                                                  .toString(),
+                                                                              enabledBorder:
+                                                                                  OutlineInputBorder(
+                                                                                borderSide:
+                                                                                    const BorderSide(
+                                                                                        color:
+                                                                                            Colors.grey),
+                                                                                borderRadius:
+                                                                                    BorderRadius
+                                                                                        .circular(
+                                                                                            8.0),
+                                                                              ),
+                                                                              focusedBorder:
+                                                                                  OutlineInputBorder(
+                                                                                borderSide:
+                                                                                    const BorderSide(
+                                                                                        color:
+                                                                                            Colors.green),
+                                                                                borderRadius:
+                                                                                    BorderRadius
+                                                                                        .circular(
+                                                                                            8.0),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          TextButton(
+                                                                            onPressed: () {
+                                                                              provider
+                                                                                  .addYoutubeUrl(
+                                                                                      context);
+                                                                            },
+                                                                            child: Text(
+                                                                              AppLocalization.of(
+                                                                                      context)
+                                                                                  .getTranslatedValue(
+                                                                                      "submitButton")
+                                                                                  .toString(),
+                                                                              style:
+                                                                                  const TextStyle(
+                                                                                      color:
+                                                                                          Colors.green),
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
-                                                                    TextButton(
-                                                                      onPressed: () {
-                                                                        provider
-                                                                            .addYoutubeUrl(context);
-                                                                      },
-                                                                      child: Text(
-                                                                        AppLocalization.of(context)
-                                                                            .getTranslatedValue(
-                                                                                "submitButton")
-                                                                            .toString(),
-                                                                        style: const TextStyle(
-                                                                            color: Colors.green),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                    child: Row(
-                                                      children: [
-                                                        const Icon(
-                                                          Icons.smart_display,
-                                                          color: AppColor.extraDark,
+                                                                  ),
+                                                                );
+                                                              },
+                                                            );
+                                                          },
                                                         ),
-                                                        const SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        Text(AppLocalization.of(context)
-                                                            .getTranslatedValue("youtube")
-                                                            .toString()),
                                                       ],
                                                     ),
                                                   ),
-                                                ],
-                                              ),
-                                            )),
-                                        child: Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.video_library,
-                                              color: AppColor.extraDark,
-                                            ),
-                                            const SizedBox(
-                                              width: 8,
-                                            ),
-                                            Text(AppLocalization.of(context)
-                                                .getTranslatedValue("uploadVideoPost")
-                                                .toString()),
-                                          ],
+                                                ));
+                                          },
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ));
                           },
@@ -297,9 +299,9 @@ class CreatePostScreen extends HookWidget {
                                             videoUrl: useViewModel.youtubeVideoPath,
                                             aspectRatio: 16 / 9)
                                         // ? Text("Hey")
-                                        : useViewModel.videoController.value.isInitialized
+                                        : useViewModel.videoController != null && useViewModel.videoController!.value.isInitialized
                                             ? VideoPlayer(useViewModel
-                                                .videoController) // Show video player once initialized
+                                                .videoController!) // Show video player once initialized
                                             : const Center(
                                                 child: CircularProgressIndicator(
                                                   color: AppColor.extraDark,

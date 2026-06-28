@@ -19,9 +19,8 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
   @override
   void initState() {
     super.initState();
-    var temp = widget.videoUrl.split('/');
     _controller = VideoPlayerController.networkUrl(
-        Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"))
+        Uri.parse(Utils.getCloudFrontUrl(widget.videoUrl)))
       ..addListener(() {
         setState(() {});
       })

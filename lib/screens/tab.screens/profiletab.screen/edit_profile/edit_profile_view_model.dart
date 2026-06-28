@@ -147,7 +147,7 @@ class EditProfileViewModel with ChangeNotifier {
       final data = await Utils.pickImage();
       if (data != null) {
         setImageLoading(true);
-        final response = await Utils.uploadImage(data);
+        final response = await Utils.uploadImage(data, forPurpose: 'profile');
         final user = User.fromJson(authService.userInfo["user"]);
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);
@@ -165,7 +165,7 @@ class EditProfileViewModel with ChangeNotifier {
       final data = await Utils.capturePhoto();
       if (data != null) {
         setImageLoading(true);
-        final response = await Utils.uploadImage(data);
+        final response = await Utils.uploadImage(data, forPurpose: 'profile');
         final user = User.fromJson(authService.userInfo["user"]);
         final userInfo = {"_id": user.sId, "profileImage": response["imgurl"]};
         updateProfile(userInfo, context, authService);

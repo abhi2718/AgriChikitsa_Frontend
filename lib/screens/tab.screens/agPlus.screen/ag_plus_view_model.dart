@@ -774,7 +774,7 @@ class AGPlusViewModel with ChangeNotifier {
       if (!context.mounted) return;
       final imageFile = await Utils.capturePhoto();
       if (imageFile != null) {
-        final data = await Utils.uploadImage(imageFile);
+        final data = await Utils.uploadImage(imageFile, forPurpose: 'plot');
         plotImagePath = data["imgurl"];
         Navigator.pop(context);
         Utils.model(context, const PlotDetails());

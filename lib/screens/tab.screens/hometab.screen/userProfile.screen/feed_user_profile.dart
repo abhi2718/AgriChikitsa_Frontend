@@ -360,11 +360,8 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
 
   // REPLACE _initVideoController with:
   void _initVideoController() {
-    var temp = _videoUrl.split('/');
     _videoController = VideoPlayerController.networkUrl(
-      Uri.parse(
-        "https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}",
-      ),
+      Uri.parse(Utils.getCloudFrontUrl(_videoUrl)),
     );
     _videoController!.initialize().then((_) {
       if (!mounted) return;

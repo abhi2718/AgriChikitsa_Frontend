@@ -354,9 +354,8 @@ class _ResharePostState extends State<ResharePost> {
   }
 
   Widget _buildVideoPlayer(String videoUrl, HomeTabViewModel homeTabViewModel, String feedId) {
-    var temp = videoUrl.split('/');
     final videoController = VideoPlayerController.networkUrl(
-        Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"));
+        Uri.parse(Utils.getCloudFrontUrl(videoUrl)));
 
     return VisibilityDetector(
         key: Key(videoUrl),

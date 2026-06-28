@@ -29,9 +29,8 @@ class _PostWidgetState extends State<PostWidget> {
     widget.postId != null
         ? homeTabViewModel = Provider.of<HomeTabViewModel>(context, listen: false)
         : null;
-    var temp = widget.videoUrl.split('/');
     _controller = VideoPlayerController.networkUrl(
-        Uri.parse("https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}"))
+        Uri.parse(Utils.getCloudFrontUrl(widget.videoUrl)))
       ..initialize().then((_) {
         setState(() {
           _controller.play();

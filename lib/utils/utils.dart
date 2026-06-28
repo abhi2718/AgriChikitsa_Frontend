@@ -141,7 +141,47 @@ class Utils {
     FocusScope.of(context).requestFocus(nextFocus);
   }
 
-  static Future<dynamic> uploadImage(XFile image) async {
+  static String _getMimeType(String filePath) {
+    final extension = filePath.split('.').last.toLowerCase();
+    switch (extension) {
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+      case 'gif':
+        return 'image/gif';
+      case 'mp4':
+        return 'video/mp4';
+      case 'mov':
+        return 'video/quicktime';
+      case 'mkv':
+        return 'video/x-matroska';
+      case 'avi':
+        return 'video/x-msvideo';
+      case 'webm':
+        return 'video/webm';
+      default:
+        if (filePath.contains('image')) {
+          return 'image/jpeg';
+        } else if (filePath.contains('video')) {
+          return 'video/mp4';
+        }
+        return 'application/octet-stream';
+    }
+  }
+
+  static String getCloudFrontUrl(String s3Url) {
+    try {
+      final uri = Uri.parse(s3Url);
+      if (uri.host.contains('agrichikitsabucket')) {
+        return 'https://d36yh71dpxszen.cloudfront.net${uri.path}';
+      }
+    } catch (_) {}
+    return s3Url;
+  }
+
+  static Future<dynamic> uploadImage(XFile image, {String forPurpose = 'feed'}) async {
     try {
       final localStorage = await SharedPreferences.getInstance();
       final mapString = localStorage.getString('profile');
@@ -149,31 +189,65 @@ class Utils {
         return AppException("Token does not exist");
       }
       final profile = jsonDecode(mapString);
-      final url = Uri.parse(AppUrl.uploadImageEndPoint);
-      final headers = {'Authorization': 'Bearer ${profile["token"]}'};
-      final request = http.MultipartRequest('POST', url)
-        ..headers.addAll(headers)
-        ..files.add(await http.MultipartFile.fromPath('image', image.path));
-      final response = await http.Response.fromStream(await request.send());
-      final body = jsonDecode(response.body);
-      switch (response.statusCode) {
-        case 200:
-          return body;
-        case 201:
-          return body;
-        case 400:
-          throw BadRequestException(body["message"].toString());
-        case 404:
-          throw UnAuthorisedException(body["message"].toString());
-        default:
-          throw FetchDataException(body["message"].toString());
+      final token = profile["token"];
+
+      final fileName = image.path.split('/').last;
+      final fileType = _getMimeType(image.path);
+
+      // Step 1: Get presigned URL
+      final getPresignedUrl = Uri.parse(AppUrl.getUploadUrlEndPoint);
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      };
+      final body = jsonEncode({
+        'fileName': fileName,
+        'fileType': fileType,
+        'forPurpose': forPurpose,
+      });
+
+      final presignedResponse = await http.post(getPresignedUrl, headers: headers, body: body);
+      if (presignedResponse.statusCode != 200) {
+        throw FetchDataException("Failed to get presigned URL: ${presignedResponse.body}");
+      }
+
+      final presignedData = jsonDecode(presignedResponse.body);
+      if (presignedData['response'] != true) {
+        throw FetchDataException("Presigned URL response is false");
+      }
+
+      final uploadUrl = presignedData['data']['uploadUrl'];
+      final fileUrl = presignedData['data']['fileUrl'];
+
+      // Step 2: Upload file directly to S3 PUT URL using StreamedRequest for memory efficiency
+      final file = File(image.path);
+      final request = http.StreamedRequest('PUT', Uri.parse(uploadUrl));
+      request.headers['Content-Type'] = fileType;
+      request.headers['Content-Length'] = (await file.length()).toString();
+
+      final fileStream = file.openRead();
+      fileStream.listen(
+        (chunk) => request.sink.add(chunk),
+        onDone: () => request.sink.close(),
+        onError: (err) => request.sink.close(),
+        cancelOnError: true,
+      );
+
+      final s3Response = await http.Response.fromStream(await request.send());
+      if (s3Response.statusCode == 200 || s3Response.statusCode == 201 || s3Response.statusCode == 204) {
+        return {
+          'success': true,
+          'imgurl': fileUrl,
+        };
+      } else {
+        throw FetchDataException("S3 upload failed with status: ${s3Response.statusCode}");
       }
     } catch (error) {
       rethrow;
     }
   }
 
-  static Future<dynamic> uploadVideo(String video) async {
+  static Future<dynamic> uploadVideo(String video, {String forPurpose = 'feed'}) async {
     try {
       final localStorage = await SharedPreferences.getInstance();
       final mapString = localStorage.getString('profile');
@@ -181,30 +255,64 @@ class Utils {
         return AppException("Token does not exist");
       }
       final profile = jsonDecode(mapString);
-      final url = Uri.parse(AppUrl.uploadVideoEndPoint);
-      final headers = {'Authorization': 'Bearer ${profile["token"]}'};
-      final request = http.MultipartRequest('POST', url)
-        ..headers.addAll(headers)
-        ..files.add(await http.MultipartFile.fromPath('video', video,
-            contentType: MediaType('video', 'mp4')));
-      final response = await http.Response.fromStream(await request.send());
-      final body = jsonDecode(response.body);
-      switch (response.statusCode) {
-        case 200:
-          return body;
-        case 201:
-          return body;
-        case 400:
-          throw BadRequestException(body["message"].toString());
-        case 404:
-          throw UnAuthorisedException(body["message"].toString());
-        default:
-          throw FetchDataException(body["message"].toString());
+      final token = profile["token"];
+
+      final fileName = video.split('/').last;
+      final fileType = _getMimeType(video);
+
+      // Step 1: Get presigned URL
+      final getPresignedUrl = Uri.parse(AppUrl.getUploadUrlEndPoint);
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      };
+      final body = jsonEncode({
+        'fileName': fileName,
+        'fileType': fileType,
+        'forPurpose': forPurpose,
+      });
+
+      final presignedResponse = await http.post(getPresignedUrl, headers: headers, body: body);
+      if (presignedResponse.statusCode != 200) {
+        throw FetchDataException("Failed to get presigned URL: ${presignedResponse.body}");
+      }
+
+      final presignedData = jsonDecode(presignedResponse.body);
+      if (presignedData['response'] != true) {
+        throw FetchDataException("Presigned URL response is false");
+      }
+
+      final uploadUrl = presignedData['data']['uploadUrl'];
+      final fileUrl = presignedData['data']['fileUrl'];
+
+      // Step 2: Upload file directly to S3 PUT URL using StreamedRequest for memory efficiency
+      final file = File(video);
+      final request = http.StreamedRequest('PUT', Uri.parse(uploadUrl));
+      request.headers['Content-Type'] = fileType;
+      request.headers['Content-Length'] = (await file.length()).toString();
+
+      final fileStream = file.openRead();
+      fileStream.listen(
+        (chunk) => request.sink.add(chunk),
+        onDone: () => request.sink.close(),
+        onError: (err) => request.sink.close(),
+        cancelOnError: true,
+      );
+
+      final s3Response = await http.Response.fromStream(await request.send());
+      if (s3Response.statusCode == 200 || s3Response.statusCode == 201 || s3Response.statusCode == 204) {
+        return {
+          'success': true,
+          'url': fileUrl,
+        };
+      } else {
+        throw FetchDataException("S3 upload failed with status: ${s3Response.statusCode}");
       }
     } catch (error) {
       rethrow;
     }
   }
+
 
   static Future<dynamic> capturePhoto() async {
     try {

@@ -77,11 +77,8 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
 
   // REPLACE _initVideoController with:
   void _initVideoController() {
-    var temp = _videoUrl.split('/');
     _videoController = VideoPlayerController.networkUrl(
-      Uri.parse(
-        "https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}",
-      ),
+      Uri.parse(Utils.getCloudFrontUrl(_videoUrl)),
     );
     _videoController!.initialize().then((_) {
       if (!mounted) return;
@@ -804,18 +801,18 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                                               await SharePlus.instance
                                                   .share(ShareParams(text: text, files: [xfile]));
                                             } else if (widget.feed['mediaType'] == "video") {
-                                              List<String> temp =
-                                                  widget.feed['videoUrl'].split('/');
+                                              final videoCfUrl = Utils.getCloudFrontUrl(widget.feed['videoUrl']);
+                              
                                               if (widget.feed.containsKey("repostedFrom")) {
                                                 text =
-                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
+                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: $videoCfUrl\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                               } else {
                                                 if (widget.feed["hindiCaption"] == null) {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
+                                                      "Check out what ${user['name']} posted!\nLink: $videoCfUrl\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 } else {
                                                   text =
-                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: https://d36yh71dpxszen.cloudfront.net/${temp[temp.length - 1]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
+                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: $videoCfUrl\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                                 }
                                               }
                                               await SharePlus.instance

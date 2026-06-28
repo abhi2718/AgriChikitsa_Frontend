@@ -23,7 +23,7 @@ class CreatePostModel with ChangeNotifier {
   dynamic imagePicked;
   dynamic videoPicked;
   String youtubeVideoPath = '';
-  late VideoPlayerController videoController;
+  VideoPlayerController? videoController;
   TextEditingController youtubeUrlController = TextEditingController();
   bool isPostPicked = false;
   String currentSelectedCategory = "";
@@ -90,6 +90,10 @@ class CreatePostModel with ChangeNotifier {
 
   void reinitialize() {
     Timer(const Duration(milliseconds: 500), () {
+      if (videoController != null) {
+        videoController!.dispose();
+        videoController = null;
+      }
       captionController.clear();
       youtubeUrlController.clear();
       imagePath = [];
@@ -234,6 +238,9 @@ class CreatePostModel with ChangeNotifier {
           Navigator.pop(context);
           Navigator.pop(context);
           isPostPicked = true;
+          if (videoController != null) {
+            videoController!.dispose();
+          }
           videoController = VideoPlayerController.file(File(videoPicked))
             ..addListener(() {
               notifyListeners();
@@ -241,7 +248,7 @@ class CreatePostModel with ChangeNotifier {
             ..setLooping(true)
             ..initialize().then((value) {
               // notifyListeners();
-              videoController.play();
+              videoController?.play();
             });
           notifyListeners();
         }
@@ -325,11 +332,30 @@ class CreatePostModel with ChangeNotifier {
         (postImages.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
       setUploading(true);
 
+      // Copy variables to local variables to prevent race condition during page pop
+      final localPostImages = List<PostImageItem>.from(postImages);
+      final localVideoPicked = videoPicked;
+      final localYoutubeVideoPath = youtubeVideoPath;
+      final localCaption = caption;
+      final localCategory = currentSelectedCategory;
+
+      if (videoController != null) {
+        videoController!.pause();
+      }
+
       // Navigate to Home Screen immediately
       Navigator.pop(context);
 
       // Start upload in the background
-      uploadPostInBackground(context, onPostCreated);
+      uploadPostInBackground(
+        context,
+        onPostCreated,
+        localPostImages,
+        localVideoPicked,
+        localYoutubeVideoPath,
+        localCaption,
+        localCategory,
+      );
     } else {
       Utils.flushBarErrorMessage(
         AppLocalization.of(context).getTranslatedValue("alert").toString(),
@@ -362,13 +388,32 @@ class CreatePostModel with ChangeNotifier {
     return imagesPayload;
   }
 
-  Future<void> uploadPostInBackground(BuildContext context, VoidCallback onPostCreated) async {
+  List<Map<String, String>> getFeedImagePayloadFromList(List<PostImageItem> images) {
+    List<Map<String, String>> imagesPayload = [];
+    for (var postImage in images) {
+      imagesPayload.add({
+        "originalUrl": postImage.originalUrl ?? "",
+        "thumbnailUrl": postImage.thumbnailUrl ?? "",
+      });
+    }
+    return imagesPayload;
+  }
+
+  Future<void> uploadPostInBackground(
+    BuildContext context,
+    VoidCallback onPostCreated,
+    List<PostImageItem> localPostImages,
+    dynamic localVideoPicked,
+    String localYoutubeVideoPath,
+    String localCaption,
+    String localCategory,
+  ) async {
     List<String> uploadedImageUrls = [];
     var response;
 
     // Upload images
-    if (postImages.isNotEmpty) {
-      for (var postItem in postImages) {
+    if (localPostImages.isNotEmpty) {
+      for (var postItem in localPostImages) {
         var croppedResponse = await Utils.uploadImage(postItem.croppedFile!);
         var ogImgResponse = await Utils.uploadImage(postItem.originalFile!);
         if (croppedResponse['success']) {
@@ -387,19 +432,19 @@ class CreatePostModel with ChangeNotifier {
     }
 
     // Upload video
-    if (videoPicked != null) {
-      response = await Utils.uploadVideo(videoPicked);
+    if (localVideoPicked != null) {
+      response = await Utils.uploadVideo(localVideoPicked);
     } else {
-      response = {'success': true, 'url': youtubeVideoPath};
+      response = {'success': true, 'url': localYoutubeVideoPath};
     }
 
-    bool isImageUploaded = checkPostImageData();
+    bool isImageUploaded = localPostImages.isNotEmpty;
     if (response['success'] || isImageUploaded) {
-      final passedUrl = isImageUploaded ? getFeedImagePayload() : response['url'];
+      final passedUrl = isImageUploaded ? getFeedImagePayloadFromList(localPostImages) : response['url'];
       final data = await _homeTabViewModel.createPost(
         context,
-        currentSelectedCategory,
-        caption,
+        localCategory,
+        localCaption,
         passedUrl,
         isImageUploaded,
       );

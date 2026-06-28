@@ -800,7 +800,7 @@ class ChatTabViewModel with ChangeNotifier {
       showNinethBubbleLoader = true;
       isChatCompleted = true;
       notifyListeners();
-      final data = await Utils.uploadImage(imageFile);
+      final data = await Utils.uploadImage(imageFile, forPurpose: 'chat');
       cropImageBucketPath = data["imgurl"]!;
       if (selectedUserMessage.isNotEmpty) {
         showEightBubbleLoader = false;
@@ -852,7 +852,7 @@ class ChatTabViewModel with ChangeNotifier {
     try {
       showNinethBubbleLoader = true;
       notifyListeners();
-      final data = await Utils.uploadImage(imageFile2);
+      final data = await Utils.uploadImage(imageFile2, forPurpose: 'chat');
       cropImage2 = data["imgurl"]!;
       final t9 = Timer(const Duration(seconds: 1), () {
         chatMessages.add(
