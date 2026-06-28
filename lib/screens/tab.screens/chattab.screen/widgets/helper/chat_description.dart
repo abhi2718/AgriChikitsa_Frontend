@@ -158,7 +158,9 @@ class ChatDescription extends HookWidget {
     }, []);
     return WillPopScope(
       onWillPop: () async {
-        if (!chat["isUserFeedbackGiven"] && chat["isReplied"]) {
+        final hasFeedback = chat is Map && chat["isUserFeedbackGiven"] == true;
+        final hasReplied = chat is Map && chat["isReplied"] == true;
+        if (!hasFeedback && hasReplied) {
           showFeedbackDialog(context, dimension);
           return false;
         }
@@ -174,7 +176,9 @@ class ChatDescription extends HookWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              if (!chat["isUserFeedbackGiven"] && chat["isReplied"]) {
+              final hasFeedback = chat is Map && chat["isUserFeedbackGiven"] == true;
+              final hasReplied = chat is Map && chat["isReplied"] == true;
+              if (!hasFeedback && hasReplied) {
                 showFeedbackDialog(context, dimension);
               } else {
                 Navigator.of(context).pop();
@@ -453,7 +457,7 @@ class ChatDescription extends HookWidget {
                                                   color: AppColor.darkBlackColor, fontSize: 16),
                                             )
                                           : const SizedBox.shrink(),
-                                      provider.chatMessagesList["isReplied"]
+                                      provider.chatMessagesList["isReplied"] == true
                                           ? Column(
                                               children: [
                                                 provider.chatMessagesList

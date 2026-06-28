@@ -1,4 +1,5 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/screens/tab.screens/chattab.screen/widgets/helper/chat_description.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -31,6 +32,30 @@ class NotificationTile extends HookWidget {
       if (!isRead.value) {
         isRead.value = true;
       }
+      final String eventType = notificationItem['eventType']?.toString() ?? '';
+      final String category = notificationItem['category']?.toString() ?? '';
+      final String relatedModel = notificationItem['relatedModel']?.toString() ?? '';
+      final bool hasRelatedChat = notificationItem['relatedTo'] != null &&
+          notificationItem['relatedTo'].toString().isNotEmpty;
+
+      final bool canRedirect = hasRelatedChat &&
+          (category == 'chat' ||
+              eventType == 'CHAT_ADMIN_REPLY' ||
+              eventType == 'ADMIN_REPLY' ||
+              eventType == 'CHAT_QUERY_ASSIGNED' ||
+              eventType == 'CHAT_MESSAGE' ||
+              relatedModel == 'AdminChat' ||
+              relatedModel == 'ChatHistorySchema');
+
+      if (canRedirect) {
+        Utils.model(
+          context,
+          ChatDescription(
+            chat: notificationItem,
+            isFromNotifications: true,
+          ),
+        );
+      }
     }
 
     final notificationImage = notificationItem['imgurl'];
@@ -41,25 +66,34 @@ class NotificationTile extends HookWidget {
         child: Card(
           elevation: 0.0,
           clipBehavior: Clip.antiAlias,
-          color: isRead.value ? const Color(0xFFF2F6F3) : AppColor.whiteColor,
+          color: isRead.value ? const Color(0xFFF2F6F3) : AppColor.extraDark,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: ExpansionTile(
             shape: const Border(),
             initiallyExpanded: isRead.value ? false : true,
-            textColor: AppColor.darkBlackColor,
+            onExpansionChanged: (expanded) {
+              handleLike();
+            },
+            textColor: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
+            collapsedTextColor: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
+            iconColor: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
+            collapsedIconColor: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
             childrenPadding: const EdgeInsets.only(top: 2, left: 15, right: 15, bottom: 8),
             collapsedBackgroundColor: Colors.transparent,
             backgroundColor: Colors.transparent,
             title: BaseText(
               title: notificationItem['title'],
-              style: const TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
+              ),
             ),
             expandedAlignment: Alignment.centerLeft,
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const Divider(
+              Divider(
                 thickness: 1.2,
-                color: AppColor.notificationBgColor,
+                color: isRead.value ? AppColor.notificationBgColor : AppColor.whiteColor.withOpacity(0.4),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 4),
@@ -69,6 +103,7 @@ class NotificationTile extends HookWidget {
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
+                    color: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
                   ),
                 ),
               ),
@@ -86,6 +121,7 @@ class NotificationTile extends HookWidget {
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
+                                  color: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
                                 )),
                             Flexible(
                               child: InkWell(
