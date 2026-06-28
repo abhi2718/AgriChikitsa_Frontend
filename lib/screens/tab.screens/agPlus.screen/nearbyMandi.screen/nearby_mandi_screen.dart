@@ -10,9 +10,9 @@ class NearbyMandisScreen extends HookWidget {
   NearbyMandisScreen({super.key, required this.selectedPlot});
   Plots selectedPlot;
 
-  Widget _priceText(String label, int price) {
+  Widget _priceText(BuildContext context, String label, int price) {
     return Text(
-      "$label: ₹$price",
+      "$label: ₹$price / ${AppLocalization.of(context).getTranslatedValue("quintal").toString()}",
       style: const TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w600,
@@ -206,7 +206,7 @@ class NearbyMandisScreen extends HookWidget {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          "₹${mandi.minPrice}",
+                                          "₹${mandi.minPrice} / ${AppLocalization.of(context).getTranslatedValue("quintal").toString()}",
                                           style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -241,7 +241,7 @@ class NearbyMandisScreen extends HookWidget {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          "₹${mandi.maxPrice}",
+                                          "₹${mandi.maxPrice} / ${AppLocalization.of(context).getTranslatedValue("quintal").toString()}",
                                           style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
