@@ -148,7 +148,8 @@ class PestMedicineViewModel with ChangeNotifier {
   }
 
   bool validateDosageInputs(BuildContext context) {
-    if (plotSizeController.text.trim().isEmpty) {
+    final areaVal = double.tryParse(plotSizeController.text.trim());
+    if (areaVal == null || areaVal <= 0) {
       Utils.flushBarErrorMessage(
         AppLocalization.of(context).getTranslatedValue("alert").toString(),
         AppLocalization.of(context).getTranslatedValue("warningEnterSoilType").toString(),
@@ -173,9 +174,9 @@ class PestMedicineViewModel with ChangeNotifier {
     setIsCalculating(true);
     try {
       final payload = {
-        "area": int.parse(plotSize.toString()),
+        "area": double.tryParse(plotSize.toString()) ?? 0.0,
         "areaUnit": selectedAreaUnitValue,
-        "pumpSize": int.parse(selectedPumpSizeValue.toString())
+        "pumpSize": int.tryParse(selectedPumpSizeValue.toString()) ?? 15
       };
       final res = await _agPlusRepository.calculatePestDosage(chemicalId, payload);
       setIsCalculating(false);

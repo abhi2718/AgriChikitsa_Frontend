@@ -57,7 +57,7 @@ class MedicineScreen extends HookWidget {
                           enabled: !provider.isCalculating,
                           controller: provider.plotSizeController,
                           cursorColor: AppColor.darkBlackColor,
-                          keyboardType: TextInputType.number,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           textInputAction: TextInputAction.next,
                           style: const TextStyle(color: AppColor.darkBlackColor),
                           decoration: InputDecoration(
