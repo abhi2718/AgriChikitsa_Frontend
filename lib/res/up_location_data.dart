@@ -3709,13 +3709,14 @@ const List<Map<String, dynamic>> upLocationData = [
             "name": "Hilauli",
             "nameHi": "हिलौली"
           },
-          {
-            "name": "Miyanganj",
-            "nameHi": "मियांगंज"
-          },
+          
           {
             "name": "Nawabganj",
             "nameHi": "नवाबगंज"
+          },
+          {
+            "name": "Miyanganj",
+            "nameHi": "मियांगंज"
           },
           {
             "name": "Purwa",
