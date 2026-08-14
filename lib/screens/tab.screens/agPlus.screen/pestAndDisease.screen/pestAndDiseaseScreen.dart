@@ -8,6 +8,7 @@ import 'package:agriChikitsa/screens/tab.screens/textToSpeech/audio_play_view_mo
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:agriChikitsa/widgets/audio_tts_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
@@ -140,9 +141,15 @@ class PestAndDiseaseScreen extends HookWidget {
                                 .toString();
                           }
 
-                          return !hasUrl
-                              ? const SizedBox.shrink()
-                              : ElevatedButton(
+                          final details = selectedPestDisease.details;
+                          final pestDetailsContent = (details != null && details.isNotEmpty)
+                              ? (AppLocalization.of(context).locale.toString() == "en"
+                                  ? details.first.contentEn
+                                  : details.first.contentHi)
+                              : "";
+
+                          return hasUrl
+                              ? ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColor.tabIconColor,
                                     foregroundColor: Colors.white,
@@ -189,6 +196,10 @@ class PestAndDiseaseScreen extends HookWidget {
                                       ),
                                     ],
                                   ),
+                                )
+                              : AudioTtsButton(
+                                  htmlContent: pestDetailsContent,
+                                  useElevatedButton: true,
                                 );
                         },
                       ),
@@ -225,24 +236,38 @@ class PestAndDiseaseScreen extends HookWidget {
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Center(
-                                                    child: Text(
-                                                  AppLocalization.of(context).locale.toString() ==
-                                                          "en"
-                                                      ? detail.titleEn
-                                                      : detail.titleHi,
-                                                  style: TextStyle(
-                                                      fontWeight: FontWeight.bold, fontSize: 15),
-                                                )),
-                                                SizedBox(
-                                                  height: 12,
-                                                ),
-                                                HtmlWidget(
-                                                  AppLocalization.of(context).locale.toString() ==
-                                                          "en"
-                                                      ? detail.contentEn
-                                                      : detail.contentHi,
-                                                ),
+                                                Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: BaseText(
+                                                        title: AppLocalization.of(context)
+                                                                    .locale
+                                                                    .toString() ==
+                                                                "en"
+                                                            ? detail.titleEn
+                                                            : detail.titleHi,
+                                                        style: const TextStyle(
+                                                            fontWeight: FontWeight.bold, fontSize: 15)),
+                                                  ),
+                                                  AudioTtsButton(
+                                                    htmlContent: AppLocalization.of(context)
+                                                                .locale
+                                                                .toString() ==
+                                                            "en"
+                                                        ? detail.contentEn
+                                                        : detail.contentHi,
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 12,
+                                              ),
+                                              HtmlWidget(
+                                                AppLocalization.of(context).locale.toString() ==
+                                                        "en"
+                                                    ? detail.contentEn
+                                                    : detail.contentHi,
+                                              ),
                                                 const SizedBox(height: 8),
                                                 Column(
                                                   children: detail.solutions.map((solution) {

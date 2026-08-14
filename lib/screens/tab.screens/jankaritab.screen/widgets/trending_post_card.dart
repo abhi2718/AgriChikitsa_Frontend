@@ -7,6 +7,7 @@ import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/skeleton/skeleton.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
+import 'package:agriChikitsa/widgets/audio_tts_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -251,16 +252,21 @@ class TrendingPostDetails extends HookWidget {
                                   ? post.title
                                   : post.hindiTitle,
                               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                          InkWell(
-                              onTap: () async {
-                                final xfile = await useViewModel.shareFiles(post.imageUrl);
-                                await SharePlus.instance.share(ShareParams(
-                                    text:
-                                        "${post.hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${post.id}",
-                                    files: [xfile]));
-                              },
-                              child: const SizedBox(
-                                  height: 40, width: 40, child: Icon(Remix.share_line))),
+                          Row(
+                            children: [
+                              AudioTtsButton(htmlContent: html),
+                              InkWell(
+                                  onTap: () async {
+                                    final xfile = await useViewModel.shareFiles(post.imageUrl);
+                                    await SharePlus.instance.share(ShareParams(
+                                        text:
+                                            "${post.hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${post.id}",
+                                        files: [xfile]));
+                                  },
+                                  child: const SizedBox(
+                                      height: 40, width: 40, child: Icon(Remix.share_line))),
+                            ],
+                          ),
                         ],
                       ),
                     ),

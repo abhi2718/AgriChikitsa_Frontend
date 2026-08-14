@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:agriChikitsa/widgets/html_render_with_audio.dart';
+import 'package:agriChikitsa/widgets/audio_tts_button.dart';
 import 'package:provider/provider.dart';
 
 class WeedProtectionScreen extends HookWidget {
@@ -173,9 +175,14 @@ class WeedProtectionScreen extends HookWidget {
                                                   .toString();
                                             }
 
-                                            return !hasUrl
-                                                ? const SizedBox.shrink()
-                                                : ElevatedButton(
+                                            final advisoryContent = provider.selectedAdvisory != null
+                                                ? (AppLocalization.of(context).locale.toString() == "en"
+                                                    ? provider.selectedAdvisory!.advisoryBeforeEn
+                                                    : provider.selectedAdvisory!.advisoryBeforeHi)
+                                                : "";
+
+                                            return hasUrl
+                                                ? ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor: AppColor.tabIconColor,
                                                       foregroundColor: Colors.white,
@@ -225,6 +232,10 @@ class WeedProtectionScreen extends HookWidget {
                                                         ),
                                                       ],
                                                     ),
+                                                  )
+                                                : AudioTtsButton(
+                                                    htmlContent: advisoryContent,
+                                                    useElevatedButton: true,
                                                   );
                                           },
                                         ),
@@ -367,10 +378,10 @@ class WeedProtectionScreen extends HookWidget {
                                       padding: const EdgeInsets.all(12.0),
                                       child: Column(
                                         children: [
-                                          HtmlWidget(
-                                              AppLocalization.of(context).locale.toString() == "en"
-                                                  ? provider.selectedAdvisory!.advisoryBeforeEn
-                                                  : provider.selectedAdvisory!.advisoryBeforeHi),
+                                          HtmlRenderWithAudio(
+                                             htmlContent: AppLocalization.of(context).locale.toString() == "en"
+                                                 ? provider.selectedAdvisory!.advisoryBeforeEn
+                                                 : provider.selectedAdvisory!.advisoryBeforeHi),
                                           Consumer<MedicineViewModel>(
                                               builder: (context, provider, _) {
                                             final filteredList = provider.weedManageList

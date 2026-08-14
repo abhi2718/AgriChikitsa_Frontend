@@ -14,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../res/app_url.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/text.widgets/text.dart';
+import '../../../../widgets/audio_tts_button.dart';
 import '../jankari_view_model.dart';
 
 class JankariPost extends HookWidget {
@@ -293,12 +294,19 @@ class JankariPost extends HookWidget {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                    child: BaseText(
-                                        title: profileViewModel.locale["language"] == "en"
-                                            ? provider.jankariSubcategoryPostList[index].title
-                                            : provider.jankariSubcategoryPostList[index].hindiTitle,
-                                        style: const TextStyle(
-                                            fontSize: 20, fontWeight: FontWeight.bold)),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: BaseText(
+                                              title: profileViewModel.locale["language"] == "en"
+                                                  ? provider.jankariSubcategoryPostList[index].title
+                                                  : provider.jankariSubcategoryPostList[index].hindiTitle,
+                                              style: const TextStyle(
+                                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                                        ),
+                                        AudioTtsButton(htmlContent: html),
+                                      ],
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 10,
