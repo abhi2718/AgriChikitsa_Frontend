@@ -19,7 +19,7 @@ class SoilHealthCard extends HookWidget {
     final useViewModel = Provider.of<AGPlusViewModel>(context, listen: false);
     useEffect(() {
       useViewModel.getUserDetails();
-      useViewModel.requestStatus = false;
+      useViewModel.checkExistingSoilRequest(useViewModel.selectedPlot.id);
     }, []);
     return Scaffold(
       backgroundColor: AppColor.lightColor,
@@ -53,8 +53,11 @@ class SoilHealthCard extends HookWidget {
                     textAlign: TextAlign.center,
                   ),
                   InkWell(
-                    onTap: () {
-                      showRaiseRequest(context, dimension);
+                    onTap: () async {
+                      await useViewModel.checkExistingSoilRequest(useViewModel.selectedPlot.id);
+                      if (context.mounted) {
+                        showRaiseRequest(context, dimension);
+                      }
                     },
                     child: Container(
                       height: dimension["height"]! * 0.08,

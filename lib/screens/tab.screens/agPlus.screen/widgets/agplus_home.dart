@@ -25,7 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../res/color.dart';
 import '../ag_plus_view_model.dart';
-import '../weather.screen/weather_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/weather.screen/weather_view_model.dart';
 import '../helper/current_selected_plot.dart';
 
 enum _MenuAction { delete, expenseTracker }

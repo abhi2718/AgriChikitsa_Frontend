@@ -826,6 +826,24 @@ class AGPlusViewModel with ChangeNotifier {
     // notifyListeners();
   }
 
+  Future<void> checkExistingSoilRequest(String fieldId) async {
+    try {
+      final response = await _agPlusRepository.getReportsList(fieldId, 1);
+      final data = response["data"] as List<dynamic>?;
+      if (data != null && data.isNotEmpty) {
+        final hasActiveRequest = data.any((req) =>
+            req["status"] == "PENDING" || req["status"] == "INPROGRESS");
+        requestStatus = hasActiveRequest;
+      } else {
+        requestStatus = false;
+      }
+      notifyListeners();
+    } catch (error) {
+      requestStatus = false;
+      notifyListeners();
+    }
+  }
+
   void getSoilReportsList(BuildContext context, String fieldId, int pageNo) async {
     resetReportsPage();
     try {
@@ -881,15 +899,22 @@ class AGPlusViewModel with ChangeNotifier {
         }
       }
       setRequestLoader(false);
+      notifyListeners();
     } catch (error) {
-      requestStatus = false;
       setRequestLoader(false);
-      if (context.mounted) {
-        Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("alert").toString(),
-            Utils.getBackendErrorMessage(error, context),
-            context);
+      final errorMsg = error.toString().toLowerCase();
+      if (errorMsg.contains("already") || error.toString().contains("पहले ही")) {
+        requestStatus = true;
+      } else {
+        requestStatus = false;
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              Utils.getBackendErrorMessage(error, context),
+              context);
+        }
       }
+      notifyListeners();
     }
   }
 
