@@ -15,14 +15,15 @@ class WeedCarouselWithFeedback extends StatefulWidget {
       {super.key, required this.chemicals, required this.medicineViewModel});
 
   @override
-  State<WeedCarouselWithFeedback> createState() => _WeedCarouselWithFeedbackState();
+  State<WeedCarouselWithFeedback> createState() =>
+      _WeedCarouselWithFeedbackState();
 }
 
 class _WeedCarouselWithFeedbackState extends State<WeedCarouselWithFeedback> {
-  final PageController _pageController = PageController(viewportFraction: 0.8);
+  final PageController _pageController = PageController(viewportFraction: 1);
   int _currentPage = 0;
   Timer? _autoScrollTimer;
-  Map<String, Timer?> _debounceTimers = {};
+  final Map<String, Timer?> _debounceTimers = {};
 
   @override
   void initState() {
@@ -71,7 +72,8 @@ class _WeedCarouselWithFeedbackState extends State<WeedCarouselWithFeedback> {
     });
 
     _debounceTimers[chemical["_id"]]?.cancel();
-    _debounceTimers[chemical["_id"]] = Timer(const Duration(milliseconds: 600), () {
+    _debounceTimers[chemical["_id"]] =
+        Timer(const Duration(milliseconds: 600), () {
       widget.medicineViewModel.toggleMedicineLike(context, chemical["_id"]);
     });
   }
@@ -89,7 +91,8 @@ class _WeedCarouselWithFeedbackState extends State<WeedCarouselWithFeedback> {
       }
     });
     _debounceTimers[chemical["_id"]]?.cancel();
-    _debounceTimers[chemical["_id"]] = Timer(const Duration(milliseconds: 600), () {
+    _debounceTimers[chemical["_id"]] =
+        Timer(const Duration(milliseconds: 600), () {
       widget.medicineViewModel.toggleMedicineDislike(context, chemical["_id"]);
     });
   }
@@ -132,8 +135,8 @@ class _WeedCarouselWithFeedbackState extends State<WeedCarouselWithFeedback> {
               children: [
                 Center(
                   child: InkWell(
-                    onTap: () =>
-                        Utils.model(context, FullScreenImageViewer(imageUrl: chemical["image"])),
+                    onTap: () => Utils.model(context,
+                        FullScreenImageViewer(imageUrl: chemical["image"])),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
@@ -142,12 +145,14 @@ class _WeedCarouselWithFeedbackState extends State<WeedCarouselWithFeedback> {
                         child: CachedNetworkImage(
                           imageUrl: chemical["image"],
                           fit: BoxFit.contain,
-                          progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Skeleton(
                             height: 100,
                             width: double.infinity,
                             radius: 0,
                           ),
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -192,18 +197,23 @@ class _WeedCarouselWithFeedbackState extends State<WeedCarouselWithFeedback> {
                           onPressed: () => _handleLike(chemical),
                           icon: Icon(
                             Icons.thumb_up,
-                            color: chemical["isLiked"] ? Colors.green : Colors.grey,
+                            color: chemical["isLiked"]
+                                ? Colors.green
+                                : Colors.grey,
                           ),
                         ),
                         Text(
                           chemical["likes"].length.toString(),
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                         IconButton(
                           onPressed: () => _handleDislike(chemical),
                           icon: Icon(
                             Icons.thumb_down,
-                            color: chemical["isDisliked"] ? Colors.red : Colors.grey,
+                            color: chemical["isDisliked"]
+                                ? Colors.red
+                                : Colors.grey,
                           ),
                         ),
                       ],
