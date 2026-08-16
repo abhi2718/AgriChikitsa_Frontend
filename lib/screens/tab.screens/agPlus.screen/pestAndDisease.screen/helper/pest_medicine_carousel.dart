@@ -13,17 +13,19 @@ class PestMedicineCarousel extends StatefulWidget {
   final List<ChemicalSolutionCarousel> chemicals;
   final PestMedicineViewModel pestMedicineViewModel;
   const PestMedicineCarousel(
-      {super.key, required this.chemicals, required this.pestMedicineViewModel});
+      {super.key,
+      required this.chemicals,
+      required this.pestMedicineViewModel});
 
   @override
   State<PestMedicineCarousel> createState() => _PestMedicineCarouselState();
 }
 
 class _PestMedicineCarouselState extends State<PestMedicineCarousel> {
-  final PageController _pageController = PageController(viewportFraction: 0.8);
+  final PageController _pageController = PageController(viewportFraction: 1);
   int _currentPage = 0;
   Timer? _autoScrollTimer;
-  Map<String, Timer?> _debounceTimers = {};
+  final Map<String, Timer?> _debounceTimers = {};
 
   @override
   void initState() {
@@ -133,8 +135,8 @@ class _PestMedicineCarouselState extends State<PestMedicineCarousel> {
               children: [
                 Center(
                   child: InkWell(
-                    onTap: () =>
-                        Utils.model(context, FullScreenImageViewer(imageUrl: chemical.image)),
+                    onTap: () => Utils.model(context,
+                        FullScreenImageViewer(imageUrl: chemical.image)),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
@@ -143,12 +145,14 @@ class _PestMedicineCarouselState extends State<PestMedicineCarousel> {
                         child: CachedNetworkImage(
                           imageUrl: chemical.image,
                           fit: BoxFit.contain,
-                          progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Skeleton(
                             height: 100,
                             width: double.infinity,
                             radius: 0,
                           ),
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -193,18 +197,21 @@ class _PestMedicineCarouselState extends State<PestMedicineCarousel> {
                           onPressed: () => _handleLike(chemical),
                           icon: Icon(
                             Icons.thumb_up,
-                            color: chemical.isLiked ? Colors.green : Colors.grey,
+                            color:
+                                chemical.isLiked ? Colors.green : Colors.grey,
                           ),
                         ),
                         Text(
                           chemical.likesCount.toString(),
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                         IconButton(
                           onPressed: () => _handleDislike(chemical),
                           icon: Icon(
                             Icons.thumb_down,
-                            color: chemical.isDisliked ? Colors.red : Colors.grey,
+                            color:
+                                chemical.isDisliked ? Colors.red : Colors.grey,
                           ),
                         ),
                       ],
