@@ -87,7 +87,7 @@ class FeedUserProfileViewModel extends ChangeNotifier {
     try {
       dynamic payload = {'profileUserId': userId};
       await _feedProfileRepository.followUser(payload);
-      isFollowing = true;
+      isFollowing = !isFollowing;
       setloading(false);
       fetchUserFeeds(context, userId);
     } catch (error) {

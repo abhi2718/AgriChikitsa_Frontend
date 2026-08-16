@@ -26,7 +26,124 @@ import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+void showConnectionsBottomSheet(BuildContext context, String title, List<dynamic> users) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      return Container(
+        constraints: BoxConstraints(maxHeight: screenHeight * 0.7),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: GoogleFonts.inter(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.darkBlackColor,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Remix.close_line, color: AppColor.darkBlackColor),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: users.isEmpty
+                    ? Center(
+                        child: Text(
+                          "No users found",
+                          style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 14),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        itemCount: users.length,
+                        separatorBuilder: (context, index) =>
+                            const Divider(height: 1, indent: 16, endIndent: 16),
+                        itemBuilder: (context, index) {
+                          final user = users[index];
+                          if (user is Map) {
+                            final name = user['name'] ?? user['userHandler'] ?? "User";
+                            final handler = user['userHandler'] ?? "";
+                            final profileImage = user['profileImage'];
+                            return ListTile(
+                              leading: CircleAvatar(
+                                radius: 22,
+                                backgroundColor: AppColor.lightColor,
+                                backgroundImage:
+                                    (profileImage != null && profileImage.toString().isNotEmpty)
+                                        ? NetworkImage(profileImage)
+                                        : null,
+                                child: (profileImage == null || profileImage.toString().isEmpty)
+                                    ? const Icon(Icons.person, color: AppColor.extraDark)
+                                    : null,
+                              ),
+                              title: Text(
+                                name,
+                                style: GoogleFonts.inter(
+                                    fontSize: 15, fontWeight: FontWeight.w600),
+                              ),
+                              subtitle: handler.isNotEmpty
+                                  ? Text(
+                                      handler,
+                                      style: GoogleFonts.inter(
+                                          fontSize: 13, color: Colors.grey[600]),
+                                    )
+                                  : null,
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FeedUserProfile(account: user),
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            return ListTile(
+                              title: Text(user.toString()),
+                            );
+                          }
+                        },
+                      ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
 class FeedUserProfile extends HookWidget {
   const FeedUserProfile({super.key, required this.account});
@@ -91,45 +208,75 @@ class FeedUserProfile extends HookWidget {
                       const SizedBox(
                         width: 16,
                       ),
-                      Column(
-                        children: [
-                          Consumer<FeedUserProfileViewModel>(builder: (context, provider, child) {
-                            return Text(
-                              provider.connections == null
-                                  ? "0"
-                                  : provider.connections['followers'].length.toString(),
-                              style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+                      Consumer<FeedUserProfileViewModel>(builder: (context, provider, child) {
+                        final followersList = provider.connections != null &&
+                                provider.connections['followers'] != null
+                            ? provider.connections['followers']
+                            : [];
+                        return InkWell(
+                          onTap: () {
+                            showConnectionsBottomSheet(
+                              context,
+                              AppLocalization.of(context)
+                                  .getTranslatedValue("followersTitle")
+                                  .toString(),
+                              followersList,
                             );
-                          }),
-                          Text(
-                            AppLocalization.of(context)
-                                .getTranslatedValue("followersTitle")
-                                .toString(),
-                            style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                followersList.length.toString(),
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("followersTitle")
+                                    .toString(),
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500, fontSize: 13),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      }),
                       const SizedBox(
                         width: 16,
                       ),
-                      Column(
-                        children: [
-                          Consumer<FeedUserProfileViewModel>(builder: (context, provider, child) {
-                            return Text(
-                              provider.connections == null
-                                  ? "0"
-                                  : provider.connections['following'].length.toString(),
-                              style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+                      Consumer<FeedUserProfileViewModel>(builder: (context, provider, child) {
+                        final followingList = provider.connections != null &&
+                                provider.connections['following'] != null
+                            ? provider.connections['following']
+                            : [];
+                        return InkWell(
+                          onTap: () {
+                            showConnectionsBottomSheet(
+                              context,
+                              AppLocalization.of(context)
+                                  .getTranslatedValue("followingTitle")
+                                  .toString(),
+                              followingList,
                             );
-                          }),
-                          Text(
-                            AppLocalization.of(context)
-                                .getTranslatedValue("followingTitle")
-                                .toString(),
-                            style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                followingList.length.toString(),
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                AppLocalization.of(context)
+                                    .getTranslatedValue("followingTitle")
+                                    .toString(),
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500, fontSize: 13),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      }),
                     ],
                   )
                 ],
@@ -141,53 +288,56 @@ class FeedUserProfile extends HookWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GestureDetector(
-                onTap: useViewModel.isFollowing
-                    ? null
-                    : () => useViewModel.followUser(context, account['_id']),
-                child: Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  height: dimension['height']! * 0.06,
-                  decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: AlignmentDirectional.bottomCenter,
-                          colors: [
-                            Color(0xff114D1E),
-                            Color(0xff185616),
-                            Color(0xff218817),
-                          ]),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Consumer<FeedUserProfileViewModel>(builder: (context, provider, child) {
-                    return provider.isLoading
-                        ? const Center(
+              child: Consumer<FeedUserProfileViewModel>(builder: (context, provider, child) {
+                return GestureDetector(
+                  onTap: () => provider.followUser(context, account['_id']),
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    height: dimension['height']! * 0.05,
+                    decoration: BoxDecoration(
+                      color: provider.isFollowing ? Colors.white : null,
+                      border: provider.isFollowing
+                          ? Border.all(color: AppColor.extraDark, width: 1.5)
+                          : null,
+                      gradient: provider.isFollowing
+                          ? null
+                          : const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: AlignmentDirectional.bottomCenter,
+                              colors: [
+                                Color(0xff114D1E),
+                                Color(0xff185616),
+                                Color(0xff218817),
+                              ],
+                            ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: provider.isLoading
+                        ? Center(
                             child: CircularProgressIndicator(
-                              color: AppColor.whiteColor,
+                              color:
+                                  provider.isFollowing ? AppColor.extraDark : AppColor.whiteColor,
                             ),
                           )
-                        : provider.isFollowing
-                            ? Text(
-                                AppLocalization.of(context)
+                        : Text(
+                            provider.isFollowing
+                                ? AppLocalization.of(context)
                                     .getTranslatedValue("followingTitle")
-                                    .toString(),
-                                style: GoogleFonts.inter(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColor.whiteColor),
-                              )
-                            : Text(
-                                AppLocalization.of(context)
+                                    .toString()
+                                : AppLocalization.of(context)
                                     .getTranslatedValue("followTitle")
                                     .toString(),
-                                style: GoogleFonts.inter(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColor.whiteColor),
-                              );
-                  }),
-                ),
-              ),
+                            style: GoogleFonts.inter(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  provider.isFollowing ? AppColor.extraDark : AppColor.whiteColor,
+                            ),
+                          ),
+                  ),
+                );
+              }),
             ),
             const Divider(),
             TabBar(

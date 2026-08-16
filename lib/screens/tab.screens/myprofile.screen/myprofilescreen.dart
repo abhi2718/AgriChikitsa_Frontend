@@ -1,6 +1,7 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/model/comment.dart';
 import 'package:agriChikitsa/routes/routes_name.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/widgets/bookmarks.dart';
@@ -103,40 +104,74 @@ class MyProfileScreen extends HookWidget {
                           const SizedBox(
                             width: 16,
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                provider.connections == null
-                                    ? "0"
-                                    : provider.connections['followers'].length.toString(),
-                                style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              Text(
+                          InkWell(
+                            onTap: () {
+                              final followersList = provider.connections != null &&
+                                      provider.connections['followers'] != null
+                                  ? provider.connections['followers']
+                                  : [];
+                              showConnectionsBottomSheet(
+                                context,
                                 AppLocalization.of(context)
                                     .getTranslatedValue("followersTitle")
                                     .toString(),
-                                style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
-                              ),
-                            ],
+                                followersList,
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  provider.connections == null
+                                      ? "0"
+                                      : provider.connections['followers'].length.toString(),
+                                  style:
+                                      GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                Text(
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("followersTitle")
+                                      .toString(),
+                                  style:
+                                      GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             width: 16,
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                provider.connections == null
-                                    ? "0"
-                                    : provider.connections['following'].length.toString(),
-                                style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              Text(
+                          InkWell(
+                            onTap: () {
+                              final followingList = provider.connections != null &&
+                                      provider.connections['following'] != null
+                                  ? provider.connections['following']
+                                  : [];
+                              showConnectionsBottomSheet(
+                                context,
                                 AppLocalization.of(context)
                                     .getTranslatedValue("followingTitle")
                                     .toString(),
-                                style: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
-                              ),
-                            ],
+                                followingList,
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  provider.connections == null
+                                      ? "0"
+                                      : provider.connections['following'].length.toString(),
+                                  style:
+                                      GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
+                                Text(
+                                  AppLocalization.of(context)
+                                      .getTranslatedValue("followingTitle")
+                                      .toString(),
+                                  style:
+                                      GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       )
