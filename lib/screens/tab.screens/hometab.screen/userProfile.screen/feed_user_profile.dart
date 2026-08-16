@@ -1,12 +1,15 @@
 import 'package:agriChikitsa/l10n/app_localizations.dart';
+import 'package:agriChikitsa/model/user_model.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/helper/video_controls.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/hometab_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/userProfile.screen/feed_user_profile_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/comment_widget.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_test_widget.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_loader.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_video_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/report_screen.dart';
+import 'package:agriChikitsa/services/auth.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/fullScreenImage.widget/full_screen_image.dart';
@@ -686,9 +689,43 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<FeedUserProfileViewModel>(context, listen: false);
     final homeTabViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
+    final userInfo = User.fromJson(authService.userInfo["user"]);
+    final numberOfLikes = useState(widget.feed['likes'].length);
+    final isLiked = useState(widget.feed['likes'].contains(userInfo.sId));
+    final numberOfComments = useState(widget.feed['comments'].length);
+    final isBookMarked = useState(widget.feed['bookmarks'] != null &&
+        widget.feed['bookmarks'].contains(userInfo.sId));
+
+    void setNumberOfComment(int count) {
+      numberOfComments.value = count;
+    }
+
+    void handleLike() {
+      homeTabViewModel.toggleLike(
+          context, widget.feed["_id"], isLiked.value, userInfo.sId!);
+      if (isLiked.value == true) {
+        isLiked.value = false;
+        numberOfLikes.value = numberOfLikes.value - 1;
+      } else {
+        isLiked.value = true;
+        numberOfLikes.value = numberOfLikes.value + 1;
+      }
+    }
+
+    void handleBookMark() {
+      homeTabViewModel.toggleTimeline(
+          context, widget.feed["_id"], userInfo.sId!);
+      if (isBookMarked.value == true) {
+        isBookMarked.value = false;
+      } else {
+        isBookMarked.value = true;
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2),
       // margin: EdgeInsets.only(
@@ -789,21 +826,17 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // InkWell(
-                  //   onTap: handleLike,
-                  //   child: Icon(
-                  //     isLiked.value ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-                  //     color: AppColor.iconHeartColor,
-                  //   ),
-                  // ),
-                  const Icon(
-                    Icons.favorite_outline_rounded,
-                    color: AppColor.iconHeartColor,
+                  InkWell(
+                    onTap: handleLike,
+                    child: Icon(
+                      isLiked.value ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                      color: AppColor.iconHeartColor,
+                    ),
                   ),
                   const SizedBox(
                     width: 6,
                   ),
-                  Text(widget.feed['likes'].length.toString())
+                  Text(numberOfLikes.value.toString())
                 ],
               ),
               Row(
@@ -811,31 +844,27 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
                 children: [
                   InkWell(
                     onTap: () {
-                      // Utils.model(
-                      //     context,
-                      //     UserComment(
-                      //       feedId: feed["_id"],
-                      //       setNumberOfComment: setNumberOfComment,
-                      //     ));
+                      Utils.model(
+                          context,
+                          UserComment(
+                            feedId: widget.feed["_id"],
+                            setNumberOfComment: setNumberOfComment,
+                          ));
                     },
                     child: const Icon(Remix.chat_4_line),
                   ),
                   const SizedBox(
                     width: 6,
                   ),
-                  Text(widget.feed['comments'].length.toString())
+                  Text(numberOfComments.value.toString())
                 ],
               ),
-              // InkWell(
-              //   onTap: handleBookMark,
-              //   child: Icon(
-              //     isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
-              //     color: AppColor.darkColor,
-              //   ),
-              // )
-              const Icon(
-                Remix.bookmark_line,
-                color: AppColor.darkColor,
+              InkWell(
+                onTap: handleBookMark,
+                child: Icon(
+                  isBookMarked.value ? Remix.bookmark_fill : Remix.bookmark_line,
+                  color: AppColor.darkColor,
+                ),
               )
             ]),
           ),
