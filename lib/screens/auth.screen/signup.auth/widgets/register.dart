@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../../widgets/Input.widgets/input.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/button.widgets/elevated_button.dart';
+import '../../../../widgets/searchable_selection_sheet.dart';
 import '../../../../widgets/text.widgets/text.dart';
 import '../signup_view_model.dart';
 
@@ -133,116 +134,127 @@ class RegisterUser extends HookWidget {
                               height: 20,
                             ),
                             Consumer<SignUpViewModel>(builder: (context, provider, child) {
-                              return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                              final isEn = AppLocalization.of(context).locale.languageCode == "en";
+                              final selectedText = provider.selectedState == null
+                                  ? AppLocalization.of(context)
+                                      .getTranslatedValue("signupFormSelectState")
+                                      .toString()
+                                  : (isEn
+                                      ? provider.selectedState!.state
+                                      : provider.selectedState!.stateHi);
+                              return InkWell(
+                                onTap: () async {
+                                  final selected = await SearchableSelectionSheet.show<StateModel>(
+                                    context: context,
+                                    title: AppLocalization.of(context)
+                                        .getTranslatedValue("signupFormSelectState")
+                                        .toString(),
+                                    items: provider.stateList.cast<StateModel>(),
+                                    selectedItem: provider.selectedState,
+                                    itemAsString: (item) => isEn ? item.state : item.stateHi,
+                                    itemAsSecondaryString: (item) =>
+                                        isEn ? item.stateHi : item.state,
+                                  );
+                                  if (selected != null) {
+                                    provider.setSelectedState(context, selected);
+                                  }
+                                },
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                                   width: dimension['width']! * 0.90,
                                   decoration: BoxDecoration(
                                     border: Border.all(color: AppColor.extraDark, width: 2.0),
                                     color: Colors.white,
                                   ),
-                                  child: DropdownButton<StateModel>(
-                                    underline: Container(),
-                                    isExpanded: true,
-                                    hint: BaseText(
-                                      title: AppLocalization.of(context)
-                                          .getTranslatedValue("signupFormSelectState")
-                                          .toString(),
-                                      style: TextStyle(),
-                                    ),
-                                    value: provider.selectedState,
-                                    items: provider.stateList
-                                        .map<DropdownMenuItem<StateModel>>((StateModel state) {
-                                      return DropdownMenuItem<StateModel>(
-                                        value: state,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
                                         child: BaseText(
-                                          title: AppLocalization.of(context).locale.languageCode ==
-                                                  "en"
-                                              ? state.state
-                                              : state.stateHi,
-                                          style: const TextStyle(fontSize: 14),
+                                          title: selectedText,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: provider.selectedState == null
+                                                ? Colors.grey[600]
+                                                : Colors.black,
+                                          ),
                                         ),
-                                      );
-                                    }).toList(),
-                                    onChanged: (StateModel? value) {
-                                      if (value != null) {
-                                        provider.setSelectedState(context, value);
-                                      }
-                                    },
-                                  ));
+                                      ),
+                                      const Icon(Icons.arrow_drop_down, color: AppColor.extraDark),
+                                    ],
+                                  ),
+                                ),
+                              );
                             }),
                             const SizedBox(
                               height: 20,
                             ),
                             Consumer<SignUpViewModel>(
                               builder: (context, provider, child) {
-                                return provider.districtList.isEmpty
-                                    ? InkWell(
-                                        onTap: () => Utils.snackbar(
+                                final isEn =
+                                    AppLocalization.of(context).locale.languageCode == "en";
+                                final selectedText = provider.selectedDistrict == null
+                                    ? AppLocalization.of(context)
+                                        .getTranslatedValue("signupFormSelectDistrict")
+                                        .toString()
+                                    : (isEn
+                                        ? provider.selectedDistrict!.name
+                                        : provider.selectedDistrict!.nameHi);
+
+                                return InkWell(
+                                  onTap: provider.districtList.isEmpty
+                                      ? () => Utils.snackbar(
                                             AppLocalization.of(context)
                                                 .getTranslatedValue("validateState")
                                                 .toString(),
-                                            context),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                            color: Colors.white,
-                                          ),
-                                          child: DropdownButton(
-                                              underline: Container(),
-                                              isExpanded: true,
-                                              hint: BaseText(
-                                                title: AppLocalization.of(context)
-                                                    .getTranslatedValue("signupFormSelectDistrict")
-                                                    .toString(),
-                                                style: const TextStyle(),
-                                              ),
-                                              value: null,
-                                              alignment: AlignmentDirectional.centerStart,
-                                              items: const [],
-                                              onChanged: (_) {}),
-                                        ),
-                                      )
-                                    : Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        width: dimension['width']! * 0.90,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                          color: Colors.white,
-                                        ),
-                                        child: DropdownButton<DistrictModel>(
-                                            underline: Container(),
-                                            isExpanded: true,
-                                            hint: BaseText(
-                                              title: AppLocalization.of(context)
-                                                  .getTranslatedValue("signupFormSelectDistrict")
-                                                  .toString(),
-                                              style: const TextStyle(),
+                                            context,
+                                          )
+                                      : () async {
+                                          final selected =
+                                              await SearchableSelectionSheet.show<DistrictModel>(
+                                            context: context,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectDistrict")
+                                                .toString(),
+                                            items: provider.districtList.cast<DistrictModel>(),
+                                            selectedItem: provider.selectedDistrict,
+                                            itemAsString: (item) => isEn ? item.name : item.nameHi,
+                                            itemAsSecondaryString: (item) =>
+                                                isEn ? item.nameHi : item.name,
+                                          );
+                                          if (selected != null) {
+                                            provider.setSelectedDistrict(selected);
+                                          }
+                                        },
+                                  child: Container(
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                    width: dimension['width']! * 0.90,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: BaseText(
+                                            title: selectedText,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: provider.selectedDistrict == null
+                                                  ? Colors.grey[600]
+                                                  : Colors.black,
                                             ),
-                                            value: provider.selectedDistrict,
-                                            alignment: AlignmentDirectional.centerStart,
-                                            items: provider.districtList
-                                                .map<DropdownMenuItem<DistrictModel>>((value) {
-                                              return DropdownMenuItem<DistrictModel>(
-                                                value: value,
-                                                child: BaseText(
-                                                  title: AppLocalization.of(context)
-                                                              .locale
-                                                              .languageCode ==
-                                                          "en"
-                                                      ? value.name
-                                                      : value.nameHi,
-                                                  style: const TextStyle(fontSize: 14),
-                                                ),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              if (value != null) {
-                                                provider.setSelectedDistrict(value);
-                                              }
-                                            }),
-                                      );
+                                          ),
+                                        ),
+                                        const Icon(Icons.arrow_drop_down,
+                                            color: AppColor.extraDark),
+                                      ],
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             const SizedBox(
@@ -270,74 +282,69 @@ class RegisterUser extends HookWidget {
                             ),
                             Consumer<SignUpViewModel>(
                               builder: (context, provider, child) {
-                                return provider.blockList.isEmpty
-                                    ? InkWell(
-                                        onTap: () => Utils.snackbar(
+                                final isEn =
+                                    AppLocalization.of(context).locale.languageCode == "en";
+                                final selectedText = provider.selectedBlock == null
+                                    ? AppLocalization.of(context)
+                                        .getTranslatedValue("signupFormSelectBlock")
+                                        .toString()
+                                    : (isEn
+                                        ? provider.selectedBlock!.name
+                                        : provider.selectedBlock!.nameHi);
+
+                                return InkWell(
+                                  onTap: provider.blockList.isEmpty
+                                      ? () => Utils.snackbar(
                                             AppLocalization.of(context)
                                                 .getTranslatedValue("validateDistrict")
                                                 .toString(),
-                                            context),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                            color: Colors.white,
-                                          ),
-                                          child: DropdownButton(
-                                              underline: Container(),
-                                              isExpanded: true,
-                                              hint: BaseText(
-                                                title: AppLocalization.of(context)
-                                                    .getTranslatedValue("signupFormSelectBlock")
-                                                    .toString(),
-                                                style: const TextStyle(),
-                                              ),
-                                              value: null,
-                                              alignment: AlignmentDirectional.centerStart,
-                                              items: const [],
-                                              onChanged: (_) {}),
-                                        ),
-                                      )
-                                    : Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        width: dimension['width']! * 0.90,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: AppColor.extraDark, width: 2.0),
-                                          color: Colors.white,
-                                        ),
-                                        child: DropdownButton<BlockModel>(
-                                            underline: Container(),
-                                            isExpanded: true,
-                                            hint: BaseText(
-                                              title: AppLocalization.of(context)
-                                                  .getTranslatedValue("signupFormSelectBlock")
-                                                  .toString(),
-                                              style: const TextStyle(),
+                                            context,
+                                          )
+                                      : () async {
+                                          final selected =
+                                              await SearchableSelectionSheet.show<BlockModel>(
+                                            context: context,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectBlock")
+                                                .toString(),
+                                            items: provider.blockList.cast<BlockModel>(),
+                                            selectedItem: provider.selectedBlock,
+                                            itemAsString: (item) => isEn ? item.name : item.nameHi,
+                                            itemAsSecondaryString: (item) =>
+                                                isEn ? item.nameHi : item.name,
+                                          );
+                                          if (selected != null) {
+                                            provider.setSelectedBlock(selected);
+                                          }
+                                        },
+                                  child: Container(
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                    width: dimension['width']! * 0.90,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: AppColor.extraDark, width: 2.0),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: BaseText(
+                                            title: selectedText,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: provider.selectedBlock == null
+                                                  ? Colors.grey[600]
+                                                  : Colors.black,
                                             ),
-                                            value: provider.selectedBlock,
-                                            alignment: AlignmentDirectional.centerStart,
-                                            items: provider.blockList
-                                                .map<DropdownMenuItem<BlockModel>>((value) {
-                                              return DropdownMenuItem<BlockModel>(
-                                                value: value,
-                                                child: BaseText(
-                                                  title: AppLocalization.of(context)
-                                                              .locale
-                                                              .languageCode ==
-                                                          "en"
-                                                      ? value.name
-                                                      : value.nameHi,
-                                                  style: const TextStyle(fontSize: 14),
-                                                ),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              if (value != null) {
-                                                provider.setSelectedBlock(value);
-                                              }
-                                            }),
-                                      );
+                                          ),
+                                        ),
+                                        const Icon(Icons.arrow_drop_down,
+                                            color: AppColor.extraDark),
+                                      ],
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             const SizedBox(

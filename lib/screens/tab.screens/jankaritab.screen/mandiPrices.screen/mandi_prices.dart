@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../utils/utils.dart';
+import '../../../../widgets/searchable_selection_sheet.dart';
 import '../../../../widgets/text.widgets/text.dart';
 
 class MandiPricesScreen extends HookWidget {
@@ -71,50 +72,61 @@ class MandiPricesScreen extends HookWidget {
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("signupFormSelectState")
                                             .toString())
-                                    : Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        width: dimension['width']! * 0.90,
-                                        decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey[400]!,
-                                                  blurRadius: 1.0,
-                                                  spreadRadius: 1,
-                                                  offset: const Offset(0, 3))
-                                            ],
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20)),
-                                        child: DropdownButton(
-                                            underline: Container(),
-                                            isExpanded: true,
-                                            hint: BaseText(
-                                              title: AppLocalization.of(context)
-                                                  .getTranslatedValue("signupFormSelectState")
-                                                  .toString(),
-                                              style: const TextStyle(),
-                                            ),
-                                            value: provider.selectedState.isEmpty
-                                                ? null
-                                                : useViewModel.selectedState,
-                                            alignment: AlignmentDirectional.centerStart,
-                                            items: provider.stateList
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
+                                    : InkWell(
+                                        onTap: () async {
+                                          final selected =
+                                              await SearchableSelectionSheet.show<String>(
+                                            context: context,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectState")
+                                                .toString(),
+                                            items: provider.stateList.cast<String>(),
+                                            selectedItem: provider.selectedState.isNotEmpty
+                                                ? provider.selectedState
+                                                : null,
+                                            itemAsString: (item) => item,
+                                          );
+                                          if (selected != null) {
+                                            provider.setSelectedState(selected);
+                                            provider.fetchDistrict(context);
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 14),
+                                          width: dimension['width']! * 0.90,
+                                          decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.grey[400]!,
+                                                    blurRadius: 1.0,
+                                                    spreadRadius: 1,
+                                                    offset: const Offset(0, 3))
+                                              ],
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(20)),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
                                                 child: BaseText(
-                                                  title: value,
-                                                  style: const TextStyle(fontSize: 14),
+                                                  title: provider.selectedState.isEmpty
+                                                      ? AppLocalization.of(context)
+                                                          .getTranslatedValue("signupFormSelectState")
+                                                          .toString()
+                                                      : provider.selectedState,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: provider.selectedState.isEmpty
+                                                        ? Colors.grey[600]
+                                                        : Colors.black,
+                                                  ),
                                                 ),
-                                                onTap: () {
-                                                  provider.setSelectedState(value);
-                                                  provider.fetchDistrict(context);
-                                                },
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              provider.setSelectedState(value!);
-                                              useViewModel.fetchDistrict(context);
-                                            }),
+                                              ),
+                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                                            ],
+                                          ),
+                                        ),
                                       );
                               }),
                               const SizedBox(
@@ -131,50 +143,61 @@ class MandiPricesScreen extends HookWidget {
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("signupFormSelectDistrict")
                                             .toString())
-                                    : Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        width: dimension['width']! * 0.90,
-                                        decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey[400]!,
-                                                  blurRadius: 1.0,
-                                                  spreadRadius: 1,
-                                                  offset: const Offset(0, 3))
-                                            ],
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20)),
-                                        child: DropdownButton(
-                                            hint: BaseText(
-                                              title: AppLocalization.of(context)
-                                                  .getTranslatedValue("signupFormSelectDistrict")
-                                                  .toString(),
-                                              style: const TextStyle(),
-                                            ),
-                                            value: provider.selectedDistrict.isEmpty
-                                                ? null
-                                                : useViewModel.selectedDistrict,
-                                            alignment: AlignmentDirectional.centerStart,
-                                            isExpanded: true,
-                                            underline: Container(),
-                                            items: provider.districtList
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
+                                    : InkWell(
+                                        onTap: () async {
+                                          final selected =
+                                              await SearchableSelectionSheet.show<String>(
+                                            context: context,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("signupFormSelectDistrict")
+                                                .toString(),
+                                            items: provider.districtList.cast<String>(),
+                                            selectedItem: provider.selectedDistrict.isNotEmpty
+                                                ? provider.selectedDistrict
+                                                : null,
+                                            itemAsString: (item) => item,
+                                          );
+                                          if (selected != null) {
+                                            provider.setSelectedDistrict(selected);
+                                            provider.fetchMarket(context);
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 14),
+                                          width: dimension['width']! * 0.90,
+                                          decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.grey[400]!,
+                                                    blurRadius: 1.0,
+                                                    spreadRadius: 1,
+                                                    offset: const Offset(0, 3))
+                                              ],
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(20)),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
                                                 child: BaseText(
-                                                  title: value,
-                                                  style: const TextStyle(fontSize: 14),
+                                                  title: provider.selectedDistrict.isEmpty
+                                                      ? AppLocalization.of(context)
+                                                          .getTranslatedValue("signupFormSelectDistrict")
+                                                          .toString()
+                                                      : provider.selectedDistrict,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: provider.selectedDistrict.isEmpty
+                                                        ? Colors.grey[600]
+                                                        : Colors.black,
+                                                  ),
                                                 ),
-                                                onTap: () {
-                                                  provider.setSelectedDistrict(value);
-                                                  provider.fetchMarket(context);
-                                                },
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              provider.setSelectedDistrict(value!);
-                                              provider.fetchMarket(context);
-                                            }),
+                                              ),
+                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                                            ],
+                                          ),
+                                        ),
                                       );
                               }),
                               const SizedBox(
@@ -191,46 +214,61 @@ class MandiPricesScreen extends HookWidget {
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("selectMandi")
                                             .toString())
-                                    : Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        width: dimension['width']! * 0.90,
-                                        decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey[400]!,
-                                                  blurRadius: 1.0,
-                                                  spreadRadius: 1,
-                                                  offset: const Offset(0, 3))
-                                            ],
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20)),
-                                        child: DropdownButton(
-                                            alignment: AlignmentDirectional.centerStart,
-                                            isExpanded: true,
-                                            underline: Container(),
-                                            hint: BaseText(
-                                              title: AppLocalization.of(context)
-                                                  .getTranslatedValue("selectMandi")
-                                                  .toString(),
-                                              style: const TextStyle(),
-                                            ),
-                                            value: provider.selectedMarket.isEmpty
-                                                ? null
-                                                : useViewModel.selectedMarket,
-                                            items: provider.marketList
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
+                                    : InkWell(
+                                        onTap: () async {
+                                          final selected =
+                                              await SearchableSelectionSheet.show<String>(
+                                            context: context,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("selectMandi")
+                                                .toString(),
+                                            items: provider.marketList.cast<String>(),
+                                            selectedItem: provider.selectedMarket.isNotEmpty
+                                                ? provider.selectedMarket
+                                                : null,
+                                            itemAsString: (item) => item,
+                                          );
+                                          if (selected != null) {
+                                            provider.setSelectedMarket(selected);
+                                            provider.fetchCommodities(context);
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 14),
+                                          width: dimension['width']! * 0.90,
+                                          decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.grey[400]!,
+                                                    blurRadius: 1.0,
+                                                    spreadRadius: 1,
+                                                    offset: const Offset(0, 3))
+                                              ],
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(20)),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
                                                 child: BaseText(
-                                                  title: value,
-                                                  style: const TextStyle(fontSize: 14),
+                                                  title: provider.selectedMarket.isEmpty
+                                                      ? AppLocalization.of(context)
+                                                          .getTranslatedValue("selectMandi")
+                                                          .toString()
+                                                      : provider.selectedMarket,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: provider.selectedMarket.isEmpty
+                                                        ? Colors.grey[600]
+                                                        : Colors.black,
+                                                  ),
                                                 ),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              provider.setSelectedMarket(value!);
-                                              provider.fetchCommodities(context);
-                                            }),
+                                              ),
+                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                                            ],
+                                          ),
+                                        ),
                                       );
                               }),
                               const SizedBox(
@@ -247,48 +285,60 @@ class MandiPricesScreen extends HookWidget {
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("selectCrop")
                                             .toString())
-                                    : Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                        width: dimension['width']! * 0.90,
-                                        decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey[400]!,
-                                                  blurRadius: 1.0,
-                                                  spreadRadius: 1,
-                                                  offset: const Offset(0, 3))
-                                            ],
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20)),
-                                        child: DropdownButton(
-                                            hint: BaseText(
-                                              title: AppLocalization.of(context)
-                                                  .getTranslatedValue("selectCrop")
-                                                  .toString(),
-                                              style: const TextStyle(),
-                                            ),
-                                            value: provider.selectedCommodity.isEmpty
-                                                ? null
-                                                : useViewModel.selectedCommodity,
-                                            alignment: AlignmentDirectional.centerStart,
-                                            underline: Container(),
-                                            isExpanded: true,
-                                            items: provider.cropList
-                                                .map<DropdownMenuItem<String>>((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
+                                    : InkWell(
+                                        onTap: () async {
+                                          final selected =
+                                              await SearchableSelectionSheet.show<String>(
+                                            context: context,
+                                            title: AppLocalization.of(context)
+                                                .getTranslatedValue("selectCrop")
+                                                .toString(),
+                                            items: provider.cropList.cast<String>(),
+                                            selectedItem: provider.selectedCommodity.isNotEmpty
+                                                ? provider.selectedCommodity
+                                                : null,
+                                            itemAsString: (item) => item,
+                                          );
+                                          if (selected != null) {
+                                            provider.setSelectedCommodity(selected);
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 14),
+                                          width: dimension['width']! * 0.90,
+                                          decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.grey[400]!,
+                                                    blurRadius: 1.0,
+                                                    spreadRadius: 1,
+                                                    offset: const Offset(0, 3))
+                                              ],
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(20)),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
                                                 child: BaseText(
-                                                  title: value,
-                                                  style: const TextStyle(fontSize: 14),
+                                                  title: provider.selectedCommodity.isEmpty
+                                                      ? AppLocalization.of(context)
+                                                          .getTranslatedValue("selectCrop")
+                                                          .toString()
+                                                      : provider.selectedCommodity,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: provider.selectedCommodity.isEmpty
+                                                        ? Colors.grey[600]
+                                                        : Colors.black,
+                                                  ),
                                                 ),
-                                                onTap: () {
-                                                  provider.setSelectedCommodity(value);
-                                                },
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              provider.setSelectedCommodity(value!);
-                                            }),
+                                              ),
+                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                                            ],
+                                          ),
+                                        ),
                                       );
                               }),
                               const SizedBox(
