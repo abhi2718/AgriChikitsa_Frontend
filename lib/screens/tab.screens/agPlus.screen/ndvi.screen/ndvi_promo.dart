@@ -20,6 +20,7 @@ class NDVIPromo extends HookWidget {
     final useViewModel = useMemoized(() => Provider.of<NDVIViewModel>(context, listen: false));
     useEffect(() {
       useViewModel.reinitialize();
+      return null;
     }, []);
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
@@ -129,10 +130,21 @@ class NDVIPromo extends HookWidget {
                           child: Text(AppLocalization.of(context)
                               .getTranslatedValue("addCropMonitoringQuestion")
                               .toString())),
-                      TextButton(
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColor.darkColor,
+                            foregroundColor: AppColor.whiteColor,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            minimumSize: const Size(0, 32),
+                            elevation: 1,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                           onPressed: () async {
                             final res =
                                 await useViewModel.addFieldForMonitoring(context, selectedPlot.id);
+                            if (!context.mounted) return;
                             if (res["success"]) {
                               selectedPlot.isMonitoringOpted = true;
                               selectedPlot.ndviId = res["ndviId"];
@@ -190,7 +202,11 @@ class NDVIPromo extends HookWidget {
                           },
                           child: Text(
                             AppLocalization.of(context).getTranslatedValue("yes").toString(),
-                            style: const TextStyle(color: AppColor.darkColor),
+                            style: const TextStyle(
+                              color: AppColor.whiteColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
                           ))
                     ],
                   ),
