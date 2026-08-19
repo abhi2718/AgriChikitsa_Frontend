@@ -14,7 +14,7 @@ class AudioTtsButton extends StatefulWidget {
     super.key,
     required this.htmlContent,
     this.color,
-    this.iconSize = 24.0,
+    this.iconSize = 20.0,
     this.useElevatedButton = false,
   });
 
@@ -104,55 +104,21 @@ class _AudioTtsButtonState extends State<AudioTtsButton> {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = widget.color ?? AppColor.extraDark;
-
-    if (widget.useElevatedButton) {
-      final buttonText = _isPlaying
-          ? (AppLocalization.of(context).getTranslatedValue("pauseAudio").toString() == "pauseAudio"
-              ? "रुकें"
-              : AppLocalization.of(context).getTranslatedValue("pauseAudio").toString())
-          : (AppLocalization.of(context).getTranslatedValue("playAudio").toString() == "playAudio"
-              ? "सुनें"
-              : AppLocalization.of(context).getTranslatedValue("playAudio").toString());
-
-      return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColor.tabIconColor,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
+    return InkWell(
+      onTap: _toggleSpeak,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: const BoxDecoration(
+          color: AppColor.tabIconColor,
+          shape: BoxShape.circle,
         ),
-        onPressed: _toggleSpeak,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              _isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              buttonText,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+        child: Icon(
+          _isPlaying ? Icons.pause : Icons.volume_up_rounded,
+          color: widget.color ?? Colors.white,
+          size: widget.iconSize,
         ),
-      );
-    }
-
-    return IconButton(
-      icon: Icon(
-        _isPlaying ? Icons.stop_circle_outlined : Icons.volume_up_rounded,
-        color: _isPlaying ? Colors.redAccent : activeColor,
-        size: widget.iconSize,
       ),
-      tooltip: _isPlaying ? "Stop Audio" : "Listen Audio",
-      onPressed: _toggleSpeak,
     );
   }
 }

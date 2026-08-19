@@ -153,99 +153,13 @@ class WeedProtectionScreen extends HookWidget {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Consumer<AudioPlayerViewModel>(
-                                          builder: (context, audioProvider, _) {
-                                            final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                                            final isLoading = audioProvider.isLoading;
-                                            final isPlaying = audioProvider.isPlaying;
-                                            final isPaused = audioProvider.isPaused;
-
-                                            String buttonText;
-                                            if (isLoading) {
-                                              buttonText = AppLocalization.of(context)
-                                                  .getTranslatedValue("loadingAudio")
-                                                  .toString();
-                                            } else if (isPlaying) {
-                                              buttonText = AppLocalization.of(context)
-                                                  .getTranslatedValue("pauseAudio")
-                                                  .toString();
-                                            } else {
-                                              buttonText = AppLocalization.of(context)
-                                                  .getTranslatedValue("playAudio")
-                                                  .toString();
-                                            }
-
-                                            final advisoryContent = provider.selectedAdvisory != null
-                                                ? (AppLocalization.of(context).locale.toString() == "en"
-                                                    ? provider.selectedAdvisory!.advisoryBeforeEn
-                                                    : provider.selectedAdvisory!.advisoryBeforeHi)
-                                                : "";
-
-                                            return hasUrl
-                                                ? ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: AppColor.tabIconColor,
-                                                      foregroundColor: Colors.white,
-                                                      padding: const EdgeInsets.symmetric(
-                                                          horizontal: 8, vertical: 4),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(6),
-                                                      ),
-                                                    ),
-                                                    onPressed: isLoading
-                                                        ? null
-                                                        : () {
-                                                            if (isPlaying) {
-                                                              audioProvider.pause();
-                                                            } else if (isPaused) {
-                                                              audioProvider.resume();
-                                                            } else {
-                                                              audioProvider.play(context);
-                                                            }
-                                                          },
-                                                    child: Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        if (isLoading)
-                                                          const SizedBox(
-                                                            width: 20,
-                                                            height: 20,
-                                                            child: CircularProgressIndicator(
-                                                              strokeWidth: 2,
-                                                              color: Colors.white,
-                                                            ),
-                                                          )
-                                                        else
-                                                          Icon(
-                                                            isPlaying
-                                                                ? Icons.pause
-                                                                : Icons.play_arrow,
-                                                            color: Colors.white,
-                                                          ),
-                                                        const SizedBox(width: 4),
-                                                        Text(
-                                                          buttonText,
-                                                          style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight: FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                : AudioTtsButton(
-                                                    htmlContent: advisoryContent,
-                                                    useElevatedButton: true,
-                                                  );
-                                          },
-                                        ),
-                                        const SizedBox(
-                                          height: 12,
-                                        ),
                                         HtmlWidget(
                                             AppLocalization.of(context).locale.toString() == "en"
                                                 ? provider.selectedAdvisory!.advisoryBeforeEn
                                                 : provider.selectedAdvisory!.advisoryBeforeHi),
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
                                         Consumer<MedicineViewModel>(
                                             builder: (context, provider, _) {
                                           return Column(
@@ -320,65 +234,12 @@ class WeedProtectionScreen extends HookWidget {
                                     }
                                   },
                                   children: [
-                                    Consumer<AudioPlayerViewModel>(
-                                      builder: (context, audioProvider, child) {
-                                        final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                                        if (hasUrl) {
-                                          return Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: audioProvider.isLoading
-                                                ? Container(
-                                                    width: 40,
-                                                    height: 40,
-                                                    margin:
-                                                        const EdgeInsets.only(left: 12, bottom: 8),
-                                                    decoration: const BoxDecoration(
-                                                      color: AppColor.darkColor,
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: const Padding(
-                                                      padding: EdgeInsets.all(8.0),
-                                                      child: CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                        color: AppColor.whiteColor,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    margin:
-                                                        const EdgeInsets.only(left: 12, bottom: 8),
-                                                    decoration: const BoxDecoration(
-                                                      color: AppColor.darkColor,
-                                                      shape: BoxShape.circle, // round button
-                                                    ),
-                                                    child: IconButton(
-                                                      icon: Icon(
-                                                        audioProvider.isPlaying
-                                                            ? Icons.pause
-                                                            : Icons.play_arrow,
-                                                        color: Colors.white, // white icon
-                                                      ),
-                                                      onPressed: () {
-                                                        if (audioProvider.isPlaying) {
-                                                          audioProvider.pause();
-                                                        } else if (audioProvider.isPaused) {
-                                                          audioProvider.resume();
-                                                        } else {
-                                                          audioProvider.play(context);
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                          );
-                                        }
-                                        return const SizedBox.shrink();
-                                      },
-                                    ),
                                     Padding(
                                       padding: const EdgeInsets.all(12.0),
                                       child: Column(
                                         children: [
                                           HtmlRenderWithAudio(
+                                             showAudioButton: false,
                                              htmlContent: AppLocalization.of(context).locale.toString() == "en"
                                                  ? provider.selectedAdvisory!.advisoryBeforeEn
                                                  : provider.selectedAdvisory!.advisoryBeforeHi),
@@ -454,60 +315,6 @@ class WeedProtectionScreen extends HookWidget {
                                     }
                                   },
                                   children: [
-                                    Consumer<AudioPlayerViewModel>(
-                                      builder: (context, audioProvider, child) {
-                                        final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                                        if (hasUrl) {
-                                          return Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: audioProvider.isLoading
-                                                ? Container(
-                                                    width: 40,
-                                                    height: 40,
-                                                    margin:
-                                                        const EdgeInsets.only(left: 12, bottom: 8),
-                                                    decoration: const BoxDecoration(
-                                                      color: AppColor.darkColor,
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: const Padding(
-                                                      padding: EdgeInsets.all(8.0),
-                                                      child: CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                        color: AppColor.whiteColor,
-                                                      ),
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    margin:
-                                                        const EdgeInsets.only(left: 12, bottom: 8),
-                                                    decoration: const BoxDecoration(
-                                                      color: AppColor.darkColor,
-                                                      shape: BoxShape.circle, // round button
-                                                    ),
-                                                    child: IconButton(
-                                                      icon: Icon(
-                                                        audioProvider.isPlaying
-                                                            ? Icons.pause
-                                                            : Icons.play_arrow,
-                                                        color: Colors.white, // white icon
-                                                      ),
-                                                      onPressed: () {
-                                                        if (audioProvider.isPlaying) {
-                                                          audioProvider.pause();
-                                                        } else if (audioProvider.isPaused) {
-                                                          audioProvider.resume();
-                                                        } else {
-                                                          audioProvider.play(context);
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                          );
-                                        }
-                                        return const SizedBox.shrink();
-                                      },
-                                    ),
                                     Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Column(

@@ -294,19 +294,12 @@ class JankariPost extends HookWidget {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: BaseText(
-                                              title: profileViewModel.locale["language"] == "en"
-                                                  ? provider.jankariSubcategoryPostList[index].title
-                                                  : provider.jankariSubcategoryPostList[index].hindiTitle,
-                                              style: const TextStyle(
-                                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                                        ),
-                                        AudioTtsButton(htmlContent: html),
-                                      ],
-                                    ),
+                                    child: BaseText(
+                                        title: profileViewModel.locale["language"] == "en"
+                                            ? provider.jankariSubcategoryPostList[index].title
+                                            : provider.jankariSubcategoryPostList[index].hindiTitle,
+                                        style: const TextStyle(
+                                            fontSize: 20, fontWeight: FontWeight.bold)),
                                   ),
                                   const SizedBox(
                                     height: 10,

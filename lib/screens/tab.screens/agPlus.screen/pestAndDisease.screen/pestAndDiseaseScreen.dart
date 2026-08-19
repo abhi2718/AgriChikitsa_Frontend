@@ -126,21 +126,6 @@ class PestAndDiseaseScreen extends HookWidget {
                           final isPlaying = audioProvider.isPlaying;
                           final isPaused = audioProvider.isPaused;
 
-                          String buttonText;
-                          if (isLoading) {
-                            buttonText = AppLocalization.of(context)
-                                .getTranslatedValue("loadingAudio")
-                                .toString();
-                          } else if (isPlaying) {
-                            buttonText = AppLocalization.of(context)
-                                .getTranslatedValue("pauseAudio")
-                                .toString();
-                          } else {
-                            buttonText = AppLocalization.of(context)
-                                .getTranslatedValue("playAudio")
-                                .toString();
-                          }
-
                           final details = selectedPestDisease.details;
                           final pestDetailsContent = (details != null && details.isNotEmpty)
                               ? (AppLocalization.of(context).locale.toString() == "en"
@@ -148,17 +133,41 @@ class PestAndDiseaseScreen extends HookWidget {
                                   : details.first.contentHi)
                               : "";
 
+                          Widget buildAudioIconBtn({
+                            required VoidCallback? onTap,
+                            required bool playing,
+                            required bool loading,
+                          }) {
+                            return InkWell(
+                              onTap: onTap,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
+                                  color: AppColor.tabIconColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: loading
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : Icon(
+                                        playing ? Icons.pause : Icons.volume_up_rounded,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                              ),
+                            );
+                          }
+
                           return hasUrl
-                              ? ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColor.tabIconColor,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                  ),
-                                  onPressed: isLoading
+                              ? buildAudioIconBtn(
+                                  onTap: isLoading
                                       ? null
                                       : () {
                                           if (isPlaying) {
@@ -169,37 +178,12 @@ class PestAndDiseaseScreen extends HookWidget {
                                             audioProvider.play(context);
                                           }
                                         },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (isLoading)
-                                        const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      else
-                                        Icon(
-                                          isPlaying ? Icons.pause : Icons.play_arrow,
-                                          color: Colors.white,
-                                        ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        buttonText,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  playing: isPlaying,
+                                  loading: isLoading,
                                 )
                               : AudioTtsButton(
                                   htmlContent: pestDetailsContent,
-                                  useElevatedButton: true,
+                                  iconSize: 20.0,
                                 );
                         },
                       ),

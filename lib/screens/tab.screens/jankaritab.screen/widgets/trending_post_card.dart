@@ -252,21 +252,16 @@ class TrendingPostDetails extends HookWidget {
                                   ? post.title
                                   : post.hindiTitle,
                               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                          Row(
-                            children: [
-                              AudioTtsButton(htmlContent: html),
-                              InkWell(
-                                  onTap: () async {
-                                    final xfile = await useViewModel.shareFiles(post.imageUrl);
-                                    await SharePlus.instance.share(ShareParams(
-                                        text:
-                                            "${post.hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${post.id}",
-                                        files: [xfile]));
-                                  },
-                                  child: const SizedBox(
-                                      height: 40, width: 40, child: Icon(Remix.share_line))),
-                            ],
-                          ),
+                          InkWell(
+                              onTap: () async {
+                                final xfile = await useViewModel.shareFiles(post.imageUrl);
+                                await SharePlus.instance.share(ShareParams(
+                                    text:
+                                        "${post.hindiTitle}\nVisit here - ${AppUrl.shareLinkEndpoint}/${post.id}",
+                                    files: [xfile]));
+                              },
+                              child: const SizedBox(
+                                  height: 40, width: 40, child: Icon(Remix.share_line))),
                         ],
                       ),
                     ),

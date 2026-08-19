@@ -145,10 +145,10 @@ class NDVIScreen extends HookWidget {
                         ),
 
                         const SizedBox(
-                          height: 8,
+                          height: 4,
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                           width: dimension["width"],
                           // height: dimension["height"]! * 0.42,
                           decoration: BoxDecoration(
@@ -156,111 +156,103 @@ class NDVIScreen extends HookWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // ndviTasksHeader
+                              // ndviTasksHeader with sound icon on the right
                               Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Center(
-                                    child: Text(
-                                      AppLocalization.of(context)
-                                          .getTranslatedValue("ndviTasksHeader")
-                                          .toString(),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
+                                padding: const EdgeInsets.symmetric(horizontal: 1.0),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        AppLocalization.of(context)
+                                            .getTranslatedValue("ndviTasksHeader")
+                                            .toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
                                       ),
                                     ),
-                                  )),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              Consumer<AudioPlayerViewModel>(
-                                builder: (context, audioProvider, _) {
-                                  final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                                  final isLoading = audioProvider.isLoading;
-                                  final isPlaying = audioProvider.isPlaying;
-                                  final isPaused = audioProvider.isPaused;
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Consumer<AudioPlayerViewModel>(
+                                        builder: (context, audioProvider, _) {
+                                          final hasUrl = audioProvider.audioUrl.isNotEmpty;
+                                          final isLoading = audioProvider.isLoading;
+                                          final isPlaying = audioProvider.isPlaying;
+                                          final isPaused = audioProvider.isPaused;
 
-                                  String buttonText;
-                                  if (isLoading) {
-                                    buttonText = AppLocalization.of(context)
-                                        .getTranslatedValue("loadingAudio")
-                                        .toString();
-                                  } else if (isPlaying) {
-                                    buttonText = AppLocalization.of(context)
-                                        .getTranslatedValue("pauseAudio")
-                                        .toString();
-                                  } else {
-                                    buttonText = AppLocalization.of(context)
-                                        .getTranslatedValue("playAudio")
-                                        .toString();
-                                  }
+                                          final advisoryHtml = provider.ndviResponse != null
+                                              ? (AppLocalization.of(context).locale.toString() == "en"
+                                                  ? provider.ndviResponse!.advisoryEn
+                                                  : provider.ndviResponse!.advisoryHi)
+                                              : "";
 
-                                  final advisoryHtml = provider.ndviResponse != null
-                                      ? (AppLocalization.of(context).locale.toString() == "en"
-                                          ? provider.ndviResponse!.advisoryEn
-                                          : provider.ndviResponse!.advisoryHi)
-                                      : "";
-
-                                  return hasUrl
-                                      ? ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColor.tabIconColor,
-                                            foregroundColor: Colors.white,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 4),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(6),
-                                            ),
-                                          ),
-                                          onPressed: isLoading
-                                              ? null
-                                              : () {
-                                                  if (isPlaying) {
-                                                    audioProvider.pause();
-                                                  } else if (isPaused) {
-                                                    audioProvider.resume();
-                                                  } else {
-                                                    audioProvider.play(context);
-                                                  }
-                                                },
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              if (isLoading)
-                                                const SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child: CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                    color: Colors.white,
-                                                  ),
-                                                )
-                                              else
-                                                Icon(
-                                                  isPlaying ? Icons.pause : Icons.play_arrow,
-                                                  color: Colors.white,
+                                          Widget buildAudioIconBtn({
+                                            required VoidCallback? onTap,
+                                            required bool playing,
+                                            required bool loading,
+                                          }) {
+                                            return InkWell(
+                                              onTap: onTap,
+                                              borderRadius: BorderRadius.circular(20),
+                                              child: Container(
+                                                padding: const EdgeInsets.all(5),
+                                                decoration: const BoxDecoration(
+                                                  color: AppColor.tabIconColor,
+                                                  shape: BoxShape.circle,
                                                 ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                buttonText,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                                child: loading
+                                                    ? const SizedBox(
+                                                        width: 18,
+                                                        height: 18,
+                                                        child: CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                          color: Colors.white,
+                                                        ),
+                                                      )
+                                                    : Icon(
+                                                        playing ? Icons.pause : Icons.volume_up_rounded,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
                                               ),
-                                            ],
-                                          ),
-                                        )
-                                      : AudioTtsButton(
-                                          htmlContent: advisoryHtml,
-                                          useElevatedButton: true,
-                                        );
-                                },
+                                            );
+                                          }
+
+                                          if (hasUrl) {
+                                            return buildAudioIconBtn(
+                                              onTap: isLoading
+                                                  ? null
+                                                  : () {
+                                                      if (isPlaying) {
+                                                        audioProvider.pause();
+                                                      } else if (isPaused) {
+                                                        audioProvider.resume();
+                                                      } else {
+                                                        audioProvider.play(context);
+                                                      }
+                                                    },
+                                              playing: isPlaying,
+                                              loading: isLoading,
+                                            );
+                                          }
+
+                                          return AudioTtsButton(
+                                            htmlContent: advisoryHtml,
+                                            iconSize: 20.0,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(
-                                height: 12,
+                                height: 6,
                               ),
                               HtmlRenderWithAudio(
+                                  showAudioButton: false,
                                   htmlContent: AppLocalization.of(context).locale.toString() == "en"
                                       ? provider.ndviResponse!.advisoryEn
                                       : provider.ndviResponse!.advisoryHi)
