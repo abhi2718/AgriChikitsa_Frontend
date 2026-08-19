@@ -3,9 +3,9 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/all_plots_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../utils/utils.dart';
 import 'ag_plus_view_model.dart';
@@ -18,6 +18,9 @@ class AGPlusLanding extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     return Consumer<AGPlusViewModel>(
       builder: (context, provider, child) {
+        if (provider.hasSeenLanding) {
+          return const AllPlotsScreen();
+        }
         return provider.getFieldLoader
             ? const CircularProgressIndicator(
                 color: AppColor.extraDark,
@@ -182,19 +185,18 @@ class AGPlusLanding extends HookWidget {
                         ],
                       ),
                       InkWell(
-                          onTap: () => Utils.model(context, const AllPlotsScreen()),
+                          onTap: () {
+                            provider.setHasSeenLanding();
+                          },
                           child: GradientButton(
                               height: dimension['height']! * 0.10,
                               width: dimension['width']!,
                               title: AppLocalization.of(context)
                                   .getTranslatedValue("agPlusContinue")
                                   .toString())),
-                      SizedBox(
+                      const SizedBox(
                         height: 40,
                       )
-                      // title: AppLocalization.of(context)
-                      //     .getTranslatedValue("comingSoon")
-                      //     .toString())),
                     ],
                   ),
                 ),

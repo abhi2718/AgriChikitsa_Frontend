@@ -28,6 +28,25 @@ import 'widgets/plot_details.dart';
 
 class AGPlusViewModel with ChangeNotifier {
   final _agPlusRepository = AGPlusRepository();
+  bool _hasSeenLanding = false;
+  bool get hasSeenLanding => _hasSeenLanding;
+
+  AGPlusViewModel() {
+    initHasSeenLanding();
+  }
+
+  Future<void> initHasSeenLanding() async {
+    final prefs = await SharedPreferences.getInstance();
+    _hasSeenLanding = prefs.getBool('has_seen_agriplus_landing') ?? false;
+    notifyListeners();
+  }
+
+  Future<void> setHasSeenLanding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_seen_agriplus_landing', true);
+    _hasSeenLanding = true;
+    notifyListeners();
+  }
   List cropCategoriesList = [];
   List<SelectCrop> cropList = [];
   List userPlotList = [];
