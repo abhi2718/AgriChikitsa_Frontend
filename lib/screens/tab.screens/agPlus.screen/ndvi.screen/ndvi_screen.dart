@@ -289,6 +289,53 @@ class _NDVIGraphState extends State<NDVIGraph> {
   final int maxVisiblePoints = 7;
   bool isLoading = false;
 
+  String formatCropAge(String daysEn, String daysHi, String locale) {
+    final isHindi = locale == "hi";
+    String rawText = isHindi ? daysHi : daysEn;
+    if (rawText.isEmpty) {
+      rawText = isHindi ? daysEn : daysHi;
+    }
+    if (rawText.isEmpty) return "";
+
+    String text = rawText.trim();
+    if (text.startsWith('(') && text.endsWith(')')) {
+      text = text.substring(1, text.length - 1).trim();
+    }
+
+    if (isHindi) {
+      text = text
+          .replaceAll('days', '')
+          .replaceAll('Days', '')
+          .replaceAll('day', '')
+          .replaceAll('Day', '')
+          .replaceAll('दिन', '')
+          .trim();
+
+      if (text.contains('-')) {
+        text = text.split('-').map((e) => e.trim()).join(' से ');
+      } else if (text.contains('to')) {
+        text = text.split('to').map((e) => e.trim()).join(' से ');
+      }
+
+      text = text.replaceAll(RegExp(r'\s+'), ' ').trim();
+      return '($text दिन)';
+    } else {
+      text = text
+          .replaceAll('days', '')
+          .replaceAll('Days', '')
+          .replaceAll('day', '')
+          .replaceAll('Day', '')
+          .trim();
+
+      if (text.contains('-')) {
+        text = text.split('-').map((e) => e.trim()).join(' to ');
+      }
+
+      text = text.replaceAll(RegExp(r'\s+'), ' ').trim();
+      return '($text days)';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final useViewModel = Provider.of<NDVIViewModel>(context, listen: false);
@@ -296,6 +343,8 @@ class _NDVIGraphState extends State<NDVIGraph> {
     final int totalPages = (widget.ndviData.totalRecords / maxVisiblePoints).ceil();
     final bool canGoBack = currentPage > 1;
     final bool canGoForward = currentPage < totalPages;
+    final localeStr = AppLocalization.of(context).locale.toString();
+    final cropAgeText = formatCropAge(widget.ndviData.daysEn, widget.ndviData.daysHi, localeStr);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
       decoration:
@@ -305,17 +354,16 @@ class _NDVIGraphState extends State<NDVIGraph> {
         children: <Widget>[
           Center(
             child: Text(
-              AppLocalization.of(context).locale.toString() == "en"
+              localeStr == "en"
                   ? widget.ndviData.currentStagingEn
                   : widget.ndviData.currentStagingHi,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-          widget.ndviData.daysEn.isNotEmpty && widget.ndviData.daysHi.isNotEmpty
+          cropAgeText.isNotEmpty
               ? Center(
-                  child: ParagraphHeadingText(AppLocalization.of(context).locale.toString() == "en"
-                      ? widget.ndviData.daysEn
-                      : widget.ndviData.daysHi))
+                  child: ParagraphHeadingText(cropAgeText),
+                )
               : const SizedBox.shrink(),
           Container(
             width: dimension['width']!,
