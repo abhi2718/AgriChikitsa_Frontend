@@ -476,7 +476,7 @@ class HomeTabViewModel with ChangeNotifier {
       return true;
     } catch (error) {
       setloading(false);
-      if (kDebugMode) {
+      if (kDebugMode && context.mounted) {
         Utils.flushBarErrorMessage(
             AppLocalization.of(context).getTranslatedValue("alert").toString(),
             error.toString(),

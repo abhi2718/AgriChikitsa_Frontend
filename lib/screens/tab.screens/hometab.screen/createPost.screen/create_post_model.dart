@@ -37,6 +37,8 @@ class CreatePostModel with ChangeNotifier {
   var category = '';
   List<PostImageItem> postImages = [];
   bool isUploading = false;
+  bool isUploadSuccess = false;
+  bool isUploadError = false;
 
   void setfetchMyPost(bool val) {
     fetchMyPost = val;
@@ -75,6 +77,16 @@ class CreatePostModel with ChangeNotifier {
 
   setUploading(bool value) {
     isUploading = value;
+    notifyListeners();
+  }
+
+  setUploadSuccess(bool value) {
+    isUploadSuccess = value;
+    notifyListeners();
+  }
+
+  setUploadError(bool value) {
+    isUploadError = value;
     notifyListeners();
   }
 
@@ -332,6 +344,10 @@ class CreatePostModel with ChangeNotifier {
         (postImages.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
       setUploading(true);
 
+      // Pre-capture localized success toast string
+      final successMsg =
+          AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString();
+
       // Copy variables to local variables to prevent race condition during page pop
       final localPostImages = List<PostImageItem>.from(postImages);
       final localVideoPicked = videoPicked;
@@ -355,6 +371,7 @@ class CreatePostModel with ChangeNotifier {
         localYoutubeVideoPath,
         localCaption,
         localCategory,
+        successMsg,
       );
     } else {
       Utils.flushBarErrorMessage(
@@ -407,9 +424,9 @@ class CreatePostModel with ChangeNotifier {
     String localYoutubeVideoPath,
     String localCaption,
     String localCategory,
+    String successMsg,
   ) async {
-    List<String> uploadedImageUrls = [];
-    var response;
+    dynamic response;
 
     // Upload images
     if (localPostImages.isNotEmpty) {
@@ -420,12 +437,18 @@ class CreatePostModel with ChangeNotifier {
           postItem.thumbnailUrl = croppedResponse['imgurl'];
           postItem.originalUrl = ogImgResponse['imgurl'];
         } else {
-          Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-            AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-            context,
-          );
+          if (context.mounted) {
+            Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+              AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+              context,
+            );
+          }
           setUploading(false);
+          setUploadError(true);
+          Timer(const Duration(seconds: 3), () {
+            setUploadError(false);
+          });
           return;
         }
       }
@@ -450,26 +473,41 @@ class CreatePostModel with ChangeNotifier {
       );
 
       if (data) {
-        if (context.mounted) {
-          onPostCreated();
-        }
+        onPostCreated();
+        Utils.toastMessage(successMsg);
         setfetchMyPost(true);
         setUploading(false);
+        setUploadSuccess(true);
+        Timer(const Duration(seconds: 3), () {
+          setUploadSuccess(false);
+        });
       } else {
+        if (context.mounted) {
+          Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+            AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+            context,
+          );
+        }
+        setUploading(false);
+        setUploadError(true);
+        Timer(const Duration(seconds: 3), () {
+          setUploadError(false);
+        });
+      }
+    } else {
+      setUploading(false);
+      setUploadError(true);
+      Timer(const Duration(seconds: 3), () {
+        setUploadError(false);
+      });
+      if (context.mounted) {
         Utils.flushBarErrorMessage(
           AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
           AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
           context,
         );
-        setUploading(false);
       }
-    } else {
-      setUploading(false);
-      Utils.flushBarErrorMessage(
-        AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-        AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-        context,
-      );
     }
     reinitialize();
   }

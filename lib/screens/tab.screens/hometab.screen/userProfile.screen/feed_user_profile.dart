@@ -27,8 +27,10 @@ import 'package:provider/provider.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 void showConnectionsBottomSheet(BuildContext context, String title, List<dynamic> users) {
   showModalBottomSheet(
     context: context,
@@ -693,6 +695,7 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
     final dimension = Utils.getDimensions(context, true);
     final useViewModel = Provider.of<FeedUserProfileViewModel>(context, listen: false);
     final homeTabViewModel = Provider.of<HomeTabViewModel>(context, listen: false);
+    final myProfileViewModel = Provider.of<MyProfileViewModel>(context, listen: false);
     final userInfo = User.fromJson(authService.userInfo["user"]);
     final numberOfLikes = useState(widget.feed['likes'].length);
     final isLiked = useState(widget.feed['likes'].contains(userInfo.sId));
@@ -706,7 +709,7 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
 
     void handleLike() {
       homeTabViewModel.toggleLike(
-          context, widget.feed["_id"], isLiked.value, userInfo.sId!);
+          context, widget.feed["_id"], myProfileViewModel, isLiked.value, userInfo.sId!);
       if (isLiked.value == true) {
         isLiked.value = false;
         numberOfLikes.value = numberOfLikes.value - 1;
@@ -718,12 +721,8 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
 
     void handleBookMark() {
       homeTabViewModel.toggleTimeline(
-          context, widget.feed["_id"], userInfo.sId!);
-      if (isBookMarked.value == true) {
-        isBookMarked.value = false;
-      } else {
-        isBookMarked.value = true;
-      }
+          context, widget.feed["_id"], userInfo.sId!, isBookMarked.value, myProfileViewModel);
+      isBookMarked.value = !isBookMarked.value;
     }
 
     return Container(

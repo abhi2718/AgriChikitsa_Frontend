@@ -16,7 +16,7 @@ import '../../../../utils/utils.dart';
 
 class HeaderWidget extends HookWidget {
   const HeaderWidget(
-      {Key? key, required this.profileViewModel, required this.homeScrollController});
+      {super.key, required this.profileViewModel, required this.homeScrollController});
   final ProfileViewModel profileViewModel;
   final ScrollController homeScrollController;
   @override
@@ -27,6 +27,7 @@ class HeaderWidget extends HookWidget {
     final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
     useEffect(() {
       useViewModel.fetchNotifications(context);
+      return null;
     }, [useViewModel.notificationCount]);
     return Container(
       color: AppColor.whiteColor,
@@ -71,7 +72,19 @@ class HeaderWidget extends HookWidget {
                           width: 20,
                           child: CircularProgressIndicator(
                             color: AppColor.extraDark,
-                          )),
+                          ))
+                    else if (createPostModel.isUploadSuccess)
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        color: Colors.green,
+                        size: 24,
+                      )
+                    else if (createPostModel.isUploadError)
+                      const Icon(
+                        Icons.error_outline_rounded,
+                        color: Colors.red,
+                        size: 24,
+                      ),
                     const SizedBox(
                       width: 30,
                     ),
