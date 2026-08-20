@@ -379,8 +379,12 @@ class AGPlusViewModel with ChangeNotifier {
   Future<Position> getCurrentLocation() async {
     setFieldImageLoader(true);
     await Geolocator.requestPermission();
-    setFieldImageLoader(true);
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.medium,
+        timeLimit: Duration(seconds: 5),
+      ),
+    );
   }
 
   void mapCurrentLocation(BuildContext context) {
@@ -389,6 +393,16 @@ class AGPlusViewModel with ChangeNotifier {
       mapLocation["latitude"] = value.latitude.toString();
       mapLocation["longitude"] = value.longitude.toString();
       uploadImage(context);
+    }).catchError((error) {
+      setFieldImageLoader(false);
+      if (context.mounted) {
+        if (kDebugMode) {
+          Utils.flushBarErrorMessage(
+              AppLocalization.of(context).getTranslatedValue("alert").toString(),
+              error.toString(),
+              context);
+        }
+      }
     });
   }
 

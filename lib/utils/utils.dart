@@ -316,7 +316,12 @@ class Utils {
 
   static Future<dynamic> capturePhoto() async {
     try {
-      final XFile? photo = await ImagePicker().pickImage(source: ImageSource.camera);
+      final XFile? photo = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1280,
+        maxHeight: 1280,
+        imageQuality: 80,
+      );
       if (photo == null) {
         return null;
       }
@@ -329,7 +334,12 @@ class Utils {
   //For single image
   static Future<dynamic> pickImage() async {
     try {
-      final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final XFile? image = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1280,
+        maxHeight: 1280,
+        imageQuality: 80,
+      );
       if (image == null) return null;
       return image;
     } catch (error) {
@@ -340,7 +350,11 @@ class Utils {
   //For multiple images
   static Future<List<XFile>?> pickMultipleImages() async {
     try {
-      final List<XFile> images = await ImagePicker().pickMultiImage();
+      final List<XFile> images = await ImagePicker().pickMultiImage(
+        maxWidth: 1280,
+        maxHeight: 1280,
+        imageQuality: 80,
+      );
       if (images.isEmpty) return null;
       return images;
     } catch (error) {
