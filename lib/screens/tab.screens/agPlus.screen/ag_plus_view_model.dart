@@ -75,6 +75,7 @@ class AGPlusViewModel with ChangeNotifier {
   int currentSelectTab = 0;
   late bool fieldStatus;
   bool requestStatus = false;
+  bool isAlreadyRequested = false;
   bool requestLoader = false;
   bool notPlantedCheck = false;
   bool infoRequestRaised = false;
@@ -856,7 +857,6 @@ class AGPlusViewModel with ChangeNotifier {
   //Below Methods are for Soil Testing Feature
   void setReportsLoader(bool value) {
     isReportsLoading = value;
-    // notifyListeners();
   }
 
   Future<void> checkExistingSoilRequest(String fieldId) async {
@@ -867,12 +867,15 @@ class AGPlusViewModel with ChangeNotifier {
         final hasActiveRequest = data.any((req) =>
             req["status"] == "PENDING" || req["status"] == "INPROGRESS");
         requestStatus = hasActiveRequest;
+        isAlreadyRequested = hasActiveRequest;
       } else {
         requestStatus = false;
+        isAlreadyRequested = false;
       }
       notifyListeners();
     } catch (error) {
       requestStatus = false;
+      isAlreadyRequested = false;
       notifyListeners();
     }
   }
@@ -921,8 +924,10 @@ class AGPlusViewModel with ChangeNotifier {
           "fieldId": fieldId
         };
         requestStatus = false;
+        isAlreadyRequested = false;
         await _agPlusRepository.raiseSoilTestingRequest(payload);
         requestStatus = true;
+        isAlreadyRequested = false;
       } else {
         if (context.mounted) {
           Utils.flushBarErrorMessage(
@@ -936,10 +941,12 @@ class AGPlusViewModel with ChangeNotifier {
     } catch (error) {
       setRequestLoader(false);
       final errorMsg = error.toString().toLowerCase();
-      if (errorMsg.contains("already") || error.toString().contains("पहले ही")) {
+      if (errorMsg.contains("already") || error.toString().contains("पहले ही") || errorMsg.contains("one request")) {
         requestStatus = true;
+        isAlreadyRequested = true;
       } else {
         requestStatus = false;
+        isAlreadyRequested = false;
         if (context.mounted) {
           Utils.flushBarErrorMessage(
               AppLocalization.of(context).getTranslatedValue("alert").toString(),

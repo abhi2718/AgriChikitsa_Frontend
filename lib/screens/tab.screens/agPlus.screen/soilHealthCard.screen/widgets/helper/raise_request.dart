@@ -3,6 +3,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ag_plus_view_model.dart';
 import 'package:agriChikitsa/widgets/button.widgets/elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 void showRaiseRequest(BuildContext context, dynamic dimension) {
@@ -13,32 +14,70 @@ void showRaiseRequest(BuildContext context, dynamic dimension) {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Consumer<AGPlusViewModel>(
             builder: (context, provider, child) {
-              return provider.requestStatus
-                  ? Container(
-                      height: dimension["height"]! * 0.4,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: Icon(
-                              Icons.check_circle,
-                              color: AppColor.extraDark,
-                              size: dimension['height']! * 0.1,
-                            ),
-                          ),
-                          Text(
-                            AppLocalization.of(context)
-                                .getTranslatedValue("successfullySubmit")
-                                .toString(),
-                            style: const TextStyle(fontWeight: FontWeight.w500),
-                            textAlign: TextAlign.center,
-                          )
-                        ],
+              if (provider.requestStatus) {
+                String? translated = AppLocalization.of(context).getTranslatedValue(
+                  provider.isAlreadyRequested ? "alreadyRequested" : "successfullySubmit",
+                );
+                String displayMsg = (translated != null && translated.isNotEmpty && translated != 'null')
+                    ? translated
+                    : (provider.isAlreadyRequested
+                        ? "आपका अनुरोध पहले ही किया जा चुका है"
+                        : "अनुरोध सफलतापूर्वक सबमिट किया गया");
+
+                return Container(
+                  height: dimension["height"]! * 0.38,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 14.0),
+                        child: Icon(
+                          provider.isAlreadyRequested
+                              ? Icons.error_rounded
+                              : Icons.check_circle_rounded,
+                          color: provider.isAlreadyRequested
+                              ? AppColor.errorColor
+                              : AppColor.extraDark,
+                          size: dimension['height']! * 0.085,
+                        ),
                       ),
-                    )
-                  : Container(
+                      Text(
+                        displayMsg,
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: AppColor.darkBlackColor,
+                          height: 1.4,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: provider.isAlreadyRequested
+                              ? AppColor.errorColor
+                              : AppColor.extraDark,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
+                        ),
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: Text(
+                          "OK",
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return Container(
                       padding: const EdgeInsets.all(16.0),
                       height: dimension["height"]! * 0.4,
                       child: Column(
