@@ -104,6 +104,9 @@ class _AudioTtsButtonState extends State<AudioTtsButton> {
 
   @override
   Widget build(BuildContext context) {
+    if (Utils.cleanHtmlTags(widget.htmlContent).trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
     return InkWell(
       onTap: _toggleSpeak,
       borderRadius: BorderRadius.circular(20),

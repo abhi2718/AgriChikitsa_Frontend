@@ -119,77 +119,7 @@ class PestAndDiseaseScreen extends HookWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Consumer<AudioPlayerViewModel>(
-                        builder: (context, audioProvider, _) {
-                          final hasUrl = audioProvider.audioUrl.isNotEmpty;
-                          final isLoading = audioProvider.isLoading;
-                          final isPlaying = audioProvider.isPlaying;
-                          final isPaused = audioProvider.isPaused;
 
-                          final details = selectedPestDisease.details;
-                          final pestDetailsContent = (details != null && details.isNotEmpty)
-                              ? (AppLocalization.of(context).locale.toString() == "en"
-                                  ? details.first.contentEn
-                                  : details.first.contentHi)
-                              : "";
-
-                          Widget buildAudioIconBtn({
-                            required VoidCallback? onTap,
-                            required bool playing,
-                            required bool loading,
-                          }) {
-                            return InkWell(
-                              onTap: onTap,
-                              borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                  color: AppColor.tabIconColor,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: loading
-                                    ? const SizedBox(
-                                        width: 18,
-                                        height: 18,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : Icon(
-                                        playing ? Icons.pause : Icons.volume_up_rounded,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                              ),
-                            );
-                          }
-
-                          return hasUrl
-                              ? buildAudioIconBtn(
-                                  onTap: isLoading
-                                      ? null
-                                      : () {
-                                          if (isPlaying) {
-                                            audioProvider.pause();
-                                          } else if (isPaused) {
-                                            audioProvider.resume();
-                                          } else {
-                                            audioProvider.play(context);
-                                          }
-                                        },
-                                  playing: isPlaying,
-                                  loading: isLoading,
-                                )
-                              : AudioTtsButton(
-                                  htmlContent: pestDetailsContent,
-                                  iconSize: 20.0,
-                                );
-                        },
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
                       provider.isPestDetailsLoading
                           ? const Center(child: CircularProgressIndicator())
                           : resolvedData.value == null
@@ -197,7 +127,13 @@ class PestAndDiseaseScreen extends HookWidget {
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: resolvedData.value!.details.map((detail) {
-                                    return detail.contentHi.isEmpty && detail.solutions.isEmpty
+                                    final isEn =
+                                        AppLocalization.of(context).locale.toString() == "en";
+                                    final detailContent =
+                                        isEn ? detail.contentEn : detail.contentHi;
+                                    final hasContent =
+                                        Utils.cleanHtmlTags(detailContent).trim().isNotEmpty;
+                                    return (detailContent.isEmpty && detail.solutions.isEmpty)
                                         ? const SizedBox.shrink()
                                         : Container(
                                             padding: const EdgeInsets.symmetric(
@@ -221,60 +157,51 @@ class PestAndDiseaseScreen extends HookWidget {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: BaseText(
-                                                        title: AppLocalization.of(context)
-                                                                    .locale
-                                                                    .toString() ==
-                                                                "en"
-                                                            ? detail.titleEn
-                                                            : detail.titleHi,
-                                                        style: const TextStyle(
-                                                            fontWeight: FontWeight.bold, fontSize: 15)),
+                                                  children: [
+                                                    Expanded(
+                                                      child: BaseText(
+                                                          title:
+                                                              isEn ? detail.titleEn : detail.titleHi,
+                                                          style: const TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 15)),
+                                                    ),
+                                                    if (hasContent)
+                                                      AudioTtsButton(
+                                                        htmlContent: detailContent,
+                                                      ),
+                                                  ],
+                                                ),
+                                                if (hasContent) ...[
+                                                  const SizedBox(
+                                                    height: 12,
                                                   ),
-                                                  AudioTtsButton(
-                                                    htmlContent: AppLocalization.of(context)
-                                                                .locale
-                                                                .toString() ==
-                                                            "en"
-                                                        ? detail.contentEn
-                                                        : detail.contentHi,
+                                                  HtmlWidget(
+                                                    detailContent,
                                                   ),
                                                 ],
-                                              ),
-                                              const SizedBox(
-                                                height: 12,
-                                              ),
-                                              HtmlWidget(
-                                                AppLocalization.of(context).locale.toString() ==
-                                                        "en"
-                                                    ? detail.contentEn
-                                                    : detail.contentHi,
-                                              ),
-                                                const SizedBox(height: 8),
-                                                Column(
-                                                  children: detail.solutions.map((solution) {
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.symmetric(vertical: 4.0),
-                                                      child: ButtonTab(
-                                                        text: AppLocalization.of(context)
-                                                                    .locale
-                                                                    .toString() ==
-                                                                "en"
-                                                            ? solution.nameEn
-                                                            : solution.nameHi,
-                                                        onPressed: () {
-                                                          Utils.model(
-                                                              context,
-                                                              PestMedicineScreen(
-                                                                  selectedSolution: solution));
-                                                        },
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                ),
+                                                if (detail.solutions.isNotEmpty) ...[
+                                                  const SizedBox(height: 8),
+                                                  Column(
+                                                    children: detail.solutions.map((solution) {
+                                                      return Padding(
+                                                        padding: const EdgeInsets.symmetric(
+                                                            vertical: 4.0),
+                                                        child: ButtonTab(
+                                                          text: isEn
+                                                              ? solution.nameEn
+                                                              : solution.nameHi,
+                                                          onPressed: () {
+                                                            Utils.model(
+                                                                context,
+                                                                PestMedicineScreen(
+                                                                    selectedSolution: solution));
+                                                          },
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ],
                                               ],
                                             ),
                                           );
