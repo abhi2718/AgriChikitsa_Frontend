@@ -81,9 +81,12 @@ class MyProfileScreen extends HookWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(userInfo.profileImage),
-                        radius: dimension["width"]! * 0.08,
+                      GestureDetector(
+                        onTap: () => Utils.showProfileImageDialog(context, userInfo.profileImage),
+                        child: CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(userInfo.profileImage),
+                          radius: dimension["width"]! * 0.08,
+                        ),
                       ),
                       Row(
                         children: [

@@ -97,20 +97,26 @@ class _MyProfileFeedState extends State<MyProfileFeed> {
                     Column(
                       children: [
                         SizedBox(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: CachedNetworkImage(
-                              imageUrl: user['profileImage'],
-                              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                  Skeleton(
-                                height: 40,
+                          child: GestureDetector(
+                            onTap: () => Utils.showProfileImageDialog(
+                              context,
+                              user['profileImage'] ?? '',
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: CachedNetworkImage(
+                                imageUrl: user['profileImage'],
+                                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                    Skeleton(
+                                  height: 40,
+                                  width: 40,
+                                  radius: 0,
+                                ),
+                                errorWidget: (context, url, error) => const Icon(Icons.error),
                                 width: 40,
-                                radius: 0,
+                                fit: BoxFit.cover,
+                                height: 40,
                               ),
-                              errorWidget: (context, url, error) => const Icon(Icons.error),
-                              width: 40,
-                              fit: BoxFit.cover,
-                              height: 40,
                             ),
                           ),
                         ),

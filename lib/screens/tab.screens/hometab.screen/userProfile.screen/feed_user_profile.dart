@@ -179,19 +179,25 @@ class FeedUserProfile extends HookWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: CachedNetworkImage(
-                      imageUrl: account['profileImage'],
-                      progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                        height: 80,
+                  GestureDetector(
+                    onTap: () => Utils.showProfileImageDialog(
+                      context,
+                      account['profileImage'] ?? '',
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: CachedNetworkImage(
+                        imageUrl: account['profileImage'],
+                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                          height: 80,
+                          width: 80,
+                          radius: 0,
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
                         width: 80,
-                        radius: 0,
+                        fit: BoxFit.cover,
+                        height: 80,
                       ),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
-                      width: 80,
-                      fit: BoxFit.cover,
-                      height: 80,
                     ),
                   ),
                   Row(
@@ -742,19 +748,25 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
               children: [
                 Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: CachedNetworkImage(
-                        imageUrl: widget.account['profileImage'],
-                        progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
-                          height: 40,
+                    GestureDetector(
+                      onTap: () => Utils.showProfileImageDialog(
+                        context,
+                        widget.account['profileImage'] ?? '',
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.account['profileImage'],
+                          progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
+                            height: 40,
+                            width: 40,
+                            radius: 0,
+                          ),
+                          errorWidget: (context, url, error) => const Icon(Icons.error),
                           width: 40,
-                          radius: 0,
+                          fit: BoxFit.cover,
+                          height: 40,
                         ),
-                        errorWidget: (context, url, error) => const Icon(Icons.error),
-                        width: 40,
-                        fit: BoxFit.cover,
-                        height: 40,
                       ),
                     ),
                     const SizedBox(

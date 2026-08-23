@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:another_flushbar/flushbar_route.dart';
@@ -420,6 +421,69 @@ class Utils {
             content: Text(message),
           );
         });
+  }
+
+  static void showProfileImageDialog(BuildContext context, String imageUrl) {
+    if (imageUrl.isEmpty) return;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.85),
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(16),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              InteractiveViewer(
+                panEnabled: true,
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.contain,
+                    placeholder: (context, url) => const SizedBox(
+                      height: 200,
+                      width: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.account_circle,
+                      size: 150,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   String formatCommentTimeDifference(String timestamp) {
