@@ -940,16 +940,28 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
           }
         },
         child: InkWell(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FullScreenImage(
-                images: feed["images"],
-                feed: feed,
-                useViewModel: useViewModel,
+          onTap: () {
+            final safeFeed = feed['user'] is Map
+                ? feed
+                : {
+                    ...feed,
+                    'user': {
+                      'name': widget.account['name'] ?? '',
+                      'profileImage': widget.account['profileImage'] ?? '',
+                      'userHandler': widget.account['userHandler'] ?? '@username',
+                    }
+                  };
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullScreenImage(
+                  images: feed["images"] ?? [],
+                  feed: safeFeed,
+                  useViewModel: useViewModel,
+                ),
               ),
-            ),
-          ),
+            );
+          },
           child: SizedBox(
             height: dimension["width"]! - 16 + 20,
             width: dimension["width"]!,
@@ -958,10 +970,17 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
                 Expanded(
                   child: PageView.builder(
                     controller: pageController,
-                    itemCount: feed["images"].isNotEmpty ? feed["images"].length : 1,
+                    itemCount: (feed["images"] is List && (feed["images"] as List).isNotEmpty)
+                        ? (feed["images"] as List).length
+                        : 0,
                     itemBuilder: (context, pagePosition) {
+                      final imagesList = feed["images"] as List;
+                      if (pagePosition < 0 || pagePosition >= imagesList.length || imagesList[pagePosition] is! Map) {
+                        return const SizedBox.shrink();
+                      }
+                      final imgUrl = imagesList[pagePosition]["thumbnailUrl"] ?? imagesList[pagePosition]["originalUrl"] ?? '';
                       return CachedNetworkImage(
-                        imageUrl: feed['images'][pagePosition]["thumbnailUrl"],
+                        imageUrl: imgUrl,
                         progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: dimension["width"]! - 16,
                           width: dimension["width"]! - 16,

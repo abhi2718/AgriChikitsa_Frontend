@@ -13,7 +13,7 @@ class FullScreenImage extends StatefulWidget {
       {super.key, required this.images, required this.feed, required this.useViewModel});
   final List<dynamic> images;
   final dynamic feed;
-  final HomeTabViewModel useViewModel;
+  final dynamic useViewModel;
 
   @override
   State<FullScreenImage> createState() => _FullScreenImageState();
@@ -21,10 +21,34 @@ class FullScreenImage extends StatefulWidget {
 
 class _FullScreenImageState extends State<FullScreenImage> {
   final PageController _pageController = PageController();
+  bool _isExpanded = false;
+
+  bool _checkIsExpanded() {
+    try {
+      if (widget.useViewModel != null && widget.feed != null && widget.feed['_id'] != null) {
+        return (widget.useViewModel.isExpanded(widget.feed['_id']) == true);
+      }
+    } catch (_) {}
+    return _isExpanded;
+  }
+
+  void _toggleExpand() {
+    try {
+      if (widget.useViewModel != null && widget.feed != null && widget.feed['_id'] != null) {
+        widget.useViewModel.toggleExpand(widget.feed['_id']);
+        setState(() {});
+        return;
+      }
+    } catch (_) {}
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+    final isExpanded = _checkIsExpanded();
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppColor.darkBlackColor,
@@ -49,8 +73,14 @@ class _FullScreenImageState extends State<FullScreenImage> {
               controller: _pageController,
               itemCount: widget.images.length,
               itemBuilder: (context, index) {
+                if (index < 0 || index >= widget.images.length || widget.images[index] is! Map) {
+                  return const SizedBox.shrink();
+                }
+                final imgUrl = widget.images[index]["originalUrl"] ??
+                    widget.images[index]["thumbnailUrl"] ??
+                    '';
                 return CachedNetworkImage(
-                  imageUrl: widget.images[index]["originalUrl"],
+                  imageUrl: imgUrl,
                   progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                     height: dimension["width"]! - 16,
                     width: dimension["width"]! - 16,
@@ -101,13 +131,12 @@ class _FullScreenImageState extends State<FullScreenImage> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: AppColor.whiteColor),
-                              maxLines:
-                                  widget.useViewModel.isExpanded(widget.feed['_id']) ? null : 2,
+                              maxLines: isExpanded ? null : 2,
                             ),
                             if (widget.feed["hindiCaption"].length > 140)
                               InkWell(
-                                onTap: () => widget.useViewModel.toggleExpand(widget.feed['_id']),
-                                child: widget.useViewModel.isExpanded(widget.feed['_id'])
+                                onTap: _toggleExpand,
+                                child: isExpanded
                                     ? Container()
                                     : const BaseText(
                                         title: "Read More",
@@ -120,37 +149,50 @@ class _FullScreenImageState extends State<FullScreenImage> {
                   SizedBox(
                     height: widget.feed["hindiCaption"] != null ? 16 : 0,
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(widget.feed['user']['profileImage']),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Column(
+                  Builder(
+                    builder: (context) {
+                      final userMap = widget.feed['user'] is Map ? widget.feed['user'] : {};
+                      final profileImage = userMap['profileImage']?.toString() ?? '';
+                      final userName = userMap['name']?.toString() ?? 'User';
+                      final userHandler = userMap['userHandler']?.toString() ?? '@username';
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.feed['user']['name'],
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppColor.whiteColor),
+                          CircleAvatar(
+                            backgroundImage: profileImage.isNotEmpty
+                                ? NetworkImage(profileImage)
+                                : null,
+                            child: profileImage.isEmpty
+                                ? const Icon(Icons.person)
+                                : null,
                           ),
-                          Text(
-                            widget.feed['user']['userHandler'] ?? "@username",
-                            style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: AppColor.whiteColor),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                userName,
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColor.whiteColor),
+                              ),
+                              Text(
+                                userHandler,
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColor.whiteColor),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
                   if (widget.images.length > 1)
