@@ -64,7 +64,17 @@ class FeedUserProfileViewModel extends ChangeNotifier {
     setloading(true);
     try {
       final data = await _feedProfileRepository.fetchPosts(userId);
-      feedList = data['feeds'];
+      final List<dynamic> rawFeeds = List.from(data['feeds'] ?? []);
+      rawFeeds.sort((a, b) {
+        final aDate = a['createdAt'] != null ? DateTime.tryParse(a['createdAt'].toString()) : null;
+        final bDate = b['createdAt'] != null ? DateTime.tryParse(b['createdAt'].toString()) : null;
+        if (aDate != null && bDate != null) {
+          int cmp = bDate.compareTo(aDate);
+          if (cmp != 0) return cmp;
+        }
+        return (b['_id'] ?? '').toString().compareTo((a['_id'] ?? '').toString());
+      });
+      feedList = rawFeeds;
       isFollowing = data['isFollowing'];
       connections = data['connections'];
       setloading(false);
