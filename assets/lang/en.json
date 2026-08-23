@@ -368,5 +368,8 @@
     "deleteWarningMandi": "Nearby mandi price and location details",
     "deleteWarningSoilReport": "Quick access to soil health reports for this field",
     "cropWiseProfitTitle": "Crop Profit Analysis",
-    "attentionTitle": "Please Note!"
+    "attentionTitle": "Please Note!",
+    "cropVideoTitle": "Crop Video (Max 1 min)",
+    "cropAndSave": "Crop & Continue",
+    "trimmingProgress": "Processing video..."
 }

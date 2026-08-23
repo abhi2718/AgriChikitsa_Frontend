@@ -239,16 +239,18 @@ class CreatePostModel with ChangeNotifier {
       if (isPostPicked) {
         return;
       }
-      videoPicked = await Utils.pickVideo();
-      if (videoPicked is String) {
+      final pickedResult = await Utils.pickVideo(context);
+      if (pickedResult is String) {
         Fluttertoast.showToast(
             msg: AppLocalization.of(context).getTranslatedValue("videoWarning").toString());
         return;
       } else {
-        if (videoPicked != null) {
-          videoPicked = videoPicked.path;
-          Navigator.pop(context);
-          Navigator.pop(context);
+        if (pickedResult != null) {
+          videoPicked = pickedResult.path;
+          if (context.mounted) {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }
           isPostPicked = true;
           if (videoController != null) {
             videoController!.dispose();
@@ -259,15 +261,16 @@ class CreatePostModel with ChangeNotifier {
             })
             ..setLooping(true)
             ..initialize().then((value) {
-              // notifyListeners();
               videoController?.play();
             });
           notifyListeners();
         }
       }
     } catch (error) {
-      Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
-          error.toString(), context);
+      if (context.mounted) {
+        Utils.flushBarErrorMessage(AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            error.toString(), context);
+      }
     }
   }
 

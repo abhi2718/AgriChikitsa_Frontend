@@ -368,5 +368,8 @@
     "deleteWarningMandi": "नजदीकी मंडी के भाव और जानकारी",
     "deleteWarningSoilReport": "इस खेत की मिट्टी की रिपोर्ट तक तुरंत पहुंच",
     "cropWiseProfitTitle": "फसलवार मुनाफा ब्यौरा",
-    "attentionTitle": "कृपया ध्यान दें!"
+    "attentionTitle": "कृपया ध्यान दें!",
+    "cropVideoTitle": "वीडियो ट्रिम करें (अधिकतम 1 मिनट)",
+    "cropAndSave": "क्रॉप करके आगे बढ़ें",
+    "trimmingProgress": "वीडियो प्रोसेस हो रहा है..."
 }

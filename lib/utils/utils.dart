@@ -17,6 +17,7 @@ import 'package:agriChikitsa/res/app_url.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/trim_video_screen.dart';
 
 class Utils {
   static void toastMessage(String message) {
@@ -386,7 +387,7 @@ class Utils {
     }
   }
 
-  static Future<dynamic> pickVideo() async {
+  static Future<dynamic> pickVideo(BuildContext context) async {
     try {
       final XFile? video = await ImagePicker().pickVideo(source: ImageSource.gallery);
       if (video == null) return null;
@@ -395,7 +396,14 @@ class Utils {
       final Duration videoDuration = videoController.value.duration;
       videoController.dispose();
       if (videoDuration.inSeconds > 60) {
-        return 'Video exceeds the maximum duration of 1 minute.';
+        if (!context.mounted) return null;
+        final trimmedVideo = await Navigator.push<XFile?>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TrimVideoScreen(videoFile: File(video.path)),
+          ),
+        );
+        return trimmedVideo;
       }
       return video;
     } catch (error) {
