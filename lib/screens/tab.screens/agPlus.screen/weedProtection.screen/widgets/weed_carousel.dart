@@ -13,57 +13,60 @@ class WeedCarousel extends StatefulWidget {
   const WeedCarousel({super.key, required this.images});
 
   @override
-  _WeedCarouselState createState() => _WeedCarouselState();
+  State<WeedCarousel> createState() => _WeedCarouselState();
 }
 
 class _WeedCarouselState extends State<WeedCarousel> {
-  final PageController _pageController = PageController(viewportFraction: 0.8);
-  int _currentPage = 0;
+  late PageController _pageController;
   Timer? _autoScrollTimer;
+
   @override
   void initState() {
     super.initState();
-    _pageController.addListener(() {
-      setState(() {
-        _currentPage = _pageController.page!.round();
-      });
-    });
+    final initialPage =
+        widget.images.length > 1 ? widget.images.length * 1000 : 0;
+    _pageController = PageController(
+      viewportFraction: 0.8,
+      initialPage: initialPage,
+    );
 
-    _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (_currentPage < widget.images.length - 1) {
-        _pageController.nextPage(
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.ease,
-        );
-      } else {
-        _pageController.animateToPage(
-          0,
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.ease,
-        );
-      }
-    });
+    if (widget.images.length > 1) {
+      _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+        if (_pageController.hasClients) {
+          _pageController.nextPage(
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.ease,
+          );
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
+
+    if (widget.images.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return SizedBox(
       height: dimension["height"]! * 0.35,
       width: dimension['width']!,
       child: PageView.builder(
         controller: _pageController,
-        itemCount: widget.images.length,
         itemBuilder: (context, index) {
+          final actualIndex = index % widget.images.length;
           return InkWell(
             onTap: () => Utils.model(
-                context, FullScreenImageViewer(imageUrl: widget.images[index].imageUrl)),
+                context, FullScreenImageViewer(imageUrl: widget.images[actualIndex].imageUrl)),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               decoration: BoxDecoration(
@@ -80,7 +83,7 @@ class _WeedCarouselState extends State<WeedCarousel> {
                         height: (dimension["height"]! * 0.30 - 8),
                         width: double.infinity,
                         child: CachedNetworkImage(
-                          imageUrl: widget.images[index].imageUrl,
+                          imageUrl: widget.images[actualIndex].imageUrl,
                           fit: BoxFit.cover,
                           progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                             height: 100,
@@ -99,8 +102,8 @@ class _WeedCarouselState extends State<WeedCarousel> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       AppLocalization.of(context).locale.toString() == "en"
-                          ? widget.images[index].nameEn
-                          : widget.images[index].nameHi,
+                          ? widget.images[actualIndex].nameEn
+                          : widget.images[actualIndex].nameHi,
                       style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

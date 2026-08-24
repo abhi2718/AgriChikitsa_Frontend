@@ -11,35 +11,39 @@ class PestsCarousel extends StatefulWidget {
   const PestsCarousel({super.key, required this.images});
 
   @override
-  _PestsCarouselState createState() => _PestsCarouselState();
+  State<PestsCarousel> createState() => _PestsCarouselState();
 }
 
 class _PestsCarouselState extends State<PestsCarousel> {
-  final PageController _pageController = PageController(viewportFraction: 0.8);
-  int _currentPage = 0;
+  late PageController _pageController;
   Timer? _autoScrollTimer;
+
   @override
   void initState() {
     super.initState();
-    _pageController.addListener(() {
-      setState(() {
-        _currentPage = _pageController.page!.round();
-      });
-    });
+    final initialPage =
+        widget.images.length > 1 ? widget.images.length * 1000 : 0;
+    _pageController = PageController(
+      viewportFraction: 0.8,
+      initialPage: initialPage,
+    );
 
-    _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (_currentPage < widget.images.length - 1) {
-        _pageController.nextPage(
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.ease,
-        );
-      } else {}
-    });
+    if (widget.images.length > 1) {
+      _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+        if (_pageController.hasClients) {
+          _pageController.nextPage(
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.ease,
+          );
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -47,9 +51,13 @@ class _PestsCarouselState extends State<PestsCarousel> {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
 
+    if (widget.images.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     if (widget.images.length == 1) {
       // Show full-width single image
-      return Container(
+      return SizedBox(
         height: dimension["height"]! * 0.35,
         width: double.infinity,
         child: InkWell(
@@ -79,12 +87,12 @@ class _PestsCarouselState extends State<PestsCarousel> {
       width: double.infinity,
       child: PageView.builder(
         controller: _pageController,
-        itemCount: widget.images.length,
         itemBuilder: (context, index) {
+          final actualIndex = index % widget.images.length;
           return InkWell(
             onTap: () => Utils.model(
               context,
-              FullScreenImageViewer(imageUrl: widget.images[index].image),
+              FullScreenImageViewer(imageUrl: widget.images[actualIndex].image),
             ),
             child: AnimatedContainer(
               width: double.infinity,
@@ -98,7 +106,7 @@ class _PestsCarouselState extends State<PestsCarousel> {
                       height: (dimension["height"]! * 0.3),
                       width: double.infinity,
                       child: CachedNetworkImage(
-                        imageUrl: widget.images[index].image,
+                        imageUrl: widget.images[actualIndex].image,
                         fit: BoxFit.cover,
                         progressIndicatorBuilder: (context, url, downloadProgress) => Skeleton(
                           height: 100,
