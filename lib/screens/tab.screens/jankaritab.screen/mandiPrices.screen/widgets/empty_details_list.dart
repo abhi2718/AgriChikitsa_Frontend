@@ -13,27 +13,40 @@ class EmptyDetailsList extends StatelessWidget {
     final dimension = Utils.getDimensions(context, true);
     return InkWell(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        width: dimension['width']! * 0.90,
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-              color: Colors.grey[400]!,
-              blurRadius: 1.0,
-              spreadRadius: 1,
-              offset: const Offset(0, 3))
-        ], color: Colors.white, borderRadius: BorderRadius.circular(20)),
-        child: DropdownButton(
-            hint: BaseText(
-              title: title,
-              style: const TextStyle(),
-            ),
-            value: null,
-            alignment: AlignmentDirectional.centerStart,
-            isExpanded: true,
-            underline: Container(),
-            items: const [],
-            onChanged: (value) {}),
+      child: Opacity(
+        opacity: 0.55,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          width: dimension['width']! * 0.90,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey[300]!, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey[300]!,
+                blurRadius: 1.0,
+                spreadRadius: 1,
+                offset: const Offset(0, 2),
+              )
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: BaseText(
+                  title: title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
+              const Icon(Icons.arrow_drop_down, color: Colors.grey),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -22,6 +22,7 @@ class MandiPricesScreen extends HookWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         useViewModel.fetchStates(context);
       });
+      return null;
     }, []);
 
     return Scaffold(
@@ -66,74 +67,29 @@ class MandiPricesScreen extends HookWidget {
                                 height: 20,
                               ),
                               Consumer<MandiPricesModel>(builder: (context, provider, child) {
-                                return useViewModel.stateList.isEmpty
+                                return provider.stateList.isEmpty
                                     ? EmptyDetailsList(
                                         onTap: () {},
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("signupFormSelectState")
                                             .toString())
-                                    : InkWell(
-                                        onTap: () async {
-                                          final selected =
-                                              await SearchableSelectionSheet.show<String>(
-                                            context: context,
-                                            title: AppLocalization.of(context)
+                                    : _buildActiveDropdownCard(
+                                        context: context,
+                                        width: dimension['width']! * 0.90,
+                                        title: provider.selectedState.isEmpty
+                                            ? AppLocalization.of(context)
                                                 .getTranslatedValue("signupFormSelectState")
-                                                .toString(),
-                                            items: provider.stateList.cast<String>(),
-                                            selectedItem: provider.selectedState.isNotEmpty
-                                                ? provider.selectedState
-                                                : null,
-                                            itemAsString: (item) => item,
-                                          );
-                                          if (selected != null) {
-                                            provider.setSelectedState(selected);
-                                            provider.fetchDistrict(context);
-                                          }
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 14),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]!,
-                                                    blurRadius: 1.0,
-                                                    spreadRadius: 1,
-                                                    offset: const Offset(0, 3))
-                                              ],
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: BaseText(
-                                                  title: provider.selectedState.isEmpty
-                                                      ? AppLocalization.of(context)
-                                                          .getTranslatedValue("signupFormSelectState")
-                                                          .toString()
-                                                      : provider.selectedState,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: provider.selectedState.isEmpty
-                                                        ? Colors.grey[600]
-                                                        : Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                                            ],
-                                          ),
-                                        ),
+                                                .toString()
+                                            : provider.selectedState,
+                                        isSelected: provider.selectedState.isNotEmpty,
+                                        onTap: () => _openStatePicker(context, provider),
                                       );
                               }),
                               const SizedBox(
                                 height: 20,
                               ),
                               Consumer<MandiPricesModel>(builder: (context, provider, child) {
-                                return useViewModel.districtList.isEmpty
+                                return provider.districtList.isEmpty
                                     ? EmptyDetailsList(
                                         onTap: () => Utils.snackbar(
                                             AppLocalization.of(context)
@@ -143,61 +99,16 @@ class MandiPricesScreen extends HookWidget {
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("signupFormSelectDistrict")
                                             .toString())
-                                    : InkWell(
-                                        onTap: () async {
-                                          final selected =
-                                              await SearchableSelectionSheet.show<String>(
-                                            context: context,
-                                            title: AppLocalization.of(context)
+                                    : _buildActiveDropdownCard(
+                                        context: context,
+                                        width: dimension['width']! * 0.90,
+                                        title: provider.selectedDistrict.isEmpty
+                                            ? AppLocalization.of(context)
                                                 .getTranslatedValue("signupFormSelectDistrict")
-                                                .toString(),
-                                            items: provider.districtList.cast<String>(),
-                                            selectedItem: provider.selectedDistrict.isNotEmpty
-                                                ? provider.selectedDistrict
-                                                : null,
-                                            itemAsString: (item) => item,
-                                          );
-                                          if (selected != null) {
-                                            provider.setSelectedDistrict(selected);
-                                            provider.fetchMarket(context);
-                                          }
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 14),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]!,
-                                                    blurRadius: 1.0,
-                                                    spreadRadius: 1,
-                                                    offset: const Offset(0, 3))
-                                              ],
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: BaseText(
-                                                  title: provider.selectedDistrict.isEmpty
-                                                      ? AppLocalization.of(context)
-                                                          .getTranslatedValue("signupFormSelectDistrict")
-                                                          .toString()
-                                                      : provider.selectedDistrict,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: provider.selectedDistrict.isEmpty
-                                                        ? Colors.grey[600]
-                                                        : Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                                            ],
-                                          ),
-                                        ),
+                                                .toString()
+                                            : provider.selectedDistrict,
+                                        isSelected: provider.selectedDistrict.isNotEmpty,
+                                        onTap: () => _openDistrictPicker(context, provider),
                                       );
                               }),
                               const SizedBox(
@@ -214,61 +125,16 @@ class MandiPricesScreen extends HookWidget {
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("selectMandi")
                                             .toString())
-                                    : InkWell(
-                                        onTap: () async {
-                                          final selected =
-                                              await SearchableSelectionSheet.show<String>(
-                                            context: context,
-                                            title: AppLocalization.of(context)
+                                    : _buildActiveDropdownCard(
+                                        context: context,
+                                        width: dimension['width']! * 0.90,
+                                        title: provider.selectedMarket.isEmpty
+                                            ? AppLocalization.of(context)
                                                 .getTranslatedValue("selectMandi")
-                                                .toString(),
-                                            items: provider.marketList.cast<String>(),
-                                            selectedItem: provider.selectedMarket.isNotEmpty
-                                                ? provider.selectedMarket
-                                                : null,
-                                            itemAsString: (item) => item,
-                                          );
-                                          if (selected != null) {
-                                            provider.setSelectedMarket(selected);
-                                            provider.fetchCommodities(context);
-                                          }
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 14),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]!,
-                                                    blurRadius: 1.0,
-                                                    spreadRadius: 1,
-                                                    offset: const Offset(0, 3))
-                                              ],
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: BaseText(
-                                                  title: provider.selectedMarket.isEmpty
-                                                      ? AppLocalization.of(context)
-                                                          .getTranslatedValue("selectMandi")
-                                                          .toString()
-                                                      : provider.selectedMarket,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: provider.selectedMarket.isEmpty
-                                                        ? Colors.grey[600]
-                                                        : Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                                            ],
-                                          ),
-                                        ),
+                                                .toString()
+                                            : provider.selectedMarket,
+                                        isSelected: provider.selectedMarket.isNotEmpty,
+                                        onTap: () => _openMandiPicker(context, provider),
                                       );
                               }),
                               const SizedBox(
@@ -285,60 +151,16 @@ class MandiPricesScreen extends HookWidget {
                                         title: AppLocalization.of(context)
                                             .getTranslatedValue("selectCrop")
                                             .toString())
-                                    : InkWell(
-                                        onTap: () async {
-                                          final selected =
-                                              await SearchableSelectionSheet.show<String>(
-                                            context: context,
-                                            title: AppLocalization.of(context)
+                                    : _buildActiveDropdownCard(
+                                        context: context,
+                                        width: dimension['width']! * 0.90,
+                                        title: provider.selectedCommodity.isEmpty
+                                            ? AppLocalization.of(context)
                                                 .getTranslatedValue("selectCrop")
-                                                .toString(),
-                                            items: provider.cropList.cast<String>(),
-                                            selectedItem: provider.selectedCommodity.isNotEmpty
-                                                ? provider.selectedCommodity
-                                                : null,
-                                            itemAsString: (item) => item,
-                                          );
-                                          if (selected != null) {
-                                            provider.setSelectedCommodity(selected);
-                                          }
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 14),
-                                          width: dimension['width']! * 0.90,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey[400]!,
-                                                    blurRadius: 1.0,
-                                                    spreadRadius: 1,
-                                                    offset: const Offset(0, 3))
-                                              ],
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: BaseText(
-                                                  title: provider.selectedCommodity.isEmpty
-                                                      ? AppLocalization.of(context)
-                                                          .getTranslatedValue("selectCrop")
-                                                          .toString()
-                                                      : provider.selectedCommodity,
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: provider.selectedCommodity.isEmpty
-                                                        ? Colors.grey[600]
-                                                        : Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                                            ],
-                                          ),
-                                        ),
+                                                .toString()
+                                            : provider.selectedCommodity,
+                                        isSelected: provider.selectedCommodity.isNotEmpty,
+                                        onTap: () => _openCropPicker(context, provider),
                                       );
                               }),
                               const SizedBox(
@@ -400,5 +222,120 @@ class MandiPricesScreen extends HookWidget {
         },
       ),
     );
+  }
+
+  Widget _buildActiveDropdownCard({
+    required BuildContext context,
+    required double width,
+    required String title,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        width: width,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColor.extraDark,
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColor.extraDark.withOpacity(0.15),
+              blurRadius: 6.0,
+              spreadRadius: 1,
+              offset: const Offset(0, 2),
+            )
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: BaseText(
+                title: title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  color: isSelected ? Colors.black : Colors.grey[700],
+                ),
+              ),
+            ),
+            const Icon(Icons.arrow_drop_down, color: AppColor.extraDark),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openStatePicker(BuildContext context, MandiPricesModel provider) async {
+    final selected = await SearchableSelectionSheet.show<String>(
+      context: context,
+      title: AppLocalization.of(context).getTranslatedValue("signupFormSelectState").toString(),
+      items: provider.stateList.cast<String>(),
+      selectedItem: provider.selectedState.isNotEmpty ? provider.selectedState : null,
+      itemAsString: (item) => item,
+    );
+    if (!context.mounted) return;
+    if (selected != null) {
+      provider.setSelectedState(selected);
+      await provider.fetchDistrict(context);
+      if (context.mounted && provider.districtList.isNotEmpty) {
+        await _openDistrictPicker(context, provider);
+      }
+    }
+  }
+
+  Future<void> _openDistrictPicker(BuildContext context, MandiPricesModel provider) async {
+    final selected = await SearchableSelectionSheet.show<String>(
+      context: context,
+      title: AppLocalization.of(context).getTranslatedValue("signupFormSelectDistrict").toString(),
+      items: provider.districtList.cast<String>(),
+      selectedItem: provider.selectedDistrict.isNotEmpty ? provider.selectedDistrict : null,
+      itemAsString: (item) => item,
+    );
+    if (!context.mounted) return;
+    if (selected != null) {
+      provider.setSelectedDistrict(selected);
+      await provider.fetchMarket(context);
+      if (context.mounted && provider.marketList.isNotEmpty) {
+        await _openMandiPicker(context, provider);
+      }
+    }
+  }
+
+  Future<void> _openMandiPicker(BuildContext context, MandiPricesModel provider) async {
+    final selected = await SearchableSelectionSheet.show<String>(
+      context: context,
+      title: AppLocalization.of(context).getTranslatedValue("selectMandi").toString(),
+      items: provider.marketList.cast<String>(),
+      selectedItem: provider.selectedMarket.isNotEmpty ? provider.selectedMarket : null,
+      itemAsString: (item) => item,
+    );
+    if (!context.mounted) return;
+    if (selected != null) {
+      provider.setSelectedMarket(selected);
+      await provider.fetchCommodities(context);
+      if (context.mounted && provider.cropList.isNotEmpty) {
+        await _openCropPicker(context, provider);
+      }
+    }
+  }
+
+  Future<void> _openCropPicker(BuildContext context, MandiPricesModel provider) async {
+    final selected = await SearchableSelectionSheet.show<String>(
+      context: context,
+      title: AppLocalization.of(context).getTranslatedValue("selectCrop").toString(),
+      items: provider.cropList.cast<String>(),
+      selectedItem: provider.selectedCommodity.isNotEmpty ? provider.selectedCommodity : null,
+      itemAsString: (item) => item,
+    );
+    if (selected != null) {
+      provider.setSelectedCommodity(selected);
+    }
   }
 }

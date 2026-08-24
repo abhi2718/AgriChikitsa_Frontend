@@ -103,7 +103,7 @@ class MandiPricesModel with ChangeNotifier {
     }
   }
 
-  void fetchDistrict(BuildContext context) async {
+  Future<void> fetchDistrict(BuildContext context) async {
     setLoader(true);
     try {
       selectedDistrict = "";
@@ -123,7 +123,7 @@ class MandiPricesModel with ChangeNotifier {
     }
   }
 
-  void fetchMarket(BuildContext context) async {
+  Future<void> fetchMarket(BuildContext context) async {
     setLoader(true);
     try {
       selectedMarket = "";
@@ -141,7 +141,7 @@ class MandiPricesModel with ChangeNotifier {
     }
   }
 
-  void fetchCommodities(BuildContext context) async {
+  Future<void> fetchCommodities(BuildContext context) async {
     setSelectedCommodity("");
     setLoader(true);
     try {
