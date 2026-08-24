@@ -347,7 +347,9 @@ class CreatePostModel with ChangeNotifier {
         (postImages.isNotEmpty || videoPicked != null || youtubeVideoPath.isNotEmpty)) {
       setUploading(true);
 
-      // Pre-capture localized success toast string
+      // Pre-capture localized success strings
+      final successTitle =
+          AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString();
       final successMsg =
           AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString();
 
@@ -374,6 +376,7 @@ class CreatePostModel with ChangeNotifier {
         localYoutubeVideoPath,
         localCaption,
         localCategory,
+        successTitle,
         successMsg,
       );
     } else {
@@ -427,6 +430,7 @@ class CreatePostModel with ChangeNotifier {
     String localYoutubeVideoPath,
     String localCaption,
     String localCategory,
+    String successTitle,
     String successMsg,
   ) async {
     dynamic response;
@@ -477,7 +481,9 @@ class CreatePostModel with ChangeNotifier {
 
       if (data) {
         onPostCreated();
-        Utils.toastMessage(successMsg);
+        if (context.mounted) {
+          Utils.flushBarSuccessMessage(successTitle, successMsg, context);
+        }
         setfetchMyPost(true);
         setUploading(false);
         setUploadSuccess(true);
@@ -526,7 +532,7 @@ class CreatePostModel with ChangeNotifier {
         await Future.delayed(const Duration(seconds: 1), () {
           goBack(context);
           setloading(false);
-          Utils.flushBarErrorMessage(
+          Utils.flushBarSuccessMessage(
               AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
               AppLocalization.of(context).getTranslatedValue("postEditedSubtitle").toString(),
               context);

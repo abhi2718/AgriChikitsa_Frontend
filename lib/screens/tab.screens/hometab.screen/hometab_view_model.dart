@@ -495,7 +495,7 @@ class HomeTabViewModel with ChangeNotifier {
         createPostModel.setfetchMyPost(true);
         Future.delayed(const Duration(seconds: 1), () {
           Navigator.pop(context);
-          Utils.flushBarErrorMessage(
+          Utils.flushBarSuccessMessage(
               AppLocalization.of(context).getTranslatedValue("postCreatedTitle").toString(),
               AppLocalization.of(context).getTranslatedValue("postCreatedSubtitle").toString(),
               context);

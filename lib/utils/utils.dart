@@ -87,10 +87,27 @@ class Utils {
       flushbar: Flushbar(
         title: title,
         message: message,
-        backgroundColor: AppColor.darkColor,
-        duration: const Duration(seconds: 8),
+        backgroundColor: AppColor.errorColor,
+        duration: const Duration(seconds: 4),
         icon: const Icon(
-          Icons.error,
+          Icons.error_outline,
+          color: Colors.white,
+        ),
+        flushbarPosition: FlushbarPosition.TOP,
+      )..show(context),
+    );
+  }
+
+  static void flushBarSuccessMessage(String title, String message, BuildContext context) {
+    showFlushbar(
+      context: context,
+      flushbar: Flushbar(
+        title: title,
+        message: message,
+        backgroundColor: AppColor.darkColor,
+        duration: const Duration(seconds: 4),
+        icon: const Icon(
+          Icons.check_circle_outline,
           color: Colors.white,
         ),
         flushbarPosition: FlushbarPosition.TOP,
