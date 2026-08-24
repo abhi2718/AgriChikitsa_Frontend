@@ -5,10 +5,11 @@ import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/widgets/gradient_
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../utils/utils.dart';
 import 'ag_plus_view_model.dart';
+
+import 'package:agriChikitsa/widgets/app_splash_loader.dart';
 
 class AGPlusLanding extends HookWidget {
   const AGPlusLanding({super.key});
@@ -22,9 +23,7 @@ class AGPlusLanding extends HookWidget {
           return const AllPlotsScreen();
         }
         return provider.getFieldLoader
-            ? const CircularProgressIndicator(
-                color: AppColor.extraDark,
-              )
+            ? const AppSplashLoader()
             : Scaffold(
                 backgroundColor: AppColor.lightColor,
                 appBar: AppBar(

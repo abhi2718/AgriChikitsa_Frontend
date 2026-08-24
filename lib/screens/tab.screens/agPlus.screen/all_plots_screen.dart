@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../../res/color.dart';
 import '../../../utils/utils.dart';
+import '../../../widgets/app_splash_loader.dart';
 import '../../../widgets/skeleton/skeleton.dart';
 import 'widgets/gradient_button.dart';
 
@@ -24,27 +25,24 @@ class AllPlotsScreen extends HookWidget {
       useViewModel.reinitialize();
       useViewModel.getFields(context);
     }, []);
-    return Scaffold(
-      backgroundColor: AppColor.lightColor,
-      appBar: AppBar(
-        backgroundColor: AppColor.whiteColor,
-        foregroundColor: AppColor.darkBlackColor,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text(
-          AppLocalization.of(context).getTranslatedValue("yourPlotsHeader").toString(),
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-        ),
-      ),
-      body: Consumer<AGPlusViewModel>(
-        builder: (context, provider, child) {
-          return provider.getFieldLoader
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColor.extraDark,
-                  ),
-                )
-              : Column(
+    return Consumer<AGPlusViewModel>(
+      builder: (context, provider, child) {
+        if (provider.getFieldLoader) {
+          return const AppSplashLoader();
+        }
+        return Scaffold(
+          backgroundColor: AppColor.lightColor,
+          appBar: AppBar(
+            backgroundColor: AppColor.whiteColor,
+            foregroundColor: AppColor.darkBlackColor,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            title: Text(
+              AppLocalization.of(context).getTranslatedValue("yourPlotsHeader").toString(),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+          ),
+          body: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     provider.userPlotList.isEmpty
@@ -225,9 +223,9 @@ class AllPlotsScreen extends HookWidget {
                       ),
                     ),
                   ],
-                );
-        },
-      ),
+                ),
+              );
+      },
     );
   }
 }
