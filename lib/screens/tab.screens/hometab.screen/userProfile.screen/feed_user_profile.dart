@@ -800,9 +800,11 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
                           style: const TextStyle(color: Colors.red),
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'share',
-                        child: Text('Share'),
+                        child: Text(
+                          AppLocalization.of(context).getTranslatedValue('shareTitle').toString(),
+                        ),
                       ),
                     ],
                     onSelected: (value) {
