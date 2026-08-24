@@ -85,7 +85,9 @@ void showConnectionsBottomSheet(BuildContext context, String title, List<dynamic
                 child: users.isEmpty
                     ? Center(
                         child: Text(
-                          "No users found",
+                          AppLocalization.of(context)
+                              .getTranslatedValue("noUsersFound")
+                              .toString(),
                           style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 14),
                         ),
                       )
