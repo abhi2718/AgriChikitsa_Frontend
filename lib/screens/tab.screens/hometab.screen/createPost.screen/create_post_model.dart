@@ -39,9 +39,15 @@ class CreatePostModel with ChangeNotifier {
   bool isUploading = false;
   bool isUploadSuccess = false;
   bool isUploadError = false;
+  double uploadProgress = 0.0;
 
   void setfetchMyPost(bool val) {
     fetchMyPost = val;
+    notifyListeners();
+  }
+
+  void setUploadProgress(double val) {
+    uploadProgress = val.clamp(0.0, 1.0);
     notifyListeners();
   }
 
@@ -77,6 +83,7 @@ class CreatePostModel with ChangeNotifier {
 
   setUploading(bool value) {
     isUploading = value;
+    if (!value) uploadProgress = 0.0;
     notifyListeners();
   }
 
@@ -110,6 +117,7 @@ class CreatePostModel with ChangeNotifier {
       youtubeUrlController.clear();
       imagePath = [];
       isUploading = false;
+      uploadProgress = 0.0;
       imageUrl = "";
       youtubeVideoPath = '';
       isPostPicked = false;
@@ -118,7 +126,118 @@ class CreatePostModel with ChangeNotifier {
       currentSelectedCategory = "";
       buttonloading = false;
       postImages = [];
+      notifyListeners();
     });
+  }
+
+  void _handleUploadError(BuildContext context) {
+    setUploading(false);
+    setUploadError(true);
+    uploadProgress = 0.0;
+    Timer(const Duration(seconds: 3), () {
+      setUploadError(false);
+    });
+    if (context.mounted) {
+      try {
+        Utils.flushBarErrorMessage(
+          AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
+          AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
+          context,
+        );
+      } catch (_) {}
+    }
+  }
+
+  Future<void> uploadPostInBackground(
+    BuildContext context,
+    VoidCallback onPostCreated,
+    List<PostImageItem> localPostImages,
+    dynamic localVideoPicked,
+    String localYoutubeVideoPath,
+    String localCaption,
+    String localCategory,
+    String successTitle,
+    String successMsg,
+  ) async {
+    try {
+      dynamic response;
+      setUploadProgress(0.05);
+
+      // Upload images
+      if (localPostImages.isNotEmpty) {
+        int totalImages = localPostImages.length;
+        int completedImages = 0;
+        for (var postItem in localPostImages) {
+          var croppedResponse = await Utils.uploadImage(
+            postItem.croppedFile!,
+            onProgress: (p) {
+              double totalP = (completedImages + (p * 0.5)) / totalImages;
+              setUploadProgress(totalP * 0.9);
+            },
+          );
+          var ogImgResponse = await Utils.uploadImage(
+            postItem.originalFile!,
+            onProgress: (p) {
+              double totalP = (completedImages + 0.5 + (p * 0.5)) / totalImages;
+              setUploadProgress(totalP * 0.9);
+            },
+          );
+          if (croppedResponse is Map && croppedResponse['success'] == true && ogImgResponse is Map && ogImgResponse['success'] == true) {
+            postItem.thumbnailUrl = croppedResponse['imgurl'];
+            postItem.originalUrl = ogImgResponse['imgurl'];
+            completedImages++;
+            setUploadProgress((completedImages / totalImages) * 0.9);
+          } else {
+            _handleUploadError(context);
+            return;
+          }
+        }
+      } else if (localVideoPicked != null) {
+        response = await Utils.uploadVideo(
+          localVideoPicked,
+          onProgress: (p) {
+            setUploadProgress(p * 0.9);
+          },
+        );
+      } else {
+        response = {'success': true, 'url': localYoutubeVideoPath};
+        setUploadProgress(0.9);
+      }
+
+      bool isImageUploaded = localPostImages.isNotEmpty;
+      if (response != null && (response['success'] == true || isImageUploaded)) {
+        final passedUrl = isImageUploaded ? getFeedImagePayloadFromList(localPostImages) : response['url'];
+        final data = await _homeTabViewModel.createPost(
+          context,
+          localCategory,
+          localCaption,
+          passedUrl,
+          isImageUploaded,
+        );
+
+        if (data) {
+          setUploadProgress(1.0);
+          onPostCreated();
+          if (context.mounted) {
+            Utils.flushBarSuccessMessage(successTitle, successMsg, context);
+          }
+          setfetchMyPost(true);
+          setUploading(false);
+          setUploadSuccess(true);
+          Timer(const Duration(seconds: 3), () {
+            setUploadSuccess(false);
+          });
+        } else {
+          _handleUploadError(context);
+        }
+      } else {
+        _handleUploadError(context);
+      }
+    } catch (e) {
+      _handleUploadError(context);
+    } finally {
+      reinitialize();
+    }
   }
 
   void onSavedCaptionField(value) {
@@ -422,104 +541,7 @@ class CreatePostModel with ChangeNotifier {
     return imagesPayload;
   }
 
-  Future<void> uploadPostInBackground(
-    BuildContext context,
-    VoidCallback onPostCreated,
-    List<PostImageItem> localPostImages,
-    dynamic localVideoPicked,
-    String localYoutubeVideoPath,
-    String localCaption,
-    String localCategory,
-    String successTitle,
-    String successMsg,
-  ) async {
-    dynamic response;
 
-    // Upload images
-    if (localPostImages.isNotEmpty) {
-      for (var postItem in localPostImages) {
-        var croppedResponse = await Utils.uploadImage(postItem.croppedFile!);
-        var ogImgResponse = await Utils.uploadImage(postItem.originalFile!);
-        if (croppedResponse['success']) {
-          postItem.thumbnailUrl = croppedResponse['imgurl'];
-          postItem.originalUrl = ogImgResponse['imgurl'];
-        } else {
-          if (context.mounted) {
-            Utils.flushBarErrorMessage(
-              AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-              AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-              context,
-            );
-          }
-          setUploading(false);
-          setUploadError(true);
-          Timer(const Duration(seconds: 3), () {
-            setUploadError(false);
-          });
-          return;
-        }
-      }
-    }
-
-    // Upload video
-    if (localVideoPicked != null) {
-      response = await Utils.uploadVideo(localVideoPicked);
-    } else {
-      response = {'success': true, 'url': localYoutubeVideoPath};
-    }
-
-    bool isImageUploaded = localPostImages.isNotEmpty;
-    if (response['success'] || isImageUploaded) {
-      final passedUrl = isImageUploaded ? getFeedImagePayloadFromList(localPostImages) : response['url'];
-      final data = await _homeTabViewModel.createPost(
-        context,
-        localCategory,
-        localCaption,
-        passedUrl,
-        isImageUploaded,
-      );
-
-      if (data) {
-        onPostCreated();
-        if (context.mounted) {
-          Utils.flushBarSuccessMessage(successTitle, successMsg, context);
-        }
-        setfetchMyPost(true);
-        setUploading(false);
-        setUploadSuccess(true);
-        Timer(const Duration(seconds: 3), () {
-          setUploadSuccess(false);
-        });
-      } else {
-        if (context.mounted) {
-          Utils.flushBarErrorMessage(
-            AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-            AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-            context,
-          );
-        }
-        setUploading(false);
-        setUploadError(true);
-        Timer(const Duration(seconds: 3), () {
-          setUploadError(false);
-        });
-      }
-    } else {
-      setUploading(false);
-      setUploadError(true);
-      Timer(const Duration(seconds: 3), () {
-        setUploadError(false);
-      });
-      if (context.mounted) {
-        Utils.flushBarErrorMessage(
-          AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-          AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-          context,
-        );
-      }
-    }
-    reinitialize();
-  }
 
   void updatePost(BuildContext context, String feedId, bool isShared) async {
     if (currentSelectedCategory.isNotEmpty) {

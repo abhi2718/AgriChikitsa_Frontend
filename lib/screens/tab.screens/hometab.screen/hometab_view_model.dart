@@ -222,7 +222,11 @@ class HomeTabViewModel with ChangeNotifier {
     Navigator.pushNamed(context, RouteName.editProfileRoute);
   }
 
+  bool isFetchingFeeds = false;
+
   void fetchFeeds(BuildContext context) async {
+    if (isFetchingFeeds) return;
+    isFetchingFeeds = true;
     setloading(true);
     try {
       expandedPosts = [];
@@ -240,6 +244,8 @@ class HomeTabViewModel with ChangeNotifier {
               context);
         }
       }
+    } finally {
+      isFetchingFeeds = false;
     }
   }
 

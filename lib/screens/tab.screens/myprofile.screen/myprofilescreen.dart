@@ -31,8 +31,8 @@ class MyProfileScreen extends HookWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     double availableHeight = screenHeight - (2 * appBarHeight + statusBarHeight);
-    final useViewModel = useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: true));
-    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
+    final useViewModel = useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: false));
+    final createPostModel = Provider.of<CreatePostModel>(context);
     final feedProfileViewModel =
         useMemoized(() => Provider.of<FeedUserProfileViewModel>(context, listen: false));
 

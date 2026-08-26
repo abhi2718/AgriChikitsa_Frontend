@@ -49,7 +49,7 @@ class HomeTabScreen1 extends HookWidget {
     final scrollController = useScrollController();
     final appLifecycleState = useState(AppLifecycleState.resumed);
     final useViewModel = useMemoized(() => Provider.of<HomeTabViewModel>(context, listen: false));
-    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
+    final createPostModel = Provider.of<CreatePostModel>(context);
     // final myProfileViewModel =
     //     useMemoized(() => Provider.of<MyProfileViewModel>(context, listen: false));
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -242,7 +242,7 @@ class HomeTabScreen1 extends HookWidget {
                           if (index == 0) {
                             return CreatePostCard(
                               onPostedCreated: () {
-                                Utils.flushBarErrorMessage(
+                                Utils.flushBarSuccessMessage(
                                   AppLocalization.of(context)
                                       .getTranslatedValue("postCreatedTitle")
                                       .toString(),

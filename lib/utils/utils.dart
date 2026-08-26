@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -200,7 +199,7 @@ class Utils {
     return s3Url;
   }
 
-  static Future<dynamic> uploadImage(XFile image, {String forPurpose = 'feed'}) async {
+  static Future<dynamic> uploadImage(XFile image, {String forPurpose = 'feed', void Function(double progress)? onProgress}) async {
     try {
       final localStorage = await SharedPreferences.getInstance();
       final mapString = localStorage.getString('profile');
@@ -225,7 +224,7 @@ class Utils {
         'forPurpose': forPurpose,
       });
 
-      final presignedResponse = await http.post(getPresignedUrl, headers: headers, body: body);
+      final presignedResponse = await http.post(getPresignedUrl, headers: headers, body: body).timeout(const Duration(seconds: 30));
       if (presignedResponse.statusCode != 200) {
         throw FetchDataException("Failed to get presigned URL: ${presignedResponse.body}");
       }
@@ -240,19 +239,23 @@ class Utils {
 
       // Step 2: Upload file directly to S3 PUT URL using StreamedRequest for memory efficiency
       final file = File(image.path);
+      final totalBytes = await file.length();
       final request = http.StreamedRequest('PUT', Uri.parse(uploadUrl));
       request.headers['Content-Type'] = fileType;
-      request.headers['Content-Length'] = (await file.length()).toString();
+      request.headers['Content-Length'] = totalBytes.toString();
 
-      final fileStream = file.openRead();
-      fileStream.listen(
-        (chunk) => request.sink.add(chunk),
-        onDone: () => request.sink.close(),
-        onError: (err) => request.sink.close(),
-        cancelOnError: true,
-      );
+      final streamedResponse = request.send();
+      int bytesSent = 0;
+      await for (final chunk in file.openRead()) {
+        request.sink.add(chunk);
+        bytesSent += chunk.length;
+        if (totalBytes > 0 && onProgress != null) {
+          onProgress(bytesSent / totalBytes);
+        }
+      }
+      await request.sink.close();
 
-      final s3Response = await http.Response.fromStream(await request.send());
+      final s3Response = await http.Response.fromStream(await streamedResponse).timeout(const Duration(seconds: 120));
       if (s3Response.statusCode == 200 || s3Response.statusCode == 201 || s3Response.statusCode == 204) {
         return {
           'success': true,
@@ -266,7 +269,7 @@ class Utils {
     }
   }
 
-  static Future<dynamic> uploadVideo(String video, {String forPurpose = 'feed'}) async {
+  static Future<dynamic> uploadVideo(String video, {String forPurpose = 'feed', void Function(double progress)? onProgress}) async {
     try {
       final localStorage = await SharedPreferences.getInstance();
       final mapString = localStorage.getString('profile');
@@ -291,7 +294,7 @@ class Utils {
         'forPurpose': forPurpose,
       });
 
-      final presignedResponse = await http.post(getPresignedUrl, headers: headers, body: body);
+      final presignedResponse = await http.post(getPresignedUrl, headers: headers, body: body).timeout(const Duration(seconds: 30));
       if (presignedResponse.statusCode != 200) {
         throw FetchDataException("Failed to get presigned URL: ${presignedResponse.body}");
       }
@@ -306,19 +309,23 @@ class Utils {
 
       // Step 2: Upload file directly to S3 PUT URL using StreamedRequest for memory efficiency
       final file = File(video);
+      final totalBytes = await file.length();
       final request = http.StreamedRequest('PUT', Uri.parse(uploadUrl));
       request.headers['Content-Type'] = fileType;
-      request.headers['Content-Length'] = (await file.length()).toString();
+      request.headers['Content-Length'] = totalBytes.toString();
 
-      final fileStream = file.openRead();
-      fileStream.listen(
-        (chunk) => request.sink.add(chunk),
-        onDone: () => request.sink.close(),
-        onError: (err) => request.sink.close(),
-        cancelOnError: true,
-      );
+      final streamedResponse = request.send();
+      int bytesSent = 0;
+      await for (final chunk in file.openRead()) {
+        request.sink.add(chunk);
+        bytesSent += chunk.length;
+        if (totalBytes > 0 && onProgress != null) {
+          onProgress(bytesSent / totalBytes);
+        }
+      }
+      await request.sink.close();
 
-      final s3Response = await http.Response.fromStream(await request.send());
+      final s3Response = await http.Response.fromStream(await streamedResponse).timeout(const Duration(seconds: 180));
       if (s3Response.statusCode == 200 || s3Response.statusCode == 201 || s3Response.statusCode == 204) {
         return {
           'success': true,

@@ -24,7 +24,7 @@ class HeaderWidget extends HookWidget {
     final dimension = Utils.getDimensions(context, true);
     final useViewModel =
         useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
-    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: true));
+    final createPostModel = useMemoized(() => Provider.of<CreatePostModel>(context, listen: false));
     useEffect(() {
       useViewModel.fetchNotifications(context);
       return null;
@@ -66,25 +66,48 @@ class HeaderWidget extends HookWidget {
                 ),
                 Row(
                   children: [
-                    if (createPostModel.isUploading)
-                      const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            color: AppColor.extraDark,
-                          ))
-                    else if (createPostModel.isUploadSuccess)
-                      const Icon(
-                        Icons.check_circle_rounded,
-                        color: Colors.green,
-                        size: 24,
-                      )
-                    else if (createPostModel.isUploadError)
-                      const Icon(
-                        Icons.error_outline_rounded,
-                        color: Colors.red,
-                        size: 24,
-                      ),
+                    Consumer<CreatePostModel>(
+                      builder: (context, postModel, child) {
+                        if (postModel.isUploading) {
+                          final pct = (postModel.uploadProgress * 100).toInt();
+                          return SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: postModel.uploadProgress > 0 ? postModel.uploadProgress : null,
+                                  color: AppColor.extraDark,
+                                  strokeWidth: 3,
+                                ),
+                                Text(
+                                  '$pct%',
+                                  style: const TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColor.extraDark,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (postModel.isUploadSuccess) {
+                          return const Icon(
+                            Icons.check_circle_rounded,
+                            color: Colors.green,
+                            size: 24,
+                          );
+                        } else if (postModel.isUploadError) {
+                          return const Icon(
+                            Icons.error_outline_rounded,
+                            color: Colors.red,
+                            size: 24,
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
                     const SizedBox(
                       width: 30,
                     ),
