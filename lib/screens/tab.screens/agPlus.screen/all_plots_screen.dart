@@ -24,6 +24,7 @@ class AllPlotsScreen extends HookWidget {
     useEffect(() {
       useViewModel.reinitialize();
       useViewModel.getFields(context);
+      return null;
     }, []);
     return Consumer<AGPlusViewModel>(
       builder: (context, provider, child) {
@@ -202,26 +203,27 @@ class AllPlotsScreen extends HookWidget {
                               ),
                             ),
                           ),
-                    InkWell(
-                      onTap: () async {
-                        if (await provider.checkPremium(context)) {
-                          provider.resetLoader();
-                          takeAPhotoDialog(context, dimension, provider);
-                        }
-                      },
-                      child: Container(
-                        margin: provider.userPlotList.isNotEmpty ? const EdgeInsets.all(16) : null,
-                        // margin: false ? EdgeInsets.all(16) : null,
-                        child: GradientButton(
-                          height: dimension['height']! * 0.10,
-                          width: dimension['width']!,
-                          title: AppLocalization.of(context)
-                              .getTranslatedValue("addMorePlotButton")
-                              .toString(),
-                          icon: Icons.add_circle_outline,
+                    if (provider.userPlotList.isNotEmpty)
+                      InkWell(
+                        onTap: () async {
+                          final isPremium = await provider.checkPremium(context);
+                          if (context.mounted && isPremium) {
+                            provider.resetLoader();
+                            takeAPhotoDialog(context, dimension, provider);
+                          }
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(16),
+                          child: GradientButton(
+                            height: dimension['height']! * 0.10,
+                            width: dimension['width']!,
+                            title: AppLocalization.of(context)
+                                .getTranslatedValue("addMorePlotButton")
+                                .toString(),
+                            icon: Icons.add_circle_outline,
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               );

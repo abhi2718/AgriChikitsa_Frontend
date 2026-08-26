@@ -380,12 +380,20 @@ class AGPlusViewModel with ChangeNotifier {
   Future<Position> getCurrentLocation() async {
     setFieldImageLoader(true);
     await Geolocator.requestPermission();
-    return await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.medium,
-        timeLimit: Duration(seconds: 5),
-      ),
-    );
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 15),
+        ),
+      );
+    } catch (e) {
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null) {
+        return lastKnown;
+      }
+      rethrow;
+    }
   }
 
   void mapCurrentLocation(BuildContext context) {
@@ -397,12 +405,14 @@ class AGPlusViewModel with ChangeNotifier {
     }).catchError((error) {
       setFieldImageLoader(false);
       if (context.mounted) {
-        if (kDebugMode) {
-          Utils.flushBarErrorMessage(
-              AppLocalization.of(context).getTranslatedValue("alert").toString(),
-              error.toString(),
-              context);
+        String errorMessage = error.toString();
+        if (errorMessage.contains("TimeoutException") || errorMessage.contains("timed out")) {
+          errorMessage = "Location request timed out. Please ensure GPS is enabled and try again.";
         }
+        Utils.flushBarErrorMessage(
+            AppLocalization.of(context).getTranslatedValue("alert").toString(),
+            errorMessage,
+            context);
       }
     });
   }
