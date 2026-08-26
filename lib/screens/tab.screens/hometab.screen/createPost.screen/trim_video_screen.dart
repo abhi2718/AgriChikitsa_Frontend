@@ -62,7 +62,7 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        centerTitle: true,
+        centerTitle: false,
         title: BaseText(
           title: AppLocalization.of(context)
                   .getTranslatedValue("cropVideoTitle")
@@ -86,26 +86,39 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                      color: AppColor.extraDark,
+                      color: AppColor.whiteColor,
                       strokeWidth: 2,
                     ),
                   ),
                 )
-              : TextButton(
-                  onPressed: _saveVideo,
-                  child: Text(
-                    AppLocalization.of(context)
-                            .getTranslatedValue("cropAndSave")
-                            .toString() !=
-                        "null"
-                        ? AppLocalization.of(context)
-                            .getTranslatedValue("cropAndSave")
-                            .toString()
-                        : "Crop & Continue",
-                    style: GoogleFonts.inter(
-                      color: AppColor.extraDark,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+              : Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  child: ElevatedButton(
+                    onPressed: _saveVideo,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.extraDark,
+                      foregroundColor: AppColor.whiteColor,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                    ),
+                    child: Text(
+                      AppLocalization.of(context)
+                              .getTranslatedValue("cropAndSave")
+                              .toString() !=
+                          "null"
+                          ? AppLocalization.of(context)
+                              .getTranslatedValue("cropAndSave")
+                              .toString()
+                          : "Crop & Continue",
+                      style: GoogleFonts.inter(
+                        color: AppColor.whiteColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
                 ),
