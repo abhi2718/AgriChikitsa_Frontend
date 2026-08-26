@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,6 +28,19 @@ class NotificationTile extends HookWidget {
     final useViewModel =
         useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
     final isRead = useState(notificationItem['read']);
+    final isExpanded = useState(false);
+
+    String formattedDate = '';
+    if (notificationItem['createdAt'] != null) {
+      try {
+        final DateTime parsedDate =
+            DateTime.parse(notificationItem['createdAt'].toString()).toLocal();
+        formattedDate = DateFormat("d MMM yyyy, h:mm a").format(parsedDate);
+      } catch (_) {
+        formattedDate = '';
+      }
+    }
+
     void handleLike() {
       useViewModel.toggleNotifications(context, notificationItem["_id"], isRead.value);
       if (!isRead.value) {
@@ -72,6 +86,7 @@ class NotificationTile extends HookWidget {
             shape: const Border(),
             initiallyExpanded: false,
             onExpansionChanged: (expanded) {
+              isExpanded.value = expanded;
               handleLike();
             },
             textColor: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
@@ -81,12 +96,38 @@ class NotificationTile extends HookWidget {
             childrenPadding: const EdgeInsets.only(top: 2, left: 15, right: 15, bottom: 8),
             collapsedBackgroundColor: Colors.transparent,
             backgroundColor: Colors.transparent,
-            title: BaseText(
-              title: notificationItem['title'],
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
-              ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BaseText(
+                  title: notificationItem['title'],
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
+                  ),
+                ),
+                if (formattedDate.isNotEmpty && !isExpanded.value) ...[
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      formattedDate,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: isRead.value
+                            ? AppColor.darkBlackColor.withOpacity(0.6)
+                            : AppColor.whiteColor.withOpacity(0.8),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            trailing: Icon(
+              isExpanded.value ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+              color: isRead.value ? AppColor.darkBlackColor : AppColor.whiteColor,
             ),
             expandedAlignment: Alignment.centerLeft,
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -172,6 +213,22 @@ class NotificationTile extends HookWidget {
                       ),
                     )
                   : Container(),
+              if (formattedDate.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    formattedDate,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      color: isRead.value
+                          ? AppColor.darkBlackColor.withOpacity(0.6)
+                          : AppColor.whiteColor.withOpacity(0.8),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -179,3 +236,4 @@ class NotificationTile extends HookWidget {
     );
   }
 }
+
