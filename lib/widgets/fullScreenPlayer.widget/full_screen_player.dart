@@ -53,7 +53,7 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
-    final user = widget.feed['user'];
+    final user = widget.feed != null ? widget.feed['user'] : null;
     return Container(
       width: dimension["width"],
       height: dimension["height"],
@@ -95,55 +95,56 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
             ),
             onPressed: () => Navigator.pop(context),
           ),
-          Positioned(
-              bottom: 20, // Position the container at the bottom
-              left: 10,
-              right: 10,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(user['profileImage']),
-                    radius: 25,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user['name'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          user['userHandler'] ?? "@username",
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
-                            fontSize: 14,
-                          ),
-                        ),
-                        widget.feed["hindiCaption"] != null
-                            ? GestureDetector(
-                                onTap: toggleCaption,
-                                child: CustomTextWidget(
-                                  text: widget.feed["hindiCaption"],
-                                  textStyle: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                      color: AppColor.whiteColor),
-                                  maxLines: isExpanded ? null : 2,
-                                ),
-                              )
-                            : const SizedBox.shrink(),
-                      ],
+          if (user != null)
+            Positioned(
+                bottom: 20, // Position the container at the bottom
+                left: 10,
+                right: 10,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(user['profileImage']),
+                      radius: 25,
                     ),
-                  ),
-                ],
-              ))
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            user['name'],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            user['userHandler'] ?? "@username",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: 14,
+                            ),
+                          ),
+                          widget.feed["hindiCaption"] != null
+                              ? GestureDetector(
+                                  onTap: toggleCaption,
+                                  child: CustomTextWidget(
+                                    text: widget.feed["hindiCaption"],
+                                    textStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: AppColor.whiteColor),
+                                    maxLines: isExpanded ? null : 2,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ))
         ],
       ),
     );

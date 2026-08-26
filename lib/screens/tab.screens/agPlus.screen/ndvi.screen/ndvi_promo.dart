@@ -3,7 +3,7 @@ import 'package:agriChikitsa/l10n/app_localizations.dart';
 import 'package:agriChikitsa/res/color.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_view_model.dart';
-import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
+import 'package:agriChikitsa/screens/tab.screens/agPlus.screen/ndvi.screen/ndvi_video_player.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -41,9 +41,10 @@ class NDVIPromo extends HookWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Player(
-                      videoUrl: "https://youtu.be/DD8As1BPh1w?si=HHEu8RAguDcJrNuN",
-                      aspectRatio: 16 / 9),
+                  child: NdviVideoPlayer(
+                    videoUrl: "https://agrichikitsabucket.s3.ap-south-1.amazonaws.com/ndvi.mp4",
+                    aspectRatio: 16 / 9,
+                  ),
                 ),
                 Container(
                   alignment: Alignment.center,
