@@ -54,47 +54,50 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, true);
     final user = widget.feed != null ? widget.feed['user'] : null;
-    return Container(
-      width: dimension["width"],
-      height: dimension["height"],
-      color: AppColor.darkBlackColor,
-      child: Stack(
-        children: [
-          _controller.value.isInitialized
-              ? Center(
-                  child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: Stack(
-                      children: [
-                        VideoPlayer(_controller),
-                        Opacity(
-                          opacity: _controller.value.isPlaying ? 0 : 1,
-                          child: Center(
-                            child: IconButton(
-                              icon: Icon(
-                                _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                                color: Colors.white,
-                                size: 50.0,
+    return Scaffold(
+      backgroundColor: AppColor.darkBlackColor,
+      body: SafeArea(
+        child: Container(
+          width: dimension["width"],
+          height: dimension["height"],
+          color: AppColor.darkBlackColor,
+          child: Stack(
+            children: [
+              _controller.value.isInitialized
+                  ? Center(
+                      child: AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: Stack(
+                          children: [
+                            VideoPlayer(_controller),
+                            Opacity(
+                              opacity: _controller.value.isPlaying ? 0 : 1,
+                              child: Center(
+                                child: IconButton(
+                                  icon: Icon(
+                                    _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                                    color: Colors.white,
+                                    size: 50.0,
+                                  ),
+                                  onPressed: _togglePlayPause,
+                                ),
                               ),
-                              onPressed: _togglePlayPause,
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                )
-              : const Center(
-                  child: CircularProgressIndicator(
-                  color: AppColor.darkColor,
-                )),
-          IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColor.whiteColor,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
+                      ),
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(
+                      color: AppColor.darkColor,
+                    )),
+              IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: AppColor.whiteColor,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
           if (user != null)
             Positioned(
                 bottom: 20, // Position the container at the bottom
@@ -145,7 +148,9 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
                     ),
                   ],
                 ))
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }

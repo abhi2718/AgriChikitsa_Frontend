@@ -110,12 +110,15 @@ class _PostWidgetState extends State<PostWidget> {
                           setState(() {
                             _controller.pause();
                           });
-                          Utils.model(
-                              context,
-                              FullScreenPlayer(
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FullScreenPlayer(
                                 videoUrl: widget.videoUrl,
                                 feed: widget.feed,
-                              ));
+                              ),
+                            ),
+                          );
                         },
                       ),
                     ],

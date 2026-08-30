@@ -255,10 +255,12 @@ class _NdviVideoPlayerState extends State<NdviVideoPlayer> {
                                   ),
                                   onPressed: () {
                                     _controller.pause();
-                                    Utils.model(
+                                    Navigator.push(
                                       context,
-                                      FullScreenPlayer(
-                                        videoUrl: widget.videoUrl,
+                                      MaterialPageRoute(
+                                        builder: (context) => FullScreenPlayer(
+                                          videoUrl: widget.videoUrl,
+                                        ),
                                       ),
                                     );
                                   },
