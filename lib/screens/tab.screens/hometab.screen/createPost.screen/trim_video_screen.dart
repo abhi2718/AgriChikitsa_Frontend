@@ -22,6 +22,7 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
   double _startValue = 0.0;
   double _endValue = 0.0;
   bool _isPlaying = false;
+  bool _isLoadingVideo = true;
   bool _progressVisibility = false;
 
   @override
@@ -32,6 +33,11 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
 
   void _loadVideo() async {
     await _trimmer.loadVideo(videoFile: widget.videoFile);
+    if (mounted) {
+      setState(() {
+        _isLoadingVideo = false;
+      });
+    }
   }
 
   Future<void> _saveVideo() async {
@@ -95,7 +101,7 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   child: ElevatedButton(
-                    onPressed: _saveVideo,
+                    onPressed: _isLoadingVideo ? null : _saveVideo,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColor.extraDark,
                       foregroundColor: AppColor.whiteColor,
@@ -124,8 +130,28 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
                 ),
         ],
       ),
-      body: Builder(
-        builder: (context) => Center(
+      body: _isLoadingVideo
+          ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    "Loading video...",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Builder(
+              builder: (context) => Center(
           child: Container(
             padding: const EdgeInsets.only(bottom: 30.0),
             color: Colors.black,

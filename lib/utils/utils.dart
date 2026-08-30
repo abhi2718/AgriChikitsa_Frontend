@@ -416,21 +416,73 @@ class Utils {
     try {
       final XFile? video = await ImagePicker().pickVideo(source: ImageSource.gallery);
       if (video == null) return null;
-      final VideoPlayerController videoController = VideoPlayerController.file(File(video.path));
-      await videoController.initialize();
-      final Duration videoDuration = videoController.value.duration;
-      videoController.dispose();
-      if (videoDuration.inSeconds > 60) {
-        if (!context.mounted) return null;
-        final trimmedVideo = await Navigator.push<XFile?>(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TrimVideoScreen(videoFile: File(video.path)),
-          ),
+
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext dialogContext) {
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: Dialog(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(color: Colors.white),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalization.of(context).getTranslatedValue("loadingVideo") != null &&
+                                  AppLocalization.of(context).getTranslatedValue("loadingVideo").toString() != "null"
+                              ? AppLocalization.of(context).getTranslatedValue("loadingVideo").toString()
+                              : "Loading video...",
+                          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         );
-        return trimmedVideo;
       }
-      return video;
+
+      try {
+        final VideoPlayerController videoController = VideoPlayerController.file(File(video.path));
+        await videoController.initialize();
+        final Duration videoDuration = videoController.value.duration;
+        videoController.dispose();
+
+        if (context.mounted) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+
+        if (videoDuration.inSeconds > 60) {
+          if (!context.mounted) return null;
+          final trimmedVideo = await Navigator.push<XFile?>(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TrimVideoScreen(videoFile: File(video.path)),
+            ),
+          );
+          return trimmedVideo;
+        }
+        return video;
+      } catch (err) {
+        if (context.mounted) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+        rethrow;
+      }
     } catch (error) {
       rethrow;
     }
