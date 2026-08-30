@@ -42,7 +42,9 @@ class CreatePostScreen extends HookWidget {
         useViewModel.setFeedData(feed);
       }
       return () {
-        useViewModel.reinitialize();
+        if (!useViewModel.isUploading) {
+          useViewModel.reinitialize();
+        }
       };
     }, []);
 

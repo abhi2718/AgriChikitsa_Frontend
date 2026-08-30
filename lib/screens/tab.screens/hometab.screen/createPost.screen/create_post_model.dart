@@ -116,8 +116,9 @@ class CreatePostModel with ChangeNotifier {
       captionController.clear();
       youtubeUrlController.clear();
       imagePath = [];
-      isUploading = false;
-      uploadProgress = 0.0;
+      if (!isUploading) {
+        uploadProgress = 0.0;
+      }
       imageUrl = "";
       youtubeVideoPath = '';
       isPostPicked = false;
@@ -188,10 +189,11 @@ class CreatePostModel with ChangeNotifier {
             completedImages++;
             setUploadProgress((completedImages / totalImages) * 0.9);
           } else {
-            _handleUploadError(context);
+            if (context.mounted) _handleUploadError(context);
             return;
           }
         }
+        response = {'success': true};
       } else if (localVideoPicked != null) {
         response = await Utils.uploadVideo(
           localVideoPicked,
@@ -228,13 +230,13 @@ class CreatePostModel with ChangeNotifier {
             setUploadSuccess(false);
           });
         } else {
-          _handleUploadError(context);
+          if (context.mounted) _handleUploadError(context);
         }
       } else {
-        _handleUploadError(context);
+        if (context.mounted) _handleUploadError(context);
       }
     } catch (e) {
-      _handleUploadError(context);
+      if (context.mounted) _handleUploadError(context);
     } finally {
       reinitialize();
     }
