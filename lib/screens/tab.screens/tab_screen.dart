@@ -36,7 +36,22 @@ class TabScreen extends HookWidget {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        body: tabs[currentIndex.value],
+        body: Consumer<CreatePostModel>(
+          builder: (context, postModel, child) {
+            return Column(
+              children: [
+                if (postModel.isUploading)
+                  LinearProgressIndicator(
+                    value: postModel.uploadProgress > 0 ? postModel.uploadProgress : null,
+                    backgroundColor: Colors.grey[200],
+                    valueColor: const AlwaysStoppedAnimation<Color>(AppColor.extraDark),
+                    minHeight: 3,
+                  ),
+                Expanded(child: tabs[currentIndex.value]),
+              ],
+            );
+          },
+        ),
         floatingActionButton: FloatingActionButton(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             backgroundColor: Colors.white,

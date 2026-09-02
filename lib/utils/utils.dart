@@ -20,6 +20,8 @@ import 'package:video_player/video_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/trim_video_screen.dart';
 
 class Utils {
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   static void toastMessage(String message) {
     Fluttertoast.showToast(msg: message);
   }

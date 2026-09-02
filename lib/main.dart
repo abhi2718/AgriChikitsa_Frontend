@@ -31,6 +31,8 @@ import './screens/tab.screens/profiletab.screen/edit_profile/edit_profile_view_m
 import './screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'screens/tab.screens/tab_screen.dart';
 
+import 'utils/utils.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -128,6 +130,7 @@ class App extends StatelessWidget {
       child: Consumer<ProfileViewModel>(
         builder: (context, provider, child) {
           return MaterialApp(
+            navigatorKey: Utils.navigatorKey,
             title: 'Agrichikitsa',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(

@@ -241,17 +241,7 @@ class HomeTabScreen1 extends HookWidget {
                         itemBuilder: (context, index) {
                           if (index == 0) {
                             return CreatePostCard(
-                              onPostedCreated: () {
-                                Utils.flushBarSuccessMessage(
-                                  AppLocalization.of(context)
-                                      .getTranslatedValue("postCreatedTitle")
-                                      .toString(),
-                                  AppLocalization.of(context)
-                                      .getTranslatedValue("postCreatedSubtitle")
-                                      .toString(),
-                                  context,
-                                );
-                              },
+                              onPostedCreated: () {},
                             );
                           }
                           return Feed(feed: provider.feedList[index - 1]);

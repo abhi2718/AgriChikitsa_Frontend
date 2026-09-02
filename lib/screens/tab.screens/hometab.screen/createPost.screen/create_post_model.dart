@@ -131,19 +131,20 @@ class CreatePostModel with ChangeNotifier {
     });
   }
 
-  void _handleUploadError(BuildContext context) {
+  void _handleUploadError([BuildContext? context]) {
     setUploading(false);
     setUploadError(true);
     uploadProgress = 0.0;
     Timer(const Duration(seconds: 3), () {
       setUploadError(false);
     });
-    if (context.mounted) {
+    final ctx = Utils.navigatorKey.currentContext ?? context;
+    if (ctx != null && ctx.mounted) {
       try {
         Utils.flushBarErrorMessage(
-          AppLocalization.of(context).getTranslatedValue("oopsTitle").toString(),
-          AppLocalization.of(context).getTranslatedValue("someErrorOccured").toString(),
-          context,
+          AppLocalization.of(ctx).getTranslatedValue("oopsTitle").toString(),
+          AppLocalization.of(ctx).getTranslatedValue("someErrorOccured").toString(),
+          ctx,
         );
       } catch (_) {}
     }
@@ -173,23 +174,23 @@ class CreatePostModel with ChangeNotifier {
             postItem.croppedFile!,
             onProgress: (p) {
               double totalP = (completedImages + (p * 0.5)) / totalImages;
-              setUploadProgress(totalP * 0.9);
+              setUploadProgress((0.05 + (totalP * 0.80)).clamp(0.05, 0.85));
             },
           );
           var ogImgResponse = await Utils.uploadImage(
             postItem.originalFile!,
             onProgress: (p) {
               double totalP = (completedImages + 0.5 + (p * 0.5)) / totalImages;
-              setUploadProgress(totalP * 0.9);
+              setUploadProgress((0.05 + (totalP * 0.80)).clamp(0.05, 0.85));
             },
           );
           if (croppedResponse is Map && croppedResponse['success'] == true && ogImgResponse is Map && ogImgResponse['success'] == true) {
             postItem.thumbnailUrl = croppedResponse['imgurl'];
             postItem.originalUrl = ogImgResponse['imgurl'];
             completedImages++;
-            setUploadProgress((completedImages / totalImages) * 0.9);
+            setUploadProgress((0.05 + ((completedImages / totalImages) * 0.80)).clamp(0.05, 0.85));
           } else {
-            if (context.mounted) _handleUploadError(context);
+            _handleUploadError(context);
             return;
           }
         }
@@ -198,16 +199,17 @@ class CreatePostModel with ChangeNotifier {
         response = await Utils.uploadVideo(
           localVideoPicked,
           onProgress: (p) {
-            setUploadProgress(p * 0.9);
+            setUploadProgress((0.05 + (p * 0.80)).clamp(0.05, 0.85));
           },
         );
       } else {
         response = {'success': true, 'url': localYoutubeVideoPath};
-        setUploadProgress(0.9);
+        setUploadProgress(0.85);
       }
 
       bool isImageUploaded = localPostImages.isNotEmpty;
       if (response != null && (response['success'] == true || isImageUploaded)) {
+        setUploadProgress(0.90);
         final passedUrl = isImageUploaded ? getFeedImagePayloadFromList(localPostImages) : response['url'];
         final data = await _homeTabViewModel.createPost(
           context,
@@ -220,8 +222,19 @@ class CreatePostModel with ChangeNotifier {
         if (data) {
           setUploadProgress(1.0);
           onPostCreated();
-          if (context.mounted) {
-            Utils.flushBarSuccessMessage(successTitle, successMsg, context);
+          final ctx = Utils.navigatorKey.currentContext ?? context;
+          if (ctx.mounted) {
+            try {
+              Utils.flushBarSuccessMessage(
+                successTitle.isNotEmpty
+                    ? successTitle
+                    : AppLocalization.of(ctx).getTranslatedValue("postCreatedTitle").toString(),
+                successMsg.isNotEmpty
+                    ? successMsg
+                    : AppLocalization.of(ctx).getTranslatedValue("postCreatedSubtitle").toString(),
+                ctx,
+              );
+            } catch (_) {}
           }
           setfetchMyPost(true);
           setUploading(false);
@@ -230,13 +243,13 @@ class CreatePostModel with ChangeNotifier {
             setUploadSuccess(false);
           });
         } else {
-          if (context.mounted) _handleUploadError(context);
+          _handleUploadError(context);
         }
       } else {
-        if (context.mounted) _handleUploadError(context);
+        _handleUploadError(context);
       }
     } catch (e) {
-      if (context.mounted) _handleUploadError(context);
+      _handleUploadError(context);
     } finally {
       reinitialize();
     }
