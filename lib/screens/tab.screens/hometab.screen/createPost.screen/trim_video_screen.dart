@@ -31,13 +31,14 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
     _loadVideo();
   }
 
-  void _loadVideo() async {
-    await _trimmer.loadVideo(videoFile: widget.videoFile);
-    if (mounted) {
-      setState(() {
-        _isLoadingVideo = false;
-      });
-    }
+  void _loadVideo() {
+    _trimmer.loadVideo(videoFile: widget.videoFile).then((_) {
+      if (mounted) {
+        setState(() {
+          _isLoadingVideo = false;
+        });
+      }
+    });
   }
 
   Future<void> _saveVideo() async {
@@ -49,9 +50,11 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
       startValue: _startValue,
       endValue: _endValue,
       onSave: (outputPath) {
-        setState(() {
-          _progressVisibility = false;
-        });
+        if (mounted) {
+          setState(() {
+            _progressVisibility = false;
+          });
+        }
         if (outputPath != null && outputPath.isNotEmpty) {
           Navigator.pop(context, XFile(outputPath));
         } else {
@@ -63,6 +66,8 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -71,9 +76,9 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
         centerTitle: false,
         title: BaseText(
           title: AppLocalization.of(context)
-                  .getTranslatedValue("cropVideoTitle")
-                  .toString() !=
-              "null"
+                      .getTranslatedValue("cropVideoTitle")
+                      .toString() !=
+                  "null"
               ? AppLocalization.of(context)
                   .getTranslatedValue("cropVideoTitle")
                   .toString()
@@ -113,9 +118,9 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
                     ),
                     child: Text(
                       AppLocalization.of(context)
-                              .getTranslatedValue("cropAndSave")
-                              .toString() !=
-                          "null"
+                                  .getTranslatedValue("cropAndSave")
+                                  .toString() !=
+                              "null"
                           ? AppLocalization.of(context)
                               .getTranslatedValue("cropAndSave")
                               .toString()
@@ -130,101 +135,120 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
                 ),
         ],
       ),
-      body: _isLoadingVideo
-          ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
+      body: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Visibility(
+                visible: _progressVisibility,
+                child: Column(
+                  children: [
+                    const LinearProgressIndicator(
+                      backgroundColor: Colors.red,
+                      color: AppColor.extraDark,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalization.of(context)
+                                  .getTranslatedValue("trimmingProgress")
+                                  .toString() !=
+                              "null"
+                          ? AppLocalization.of(context)
+                              .getTranslatedValue("trimmingProgress")
+                              .toString()
+                          : "Processing video...",
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: VideoViewer(trimmer: _trimmer),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: TrimViewer(
+                  trimmer: _trimmer,
+                  viewerHeight: 50.0,
+                  viewerWidth: screenWidth - 32,
+                  maxVideoLength: const Duration(seconds: 60),
+                  durationStyle: DurationStyle.FORMAT_MM_SS,
+                  durationTextStyle: GoogleFonts.inter(
                     color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    "Loading video...",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                  editorProperties: TrimEditorProperties(
+                    borderPaintColor: AppColor.darkColor,
+                    borderWidth: 3,
+                    borderRadius: 5,
+                    circlePaintColor: AppColor.extraDark,
+                  ),
+                  areaProperties: TrimAreaProperties.edgeBlur(
+                    thumbnailQuality: 50,
+                  ),
+                  onChangeStart: (value) => _startValue = value,
+                  onChangeEnd: (value) => _endValue = value,
+                  onChangePlaybackState: (value) =>
+                      setState(() => _isPlaying = value),
+                ),
+              ),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: IconButton(
+                    onPressed: () async {
+                      bool playbackState = await _trimmer.videoPlaybackControl(
+                        startValue: _startValue,
+                        endValue: _endValue,
+                      );
+                      setState(() {
+                        _isPlaying = playbackState;
+                      });
+                    },
+                    icon: Icon(
+                      _isPlaying
+                          ? Icons.pause_circle_filled
+                          : Icons.play_circle_fill,
+                      size: 56.0,
+                      color: AppColor.whiteColor,
                     ),
                   ),
-                ],
+                ),
               ),
-            )
-          : Builder(
-              builder: (context) => Center(
-          child: Container(
-            padding: const EdgeInsets.only(bottom: 30.0),
-            color: Colors.black,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Visibility(
-                  visible: _progressVisibility,
-                  child: Column(
-                    children: [
-                      const LinearProgressIndicator(
-                        backgroundColor: Colors.red,
-                        color: AppColor.extraDark,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        AppLocalization.of(context)
-                                .getTranslatedValue("trimmingProgress")
-                                .toString() !=
-                            "null"
-                            ? AppLocalization.of(context)
-                                .getTranslatedValue("trimmingProgress")
-                                .toString()
-                            : "Processing video...",
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: VideoViewer(trimmer: _trimmer),
-                ),
-                Center(
-                  child: TrimViewer(
-                    trimmer: _trimmer,
-                    viewerHeight: 50.0,
-                    viewerWidth: MediaQuery.of(context).size.width,
-                    maxVideoLength: const Duration(seconds: 60),
-                    onChangeStart: (value) => _startValue = value,
-                    onChangeEnd: (value) => _endValue = value,
-                    onChangePlaybackState: (value) =>
-                        setState(() => _isPlaying = value),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    bool playbackState = await _trimmer.videoPlaybackControl(
-                      startValue: _startValue,
-                      endValue: _endValue,
-                    );
-                    setState(() {
-                      _isPlaying = playbackState;
-                    });
-                  },
-                  child: _isPlaying
-                      ? const Icon(
-                          Icons.pause,
-                          size: 36.0,
-                          color: Colors.white,
-                        )
-                      : const Icon(
-                          Icons.play_arrow,
-                          size: 36.0,
-                          color: Colors.white,
-                        ),
-                ),
-              ],
-            ),
+            ],
           ),
-        ),
+          if (_isLoadingVideo)
+            Container(
+              color: Colors.black,
+              child: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      "Loading video...",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
 }
+
