@@ -6,12 +6,11 @@ import 'package:agriChikitsa/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ReportPostScreen extends StatefulWidget {
-  const ReportPostScreen({super.key, required this.userId});
+  const ReportPostScreen({super.key, required this.userId, this.postId});
   final String userId;
+  final String? postId;
 
   @override
   _ReportPostScreenState createState() => _ReportPostScreenState();
@@ -127,7 +126,7 @@ class _ReportPostScreenState extends State<ReportPostScreen> {
                         : () {
                             final reportDetails =
                                 "$selectedReason ${additionalInfo.isNotEmpty ? "- $additionalInfo" : ""}";
-                            provider.reportPost(reportDetails, widget.userId, context);
+                            provider.reportPost(reportDetails, widget.userId, widget.postId, context);
                           },
                     child: GradientButton(
                       height: dimension['height']! * 0.08,

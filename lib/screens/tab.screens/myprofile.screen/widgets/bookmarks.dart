@@ -176,6 +176,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                           enableDrag: true,
                           builder: (BuildContext context) => ReportPostScreen(
                             userId: user['_id'],
+                            postId: widget.feed['_id'],
                           ),
                           isScrollControlled: true,
                           shape: const RoundedRectangleBorder(

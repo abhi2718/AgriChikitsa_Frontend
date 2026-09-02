@@ -153,19 +153,23 @@ class HomeTabViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void reportPost(String reason, String userId, BuildContext context) async {
+  void reportPost(String reason, String userId, String? postId, BuildContext context) async {
     reportPostLoader = false;
     reportPostStatus = false;
     setReportPostloading(true);
     try {
-      final payload = {"reason": reason, "reportedUserId": userId};
+      final payload = {
+        "reason": reason,
+        "reportedUserId": userId,
+        if (postId != null) "reportedPostId": postId,
+      };
       final response = await _homeTabRepository.reportPost(payload);
       if (response['status']!) {
         reportPostStatus = true;
         notifyListeners();
         Timer(const Duration(seconds: 2), () {
           Navigator.pop(context);
-          Utils.flushBarErrorMessage("", "Post Reported successfully!", context);
+          Utils.flushBarSuccessMessage("", "Post Reported successfully!", context);
           setReportPostloading(false);
         });
       }

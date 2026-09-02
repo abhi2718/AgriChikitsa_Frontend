@@ -438,6 +438,7 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                                 enableDrag: true,
                                 builder: (BuildContext context) => ReportPostScreen(
                                   userId: user['_id'],
+                                  postId: widget.feed['_id'],
                                 ),
                                 isScrollControlled: true,
                                 shape: const RoundedRectangleBorder(
