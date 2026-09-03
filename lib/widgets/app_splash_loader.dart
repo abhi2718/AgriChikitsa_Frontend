@@ -34,7 +34,7 @@ class AppSplashLoader extends StatelessWidget {
               AnimatedTextKit(
                 animatedTexts: [
                   TyperAnimatedText(
-                    subtitle ?? 'AGRICHIKITSA',
+                    subtitle ?? 'एग्रीचिकित्सा',
                     speed: const Duration(milliseconds: 90),
                     textStyle: const TextStyle(
                       fontSize: 22,
@@ -49,7 +49,7 @@ class AppSplashLoader extends StatelessWidget {
               )
             else
               Text(
-                subtitle ?? 'AGRICHIKITSA',
+                subtitle ?? 'एग्रीचिकित्सा',
                 style: const TextStyle(
                   fontSize: 22,
                   color: AppColor.extraDark,

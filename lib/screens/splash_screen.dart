@@ -71,7 +71,7 @@ class SplashScreen extends HookWidget {
             AnimatedTextKit(
               animatedTexts: [
                 TyperAnimatedText(
-                  'AGRICHIKITSA',
+                  'एग्रीचिकित्सा',
                   speed: const Duration(milliseconds: 100),
                   textStyle: const TextStyle(
                       fontSize: 40, color: AppColor.extraDark, fontWeight: FontWeight.w800),
