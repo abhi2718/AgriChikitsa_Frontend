@@ -206,6 +206,7 @@
     "daysFeed": "day",
     "monthsFeed": "month",
     "reportPost": "Report",
+    "postReportedSuccess": "Post reported successfully!",
     "uploadImagePost": "Upload Image",
     "uploadVideoPost": "Upload Video",
     "pickVideoFrom": "Pick Video From",

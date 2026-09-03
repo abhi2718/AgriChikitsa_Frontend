@@ -169,7 +169,14 @@ class HomeTabViewModel with ChangeNotifier {
         notifyListeners();
         Timer(const Duration(seconds: 2), () {
           Navigator.pop(context);
-          Utils.flushBarSuccessMessage("", "Post Reported successfully!", context);
+          Utils.flushBarSuccessMessage(
+            "",
+            AppLocalization.of(context)
+                    .getTranslatedValue("postReportedSuccess")
+                    ?.toString() ??
+                "पोस्ट की सफलतापूर्वक रिपोर्ट की गई!",
+            context,
+          );
           setReportPostloading(false);
         });
       }
