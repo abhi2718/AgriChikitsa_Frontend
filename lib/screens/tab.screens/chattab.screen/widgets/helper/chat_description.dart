@@ -14,11 +14,11 @@ import '../../../../../widgets/skeleton/skeleton.dart';
 import '../../../../../widgets/text.widgets/text.dart';
 
 class ChatDescription extends HookWidget {
-  ChatDescription({super.key, required this.chat, this.isFromNotifications = false});
+  const ChatDescription({super.key, required this.chat, this.isFromNotifications = false});
   final dynamic chat;
-  bool isFromNotifications = false;
+  final bool isFromNotifications;
 
-  void showFeedbackDialog(BuildContext context, dynamic dimension) {
+  void showFeedbackDialog(BuildContext context, dynamic dimension, String targetChatId) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -50,7 +50,7 @@ class ChatDescription extends HookWidget {
                           AppLocalization.of(context)
                               .getTranslatedValue("feedbackTitle")
                               .toString(),
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
@@ -95,7 +95,7 @@ class ChatDescription extends HookWidget {
                           onTap: provider.isFeedbackLoading
                               ? null
                               : () {
-                                  provider.sendChatFeedback(context, chat["_id"]).then((result) {
+                                  provider.sendChatFeedback(context, targetChatId).then((result) {
                                     if (result["success"] && context.mounted) {
                                       Utils.showResultDialog(
                                           context,
@@ -104,7 +104,12 @@ class ChatDescription extends HookWidget {
                                             'assets/images/plot_success.png',
                                             fit: BoxFit.cover,
                                           ), () {
-                                        chat["isUserFeedbackGiven"] = true;
+                                        if (chat is Map) {
+                                          chat["isUserFeedbackGiven"] = true;
+                                        }
+                                        if (provider.chatMessagesList is Map) {
+                                          provider.chatMessagesList["isUserFeedbackGiven"] = true;
+                                        }
                                         if (Navigator.canPop(context)) Navigator.pop(context);
                                         if (Navigator.canPop(context)) Navigator.pop(context);
                                       },
@@ -156,12 +161,35 @@ class ChatDescription extends HookWidget {
       });
       return null;
     }, []);
+
+    final String targetChatId = (isFromNotifications
+            ? (chat is Map ? chat['relatedTo']?.toString() : null)
+            : (chat is Map ? chat['_id']?.toString() : null)) ??
+        (useViewModel.chatMessagesList is Map
+            ? useViewModel.chatMessagesList['_id']?.toString()
+            : null) ??
+        '';
+
+    bool checkHasFeedback() {
+      if (chat is Map && chat["isUserFeedbackGiven"] == true) return true;
+      if (useViewModel.chatMessagesList is Map &&
+          useViewModel.chatMessagesList["isUserFeedbackGiven"] == true) return true;
+      return false;
+    }
+
+    bool checkHasReplied() {
+      if (chat is Map && chat["isReplied"] == true) return true;
+      if (useViewModel.chatMessagesList is Map &&
+          useViewModel.chatMessagesList["isReplied"] == true) return true;
+      return false;
+    }
+
     return WillPopScope(
       onWillPop: () async {
-        final hasFeedback = chat is Map && chat["isUserFeedbackGiven"] == true;
-        final hasReplied = chat is Map && chat["isReplied"] == true;
+        final hasFeedback = checkHasFeedback();
+        final hasReplied = checkHasReplied();
         if (!hasFeedback && hasReplied) {
-          showFeedbackDialog(context, dimension);
+          showFeedbackDialog(context, dimension, targetChatId);
           return false;
         }
         return true;
@@ -176,10 +204,10 @@ class ChatDescription extends HookWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              final hasFeedback = chat is Map && chat["isUserFeedbackGiven"] == true;
-              final hasReplied = chat is Map && chat["isReplied"] == true;
+              final hasFeedback = checkHasFeedback();
+              final hasReplied = checkHasReplied();
               if (!hasFeedback && hasReplied) {
-                showFeedbackDialog(context, dimension);
+                showFeedbackDialog(context, dimension, targetChatId);
               } else {
                 Navigator.of(context).pop();
               }
