@@ -93,11 +93,17 @@ class _ChatHistoryTileState extends State<ChatHistoryTile> {
           child: ListTile(
             onTap: () {
               if (!isOpened && chatId.isNotEmpty) {
+                setState(() {
+                  isOpened = true;
+                });
                 useViewModel.markChatAsOpened(chatId);
               }
               Utils.model(
                 context,
-                ChatDescription(chat: widget.chat),
+                ChatDescription(chat: {
+                  ...widget.chat,
+                  "isOpened": true,
+                }),
               );
             },
             title: Row(

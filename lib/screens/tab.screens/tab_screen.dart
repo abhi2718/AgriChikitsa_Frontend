@@ -10,6 +10,7 @@ import './hometab.screen/hometab.dart';
 import './profiletab.screen/profiletab.dart';
 import './hometab.screen/createPost.screen/create_post_model.dart';
 import '../../res/color.dart';
+import 'chattab.screen/chat_tab_view_model.dart';
 import 'chattab.screen/chattab.dart';
 
 class TabScreen extends HookWidget {
@@ -18,6 +19,11 @@ class TabScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentIndex = useState(0);
+    final chatViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
+    useEffect(() {
+      chatViewModel.getAllChatHistory(context);
+      return null;
+    }, []);
     List<Widget> tabs = [
       const HomeTabScreen(),
       const JankariHomeTab(),
@@ -62,7 +68,6 @@ class TabScreen extends HookWidget {
               width: 40,
             ),
             onPressed: () {
-              // Utils.model(context, const ChatTabScreen());
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => const ChatTabScreen()));
             }),

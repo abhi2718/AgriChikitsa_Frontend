@@ -20,6 +20,7 @@ class ChatTabScreen extends HookWidget {
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
     useEffect(() {
       useViewModel.reinitilize(context);
+      useViewModel.getAllChatHistory(context);
       Future.delayed(Duration.zero, () {});
       return null;
     }, []);
@@ -119,18 +120,51 @@ class ChatTabScreen extends HookWidget {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: InkWell(
-                  onTap: () {
-                    // useViewModel.isChatCompleted
-                    //     ?
-                    Utils.model(context, const ChatHistory1());
-                    // : Utils.snackbar(
-                    //     AppLocalization.of(context)
-                    //         .getTranslatedValue("chatActiveWarning")
-                    //         .toString(),
-                    //     context);
-                  },
-                  child: const Icon(Icons.history)),
+              child: Consumer<ChatTabViewModel>(
+                builder: (context, provider, child) {
+                  final unreadCount = provider.unreadRepliesCount;
+                  return InkWell(
+                    onTap: () {
+                      Utils.model(context, const ChatHistory1());
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: [
+                        const Icon(
+                          Icons.history,
+                          size: 28,
+                        ),
+                        if (unreadCount > 0)
+                          Positioned(
+                            right: -4,
+                            top: 8,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: AppColor.errorColor,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                unreadCount > 9 ? '9+' : unreadCount.toString(),
+                                style: const TextStyle(
+                                  color: AppColor.whiteColor,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             )
           ],
         ),

@@ -174,11 +174,22 @@ class ChatTabViewModel with ChangeNotifier {
     }
   }
 
+  int get unreadRepliesCount {
+    if (chatHistoryList is! List) return 0;
+    return (chatHistoryList as List).where((chat) {
+      final isReplied = chat["isReplied"] == true ||
+          (chat["adminReply"] != null &&
+              chat["adminReply"].toString().trim().isNotEmpty);
+      final isOpened = chat["isOpened"] == true;
+      return isReplied && !isOpened;
+    }).length;
+  }
+
   void setChatLoader(bool value) {
     chatLoader = value;
   }
 
-  void getAllChatHistory(BuildContext context) async {
+  void getAllChatHistory([BuildContext? context]) async {
     setChatLoader(true);
     try {
       final data = await _chatTabRepository.getChatHistory();
@@ -187,8 +198,7 @@ class ChatTabViewModel with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       setChatLoader(false);
-      if (context.mounted) {
-        Utils.flushBarErrorMessage("Umm!", "Some Error Occured", context);
+      if (context != null && context.mounted) {
         if (kDebugMode) {
           Utils.flushBarErrorMessage(
               AppLocalization.of(context).getTranslatedValue("alert").toString(),
@@ -260,10 +270,26 @@ class ChatTabViewModel with ChangeNotifier {
   }
 
   void markChatAsOpened(String chatId) async {
+    if (chatHistoryList is List) {
+      final index = chatHistoryList.indexWhere((item) =>
+          (item['_id']?.toString() ?? item['id']?.toString()) == chatId);
+      if (index != -1) {
+        final oldItem = chatHistoryList[index];
+        if (oldItem is Map) {
+          chatHistoryList[index] = {
+            ...oldItem,
+            "isOpened": true,
+          };
+        }
+        notifyListeners();
+      }
+    }
     final payloadStructure = {
       "isOpened": true,
     };
-    await _chatTabRepository.markChatAsOpened(payloadStructure, chatId);
+    try {
+      await _chatTabRepository.markChatAsOpened(payloadStructure, chatId);
+    } catch (_) {}
   }
 
   void fetchFirstQuestion(BuildContext context, String id) async {
