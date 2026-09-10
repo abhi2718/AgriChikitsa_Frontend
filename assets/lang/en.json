@@ -375,5 +375,6 @@
     "cropVideoTitle": "Crop Video (Max 1 min)",
     "cropAndSave": "Crop & Continue",
     "trimmingProgress": "Processing video...",
-    "cropImageTitle": "Crop Image"
+    "cropImageTitle": "Crop Image",
+    "loadingVideo": "Loading video..."
 }

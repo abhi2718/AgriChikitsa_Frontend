@@ -226,17 +226,24 @@ class _TrimVideoScreenState extends State<TrimVideoScreen> {
           if (_isLoadingVideo)
             Container(
               color: Colors.black,
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(
+                    const CircularProgressIndicator(
                       color: Colors.white,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
-                      "Loading video...",
-                      style: TextStyle(
+                      AppLocalization.of(context)
+                                  .getTranslatedValue("loadingVideo")
+                                  .toString() !=
+                              "null"
+                          ? AppLocalization.of(context)
+                              .getTranslatedValue("loadingVideo")
+                              .toString()
+                          : "Loading video...",
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
