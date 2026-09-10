@@ -244,6 +244,7 @@
     "warningSubTitle": "Do you really want to exit?",
     "warningCloseChatSubTitle": "Do you really want to close chat bot?",
     "warningDeleteChatSubTitle": "Are you sure you want to delete this chat history?",
+    "chatDeletedSuccess": "Chat history deleted successfully!",
     "cropVariety": "Crop Variety",
     "cropDuration": "Crop Duration",
     "warningVariety": "Please provide crop variety details",

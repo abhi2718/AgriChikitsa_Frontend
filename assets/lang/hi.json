@@ -244,6 +244,7 @@
     "warningSubTitle": "क्या आप वाकई ऐप से बाहर निकलना चाहते हैं?",
     "warningCloseChatSubTitle": "क्या आप वाकई चैटबॉट बंद करना चाहते हैं?",
     "warningDeleteChatSubTitle": "क्या आप वाकई इस चैट इतिहास को हटाना चाहते हैं?",
+    "chatDeletedSuccess": "चैट इतिहास सफलतापूर्वक हटा दिया गया!",
     "cropVariety": "फसल की क़िस्म",
     "cropDuration": "फसल अवधि",
     "warningVariety": "कृपया फसल की विविधता प्रदान करें",

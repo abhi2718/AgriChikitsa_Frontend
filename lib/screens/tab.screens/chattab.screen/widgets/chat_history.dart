@@ -15,6 +15,7 @@ class ChatHistory1 extends HookWidget {
     final useViewModel = Provider.of<ChatTabViewModel>(context, listen: false);
     useEffect(() {
       useViewModel.getAllChatHistory(context);
+      return null;
     }, []);
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,

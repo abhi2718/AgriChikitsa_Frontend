@@ -217,6 +217,49 @@ class ChatDescription extends HookWidget {
             AppLocalization.of(context).getTranslatedValue("chatHistoryTitle").toString(),
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
+          actions: [
+            if (targetChatId.isNotEmpty)
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(AppLocalization.of(context)
+                          .getTranslatedValue("warningTitle")
+                          .toString()),
+                      content: Text(AppLocalization.of(context)
+                          .getTranslatedValue("warningDeleteChatSubTitle")
+                          .toString()),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          child: Text(
+                            AppLocalization.of(context)
+                                .getTranslatedValue("no")
+                                .toString(),
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                          child: Text(
+                            AppLocalization.of(context)
+                                .getTranslatedValue("yes")
+                                .toString(),
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirm == true && context.mounted) {
+                    useViewModel.deleteChatHistory(context, targetChatId);
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+          ],
         ),
         body: Container(
             color: AppColor.notificationBgColor,

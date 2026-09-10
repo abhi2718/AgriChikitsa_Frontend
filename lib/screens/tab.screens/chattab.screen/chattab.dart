@@ -21,6 +21,7 @@ class ChatTabScreen extends HookWidget {
     useEffect(() {
       useViewModel.reinitilize(context);
       Future.delayed(Duration.zero, () {});
+      return null;
     }, []);
 
     Future<bool> _onWillPop() async {

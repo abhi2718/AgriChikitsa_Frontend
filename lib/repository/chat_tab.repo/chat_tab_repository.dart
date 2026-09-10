@@ -40,7 +40,7 @@ class ChatTabRepository {
 
   Future<dynamic> deleteChatHistory(String chatId) async {
     try {
-      final url = '${AppUrl.chatEndPoint}/$chatId';
+      final url = '${AppUrl.chatHistoryEndPoint}/$chatId';
       final response = await _apiServices.getDeleteApiResponse(url);
       return response;
     } catch (e) {

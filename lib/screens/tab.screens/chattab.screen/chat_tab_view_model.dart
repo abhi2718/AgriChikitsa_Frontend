@@ -962,7 +962,23 @@ class ChatTabViewModel with ChangeNotifier {
 
   void deleteChatHistory(BuildContext context, String chatId) async {
     try {
+      if (chatHistoryList is List) {
+        chatHistoryList.removeWhere((item) =>
+            (item['_id']?.toString() ?? item['id']?.toString()) == chatId);
+        notifyListeners();
+      }
       await _chatTabRepository.deleteChatHistory(chatId);
+      if (context.mounted) {
+        final successTitle = AppLocalization.of(context)
+                .getTranslatedValue("success")
+                ?.toString() ??
+            "Success";
+        final successMsg = AppLocalization.of(context)
+                .getTranslatedValue("chatDeletedSuccess")
+                ?.toString() ??
+            "Chat history deleted successfully!";
+        Utils.flushBarSuccessMessage(successTitle, successMsg, context);
+      }
     } catch (e) {
       if (kDebugMode) {
         if (context.mounted) {
