@@ -39,6 +39,7 @@ class EmptyDetailsList extends StatelessWidget {
                   title: title,
                   style: TextStyle(
                     fontSize: 14,
+                    fontWeight: FontWeight.bold,
                     color: Colors.grey[600],
                   ),
                 ),

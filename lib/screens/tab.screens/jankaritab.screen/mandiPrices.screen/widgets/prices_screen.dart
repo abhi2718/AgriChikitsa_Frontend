@@ -56,8 +56,9 @@ class PricesScreen extends HookWidget {
                 decoration: BoxDecoration(
                     color: AppColor.whiteColor, borderRadius: BorderRadius.circular(18)),
                 child: Center(
-                  child:
-                      BaseText(title: pricesData!['state'], style: const TextStyle(fontSize: 15)),
+                  child: BaseText(
+                      title: pricesData!['state'],
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ),
               Container(
@@ -67,7 +68,8 @@ class PricesScreen extends HookWidget {
                     color: AppColor.whiteColor, borderRadius: BorderRadius.circular(18)),
                 child: Center(
                   child: BaseText(
-                      title: pricesData!['district'], style: const TextStyle(fontSize: 15)),
+                      title: pricesData!['district'],
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -86,8 +88,9 @@ class PricesScreen extends HookWidget {
                 decoration: BoxDecoration(
                     color: AppColor.whiteColor, borderRadius: BorderRadius.circular(18)),
                 child: Center(
-                  child:
-                      BaseText(title: pricesData!['market'], style: const TextStyle(fontSize: 15)),
+                  child: BaseText(
+                      title: pricesData!['market'],
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ),
               Container(
@@ -99,7 +102,10 @@ class PricesScreen extends HookWidget {
                 child: Center(
                   child: BaseText(
                       title: pricesData!['commodity'],
-                      style: const TextStyle(fontSize: 15, color: AppColor.whiteColor)),
+                      style: const TextStyle(
+                          fontSize: 15,
+                          color: AppColor.whiteColor,
+                          fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

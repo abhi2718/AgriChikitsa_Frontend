@@ -202,7 +202,9 @@ class MandiPricesScreen extends HookWidget {
                                                   .getTranslatedValue("knowPrice")
                                                   .toString(),
                                               style: const TextStyle(
-                                                  fontSize: 16, color: AppColor.extraDark))),
+                                                  fontSize: 16,
+                                                  color: AppColor.extraDark,
+                                                  fontWeight: FontWeight.bold))),
                                 ),
                               )
                             ],
@@ -260,7 +262,7 @@ class MandiPricesScreen extends HookWidget {
                 title: title,
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: FontWeight.bold,
                   color: isSelected ? Colors.black : Colors.grey[700],
                 ),
               ),
