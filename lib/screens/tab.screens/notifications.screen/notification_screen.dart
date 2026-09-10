@@ -17,16 +17,29 @@ class NotificationScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final dimension = Utils.getDimensions(context, false);
-    double screenHeight = MediaQuery.of(context).size.height;
-    double appBarHeight = AppBar().preferredSize.height;
-    double statusBarHeight = MediaQuery.of(context).padding.top;
-    double availableHeight = screenHeight - (appBarHeight + statusBarHeight + 50);
-
     final useViewModel =
         useMemoized(() => Provider.of<NotificationViewModel>(context, listen: false));
+    final scrollController = useScrollController();
+
     useEffect(() {
       useViewModel.fetchNotifications(context);
+      return null;
     }, []);
+
+    useEffect(() {
+      void scrollListener() {
+        if (scrollController.position.pixels >=
+            scrollController.position.maxScrollExtent - 200) {
+          if (!useViewModel.isFetchingMore && useViewModel.hasNextPage) {
+            useViewModel.fetchMoreNotifications(context);
+          }
+        }
+      }
+
+      scrollController.addListener(scrollListener);
+      return () => scrollController.removeListener(scrollListener);
+    }, [scrollController]);
+
     return Scaffold(
       backgroundColor: AppColor.notificationBgColor,
       appBar: AppBar(
@@ -37,58 +50,97 @@ class NotificationScreen extends HookWidget {
         centerTitle: true,
         backgroundColor: AppColor.whiteColor,
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Remix.arrow_left_line,
-              color: AppColor.darkBlackColor,
-            )),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Remix.arrow_left_line,
+            color: AppColor.darkBlackColor,
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Consumer<NotificationViewModel>(builder: (context, provider, child) {
-              final notificationList = provider.notificationsList;
-              return provider.notificationsList.isEmpty
-                  ? SizedBox(
-                      height: availableHeight,
-                      child: Center(
-                        child: Text(
-                          AppLocalization.of(context)
-                              .getTranslatedValue("notificationEmpty")
-                              .toString(),
+      body: Consumer<NotificationViewModel>(
+        builder: (context, provider, child) {
+          if (provider.loading && provider.notificationsList.isEmpty) {
+            return ListView.builder(
+              itemCount: 10,
+              padding: const EdgeInsets.only(top: 10, bottom: 20),
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                  child: Skeleton(
+                    height: dimension['height']! * 0.11,
+                    width: dimension['width']!,
+                    radius: 15,
+                  ),
+                );
+              },
+            );
+          }
+
+          if (!provider.loading && provider.notificationsList.isEmpty) {
+            return RefreshIndicator(
+              color: AppColor.extraDark,
+              onRefresh: () async {
+                await provider.fetchNotifications(context, isRefresh: true);
+              },
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: Center(
+                      child: Text(
+                        AppLocalization.of(context)
+                            .getTranslatedValue("notificationEmpty")
+                            .toString(),
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
                         ),
                       ),
-                    )
-                  : useViewModel.loading
-                      ? SizedBox(
-                          height: availableHeight,
-                          child: ListView.builder(
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-                                child: Skeleton(
-                                    height: dimension['height']! * 0.11,
-                                    width: dimension['width']!),
-                              );
-                            },
-                          ),
-                        )
-                      : SizedBox(
-                          height: availableHeight,
-                          child: ListView.builder(
-                              itemCount: notificationList.length,
-                              itemBuilder: (context, index) {
-                                final notificationItem = useViewModel.notificationsList[index];
-                                return NotificationTile(
-                                  notificationItem: notificationItem,
-                                );
-                              }));
-            })
-          ],
-        ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            color: AppColor.extraDark,
+            onRefresh: () async {
+              await provider.fetchNotifications(context, isRefresh: true);
+            },
+            child: ListView.builder(
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(top: 4, bottom: 20),
+              itemCount: provider.notificationsList.length + (provider.isFetchingMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index == provider.notificationsList.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: AppColor.extraDark,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                final notificationItem = provider.notificationsList[index];
+                return NotificationTile(
+                  key: ValueKey(notificationItem['_id'] ?? index),
+                  notificationItem: notificationItem,
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

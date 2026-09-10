@@ -4,9 +4,9 @@ import '../../res/app_url.dart';
 class NotificationTabRepository {
   final _apiServices = NetworkApiService();
 
-  Future<dynamic> fetchNotifications() async {
+  Future<dynamic> fetchNotifications({int page = 1, int limit = 20}) async {
     try {
-      const url = '${AppUrl.notificationsEndPoint}/';
+      final url = '${AppUrl.notificationsEndPoint}?page=$page&limit=$limit';
       final response = await _apiServices.getGetApiResponse(url);
       return response;
     } catch (e) {
