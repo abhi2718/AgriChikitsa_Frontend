@@ -454,7 +454,7 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                                   CreatePostScreen(
                                     onPostCreated: () {},
                                     feed: widget.feed,
-                                    isEdit: widget.feed.containsKey("repostedFrom") ? true : false,
+                                    isEdit: widget.feed["repostedFrom"] != null ? true : false,
                                   ));
                             }
                             if (value == 'delete') {
@@ -533,7 +533,8 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                 ],
               ),
             ),
-            widget.feed.containsKey("repostedFrom")
+            (widget.feed["repostedFrom"] != null &&
+                    widget.feed["repostedFrom"]["user"] != null)
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -777,7 +778,7 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                                                 widget.feed['images'].isNotEmpty) {
                                               final xfile = await JankariViewModel().shareFiles(
                                                   widget.feed['images'][0]["originalUrl"]);
-                                              if (widget.feed.containsKey("repostedFrom")) {
+                                              if (widget.feed["repostedFrom"] != null) {
                                                 text =
                                                     "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                               } else {
@@ -794,7 +795,7 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                                             } else if (widget.feed['mediaType'] == "video") {
                                               final videoCfUrl = Utils.getCloudFrontUrl(widget.feed['videoUrl']);
                               
-                                              if (widget.feed.containsKey("repostedFrom")) {
+                                              if (widget.feed["repostedFrom"] != null) {
                                                 text =
                                                     "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: $videoCfUrl\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                               } else {
@@ -809,7 +810,7 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                                               await SharePlus.instance
                                                   .share(ShareParams(text: text));
                                             } else {
-                                              if (widget.feed.containsKey("repostedFrom")) {
+                                              if (widget.feed["repostedFrom"] != null) {
                                                 text =
                                                     "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                                               } else {

@@ -192,7 +192,8 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
               ],
             ),
           ),
-          widget.feed.containsKey("repostedFrom")
+          (widget.feed["repostedFrom"] != null &&
+                  widget.feed["repostedFrom"]["user"] != null)
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -372,7 +373,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                       if (widget.feed.containsKey("images") && widget.feed['images'].isNotEmpty) {
                         final xfile = await JankariViewModel()
                             .shareFiles(widget.feed['images'][0]['originalUrl']);
-                        if (widget.feed.containsKey("repostedFrom")) {
+                        if (widget.feed["repostedFrom"] != null) {
                           text =
                               "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                         } else {
@@ -386,7 +387,7 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
                         }
                         await SharePlus.instance.share(ShareParams(files: [xfile], text: text));
                       } else {
-                        if (widget.feed.containsKey("repostedFrom")) {
+                        if (widget.feed["repostedFrom"] != null) {
                           text =
                               "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
                         } else {
