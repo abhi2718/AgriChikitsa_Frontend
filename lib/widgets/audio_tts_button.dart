@@ -67,6 +67,19 @@ class _AudioTtsButtonState extends State<AudioTtsButton> {
   }
 
   @override
+  void didUpdateWidget(covariant AudioTtsButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.htmlContent != widget.htmlContent) {
+      _flutterTts.stop();
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _flutterTts.stop();
     super.dispose();

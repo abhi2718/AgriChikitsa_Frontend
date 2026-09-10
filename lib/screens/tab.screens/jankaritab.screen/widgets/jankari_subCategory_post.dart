@@ -294,12 +294,28 @@ class JankariPost extends HookWidget {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                    child: BaseText(
-                                        title: profileViewModel.locale["language"] == "en"
-                                            ? provider.jankariSubcategoryPostList[index].title
-                                            : provider.jankariSubcategoryPostList[index].hindiTitle,
-                                        style: const TextStyle(
-                                            fontSize: 20, fontWeight: FontWeight.bold)),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: BaseText(
+                                              title: profileViewModel.locale["language"] == "en"
+                                                  ? provider.jankariSubcategoryPostList[index].title
+                                                  : provider.jankariSubcategoryPostList[index].hindiTitle,
+                                              style: const TextStyle(
+                                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                                        ),
+                                        if (html.isNotEmpty) ...[
+                                          const SizedBox(width: 8),
+                                          AudioTtsButton(
+                                            key: ValueKey(provider.jankariSubcategoryPostList[index].id),
+                                            htmlContent: html,
+                                            iconSize: 20.0,
+                                          ),
+                                        ],
+                                      ],
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 10,
