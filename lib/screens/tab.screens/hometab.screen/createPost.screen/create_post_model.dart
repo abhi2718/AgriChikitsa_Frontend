@@ -325,7 +325,7 @@ class CreatePostModel with ChangeNotifier {
         for (var image in images) {
           // Crop each image
           final original = image;
-          final croppedFile = await Utils.cropImage(image.path, dimension);
+          final croppedFile = await Utils.cropImage(image.path, dimension, context: context);
           if (croppedFile != null) {
             postImages
                 .add(PostImageItem(originalFile: original, croppedFile: XFile(croppedFile.path)));

@@ -374,5 +374,6 @@
     "attentionTitle": "कृपया ध्यान दें!",
     "cropVideoTitle": "वीडियो ट्रिम करें",
     "cropAndSave": "क्रॉप करके आगे बढ़ें",
-    "trimmingProgress": "वीडियो प्रोसेस हो रहा है..."
+    "trimmingProgress": "वीडियो प्रोसेस हो रहा है...",
+    "cropImageTitle": "फोटो क्रॉप करें"
 }

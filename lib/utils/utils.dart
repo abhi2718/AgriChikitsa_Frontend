@@ -390,20 +390,28 @@ class Utils {
     }
   }
 
-  static Future<CroppedFile?> cropImage(String imagePath, dynamic dimension) async {
+  static Future<CroppedFile?> cropImage(String imagePath, dynamic dimension, {BuildContext? context}) async {
     try {
+      String toolbarTitle = 'फोटो क्रॉप करें';
+      if (context != null) {
+        final translated = AppLocalization.of(context).getTranslatedValue("cropImageTitle");
+        if (translated != null && translated.toString() != "null" && translated.isNotEmpty) {
+          toolbarTitle = translated.toString();
+        }
+      }
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: imagePath,
         aspectRatio:
             CropAspectRatio(ratioX: dimension['width']! - 16, ratioY: dimension['width']! - 16),
         uiSettings: [
           AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
+            toolbarTitle: toolbarTitle,
             toolbarColor: AppColor.extraDark,
             toolbarWidgetColor: Colors.white,
             lockAspectRatio: false,
           ),
           IOSUiSettings(
+            title: toolbarTitle,
             minimumAspectRatio: 1.0,
           ),
         ],
