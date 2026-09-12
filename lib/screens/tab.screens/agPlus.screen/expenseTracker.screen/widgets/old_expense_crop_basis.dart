@@ -75,7 +75,6 @@ class OldExpenseCropBasis extends HookWidget {
           final showButtons = tabController.index == 1 &&
               vm.kamai != null &&
               vm.kamai!.isKamaiActive &&
-              vm.expenses.isNotEmpty &&
               !vm.kamai!.isFinalSubmitted;
 
           final hasIncome = vm.incomes.isNotEmpty;
@@ -475,35 +474,8 @@ class IncomeSection extends StatelessWidget {
         }
 
         final bool isKamaiActive = vm.kamai!.isKamaiActive;
-        final bool hasExpenses = vm.expenses.isNotEmpty;
 
         if (!isKamaiActive) {
-          return Padding(
-            padding: const EdgeInsets.all(22.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.warning_amber_rounded,
-                  color: AppColor.errorColor,
-                  size: 60,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  AppLocalization.of(context)
-                          .getTranslatedValue("kamaiNotActiveOldCrop")
-                          ?.toString() ??
-                      "आपने इस फसल को शुरुआती दौर में ही बदल दिया था, इसलिए इसकी कोई आय नहीं दिखाई जा सकती।",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (!hasExpenses) {
           return Padding(
             padding: const EdgeInsets.all(22.0),
             child: Column(
