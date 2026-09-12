@@ -111,7 +111,7 @@ class AGPlusRepository {
 
   Future<dynamic> getPredictedWeather(String latitude, String longitude, String lang) async {
     try {
-      final url = '${AppUrl.forecastAPIEndPoint}&q=$latitude,$longitude&aqi=no&days=3&lang=$lang';
+      final url = '${AppUrl.forecastAPIEndPoint}&q=$latitude,$longitude&aqi=no&days=7&lang=$lang';
       final response = await _apiServices.getWeatherApiResponse(url);
       return response;
     } catch (e) {
@@ -121,7 +121,7 @@ class AGPlusRepository {
 
   Future<dynamic> getPredictedDistrictWeather(String district, String lang) async {
     try {
-      final url = '${AppUrl.weatherAPIEndPoint}&q=$district&aqi=no&days=3&lang=$lang';
+      final url = '${AppUrl.forecastAPIEndPoint}&q=$district&aqi=no&days=7&lang=$lang';
       final response = await _apiServices.getWeatherApiResponse(url);
       return response;
     } catch (e) {

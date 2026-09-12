@@ -37,9 +37,9 @@ class AppUrl {
   static const String infoRequestEndpoint = '$baseUrl/agristick/intrest';
   static const String cropHistoryEndpoint = '$baseUrl/agristick/cropHistory';
   static const String weatherAPIEndPoint =
-      'http://api.weatherapi.com/v1/current.json?key=94488ccb442e4337ad735838231309';
+      'http://api.weatherapi.com/v1/current.json?key=9b34b9f39325491ca5442055261209';
   static const String forecastAPIEndPoint =
-      'http://api.weatherapi.com/v1/forecast.json?key=94488ccb442e4337ad735838231309';
+      'http://api.weatherapi.com/v1/forecast.json?key=9b34b9f39325491ca5442055261209';
   static const String chatHistoryEndPoint = '$baseUrl/chat/chatHistory';
   static const String raiseTestingRequestEndPoint = '$baseUrl/soilRequest/app/';
   static const String reportPostEndPoint = '$baseUrl/report';
