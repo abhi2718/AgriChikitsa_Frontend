@@ -18,6 +18,7 @@ import 'package:agriChikitsa/res/color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/createPost.screen/trim_video_screen.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/helper/active_video_manager.dart';
 
 class Utils {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -37,6 +38,7 @@ class Utils {
   }
 
   static void model(BuildContext context, Widget widgetContainer) {
+    ActiveVideoManager.instance.clearAll();
     showModalBottomSheet(
       context: context,
       useSafeArea: true,

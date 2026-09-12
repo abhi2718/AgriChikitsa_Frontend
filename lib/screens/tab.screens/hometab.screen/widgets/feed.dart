@@ -71,8 +71,9 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
 
     if (_mediaType == 'video') {
       _initVideoController();
+    } else if (_mediaType == 'youtube') {
+      _youtubeController = _buildYoutubeController();
     }
-    // YouTube controller initialized in build via YoutubePlayerBuilder
   }
 
   // REPLACE _initVideoController with:
@@ -114,6 +115,18 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
     if (ActiveVideoManager.instance.activeKey != _feedId) {
       _videoController?.pause();
       _youtubeController?.pause();
+    } else {
+      if (_mediaType == 'video') {
+        _videoController?.setVolume(_isMuted.value ? 0 : 1);
+        _videoController?.play();
+      } else if (_mediaType == 'youtube') {
+        if (_isMuted.value) {
+          _youtubeController?.mute();
+        } else {
+          _youtubeController?.unMute();
+        }
+        _youtubeController?.play();
+      }
     }
   }
 
@@ -130,7 +143,7 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
 
   void _onVisibilityChanged(VisibilityInfo info, HomeTabViewModel vm) {
     if (!mounted) return;
-    if (info.visibleFraction >= 0.9) {
+    if (info.visibleFraction >= 0.6) {
       ActiveVideoManager.instance.setActive(_feedId);
       if (_mediaType == 'video') {
         _videoController?.setVolume(_isMuted.value ? 0 : 1);
@@ -432,6 +445,7 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                           ],
                           onSelected: (value) {
                             if (value == 'report') {
+                              ActiveVideoManager.instance.clearAll();
                               showModalBottomSheet(
                                 context: context,
                                 useSafeArea: true,
@@ -1023,6 +1037,16 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
       player: YoutubePlayer(
         controller: _youtubeController ??= _buildYoutubeController(),
         showVideoProgressIndicator: true,
+        onReady: () {
+          if (ActiveVideoManager.instance.activeKey == _feedId) {
+            if (_isMuted.value) {
+              _youtubeController?.mute();
+            } else {
+              _youtubeController?.unMute();
+            }
+            _youtubeController?.play();
+          }
+        },
         bottomActions: [
           CurrentPosition(),
           ProgressBar(
