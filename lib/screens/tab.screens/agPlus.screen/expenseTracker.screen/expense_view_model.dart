@@ -523,7 +523,7 @@ class ExpenseViewModel with ChangeNotifier {
    * INCOME (OPTIMISTIC)
    * -------------------------------------------------- */
 
-  Future<void> addIncome(
+  Future<bool> addIncome(
       BuildContext context, String recordId, IncomeModel income, Plots selectedPlot) async {
     _incomes.insert(0, income);
     kamai!.incomeRecords.insert(0, income);
@@ -536,30 +536,35 @@ class ExpenseViewModel with ChangeNotifier {
       kamai!.incomeRecords[0].recordId = incomeRes["data"]["_id"];
       kamai!.incomeRecords[0].id =
           incomeRes["data"]["incomeRecords"][kamai!.incomeRecords.length - 1]["_id"];
+      return true;
     } catch (error) {
       _incomes.remove(income);
+      kamai!.incomeRecords.remove(income);
+      kamai!.totalIncome -= income.totalIncome;
+      kamai!.netProfit -= income.totalIncome;
       selectedPlot.isYieldAdded = false;
       notifyListeners();
-      if (kDebugMode && context.mounted) {
+      if (context.mounted) {
         Utils.flushBarErrorMessage(
           AppLocalization.of(context).getTranslatedValue("alert").toString(),
           error.toString(),
           context,
         );
       }
+      return false;
     } finally {
       _setLoader('income', false);
     }
   }
 
-  Future<void> updateIncome(
+  Future<bool> updateIncome(
     BuildContext context,
     String recordId,
     String incomeId,
     IncomeModel updated,
   ) async {
     final index = _incomes.indexWhere((i) => i.id == incomeId);
-    if (index == -1) return;
+    if (index == -1) return false;
 
     final old = _incomes[index];
     _incomes[index] = updated;
@@ -571,16 +576,18 @@ class ExpenseViewModel with ChangeNotifier {
         incomeId,
         updated.toPayload(),
       );
+      return true;
     } catch (error) {
       _incomes[index] = old;
       notifyListeners();
-      if (kDebugMode && context.mounted) {
+      if (context.mounted) {
         Utils.flushBarErrorMessage(
           AppLocalization.of(context).getTranslatedValue("alert").toString(),
           error.toString(),
           context,
         );
       }
+      return false;
     }
   }
 

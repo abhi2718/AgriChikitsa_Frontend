@@ -443,20 +443,27 @@ class AddIncomeForm extends HookWidget {
 
                   if (income != null) {
                     // 🔁 EDIT MODE
-                    await vm.updateIncome(
+                    final success = await vm.updateIncome(
                       context,
                       recordId,
                       income!.id!,
                       incomeModel,
                     );
+                    if (success) {
+                      vm.clearIncomeForm();
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
+                    }
                   } else {
                     // ➕ ADD MODE
-                    await vm.addIncome(context, recordId, incomeModel, selectedPlot);
-                  }
-
-                  vm.clearIncomeForm();
-                  if (context.mounted) {
-                    Navigator.pop(context);
+                    final success = await vm.addIncome(context, recordId, incomeModel, selectedPlot);
+                    if (success) {
+                      vm.clearIncomeForm();
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
+                    }
                   }
                 },
                 child: GradientButton(
