@@ -925,10 +925,10 @@ class AGPlusViewModel with ChangeNotifier {
           "name": profile['user']['name'],
           "phoneNumber": phoneNumber,
           "requestSource": "Ag_app",
-          "village": profile['user']['village'],
-          "district": profile['user']['district_en'],
+          "village": profile['user']['village'] ?? "",
+          "district": profile['user']['district_en'] ?? profile['user']['district_hi'] ?? "",
           "irrigationMode": "Drip",
-          "block": "Central",
+          "block": profile['user']['block_en'] ?? profile['user']['block_hi'] ?? "",
           "cropName": selectedPlot.cropName,
           "cropId": selectedPlot.cropId,
           "fieldId": fieldId
