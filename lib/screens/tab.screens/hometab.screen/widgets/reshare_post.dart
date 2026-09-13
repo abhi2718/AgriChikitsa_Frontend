@@ -360,12 +360,17 @@ class _ResharePostState extends State<ResharePost> {
     return VisibilityDetector(
         key: Key(videoUrl),
         onVisibilityChanged: (visibilityInfo) {
-          if (_currentVideoController != videoController) {
-            _currentVideoController?.pause();
-            _currentVideoController = videoController;
-            videoController.initialize().then((_) {
-              videoController.play();
-            });
+          final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+          if (isCurrentRoute) {
+            if (_currentVideoController != videoController) {
+              _currentVideoController?.pause();
+              _currentVideoController = videoController;
+              videoController.initialize().then((_) {
+                videoController.play();
+              });
+            }
+          } else {
+            videoController.pause();
           }
         },
         child: AspectRatio(
@@ -385,14 +390,19 @@ class _ResharePostState extends State<ResharePost> {
     final youtubeController = YoutubePlayerController(
       initialVideoId: videoId!,
       flags: const YoutubePlayerFlags(
-        autoPlay: true,
+        autoPlay: false,
       ),
     );
 
     return VisibilityDetector(
       key: Key(videoUrl),
       onVisibilityChanged: (visibilityInfo) {
-        youtubeController.play();
+        final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+        if (isCurrentRoute) {
+          youtubeController.play();
+        } else {
+          youtubeController.pause();
+        }
       },
       child: YoutubePlayer(
         controller: youtubeController,

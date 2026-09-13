@@ -89,7 +89,8 @@ class _PlayerState extends State<Player> {
       key: Key(widget.videoUrl),
       onVisibilityChanged: (info) {
         if (_controllerInitialized) {
-          if (info.visibleFraction == 0) {
+          final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+          if (info.visibleFraction == 0 || !isCurrentRoute) {
             _controller.pause();
           } else {
             _controller.play();

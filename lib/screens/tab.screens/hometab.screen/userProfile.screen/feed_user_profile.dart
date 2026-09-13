@@ -562,6 +562,8 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
       _videoController?.pause();
       _youtubeController?.pause();
     } else {
+      final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+      if (!isCurrentRoute) return;
       if (_mediaType == 'video') {
         _videoController?.setVolume(_isMuted.value ? 0 : 1);
         _videoController?.play();
@@ -589,7 +591,8 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
 
   void _onVisibilityChanged(VisibilityInfo info, HomeTabViewModel vm) {
     if (!mounted) return;
-    if (info.visibleFraction >= 0.6) {
+    final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+    if (info.visibleFraction >= 0.6 && isCurrentRoute) {
       ActiveVideoManager.instance.setActive(_feedId);
       if (_mediaType == 'video') {
         _videoController?.setVolume(_isMuted.value ? 0 : 1);
@@ -1101,7 +1104,8 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
         controller: _youtubeController ??= _buildYoutubeController(),
         showVideoProgressIndicator: true,
         onReady: () {
-          if (ActiveVideoManager.instance.activeKey == _feedId) {
+          final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+          if (ActiveVideoManager.instance.activeKey == _feedId && isCurrentRoute) {
             if (_isMuted.value) {
               _youtubeController?.mute();
             } else {

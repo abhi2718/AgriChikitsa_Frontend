@@ -65,17 +65,12 @@ class _PostWidgetState extends State<PostWidget> {
     return VisibilityDetector(
       key: Key(widget.videoUrl),
       onVisibilityChanged: (info) {
-        if (info.visibleFraction == 0) {
+        final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+        if (info.visibleFraction == 0 || !isCurrentRoute) {
           setState(() {
             _controller.pause();
           });
-        }
-        //  else if (!_isManuallyPaused) {
-        //   setState(() {
-        //     _controller.play();
-        //   });
-        // }
-        else {
+        } else {
           setState(() {
             _controller.play();
           });

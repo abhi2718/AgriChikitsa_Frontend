@@ -541,7 +541,8 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
     return VisibilityDetector(
         key: Key(videoUrl),
         onVisibilityChanged: (visibilityInfo) {
-          if (visibilityInfo.visibleFraction > 0.5) {
+          final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+          if (visibilityInfo.visibleFraction > 0.5 && isCurrentRoute) {
             if (_currentVideoController != videoController) {
               _currentVideoController?.pause();
               _currentVideoController = videoController;
@@ -578,7 +579,8 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
     return VisibilityDetector(
       key: Key(videoUrl),
       onVisibilityChanged: (visibilityInfo) {
-        if (visibilityInfo.visibleFraction > 0.5) {
+        final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+        if (visibilityInfo.visibleFraction > 0.5 && isCurrentRoute) {
           youtubeController.play();
           homeTabViewModel.increaseViews(context, feedId);
         } else {
