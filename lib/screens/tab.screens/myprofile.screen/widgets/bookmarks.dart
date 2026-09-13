@@ -6,12 +6,15 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/custom_t
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/report_screen.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/myprofile.screen/myprofile_view_model.dart';
+import 'package:agriChikitsa/screens/tab.screens/hometab.screen/helper/video_controls.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/fullScreenImage.widget/full_screen_image.dart';
-import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_video.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/full_screen_youtube_feed.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/helper/active_video_manager.dart';
+import 'package:agriChikitsa/widgets/fullScreenPlayer.widget/helper/video_position_manager.dart';
 import 'package:agriChikitsa/widgets/text.widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -38,8 +41,232 @@ class BookmarkFeed extends StatefulHookWidget {
   State<BookmarkFeed> createState() => _BookmarkFeedState();
 }
 
-class _BookmarkFeedState extends State<BookmarkFeed> {
-  VideoPlayerController? _currentVideoController;
+class _BookmarkFeedState extends State<BookmarkFeed> with WidgetsBindingObserver {
+  // Normal video
+  VideoPlayerController? _videoController;
+  bool _videoInitialized = false;
+
+  // YouTube
+  YoutubePlayerController? _youtubeController;
+
+  // Shared UI state
+  final ValueNotifier<bool> _isMuted = ValueNotifier(false);
+  final ValueNotifier<bool> _showControls = ValueNotifier(false);
+
+  String get _feedId => widget.feed['_id'] as String;
+  String get _videoUrl =>
+      (widget.feed['repostedFrom'] != null && widget.feed['repostedFrom']['user'] != null)
+          ? (widget.feed['repostedFrom']['videoUrl'] ?? '') as String
+          : (widget.feed['videoUrl'] ?? '') as String;
+  String get _mediaType =>
+      (widget.feed['repostedFrom'] != null && widget.feed['repostedFrom']['user'] != null)
+          ? (widget.feed['repostedFrom']['mediaType'] ?? '') as String
+          : (widget.feed['mediaType'] ?? '') as String;
+
+  Size _videoSize = const Size(16, 9);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    ActiveVideoManager.instance.addListener(_onActiveVideoChanged);
+
+    if (_mediaType == 'video' && _videoUrl.isNotEmpty) {
+      _initVideoController();
+    } else if (_mediaType == 'youtube' && _videoUrl.isNotEmpty) {
+      _youtubeController = _buildYoutubeController();
+    }
+  }
+
+  void _initVideoController() {
+    _videoController = VideoPlayerController.networkUrl(
+      Uri.parse(Utils.getCloudFrontUrl(_videoUrl)),
+    );
+    _videoController!.initialize().then((_) {
+      if (!mounted) return;
+      final saved = VideoPositionManager.instance.get(_videoUrl);
+      if (saved > Duration.zero) _videoController!.seekTo(saved);
+      _videoController!.setVolume(0); // start muted, unmute on visibility
+      final size = _videoController!.value.size;
+      if (size.width > 0 && size.height > 0) {
+        _videoSize = size;
+      }
+      if (mounted) setState(() => _videoInitialized = true);
+    });
+  }
+
+  YoutubePlayerController _buildYoutubeController() {
+    final videoId = YoutubePlayer.convertUrlToId(_videoUrl)!;
+    final saved = VideoPositionManager.instance.get(_videoUrl);
+    return YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        startAt: saved.inSeconds,
+        hideControls: false,
+        enableCaption: false,
+        forceHD: false,
+      ),
+    );
+  }
+
+  void _onActiveVideoChanged() {
+    if (!mounted) return;
+    if (ActiveVideoManager.instance.activeKey != _feedId) {
+      _videoController?.pause();
+      _youtubeController?.pause();
+    } else {
+      final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+      if (!isCurrentRoute) return;
+      if (_mediaType == 'video') {
+        _videoController?.setVolume(_isMuted.value ? 0 : 1);
+        _videoController?.play();
+      } else if (_mediaType == 'youtube') {
+        if (_isMuted.value) {
+          _youtubeController?.mute();
+        } else {
+          _youtubeController?.unMute();
+        }
+        _youtubeController?.play();
+      }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      _videoController?.pause();
+      _youtubeController?.pause();
+      ActiveVideoManager.instance.clearAll();
+    }
+  }
+
+  void _onVisibilityChanged(VisibilityInfo info, HomeTabViewModel vm) {
+    if (!mounted) return;
+    final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+    if (info.visibleFraction >= 0.6 && isCurrentRoute) {
+      ActiveVideoManager.instance.setActive(_feedId);
+      if (_mediaType == 'video') {
+        _videoController?.setVolume(_isMuted.value ? 0 : 1);
+        _videoController?.play();
+      } else if (_mediaType == 'youtube') {
+        if (_isMuted.value) {
+          _youtubeController?.mute();
+        } else {
+          _youtubeController?.unMute();
+        }
+        _youtubeController?.play();
+      }
+      vm.increaseViews(context, _feedId);
+    } else {
+      if (_mediaType == 'video') {
+        _videoController?.pause();
+      } else if (_mediaType == 'youtube') {
+        _youtubeController?.pause();
+      }
+      ActiveVideoManager.instance.clearIfActive(_feedId);
+    }
+  }
+
+  void _onTap() {
+    _showControls.value = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) _showControls.value = false;
+    });
+  }
+
+  Future<void> _openVideoFullScreen() async {
+    final position = _videoController!.value.position;
+    _videoController!.pause();
+    VideoPositionManager.instance.save(_videoUrl, position);
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FullScreenVideo(
+          videoUrl: _videoUrl,
+          videoSize: _videoSize,
+          startAt: position,
+          isMuted: _isMuted.value,
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+    final resumed = VideoPositionManager.instance.get(_videoUrl);
+    await _videoController!.seekTo(resumed);
+    _videoController!.play();
+  }
+
+  Future<void> _openYoutubeFullScreen() async {
+    if (_youtubeController == null) return;
+    final position = _youtubeController!.value.position;
+    _youtubeController!.pause();
+    VideoPositionManager.instance.save(_videoUrl, position);
+
+    final videoId = YoutubePlayer.convertUrlToId(_videoUrl)!;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FullScreenYoutubeFeed(
+          videoId: videoId,
+          url: _videoUrl,
+          startAt: position,
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+    final resumed = VideoPositionManager.instance.get(_videoUrl);
+    _youtubeController!.seekTo(resumed);
+    _youtubeController!.play();
+  }
+
+  Widget _muteOverlay({required VoidCallback onToggle}) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: _showControls,
+      builder: (_, show, __) {
+        if (!show) return const SizedBox.shrink();
+        return Positioned(
+          top: 8,
+          right: 8,
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _isMuted,
+            builder: (_, muted, __) => GestureDetector(
+              onTap: onToggle,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(6),
+                child: Icon(
+                  muted ? Icons.volume_off : Icons.volume_up,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    ActiveVideoManager.instance.removeListener(_onActiveVideoChanged);
+    _isMuted.dispose();
+    _showControls.dispose();
+    _videoController?.dispose();
+    _youtubeController?.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -526,100 +753,124 @@ class _BookmarkFeedState extends State<BookmarkFeed> {
       );
     }
     if (feed['mediaType'] == "video") {
-      return _buildVideoPlayer(feed['videoUrl'], useViewModel, feed["_id"]);
+      return _buildVideoPlayer(useViewModel);
     }
     if (feed['mediaType'] == "youtube") {
-      return _buildYoutubePlayer(feed['videoUrl'], useViewModel, feed["_id"]);
+      return _buildYoutubePlayer(useViewModel);
     } else {
       return const SizedBox.shrink();
     }
   }
 
-  Widget _buildVideoPlayer(String videoUrl, HomeTabViewModel homeTabViewModel, String feedId) {
-    final videoController = VideoPlayerController.networkUrl(
-        Uri.parse(Utils.getCloudFrontUrl(videoUrl)));
+  Widget _buildVideoPlayer(HomeTabViewModel vm) {
+    final aspectRatio = _videoSize.width / _videoSize.height;
 
     return VisibilityDetector(
-        key: Key(videoUrl),
-        onVisibilityChanged: (visibilityInfo) {
-          final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
-          if (visibilityInfo.visibleFraction > 0.5 && isCurrentRoute) {
-            if (_currentVideoController != videoController) {
-              _currentVideoController?.pause();
-              _currentVideoController = videoController;
-              videoController.initialize().then((_) {
-                videoController.play();
-                homeTabViewModel.increaseViews(context, feedId);
-              });
-            }
-          } else if (_currentVideoController == videoController) {
-            videoController.pause();
-          }
-        },
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Chewie(
-            controller: ChewieController(
-              videoPlayerController: videoController,
-              autoPlay: false,
-              looping: false,
-            ),
+      key: Key('video_$_feedId'),
+      onVisibilityChanged: (info) => _onVisibilityChanged(info, vm),
+      child: AspectRatio(
+        aspectRatio: 16 / 9, // card height stays fixed at 16:9
+        child: Container(
+          color: Colors.black,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Video centered with correct aspect ratio, no stretch
+              Center(
+                child: _videoInitialized && _videoController != null
+                    ? AspectRatio(
+                        aspectRatio: aspectRatio,
+                        child: VideoPlayer(_videoController!),
+                      )
+                    : const CircularProgressIndicator(color: AppColor.darkColor),
+              ),
+              // Tap to show/hide controls
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _onTap,
+              ),
+              // Controls overlay
+              ValueListenableBuilder<bool>(
+                valueListenable: _showControls,
+                builder: (_, show, __) {
+                  if (!show || !_videoInitialized || _videoController == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return VideoControls(
+                    controller: _videoController!,
+                    isMuted: _isMuted,
+                    onMuteToggle: () {
+                      _isMuted.value = !_isMuted.value;
+                      _videoController?.setVolume(_isMuted.value ? 0 : 1);
+                    },
+                    onFullScreen: _openVideoFullScreen,
+                  );
+                },
+              ),
+            ],
           ),
-        ));
-  }
-
-  Widget _buildYoutubePlayer(String videoUrl, HomeTabViewModel homeTabViewModel, String feedId) {
-    final videoId = YoutubePlayer.convertUrlToId(videoUrl);
-    final youtubeController = YoutubePlayerController(
-      initialVideoId: videoId!,
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
+        ),
       ),
     );
+  }
 
-    return VisibilityDetector(
-      key: Key(videoUrl),
-      onVisibilityChanged: (visibilityInfo) {
-        final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
-        if (visibilityInfo.visibleFraction > 0.5 && isCurrentRoute) {
-          youtubeController.play();
-          homeTabViewModel.increaseViews(context, feedId);
-        } else {
-          youtubeController.pause();
-        }
-      },
-      child: YoutubePlayer(
-        controller: youtubeController,
+  Widget _buildYoutubePlayer(HomeTabViewModel vm) {
+    return YoutubePlayerBuilder(
+      onEnterFullScreen: () {}, // no-op
+      onExitFullScreen: () {}, // no-op
+      player: YoutubePlayer(
+        controller: _youtubeController ??= _buildYoutubeController(),
         showVideoProgressIndicator: true,
+        onReady: () {
+          final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
+          if (ActiveVideoManager.instance.activeKey == _feedId && isCurrentRoute) {
+            if (_isMuted.value) {
+              _youtubeController?.mute();
+            } else {
+              _youtubeController?.unMute();
+            }
+            _youtubeController?.play();
+          }
+        },
         bottomActions: [
           CurrentPosition(),
           ProgressBar(
             isExpanded: true,
             colors: const ProgressBarColors(playedColor: AppColor.darkColor),
           ),
+          RemainingDuration(),
           IconButton(
-            icon: const Icon(
-              Icons.fullscreen,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () {
-              setState(() {
-                youtubeController.pause();
-              });
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FullScreenYoutube(
-                    url: videoUrl,
-                  ),
-                ),
-              );
-            },
+            icon: const Icon(Icons.fullscreen, color: Colors.white, size: 30),
+            onPressed: _openYoutubeFullScreen,
           ),
         ],
+        topActions: const [SizedBox.shrink()],
       ),
+      builder: (context, player) {
+        // Store controller reference after builder fires
+        return VisibilityDetector(
+          key: Key('youtube_$_feedId'),
+          onVisibilityChanged: (info) => _onVisibilityChanged(info, vm),
+          child: GestureDetector(
+            onTap: _onTap,
+            child: Stack(
+              children: [
+                player,
+                _muteOverlay(
+                  onToggle: () {
+                    _isMuted.value = !_isMuted.value;
+                    if (_isMuted.value) {
+                      _youtubeController?.mute();
+                    } else {
+                      _youtubeController?.unMute();
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
