@@ -10,6 +10,7 @@ import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_loa
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/feed_video_player.dart';
 import 'package:agriChikitsa/screens/tab.screens/hometab.screen/widgets/report_screen.dart';
 import 'package:agriChikitsa/services/auth.dart';
+import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/jankari_view_model.dart';
 import 'package:agriChikitsa/screens/tab.screens/jankaritab.screen/widgets/short_player.dart';
 import 'package:agriChikitsa/utils/utils.dart';
 import 'package:agriChikitsa/widgets/fullScreenImage.widget/full_screen_image.dart';
@@ -823,7 +824,7 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
                         ),
                       ),
                     ],
-                    onSelected: (value) {
+                    onSelected: (value) async {
                       if (value == 'report') {
                         ActiveVideoManager.instance.clearAll();
                         showModalBottomSheet(
@@ -841,9 +842,41 @@ class _UserProfileFeedState extends State<UserProfileFeed> with WidgetsBindingOb
                           ),
                         );
                       } else if (value == 'share') {
-                        SharePlus.instance.share(ShareParams(
-                            text:
-                                "Check out what ${widget.account['name']} posted!\n ${widget.feed["hindiCaption"]}"));
+                        final userName = widget.account['name'] ?? '';
+                        final caption = widget.feed["repostedFrom"] != null
+                            ? widget.feed["repostedFrom"]["hindiCaption"]
+                            : widget.feed["hindiCaption"];
+
+                        String formatShareText({String? link}) {
+                          final buffer = StringBuffer();
+                          buffer.write("Check out what $userName posted on Agrichikitsa App!");
+                          if (caption != null && caption.toString().trim().isNotEmpty) {
+                            buffer.write('\n\n"${caption.toString().trim()}"');
+                          }
+                          if (link != null && link.trim().isNotEmpty) {
+                            buffer.write('\n\nLink: ${link.trim()}');
+                          }
+                          buffer.write(
+                              "\n\nDownload Agrichikitsa App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app");
+                          return buffer.toString();
+                        }
+
+                        if (widget.feed.containsKey("images") &&
+                            widget.feed['images'].isNotEmpty) {
+                          final xfile = await JankariViewModel()
+                              .shareFiles(widget.feed['images'][0]['originalUrl']);
+                          final text = formatShareText();
+                          await SharePlus.instance
+                              .share(ShareParams(files: [xfile], text: text));
+                        } else if (widget.feed['mediaType'] == "video") {
+                          final videoCfUrl = Utils.getCloudFrontUrl(widget.feed['videoUrl']);
+                          final text = formatShareText(link: videoCfUrl);
+                          await SharePlus.instance.share(ShareParams(text: text));
+                        } else {
+                          final link = widget.feed["videoUrl"];
+                          final text = formatShareText(link: link);
+                          await SharePlus.instance.share(ShareParams(text: text));
+                        }
                       }
                     },
                   ),

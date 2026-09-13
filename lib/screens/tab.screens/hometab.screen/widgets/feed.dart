@@ -790,55 +790,40 @@ class _FeedState extends State<Feed> with WidgetsBindingObserver {
                                               .getTranslatedValue("sharePostOutside")
                                               .toString()),
                                           onTap: () async {
-                                            String text = "";
+                                            final userName = user['name'] ?? '';
+                                            final caption = widget.feed["repostedFrom"] != null
+                                                ? widget.feed["repostedFrom"]["hindiCaption"]
+                                                : widget.feed["hindiCaption"];
+
+                                            String formatShareText({String? link}) {
+                                              final buffer = StringBuffer();
+                                              buffer.write("Check out what $userName posted on Agrichikitsa App!");
+                                              if (caption != null && caption.toString().trim().isNotEmpty) {
+                                                buffer.write('\n\n"${caption.toString().trim()}"');
+                                              }
+                                              if (link != null && link.trim().isNotEmpty) {
+                                                buffer.write('\n\nLink: ${link.trim()}');
+                                              }
+                                              buffer.write(
+                                                  "\n\nDownload Agrichikitsa App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app");
+                                              return buffer.toString();
+                                            }
+
                                             if (widget.feed.containsKey("images") &&
                                                 widget.feed['images'].isNotEmpty) {
                                               final xfile = await JankariViewModel().shareFiles(
                                                   widget.feed['images'][0]["originalUrl"]);
-                                              if (widget.feed["repostedFrom"] != null) {
-                                                text =
-                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]} \n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                              } else {
-                                                if (widget.feed["hindiCaption"] == null) {
-                                                  text =
-                                                      "Check out what ${user['name']} posted!\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                                } else {
-                                                  text =
-                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\n Download Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                                }
-                                              }
+                                              final text = formatShareText();
                                               await SharePlus.instance
                                                   .share(ShareParams(text: text, files: [xfile]));
                                             } else if (widget.feed['mediaType'] == "video") {
                                               final videoCfUrl = Utils.getCloudFrontUrl(widget.feed['videoUrl']);
-                              
-                                              if (widget.feed["repostedFrom"] != null) {
-                                                text =
-                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: $videoCfUrl\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                              } else {
-                                                if (widget.feed["hindiCaption"] == null) {
-                                                  text =
-                                                      "Check out what ${user['name']} posted!\nLink: $videoCfUrl\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                                } else {
-                                                  text =
-                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: $videoCfUrl\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                                }
-                                              }
+                                              final text = formatShareText(link: videoCfUrl);
                                               await SharePlus.instance
                                                   .share(ShareParams(text: text));
                                             } else {
-                                              if (widget.feed["repostedFrom"] != null) {
-                                                text =
-                                                    "Check out what ${user['name']} posted!\n${widget.feed["repostedFrom"]["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                              } else {
-                                                if (widget.feed["hindiCaption"] == null) {
-                                                  text =
-                                                      "Check out what ${user['name']} posted!\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                                } else {
-                                                  text =
-                                                      "Check out what ${user['name']} posted!\n ${widget.feed["hindiCaption"]}\nLink: ${widget.feed["videoUrl"]}\nDownload Agrichikits App Now - https://play.google.com/store/apps/details?id=com.freshnic.agriChikitsa.app";
-                                                }
-                                              }
+                                              final link = widget.feed["videoUrl"];
+                                              final text = formatShareText(link: link);
                                               await SharePlus.instance
                                                   .share(ShareParams(text: text));
                                             }
